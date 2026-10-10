@@ -180,6 +180,17 @@ footer { font-size: 12.5px; color: var(--muted); }
   </div>
 
   <div style="display:grid;gap:10px">
+    <h2 data-i="pxTitle"></h2>
+    <p class="hint" data-i="pxHint"></p>
+    <div class="row">
+      <div class="field"><label class="lab" for="px-model" data-i="pxModel"></label><select id="px-model"></select></div>
+      <div class="field"><label class="lab" for="px-prompt" data-i="pxPrompt"></label><select id="px-prompt"></select></div>
+      <div class="field"><label class="lab" for="px-img" data-i="pxImg"></label><select id="px-img"></select></div>
+    </div>
+    <div class="tablebox"><table class="matrix" id="praxis"><thead></thead><tbody></tbody></table></div>
+  </div>
+
+  <div style="display:grid;gap:10px">
     <h2 data-i="mTitle"></h2>
     <p class="hint" data-i="mHint"></p>
     <div class="tablebox"><table class="matrix" id="matrix"><thead></thead><tbody></tbody></table></div>
@@ -206,6 +217,16 @@ footer { font-size: 12.5px; color: var(--muted); }
     { id: "single", ctx: 3, alpha: 0.6, w: null }
   ];
   const CTX = [4096, 8192, 16384, 32768, 65536, 131072];
+  const PROMPTS = [1024, 4096, 16384, 32768, 65536];
+  const CODE_TOKENS = 1100;   // 100 Zeilen Code ≈ 11 Tokens pro Zeile
+  // Bildmodelle: Referenzzeit auf RTX 4090 bei 1024×1024, Speicherbedarf in GB
+  const IMG = [
+    { id: "sdxl",   name: "SDXL · 30 Schritte",           gb: 8,  ref: 4.5 },
+    { id: "fluxs",  name: "FLUX.1 schnell FP8 · 4 Schritte", gb: 14, ref: 2.2 },
+    { id: "fluxd",  name: "FLUX.1 dev FP8 · 28 Schritte",  gb: 14, ref: 14 }
+  ];
+  const IMG_REF_INDEX = 330 * 0.5;                     // Rechenindex RTX 4090
+  const IMG_VENDOR = { nvidia: 1, amd: 1.7, apple: 2.1 }; // kalibriert an typischen SDXL-Zeiten je Plattform
   const N = "nvidia", A = "apple", AM = "amd";
   const VENDOR = { nvidia: "NVIDIA", amd: "AMD", apple: "Apple" };
   // tf: NVIDIA = FP16 tensor dense (Blackwell AI TOPS/8, Ada /4), Apple = GPU FP32. pf = prefill factor (M5 Neural Accelerators).
@@ -243,6 +264,11 @@ footer { font-size: 12.5px; color: var(--muted); }
       priceAria: (n) => `Preis ${n} in Euro`, prices: "Preise ↗",
       sBest: "Bester Wert", sFast: "Schnellstes Gerät", sCheap: "Günstigstes, auf dem alle Modelle laufen", sCheapOne: "Günstigstes, auf dem es läuft",
       none: "keins", sys: "€ System", noneFits: (c) => `Kein Gerät hat bei ${c} Kontext genug Speicher`,
+      pxTitle: "Praxiswerte",
+      pxHint: "Was du beim Arbeiten spürst: Geschwindigkeit beim Schreiben, Wartezeit bis zum ersten Wort, Dauer für 100 Zeilen Code (ca. 1.100 Tokens) und für ein Bild mit 1024 × 1024 Pixeln. Hochgerechnete Schätzwerte, typische Abweichung ±30 %.",
+      pxModel: "Textmodell", pxPrompt: "Prompt-Länge", pxImg: "Bildmodell",
+      pxTh: { tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild" },
+      tokens: "Tokens",
       mTitle: "Generierung je Modell",
       mHint: "Obere Zahl: geschätzte Tokens/s beim Schreiben bei halb gefülltem Kontext. Untere Zahl: Prompt-Verarbeitung in Tokens/s. „—“ heißt: passt nicht in den Speicher. Spalten sind sortierbar.",
       inProfile: "im Profil", ttft: (p, t) => `Prompt ${p} tok/s · erster Token nach ${t} s bei vollem Kontext`,
@@ -270,6 +296,14 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
         <li>Rechenleistung: NVIDIA = FP16-Tensor-Leistung (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0,5. AMD = FP16-Spitzenleistung laut Datenblatt, η_c 0,35 (Ryzen AI Max 0,3). Apple = GPU-FP32, η_c 0,6. M5-Chips mit Neural Accelerators ×3,5 (Apple nennt bis 3,9–4× gegenüber der Vorgängergeneration).</li>
         <li>MoE-Modelle erreichen in der Praxis rund die Hälfte der rechnerischen Generierung (Routing, Attention, verteilte Zugriffe), daher ε = 0,55. Dichte Modelle ε = 1.</li>
         <li>Kein Teil-Offloading: Wenn ein Modell nicht passt, zählt es mit 0. Multi-GPU ist nicht abgebildet.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Praxiswerte</h2>
+      <ul>
+        <li>Erster Token = Prompt-Länge ÷ Prompt-Verarbeitung. Bei sehr langen Prompts wird es in der Praxis etwas langsamer, weil die Attention mitwächst.</li>
+        <li>100 Zeilen Code ≈ 1.100 Tokens (rund 11 Tokens pro Zeile). Dauer = erster Token + 1.100 ÷ Tokens/s.</li>
+        <li>Bilder sind rechenleistungsgebunden. Referenz RTX 4090 bei 1024 × 1024: SDXL 30 Schritte ≈ 4,5 s, FLUX.1 schnell ≈ 2,2 s, FLUX.1 dev ≈ 14 s. Andere Geräte werden über ihre Rechenleistung hochgerechnet, mit Plattformfaktor für Apple (2,1) und AMD (1,7), kalibriert an typischen SDXL-Zeiten.</li>
       </ul>
     </section>
     <section>
@@ -310,6 +344,11 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       priceAria: (n) => `Price of ${n} in euros`, prices: "Prices ↗",
       sBest: "Best value", sFast: "Fastest device", sCheap: "Cheapest that runs every model", sCheapOne: "Cheapest that runs it",
       none: "none", sys: "€ system", noneFits: (c) => `No device has enough memory at ${c} context`,
+      pxTitle: "Real-world numbers",
+      pxHint: "What you feel while working: writing speed, wait until the first word, time for 100 lines of code (about 1,100 tokens) and for one 1024 × 1024 image. Extrapolated estimates, typical deviation ±30%.",
+      pxModel: "Text model", pxPrompt: "Prompt length", pxImg: "Image model",
+      pxTh: { tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image" },
+      tokens: "tokens",
       mTitle: "Generation per model",
       mHint: "Top number: estimated tokens/s while writing, with the context half full. Bottom number: prompt processing in tokens/s. “—” means it does not fit in memory. Columns are sortable.",
       inProfile: "in use case", ttft: (p, t) => `Prompt ${p} tok/s · first token after ${t} s at full context`,
@@ -340,6 +379,14 @@ Score     = Perf / system price   (best device = 100)</div>
       </ul>
     </section>
     <section>
+      <h2>Real-world numbers</h2>
+      <ul>
+        <li>First token = prompt length ÷ prompt processing speed. Very long prompts are somewhat slower in practice because attention grows too.</li>
+        <li>100 lines of code ≈ 1,100 tokens (about 11 tokens per line). Time = first token + 1,100 ÷ tokens/s.</li>
+        <li>Images are compute-bound. Reference RTX 4090 at 1024 × 1024: SDXL 30 steps ≈ 4.5 s, FLUX.1 schnell ≈ 2.2 s, FLUX.1 dev ≈ 14 s. Other devices are scaled by compute, with a platform factor for Apple (2.1) and AMD (1.7), calibrated against typical SDXL times.</li>
+      </ul>
+    </section>
+    <section>
       <h2>Check against LocalScore</h2>
       <p>Measurements from the public LocalScore database (llamafile, Q4_K_M) against the model:</p>
       <div style="overflow-x:auto"><table class="calib"><thead><tr><th>RTX 4090</th><th>Gen. model</th><th>Gen. measured</th><th>Prompt model</th><th>Prompt measured</th></tr></thead>
@@ -365,7 +412,7 @@ Score     = Perf / system price   (best device = 100)</div>
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   let navLang = "de";
   try { navLang = (navigator.language || "de").toLowerCase().startsWith("de") ? "de" : "en"; } catch (e) {}
-  const state = Object.assign({ profile: "agent", model: "moe120", ctx: 3, vendor: "all", sortKey: "score", sortDir: -1, base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
+  const state = Object.assign({ pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", sortKey: "score", sortDir: -1, base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
   delete state.sort;
   if (!T[state.lang]) state.lang = "de";
   function persist() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
@@ -421,7 +468,7 @@ Score     = Perf / system price   (best device = 100)</div>
   }
 
   // Sorting: default direction per key (1 = ascending, -1 = descending)
-  const DEFAULT_DIR = { name: 1, price: 1, fits: -1, perf: -1, score: -1 };
+  const DEFAULT_DIR = { name: 1, price: 1, fits: -1, perf: -1, score: -1, "x:tg": -1, "x:ttft": 1, "x:code": 1, "x:img": 1 };
   function sortValue(r, key) {
     if (key === "name") return r.d.name;
     if (key === "price") return r.sp;
@@ -429,6 +476,7 @@ Score     = Perf / system price   (best device = 100)</div>
     if (key === "perf") return r.perf;
     if (key === "score") return r.score;
     if (key.startsWith("m:")) { const c = r.per[key.slice(2)]; return c.fits ? c.tg : -1; }
+    if (key.startsWith("x:")) return r.px[key.slice(2)];
     return 0;
   }
   function setSort(key) {
@@ -448,6 +496,9 @@ Score     = Perf / system price   (best device = 100)</div>
     document.querySelectorAll("[data-i]").forEach((el) => { el.textContent = L()[el.dataset.i]; });
     $("#basecost").setAttribute("aria-label", L().baseAria);
     $("#method").innerHTML = L().method.replace(/\{\{updated\}\}/g, UPDATED ? new Date(UPDATED).toLocaleDateString(L().locale, { day: "numeric", month: "long", year: "numeric" }) : "–");
+    $("#px-model").innerHTML = MODELS.map((m) => `<option value="${m.id}">${esc(mName(m))} (${esc(mEx(m))})</option>`).join("");
+    $("#px-prompt").innerHTML = PROMPTS.map((p, i) => `<option value="${i}">${ctxLabel(p)} ${L().tokens}</option>`).join("");
+    $("#px-img").innerHTML = IMG.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join("");
     $("#model").innerHTML = MODELS.map((m) => `<option value="${m.id}">${esc(mName(m))} (${esc(mEx(m))})</option>`).join("");
   }
   function renderControls() {
@@ -457,16 +508,27 @@ Score     = Perf / system price   (best device = 100)</div>
     $("#model-field").hidden = state.profile !== "single";
     $("#ctx").value = state.ctx; $("#ctx-val").textContent = ctxLabel(CTX[state.ctx]);
     $("#base").checked = state.base; $("#basecost").value = state.baseCost; $("#wired").checked = state.wired;
-    $("#model").value = state.model;
+    $("#model").value = state.model; $("#px-model").value = state.pxModel; $("#px-prompt").value = state.pxPrompt; $("#px-img").value = state.pxImg;
   }
 
   function render() {
     renderControls();
     const t = L();
     const { rows, ctx, w } = evaluate();
+    const pxM = MODELS.find((m) => m.id === state.pxModel) || MODELS[1];
+    const pxP = PROMPTS[state.pxPrompt] || 16384;
+    const pxI = IMG.find((x) => x.id === state.pxImg) || IMG[0];
+    rows.forEach((r) => {
+      const c = calc(r.d, pxM, pxP + CODE_TOKENS);
+      const imgIdx = r.d.tf * r.d.etaC * r.d.pf * (IMG_VENDOR[r.d.v] || 1);
+      const imgFits = usable(r.d) >= pxI.gb;
+      r.px = c.fits ? { tg: c.tg, ttft: pxP / c.pp, code: pxP / c.pp + CODE_TOKENS / c.tg } : { tg: null, ttft: null, code: null };
+      r.px.img = imgFits ? pxI.ref * IMG_REF_INDEX / imgIdx : null;
+    });
     const vis = rows.filter((r) => state.vendor === "all" || r.d.v === state.vendor);
     vis.sort((a, b) => {
       const x = sortValue(a, state.sortKey), y = sortValue(b, state.sortKey);
+      if (x == null || y == null) return x == null && y == null ? b.score - a.score : x == null ? 1 : -1;  // ohne Wert immer ans Ende
       const c = typeof x === "string" ? x.localeCompare(y, t.locale, { numeric: true }) : x - y;
       return c * state.sortDir || b.score - a.score;
     });
@@ -508,6 +570,15 @@ Score     = Perf / system price   (best device = 100)</div>
       </tr>`;
     }).join("");
 
+    // Praxiswerte
+    const dur = (sec) => sec == null ? "—" : sec < 1 ? `${fmt(sec, 1)} s` : sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
+    $("#praxis thead").innerHTML = `<tr>${sortHead("name", t.th.name)}${sortHead("x:tg", t.pxTh.tg)}${sortHead("x:ttft", t.pxTh.ttft)}${sortHead("x:code", t.pxTh.code)}${sortHead("x:img", t.pxTh.img)}</tr>`;
+    $("#praxis tbody").innerHTML = vis.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(r.d.name)}</span></td>
+      <td class="mono ${r.px.tg == null ? "na" : ""}">${r.px.tg == null ? "—" : fmtTok(r.px.tg)}</td>
+      <td class="mono ${r.px.ttft == null ? "na" : ""}">${dur(r.px.ttft)}</td>
+      <td class="mono ${r.px.code == null ? "na" : ""}">${dur(r.px.code)}</td>
+      <td class="mono ${r.px.img == null ? "na" : ""}">${dur(r.px.img)}</td></tr>`).join("");
+
     // Matrix
     $("#matrix thead").innerHTML = `<tr>${sortHead("name", t.th.name)}${MODELS.map((m) =>
       sortHead("m:" + m.id, `${esc(mName(m))}<small>${fmt(m.gb, 0)} GB${w[m.id] ? " · " + t.inProfile : ""}</small>`)).join("")}</tr>`;
@@ -521,6 +592,9 @@ Score     = Perf / system price   (best device = 100)</div>
   $("#profile").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.profile = b.dataset.id; state.ctx = PROFILES.find((p) => p.id === state.profile).ctx; persist(); render(); });
   $("#vendor").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.vendor = b.dataset.id; persist(); render(); });
   $("#model").addEventListener("change", (e) => { state.model = e.target.value; persist(); render(); });
+  $("#px-model").addEventListener("change", (e) => { state.pxModel = e.target.value; persist(); render(); });
+  $("#px-prompt").addEventListener("change", (e) => { state.pxPrompt = +e.target.value; persist(); render(); });
+  $("#px-img").addEventListener("change", (e) => { state.pxImg = e.target.value; persist(); render(); });
   $("#ctx").addEventListener("input", (e) => { state.ctx = +e.target.value; persist(); render(); });
   $("#base").addEventListener("change", (e) => { state.base = e.target.checked; persist(); render(); });
   $("#basecost").addEventListener("change", (e) => { state.baseCost = Math.max(0, +e.target.value || 0); persist(); render(); });
