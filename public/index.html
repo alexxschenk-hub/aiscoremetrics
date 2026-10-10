@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Preis-Leistungs-Rechner für lokale LLM-Hardware: NVIDIA-GPUs und Apple-Macs nach Nutzungsprofil, Kontext und Systempreis.">
+<meta name="description" content="Preis-Leistungs-Rechner für lokale LLM-Hardware: NVIDIA- und AMD-Grafikkarten, Mini-PCs und Apple-Macs nach Nutzungsprofil, Kontext und Systempreis.">
 <title>AI Score Metrics</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,6 +23,7 @@
   --good: #2E7A33;
   --bad: #B3261E;
   --warn: #A0560B;
+  --amd: #8A4B2E;
   --f-display: "Barlow Semi Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
   --f-body: "Source Sans 3", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -31,13 +32,13 @@
   :root:not([data-theme="light"]) {
     --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A;
     --accent: #52C3CD; --accent-soft: #123338; --bar: #52C3CD; --bar-2: #4B5D66;
-    --good: #6CC070; --bad: #F2867E; --warn: #E3A256; color-scheme: dark;
+    --good: #6CC070; --bad: #F2867E; --warn: #E3A256; --amd: #E39A72; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A;
   --accent: #52C3CD; --accent-soft: #123338; --bar: #52C3CD; --bar-2: #4B5D66;
-  --good: #6CC070; --bad: #F2867E; --warn: #E3A256; color-scheme: dark;
+  --good: #6CC070; --bad: #F2867E; --warn: #E3A256; --amd: #E39A72; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
@@ -93,6 +94,7 @@ td.num, th.num { text-align: right; }
 .ico { flex: none; width: 34px; height: 34px; border-radius: 6px; display: grid; place-items: center; background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
 .ico svg { width: 22px; height: 22px; }
 .ico.nvidia { color: var(--accent); }
+.ico.amd { color: var(--amd); }
 .seg .vi { width: 15px; height: 15px; vertical-align: -3px; margin-right: 5px; }
 .tag { font: 600 10.5px var(--f-display); letter-spacing: .08em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); margin-right: 6px; vertical-align: 1px; }
 .price { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
@@ -204,7 +206,8 @@ footer { font-size: 12.5px; color: var(--muted); }
     { id: "single", ctx: 3, alpha: 0.6, w: null }
   ];
   const CTX = [4096, 8192, 16384, 32768, 65536, 131072];
-  const N = "nvidia", A = "apple";
+  const N = "nvidia", A = "apple", AM = "amd";
+  const VENDOR = { nvidia: "NVIDIA", amd: "AMD", apple: "Apple" };
   // tf: NVIDIA = FP16 tensor dense (Blackwell AI TOPS/8, Ada /4), Apple = GPU FP32. pf = prefill factor (M5 Neural Accelerators).
   let DEVICES = [];   // wird aus data/devices.json + data/prices.json geladen
   let UPDATED = null;
@@ -216,6 +219,7 @@ footer { font-size: 12.5px; color: var(--muted); }
     mbp: SVG('<rect x="4" y="5" width="16" height="10.5" rx="1.2"/><path d="M2 18.5h20l-1.2-3H3.2z"/>'),
     studio: SVG('<rect x="4" y="6.5" width="16" height="11" rx="2.2"/><path d="M7.5 14.5h2M11 14.5h1"/><circle cx="16" cy="14.5" r=".6" fill="currentColor"/>'),
     mini: SVG('<rect x="3" y="9.5" width="18" height="6" rx="2"/><circle cx="17.5" cy="12.5" r=".6" fill="currentColor"/>'),
+    minipc: SVG('<rect x="4.5" y="4.5" width="15" height="15" rx="2.5"/><path d="M8 16h4"/><circle cx="16" cy="16" r=".6" fill="currentColor"/>'),
     mac: SVG('<rect x="4" y="6.5" width="16" height="11" rx="2.2"/><path d="M8 14.5h3"/>')
   };
 
@@ -226,12 +230,12 @@ footer { font-size: 12.5px; color: var(--muted); }
       lede: "Welche Hardware liefert für dein Szenario die meisten nutzbaren Tokens pro Euro? Der Score prüft zuerst, ob das Modell in den Speicher passt, und rechnet dann Generierung (Bandbreite) und Prompt-Verarbeitung (Rechenleistung) gegen den Systempreis.",
       profile: "Nutzungsprofil", model: "Modell", ctx: "Kontext", vendor: "Hersteller", all: "Alle",
       base: "GPU-Preis + PC-Basis", baseAria: "Kosten PC-Basis in Euro",
-      wired: "macOS-GPU-Speicherlimit auf 90 % angehoben", reset: "Preise zurücksetzen",
+      wired: "GPU-Speicherlimit angehoben (Mac 90 %, Ryzen AI Max 110 GB)", reset: "Preise zurücksetzen",
       hint: "Klick auf eine Spaltenüberschrift sortiert, ein zweiter Klick dreht die Reihenfolge um. Preise sind editierbar und bleiben in deinem Browser gespeichert. Orange markierte Preise sind Schätzungen.",
       profiles: { chat: "Chat", agent: "Agent & Coding", large: "Große Modelle", single: "Einzelmodell" },
       dense: "dicht",
       th: { rank: "#", name: "Gerät", price: "Systempreis €", fits: "Modelle passen", perf: "Leistung", score: "Score" },
-      kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini" },
+      kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini-PC" },
       src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", man: "manuell:", own: "eigener Preis" },
       inclPc: (c) => `inkl. ${c} € PC`, edited: "Von dir geändert",
       fitsYes: "passt", fitsNo: "passt nicht", need: "GB nötig", usable: "GB nutzbar", notInProfile: "nicht im Profil",
@@ -261,8 +265,9 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       <ul>
         <li>Quantisierung Q4 (≈ 4,8 Bit/Parameter), bei der 120B-MoE-Klasse das native MXFP4.</li>
         <li>Nutzbarer Speicher: GPU = VRAM − 0,8 GB. Mac = 67 % (≤ 36 GB) bzw. 75 % des Arbeitsspeichers, mit angehobenem Limit 90 %.</li>
-        <li>Bandbreiten-Effizienz η: NVIDIA 0,60, Apple Pro/Max 0,62, Apple Ultra 0,50.</li>
-        <li>Rechenleistung: NVIDIA = FP16-Tensor-Leistung (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0,5. Apple = GPU-FP32, η_c 0,6. M5-Chips mit Neural Accelerators ×3,5 (Apple nennt bis 3,9–4× gegenüber der Vorgängergeneration).</li>
+        <li>Bandbreiten-Effizienz η: NVIDIA 0,60, AMD-Grafikkarten 0,50 (ROCm/Vulkan), Ryzen AI Max 0,72, Apple Pro/Max 0,62, Apple Ultra 0,50.</li>
+        <li>Ryzen AI Max+ 395: von 128 GB sind unter Linux rund 96 GB als Grafikspeicher nutzbar, mit angepasstem Limit etwa 110 GB.</li>
+        <li>Rechenleistung: NVIDIA = FP16-Tensor-Leistung (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0,5. AMD = FP16-Spitzenleistung laut Datenblatt, η_c 0,35 (Ryzen AI Max 0,3). Apple = GPU-FP32, η_c 0,6. M5-Chips mit Neural Accelerators ×3,5 (Apple nennt bis 3,9–4× gegenüber der Vorgängergeneration).</li>
         <li>MoE-Modelle erreichen in der Praxis rund die Hälfte der rechnerischen Generierung (Routing, Attention, verteilte Zugriffe), daher ε = 0,55. Dichte Modelle ε = 1.</li>
         <li>Kein Teil-Offloading: Wenn ein Modell nicht passt, zählt es mit 0. Multi-GPU ist nicht abgebildet.</li>
       </ul>
@@ -279,8 +284,9 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       <h2>Datenstand</h2>
       <ul>
         <li>GPU-Preise: niedrigster Neupreis Deutschland laut gpuprix.com (Händlerdaten von Alternate), täglich automatisch aktualisiert, zuletzt {{updated}}. Gezeigt wird die günstigste lieferbare Karte. Ist keine lieferbar, der letzte Tiefstpreis. Einzelne Preise können manuell gesetzt werden, aktuell die RTX 5090 nach Geizhals.</li>
-        <li>Mac Studio M5 Ultra 96 GB: Apple-Listenpreis 6.599 €. Ältere Macs: Gebrauchtpreise geschätzt.</li>
-        <li>Specs: NVIDIA- und Apple-Datenblätter. AI TOPS von RTX PRO 4000/4500 sind Näherungen.</li>
+        <li>Mac Studio M5 Ultra 96 GB: Apple-Listenpreis 6.599 €. Mac mini M6 16 GB: 1.049 €. Andere Konfigurationen und ältere Macs: geschätzt.</li>
+        <li>Ryzen AI Max+ 395 mit 128 GB: Mini-PCs von Framework, GMKtec oder Minisforum, Preis geschätzt.</li>
+        <li>Specs: NVIDIA-, AMD- und Apple-Datenblätter. AI TOPS von RTX PRO 4000/4500 sind Näherungen.</li>
         <li>Die Links führen zum Geizhals-Preisvergleich (ohne Affiliate).</li>
       </ul>
     </section>`
@@ -291,12 +297,12 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       lede: "Which hardware gives you the most usable tokens per euro for your use case? The score first checks whether the model fits in memory, then weighs generation (bandwidth) and prompt processing (compute) against the system price.",
       profile: "Use case", model: "Model", ctx: "Context", vendor: "Vendor", all: "All",
       base: "GPU price + base PC", baseAria: "Base PC cost in euros",
-      wired: "macOS GPU memory limit raised to 90%", reset: "Reset prices",
+      wired: "GPU memory limit raised (Mac 90%, Ryzen AI Max 110 GB)", reset: "Reset prices",
       hint: "Click a column header to sort, click again to reverse. Prices are editable and stay saved in your browser. Prices marked in orange are estimates.",
       profiles: { chat: "Chat", agent: "Agents & coding", large: "Large models", single: "Single model" },
       dense: "dense",
       th: { rank: "#", name: "Device", price: "System price €", fits: "Models that fit", perf: "Performance", score: "Score" },
-      kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini" },
+      kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini PC" },
       src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", man: "manual:", own: "your price" },
       inclPc: (c) => `incl. €${c} PC`, edited: "Changed by you",
       fitsYes: "fits", fitsNo: "does not fit", need: "GB needed", usable: "GB usable", notInProfile: "not in this use case",
@@ -326,8 +332,9 @@ Score     = Perf / system price   (best device = 100)</div>
       <ul>
         <li>Q4 quantization (≈ 4.8 bits per parameter); native MXFP4 for the 120B MoE class.</li>
         <li>Usable memory: GPU = VRAM − 0.8 GB. Mac = 67% (≤ 36 GB) or 75% of RAM, 90% with the raised limit.</li>
-        <li>Bandwidth efficiency η: NVIDIA 0.60, Apple Pro/Max 0.62, Apple Ultra 0.50.</li>
-        <li>Compute: NVIDIA = FP16 tensor throughput (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0.5. Apple = GPU FP32, η_c 0.6. M5 chips with Neural Accelerators ×3.5 (Apple claims up to 3.9–4× over the previous generation).</li>
+        <li>Bandwidth efficiency η: NVIDIA 0.60, AMD graphics cards 0.50 (ROCm/Vulkan), Ryzen AI Max 0.72, Apple Pro/Max 0.62, Apple Ultra 0.50.</li>
+        <li>Ryzen AI Max+ 395: of 128 GB, about 96 GB is usable as graphics memory on Linux, about 110 GB with a raised limit.</li>
+        <li>Compute: NVIDIA = FP16 tensor throughput (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0.5. AMD = datasheet FP16 peak, η_c 0.35 (Ryzen AI Max 0.3). Apple = GPU FP32, η_c 0.6. M5 chips with Neural Accelerators ×3.5 (Apple claims up to 3.9–4× over the previous generation).</li>
         <li>MoE models reach about half their theoretical generation speed in practice (routing, attention, scattered reads), so ε = 0.55. Dense models ε = 1.</li>
         <li>No partial offloading: a model that does not fit scores 0. Multi-GPU is not modelled.</li>
       </ul>
@@ -344,8 +351,9 @@ Score     = Perf / system price   (best device = 100)</div>
       <h2>Data as of</h2>
       <ul>
         <li>GPU prices: lowest new price in Germany per gpuprix.com (retailer data from Alternate), updated automatically every day, last on {{updated}}. Shown is the cheapest card in stock, or the last lowest price if none is in stock. Individual prices can be set manually, currently the RTX 5090 per Geizhals.</li>
-        <li>Mac Studio M5 Ultra 96 GB: Apple list price €6,599. Older Macs: estimated used prices.</li>
-        <li>Specs: NVIDIA and Apple datasheets. AI TOPS for RTX PRO 4000/4500 are approximations.</li>
+        <li>Mac Studio M5 Ultra 96 GB: Apple list price €6,599. Mac mini M6 16 GB: €1,049. Other configurations and older Macs: estimated.</li>
+        <li>Ryzen AI Max+ 395 with 128 GB: mini PCs from Framework, GMKtec or Minisforum, estimated price.</li>
+        <li>Specs: NVIDIA, AMD and Apple datasheets. AI TOPS for RTX PRO 4000/4500 are approximations.</li>
         <li>Links go to the Geizhals price comparison (no affiliate).</li>
       </ul>
     </section>`
@@ -373,9 +381,10 @@ Score     = Perf / system price   (best device = 100)</div>
   const mEx = (m) => typeof m.ex === "string" ? m.ex : m.ex[state.lang];
   const srcText = (d) => { const s = L().src[d.src[0]]; return d.src[1] ? `${s} ${d.src[1]}` : s; };
   const priceOf = (d) => state.prices[d.id] != null ? state.prices[d.id] : d.price;
-  const sysPrice = (d) => priceOf(d) + (d.v === N && state.base ? state.baseCost : 0);
+  const sysPrice = (d) => priceOf(d) + (d.kind === "gpu" && state.base ? state.baseCost : 0);
   function usable(d) {
-    if (d.v === N) return d.mem - 0.8;
+    if (d.kind === "gpu") return d.mem - 0.8;
+    if (d.usable) return state.wired ? d.usableMax : d.usable;
     if (state.wired) return d.mem * 0.9;
     return d.mem * (d.mem <= 36 ? 0.67 : 0.75);
   }
@@ -444,7 +453,7 @@ Score     = Perf / system price   (best device = 100)</div>
   function renderControls() {
     document.querySelectorAll("#lang button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === state.lang));
     $("#profile").innerHTML = PROFILES.map((p) => `<button type="button" data-id="${p.id}" aria-pressed="${p.id === state.profile}">${esc(L().profiles[p.id])}</button>`).join("");
-    $("#vendor").innerHTML = [["all", L().all, ""], [N, "NVIDIA", ICONS.gpu], [A, "Apple", ICONS.mac]].map(([id, n, ic]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${ic.replace("<svg ", '<svg class="vi" ')}${n}</button>`).join("");
+    $("#vendor").innerHTML = [["all", L().all, ""], [N, "NVIDIA", ICONS.gpu], [AM, "AMD", ICONS.gpu], [A, "Apple", ICONS.mac]].map(([id, n, ic]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${ic.replace("<svg ", '<svg class="vi" ')}${n}</button>`).join("");
     $("#model-field").hidden = state.profile !== "single";
     $("#ctx").value = state.ctx; $("#ctx-val").textContent = ctxLabel(CTX[state.ctx]);
     $("#base").checked = state.base; $("#basecost").value = state.baseCost; $("#wired").checked = state.wired;
@@ -487,10 +496,10 @@ Score     = Perf / system price   (best device = 100)</div>
         return `<span class="dot ${f ? "on" : ""} ${inP ? "" : "off-w"}" title="${esc(tip)}"></span>`;
       }).join("");
       const edited = state.prices[d.id] != null;
-      const sub = `${d.mem} GB · ${fmt(d.bw)} GB/s` + (d.v === N && state.base ? ` · ${t.inclPc(fmt(state.baseCost))}` : "");
+      const sub = `${d.mem} GB · ${fmt(d.bw)} GB/s` + (d.kind === "gpu" && state.base ? ` · ${t.inclPc(fmt(state.baseCost))}` : "");
       return `<tr class="${r.perf === 0 ? "zero" : ""}">
         <td class="rank">${i + 1}</td>
-        <td><div class="devrow"><span class="ico ${d.v}" title="${t.kinds[d.kind]}">${ICONS[d.kind]}</span><div class="dev"><b><span class="tag">${d.v === N ? "NVIDIA" : "Apple"} · ${t.kinds[d.kind]}</span>${esc(d.name)}</b><span>${sub}</span></div></div></td>
+        <td><div class="devrow"><span class="ico ${d.v}" title="${t.kinds[d.kind]}">${ICONS[d.kind]}</span><div class="dev"><b><span class="tag">${VENDOR[d.v]} · ${t.kinds[d.kind]}</span>${esc(d.name)}</b><span>${sub}</span></div></div></td>
         <td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d)}" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${d.est && !edited ? "est" : ""}">${edited ? t.src.own : srcText(d)}</span></td>
         <td><div class="dots" aria-label="${esc(t.fitsAria(r.fitCount, usedModels.length))}">${dots}</div></td>
         <td><div class="barcell"><div class="track"><div class="fill p" style="width:${r.perfN.toFixed(1)}%"></div></div><span class="mono">${fmt(r.perfN)}</span></div></td>

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-10T00:51:19.546Z",
+  "updatedAt": "2026-10-10T01:06:56.510Z",
   "region": "germany",
   "prices": {
     "4090": {
@@ -80,6 +80,46 @@
       "region": "germany",
       "asOf": "2026-10-07T04:07:15.437Z",
       "url": "https://gpuprix.com/germany/gpus/rtx-pro-6000-blackwell"
+    },
+    "rx9060xt": {
+      "price": 430,
+      "metric": "instock",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T04:07:25.465Z",
+      "url": "https://gpuprix.com/germany/gpus/radeon-rx-9060-xt-16gb"
+    },
+    "rx9070": {
+      "price": 699,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T04:07:24.592Z",
+      "url": "https://gpuprix.com/germany/gpus/radeon-rx-9070"
+    },
+    "rx9070xt": {
+      "price": 687,
+      "metric": "instock",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T04:07:26.198Z",
+      "url": "https://gpuprix.com/germany/gpus/radeon-rx-9070-xt"
+    },
+    "rx7900xtx": {
+      "price": 1513,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T01:02:54.264Z",
+      "url": "https://gpuprix.com/germany/gpus/radeon-rx-7900-xtx"
+    },
+    "r9700": {
+      "price": 1386,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T04:07:10.419Z",
+      "url": "https://gpuprix.com/germany/gpus/radeon-ai-pro-r9700"
     }
   }
 }

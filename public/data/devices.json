@@ -226,6 +226,136 @@
       }
     },
     {
+      "id": "rx9060xt",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "RX 9060 XT 16 GB",
+      "mem": 16,
+      "bw": 322,
+      "tf": 51.3,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": 430,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "Radeon RX 9060 XT 16GB",
+      "source": {
+        "gpuprix": "radeon-rx-9060-xt-16gb",
+        "metric": "instock"
+      }
+    },
+    {
+      "id": "rx9070",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "RX 9070",
+      "mem": 16,
+      "bw": 640,
+      "tf": 72.3,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": 699,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "Radeon RX 9070",
+      "source": {
+        "gpuprix": "radeon-rx-9070",
+        "metric": "instock"
+      }
+    },
+    {
+      "id": "rx9070xt",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "RX 9070 XT",
+      "mem": 16,
+      "bw": 640,
+      "tf": 97.3,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": 687,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "Radeon RX 9070 XT",
+      "source": {
+        "gpuprix": "radeon-rx-9070-xt",
+        "metric": "instock"
+      }
+    },
+    {
+      "id": "rx7900xtx",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "RX 7900 XTX",
+      "mem": 24,
+      "bw": 960,
+      "tf": 122.8,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": 1513,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "Radeon RX 7900 XTX",
+      "source": {
+        "gpuprix": "radeon-rx-7900-xtx",
+        "metric": "instock"
+      }
+    },
+    {
+      "id": "r9700",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "Radeon AI PRO R9700",
+      "mem": 32,
+      "bw": 640,
+      "tf": 95.7,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": 1386,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "Radeon AI PRO R9700",
+      "source": {
+        "gpuprix": "radeon-ai-pro-r9700",
+        "metric": "instock"
+      }
+    },
+    {
+      "id": "strix128",
+      "v": "amd",
+      "kind": "minipc",
+      "name": "Ryzen AI Max+ 395 128 GB",
+      "mem": 128,
+      "usable": 96,
+      "usableMax": 110,
+      "bw": 256,
+      "tf": 59.4,
+      "eta": 0.72,
+      "etaC": 0.3,
+      "pf": 1,
+      "price": 3400,
+      "est": true,
+      "src": [
+        "est"
+      ],
+      "q": "Ryzen AI Max+ 395 128GB"
+    },
+    {
       "id": "m1pro",
       "v": "apple",
       "kind": "mbp",
@@ -355,7 +485,7 @@
       "id": "m4pro",
       "v": "apple",
       "kind": "mini",
-      "name": "M4 Pro 20-GPU",
+      "name": "M4 Pro 20-GPU · 64 GB",
       "mem": 64,
       "bw": 273,
       "tf": 9.2,
@@ -365,7 +495,7 @@
       "price": 2300,
       "est": true,
       "src": [
-        "est"
+        "used"
       ],
       "q": "Mac mini M4 Pro 64GB"
     },
@@ -457,6 +587,59 @@
         "cfg"
       ],
       "q": "Mac Studio M5 Ultra 256GB"
+    },
+    {
+      "id": "m6mini16",
+      "v": "apple",
+      "kind": "mini",
+      "name": "M6 12-GPU · 16 GB",
+      "mem": 16,
+      "bw": 170,
+      "tf": 6.6,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 1049,
+      "src": [
+        "apple"
+      ],
+      "q": "Mac mini M6 16GB"
+    },
+    {
+      "id": "m6mini32",
+      "v": "apple",
+      "kind": "mini",
+      "name": "M6 12-GPU · 32 GB",
+      "mem": 32,
+      "bw": 170,
+      "tf": 6.6,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 1499,
+      "est": true,
+      "src": [
+        "cfg"
+      ],
+      "q": "Mac mini M6 32GB"
+    },
+    {
+      "id": "m5promini",
+      "v": "apple",
+      "kind": "mini",
+      "name": "M5 Pro 20-GPU · 64 GB",
+      "mem": 64,
+      "bw": 307,
+      "tf": 10.5,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 2899,
+      "est": true,
+      "src": [
+        "cfg"
+      ],
+      "q": "Mac mini M5 Pro 64GB"
     }
   ]
 }
