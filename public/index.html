@@ -89,6 +89,11 @@ td.num, th.num { text-align: right; }
 .dev { display: grid; gap: 1px; }
 .dev b { font-weight: 600; }
 .dev span { font-size: 12.5px; color: var(--muted); }
+.devrow { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.ico { flex: none; width: 34px; height: 34px; border-radius: 6px; display: grid; place-items: center; background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.ico svg { width: 22px; height: 22px; }
+.ico.nvidia { color: var(--accent); }
+.seg .vi { width: 15px; height: 15px; vertical-align: -3px; margin-right: 5px; }
 .tag { font: 600 10.5px var(--f-display); letter-spacing: .08em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); margin-right: 6px; vertical-align: 1px; }
 .price { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
 .price input { width: 92px; text-align: right; font-family: var(--f-mono); font-size: 13px; padding: 4px 6px; }
@@ -203,6 +208,16 @@ footer { font-size: 12.5px; color: var(--muted); }
   // tf: NVIDIA = FP16 tensor dense (Blackwell AI TOPS/8, Ada /4), Apple = GPU FP32. pf = prefill factor (M5 Neural Accelerators).
   let DEVICES = [];   // wird aus data/devices.json + data/prices.json geladen
   let UPDATED = null;
+
+  // Eigene, neutrale Bauform-Symbole (keine Hersteller-Logos)
+  const SVG = (b) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${b}</svg>`;
+  const ICONS = {
+    gpu: SVG('<rect x="2.5" y="6" width="19" height="10" rx="1.5"/><circle cx="8" cy="11" r="2.6"/><circle cx="16" cy="11" r="2.6"/><path d="M5 16v2.5M9 16v2.5M13 16v2.5"/>'),
+    mbp: SVG('<rect x="4" y="5" width="16" height="10.5" rx="1.2"/><path d="M2 18.5h20l-1.2-3H3.2z"/>'),
+    studio: SVG('<rect x="4" y="6.5" width="16" height="11" rx="2.2"/><path d="M7.5 14.5h2M11 14.5h1"/><circle cx="16" cy="14.5" r=".6" fill="currentColor"/>'),
+    mini: SVG('<rect x="3" y="9.5" width="18" height="6" rx="2"/><circle cx="17.5" cy="12.5" r=".6" fill="currentColor"/>'),
+    mac: SVG('<rect x="4" y="6.5" width="16" height="11" rx="2.2"/><path d="M8 14.5h3"/>')
+  };
 
   const T = {
     de: {
@@ -429,7 +444,7 @@ Score     = Perf / system price   (best device = 100)</div>
   function renderControls() {
     document.querySelectorAll("#lang button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === state.lang));
     $("#profile").innerHTML = PROFILES.map((p) => `<button type="button" data-id="${p.id}" aria-pressed="${p.id === state.profile}">${esc(L().profiles[p.id])}</button>`).join("");
-    $("#vendor").innerHTML = [["all", L().all], [N, "NVIDIA"], [A, "Apple"]].map(([id, n]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${n}</button>`).join("");
+    $("#vendor").innerHTML = [["all", L().all, ""], [N, "NVIDIA", ICONS.gpu], [A, "Apple", ICONS.mac]].map(([id, n, ic]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${ic.replace("<svg ", '<svg class="vi" ')}${n}</button>`).join("");
     $("#model-field").hidden = state.profile !== "single";
     $("#ctx").value = state.ctx; $("#ctx-val").textContent = ctxLabel(CTX[state.ctx]);
     $("#base").checked = state.base; $("#basecost").value = state.baseCost; $("#wired").checked = state.wired;
@@ -475,7 +490,7 @@ Score     = Perf / system price   (best device = 100)</div>
       const sub = `${d.mem} GB · ${fmt(d.bw)} GB/s` + (d.v === N && state.base ? ` · ${t.inclPc(fmt(state.baseCost))}` : "");
       return `<tr class="${r.perf === 0 ? "zero" : ""}">
         <td class="rank">${i + 1}</td>
-        <td><div class="dev"><b><span class="tag">${t.kinds[d.kind]}</span>${esc(d.name)}</b><span>${sub}</span></div></td>
+        <td><div class="devrow"><span class="ico ${d.v}" title="${t.kinds[d.kind]}">${ICONS[d.kind]}</span><div class="dev"><b><span class="tag">${d.v === N ? "NVIDIA" : "Apple"} · ${t.kinds[d.kind]}</span>${esc(d.name)}</b><span>${sub}</span></div></div></td>
         <td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d)}" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${d.est && !edited ? "est" : ""}">${edited ? t.src.own : srcText(d)}</span></td>
         <td><div class="dots" aria-label="${esc(t.fitsAria(r.fitCount, usedModels.length))}">${dots}</div></td>
         <td><div class="barcell"><div class="track"><div class="fill p" style="width:${r.perfN.toFixed(1)}%"></div></div><span class="mono">${fmt(r.perfN)}</span></div></td>
@@ -487,7 +502,7 @@ Score     = Perf / system price   (best device = 100)</div>
     // Matrix
     $("#matrix thead").innerHTML = `<tr>${sortHead("name", t.th.name)}${MODELS.map((m) =>
       sortHead("m:" + m.id, `${esc(mName(m))}<small>${fmt(m.gb, 0)} GB${w[m.id] ? " · " + t.inProfile : ""}</small>`)).join("")}</tr>`;
-    $("#matrix tbody").innerHTML = vis.map((r) => `<tr><td>${esc(r.d.name)}</td>${MODELS.map((m) => {
+    $("#matrix tbody").innerHTML = vis.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(r.d.name)}</span></td>${MODELS.map((m) => {
       const c = r.per[m.id];
       return c.fits ? `<td class="mono" title="${esc(t.ttft(fmt(c.pp), fmt(c.ttft, 1)))}">${fmtTok(c.tg)}<br><span class="na">${fmt(c.pp)}</span></td>` : `<td class="na">—</td>`;
     }).join("")}</tr>`).join("");
