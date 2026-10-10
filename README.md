@@ -1,6 +1,6 @@
 # AI Score Metrics
 
-Quellcode von [aiscoremetrics.com](https://aiscoremetrics.com). Erstes Tool: **Tokenwert**, ein Preis-Leistungs-Rechner für lokale LLM-Hardware. Statische Seite auf Cloudflare Pages, GPU-Preise werden täglich per GitHub Action aktualisiert.
+Quellcode von [aiscoremetrics.com](https://aiscoremetrics.com). ein Preis-Leistungs-Rechner für lokale LLM-Hardware. Statische Seite auf Cloudflare Pages, GPU-Preise werden täglich per GitHub Action aktualisiert.
 
 ```
 public/
@@ -21,7 +21,7 @@ data/history.csv        Preisverlauf, eine Zeile pro Gerät und Tag (für späte
 cd aiscoremetrics
 git init -b main
 git add .
-git commit -m "Tokenwert MVP"
+git commit -m "AI Score Metrics MVP"
 git remote add origin git@github.com:alexxschenk-hub/aiscoremetrics.git
 git push -u origin main
 ```

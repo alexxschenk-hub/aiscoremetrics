@@ -24,7 +24,7 @@ async function readJson(path, fallback) {
 async function fetchGpuprix(slug) {
   const url = `https://gpuprix.com/${REGION}/gpus/${slug}`;
   const res = await fetch(url, {
-    headers: { "User-Agent": `TokenwertBot/1.0 (+${SITE}) daily price check`, "Accept": "text/html" },
+    headers: { "User-Agent": `AIScoreMetricsBot/1.0 (+${SITE}) daily price check`, "Accept": "text/html" },
     signal: AbortSignal.timeout(30000)
   });
   if (!res.ok) throw new Error(`HTTP ${res.status} für ${url}`);

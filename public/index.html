@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Preis-Leistungs-Rechner für lokale LLM-Hardware: NVIDIA-GPUs und Apple-Macs nach Nutzungsprofil, Kontext und Systempreis.">
-<title>Tokenwert</title>
+<title>AI Score Metrics</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -132,7 +132,7 @@ footer { font-size: 12.5px; color: var(--muted); }
         <button type="button" data-id="de">DE</button><button type="button" data-id="en">EN</button>
       </div>
     </div>
-    <h1>Tokenwert</h1>
+    <h1>AI Score Metrics</h1>
     <p class="lede" data-i="lede"></p>
   </header>
 
@@ -207,7 +207,7 @@ footer { font-size: 12.5px; color: var(--muted); }
   const T = {
     de: {
       locale: "de-AT",
-      eyebrow: "Lokale LLM-Inferenz · Preis-Leistung",
+      eyebrow: "KI-Hardware-Score · Lokale LLM-Inferenz",
       lede: "Welche Hardware liefert für dein Szenario die meisten nutzbaren Tokens pro Euro? Der Score prüft zuerst, ob das Modell in den Speicher passt, und rechnet dann Generierung (Bandbreite) und Prompt-Verarbeitung (Rechenleistung) gegen den Systempreis.",
       profile: "Nutzungsprofil", model: "Modell", ctx: "Kontext", vendor: "Hersteller", all: "Alle",
       base: "GPU-Preis + PC-Basis", baseAria: "Kosten PC-Basis in Euro",
@@ -272,7 +272,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
     },
     en: {
       locale: "en-GB",
-      eyebrow: "Local LLM inference · value for money",
+      eyebrow: "AI hardware score · local LLM inference",
       lede: "Which hardware gives you the most usable tokens per euro for your use case? The score first checks whether the model fits in memory, then weighs generation (bandwidth) and prompt processing (compute) against the system price.",
       profile: "Use case", model: "Model", ctx: "Context", vendor: "Vendor", all: "All",
       base: "GPU price + base PC", baseAria: "Base PC cost in euros",
@@ -337,7 +337,7 @@ Score     = Perf / system price   (best device = 100)</div>
     }
   };
 
-  const KEY = "tokenwert.v1";
+  const KEY = "aiscoremetrics.v1";
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   let navLang = "de";
