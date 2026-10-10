@@ -1,6 +1,6 @@
 # AI Score Metrics
 
-Quellcode von [aiscoremetrics.com](https://aiscoremetrics.com). ein Preis-Leistungs-Rechner für lokale LLM-Hardware. Statische Seite auf Cloudflare Pages, GPU-Preise werden täglich per GitHub Action aktualisiert.
+Quellcode von [aiscoremetrics.com](https://aiscoremetrics.com): ein Preis-Leistungs-Rechner für lokale LLM-Hardware. Statische Seite auf Cloudflare Pages, GPU-Preise werden täglich per GitHub Action aktualisiert.
 
 ```
 public/
