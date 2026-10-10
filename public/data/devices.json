@@ -1,0 +1,457 @@
+{
+  "note": "Specs und Fallback-Preise. Preise mit source werden täglich von scripts/update-prices.mjs in prices.json überschrieben.",
+  "devices": [
+    {
+      "id": "5060ti",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "RTX 5060 Ti 16 GB",
+      "mem": 16,
+      "bw": 448,
+      "tf": 94.9,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 729,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "RTX 5060 Ti 16GB",
+      "source": {
+        "gpuprix": "geforce-rtx-5060-ti-16gb",
+        "metric": "low"
+      }
+    },
+    {
+      "id": "5070",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "RTX 5070",
+      "mem": 12,
+      "bw": 672,
+      "tf": 123.5,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 672,
+      "src": [
+        "gp",
+        "01.09."
+      ],
+      "q": "RTX 5070 12GB",
+      "source": {
+        "gpuprix": "geforce-rtx-5070",
+        "metric": "low"
+      }
+    },
+    {
+      "id": "5070ti",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "RTX 5070 Ti",
+      "mem": 16,
+      "bw": 896,
+      "tf": 175.8,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 1074,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "RTX 5070 Ti",
+      "source": {
+        "gpuprix": "geforce-rtx-5070-ti",
+        "metric": "low"
+      }
+    },
+    {
+      "id": "5080",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "RTX 5080",
+      "mem": 16,
+      "bw": 960,
+      "tf": 225.1,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 1351,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "RTX 5080",
+      "source": {
+        "gpuprix": "geforce-rtx-5080",
+        "metric": "low"
+      }
+    },
+    {
+      "id": "4090",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "RTX 4090",
+      "mem": 24,
+      "bw": 1008,
+      "tf": 330,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 3790,
+      "src": [
+        "gp",
+        "30.09."
+      ],
+      "q": "RTX 4090",
+      "source": {
+        "gpuprix": "geforce-rtx-4090",
+        "metric": "low"
+      }
+    },
+    {
+      "id": "5090",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "RTX 5090",
+      "mem": 32,
+      "bw": 1792,
+      "tf": 419,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 3979,
+      "src": [
+        "med"
+      ],
+      "q": "RTX 5090",
+      "source": {
+        "gpuprix": "geforce-rtx-5090",
+        "metric": "median3m"
+      }
+    },
+    {
+      "id": "p4000",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "RTX PRO 4000 Blackwell",
+      "mem": 24,
+      "bw": 672,
+      "tf": 161,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 2509,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "RTX PRO 4000 Blackwell",
+      "source": {
+        "gpuprix": "rtx-pro-4000-blackwell",
+        "metric": "low"
+      }
+    },
+    {
+      "id": "p4500",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "RTX PRO 4500 Blackwell",
+      "mem": 32,
+      "bw": 896,
+      "tf": 211,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 4630,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "RTX PRO 4500 Blackwell",
+      "source": {
+        "gpuprix": "rtx-pro-4500-blackwell",
+        "metric": "low"
+      }
+    },
+    {
+      "id": "p5000",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "RTX PRO 5000 Blackwell",
+      "mem": 48,
+      "bw": 1344,
+      "tf": 258,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 8316,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "RTX PRO 5000 Blackwell 48GB",
+      "source": {
+        "gpuprix": "rtx-pro-5000-blackwell",
+        "metric": "low"
+      }
+    },
+    {
+      "id": "p6000",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "RTX PRO 6000 Blackwell",
+      "mem": 96,
+      "bw": 1792,
+      "tf": 500,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 15490,
+      "src": [
+        "gp",
+        "03.10."
+      ],
+      "q": "RTX PRO 6000 Blackwell",
+      "source": {
+        "gpuprix": "rtx-pro-6000-blackwell",
+        "metric": "low"
+      }
+    },
+    {
+      "id": "m1pro",
+      "v": "apple",
+      "kind": "mbp",
+      "name": "M1 Pro 16-GPU",
+      "mem": 32,
+      "bw": 200,
+      "tf": 5.2,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 1100,
+      "est": true,
+      "src": [
+        "used"
+      ],
+      "q": "MacBook Pro M1 Pro 32GB"
+    },
+    {
+      "id": "m1max",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M1 Max 32-GPU",
+      "mem": 64,
+      "bw": 400,
+      "tf": 10.4,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 1500,
+      "est": true,
+      "src": [
+        "used"
+      ],
+      "q": "Mac Studio M1 Max 64GB"
+    },
+    {
+      "id": "m1ultra",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M1 Ultra 64-GPU",
+      "mem": 128,
+      "bw": 800,
+      "tf": 21,
+      "eta": 0.5,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 3000,
+      "est": true,
+      "src": [
+        "used"
+      ],
+      "q": "Mac Studio M1 Ultra 128GB"
+    },
+    {
+      "id": "m2max",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M2 Max 38-GPU",
+      "mem": 96,
+      "bw": 400,
+      "tf": 13.6,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 2400,
+      "est": true,
+      "src": [
+        "used"
+      ],
+      "q": "Mac Studio M2 Max 96GB"
+    },
+    {
+      "id": "m2ultra",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M2 Ultra 76-GPU",
+      "mem": 192,
+      "bw": 800,
+      "tf": 27.2,
+      "eta": 0.5,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 4500,
+      "est": true,
+      "src": [
+        "used"
+      ],
+      "q": "Mac Studio M2 Ultra 192GB"
+    },
+    {
+      "id": "m3max",
+      "v": "apple",
+      "kind": "mbp",
+      "name": "M3 Max 40-GPU",
+      "mem": 128,
+      "bw": 400,
+      "tf": 16.4,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 3600,
+      "est": true,
+      "src": [
+        "used"
+      ],
+      "q": "MacBook Pro M3 Max 128GB"
+    },
+    {
+      "id": "m3ultra",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M3 Ultra 80-GPU",
+      "mem": 256,
+      "bw": 819,
+      "tf": 28.4,
+      "eta": 0.5,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 7000,
+      "est": true,
+      "src": [
+        "est"
+      ],
+      "q": "Mac Studio M3 Ultra 256GB"
+    },
+    {
+      "id": "m4pro",
+      "v": "apple",
+      "kind": "mini",
+      "name": "M4 Pro 20-GPU",
+      "mem": 64,
+      "bw": 273,
+      "tf": 9.2,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 2300,
+      "est": true,
+      "src": [
+        "est"
+      ],
+      "q": "Mac mini M4 Pro 64GB"
+    },
+    {
+      "id": "m4max",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M4 Max 40-GPU",
+      "mem": 128,
+      "bw": 546,
+      "tf": 18.4,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 4000,
+      "est": true,
+      "src": [
+        "used"
+      ],
+      "q": "Mac Studio M4 Max 128GB"
+    },
+    {
+      "id": "m5pro",
+      "v": "apple",
+      "kind": "mbp",
+      "name": "M5 Pro 20-GPU",
+      "mem": 64,
+      "bw": 307,
+      "tf": 10.5,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 3800,
+      "est": true,
+      "src": [
+        "cfg"
+      ],
+      "q": "MacBook Pro M5 Pro 64GB"
+    },
+    {
+      "id": "m5max",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M5 Max 40-GPU",
+      "mem": 128,
+      "bw": 614,
+      "tf": 21,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 5200,
+      "est": true,
+      "src": [
+        "cfg"
+      ],
+      "q": "Mac Studio M5 Max 128GB"
+    },
+    {
+      "id": "m5u96",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M5 Ultra 64-GPU",
+      "mem": 96,
+      "bw": 1200,
+      "tf": 33.6,
+      "eta": 0.5,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 6599,
+      "src": [
+        "apple"
+      ],
+      "q": "Mac Studio M5 Ultra 96GB"
+    },
+    {
+      "id": "m5u256",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M5 Ultra 80-GPU",
+      "mem": 256,
+      "bw": 1200,
+      "tf": 42,
+      "eta": 0.5,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 10900,
+      "est": true,
+      "src": [
+        "cfg"
+      ],
+      "q": "Mac Studio M5 Ultra 256GB"
+    }
+  ]
+}

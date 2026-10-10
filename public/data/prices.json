@@ -1,0 +1,86 @@
+{
+  "updatedAt": "2026-10-10T00:06:02.001Z",
+  "region": "germany",
+  "prices": {
+    "4090": {
+      "price": 3790,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T01:02:15.137Z",
+      "url": "https://gpuprix.com/germany/gpus/geforce-rtx-4090"
+    },
+    "5070": {
+      "price": 745,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T04:07:25.707Z",
+      "url": "https://gpuprix.com/germany/gpus/geforce-rtx-5070"
+    },
+    "5080": {
+      "price": 1351,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T04:07:09.674Z",
+      "url": "https://gpuprix.com/germany/gpus/geforce-rtx-5080"
+    },
+    "5090": {
+      "price": 4074,
+      "metric": "median3m",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T04:07:04.084Z",
+      "url": "https://gpuprix.com/germany/gpus/geforce-rtx-5090"
+    },
+    "5060ti": {
+      "price": 729,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T04:07:12.639Z",
+      "url": "https://gpuprix.com/germany/gpus/geforce-rtx-5060-ti-16gb"
+    },
+    "5070ti": {
+      "price": 1074,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T04:07:09.402Z",
+      "url": "https://gpuprix.com/germany/gpus/geforce-rtx-5070-ti"
+    },
+    "p4000": {
+      "price": 2509,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T04:07:16.331Z",
+      "url": "https://gpuprix.com/germany/gpus/rtx-pro-4000-blackwell"
+    },
+    "p4500": {
+      "price": 4630,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T04:07:16.620Z",
+      "url": "https://gpuprix.com/germany/gpus/rtx-pro-4500-blackwell"
+    },
+    "p5000": {
+      "price": 8316,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T04:07:14.304Z",
+      "url": "https://gpuprix.com/germany/gpus/rtx-pro-5000-blackwell"
+    },
+    "p6000": {
+      "price": 16719,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-07T04:07:15.437Z",
+      "url": "https://gpuprix.com/germany/gpus/rtx-pro-6000-blackwell"
+    }
+  }
+}

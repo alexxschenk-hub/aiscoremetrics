@@ -1,0 +1,10 @@
+{
+  "name": "aiscoremetrics",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "prices": "node scripts/update-prices.mjs",
+    "dev": "npx --yes serve public"
+  }
+}

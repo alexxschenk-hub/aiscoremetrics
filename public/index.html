@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Preis-Leistungs-Rechner für lokale LLM-Hardware: NVIDIA-GPUs und Apple-Macs nach Nutzungsprofil, Kontext und Systempreis.">
+<title>Tokenwert</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: spec-sheet tool. Control strip on top, summary line, ranked table, model matrix, method notes. */
+:root {
+  --bg: #F1F3F4;
+  --surface: #FFFFFF;
+  --ink: #13181C;
+  --muted: #5A6670;
+  --line: #D6DCE0;
+  --accent: #0A6B75;
+  --accent-soft: #D4EAEC;
+  --bar: #0A6B75;
+  --bar-2: #8FA7AE;
+  --good: #2E7A33;
+  --bad: #B3261E;
+  --warn: #A0560B;
+  --f-display: "Barlow Semi Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A;
+    --accent: #52C3CD; --accent-soft: #123338; --bar: #52C3CD; --bar-2: #4B5D66;
+    --good: #6CC070; --bad: #F2867E; --warn: #E3A256; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A;
+  --accent: #52C3CD; --accent-soft: #123338; --bar: #52C3CD; --bar-2: #4B5D66;
+  --good: #6CC070; --bad: #F2867E; --warn: #E3A256; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 22px; }
+header { display: grid; gap: 6px; }
+.toprow { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.seg.small button { font-size: 12.5px; padding: 4px 9px; }
+th button.sort { all: unset; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+th button.sort:hover { color: var(--ink); }
+th button.sort:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+th[aria-sort] button.sort { color: var(--accent); }
+th .arr { font-family: var(--f-mono); font-size: 11px; width: 10px; display: inline-block; }
+.calib { border-collapse: collapse; min-width: 0; width: 100%; font-size: 13px; }
+.calib th, .calib td { padding: 5px 8px; border-bottom: 1px solid var(--line); text-align: right; }
+.calib th:first-child, .calib td:first-child { text-align: left; }
+.eyebrow { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; color: var(--accent); }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(30px, 5vw, 44px); line-height: 1; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 68ch; }
+h2 { font-family: var(--f-display); font-weight: 600; font-size: 20px; margin: 0; letter-spacing: .01em; }
+.controls { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 14px; }
+.row { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: end; }
+.field { display: grid; gap: 6px; min-width: 0; }
+.lab { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--muted); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.seg button { font: 600 14px var(--f-display); letter-spacing: .02em; padding: 7px 12px; border: 0; background: transparent; color: var(--ink); cursor: pointer; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+.seg button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+select, input[type="number"] { font: 400 14px var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
+input[type="range"] { accent-color: var(--accent); width: 200px; max-width: 100%; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.check input { accent-color: var(--accent); }
+.hint { font-size: 13px; color: var(--muted); margin: 0; }
+.btn { font: 600 13px var(--f-display); letter-spacing: .04em; text-transform: uppercase; border: 1px solid var(--line); background: transparent; color: var(--muted); padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+.btn:hover { color: var(--ink); border-color: var(--muted); }
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+.sum { border-left: 3px solid var(--accent); padding: 4px 0 4px 12px; display: grid; gap: 2px; min-width: 0; }
+.sum .k { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--muted); }
+.sum .v { font-family: var(--f-display); font-weight: 700; font-size: 21px; line-height: 1.15; }
+.sum .s { font-size: 13px; color: var(--muted); }
+.tablebox { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; min-width: 860px; }
+th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: 0; }
+th { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--muted); white-space: nowrap; background: var(--surface); }
+td.num, th.num { text-align: right; }
+.rank { font-family: var(--f-mono); color: var(--muted); width: 36px; }
+.dev { display: grid; gap: 1px; }
+.dev b { font-weight: 600; }
+.dev span { font-size: 12.5px; color: var(--muted); }
+.tag { font: 600 10.5px var(--f-display); letter-spacing: .08em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); margin-right: 6px; vertical-align: 1px; }
+.price { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.price input { width: 92px; text-align: right; font-family: var(--f-mono); font-size: 13px; padding: 4px 6px; }
+.price .edited { width: 7px; height: 7px; border-radius: 50%; background: var(--warn); }
+.src { display: block; font-size: 11.5px; color: var(--muted); text-align: right; white-space: nowrap; }
+.src.est { color: var(--warn); }
+.dots { display: flex; gap: 3px; }
+.dot { width: 11px; height: 11px; border-radius: 2px; border: 1px solid var(--muted); }
+.dot.on { background: var(--accent); border-color: var(--accent); }
+.dot.off-w { opacity: .35; }
+.barcell { display: grid; grid-template-columns: 1fr 44px; gap: 8px; align-items: center; min-width: 150px; }
+.track { height: 8px; background: var(--bg); border-radius: 2px; overflow: hidden; }
+.fill { height: 100%; background: var(--bar); }
+.fill.p { background: var(--bar-2); }
+.barcell .mono { text-align: right; font-size: 13px; }
+a.ext { color: var(--accent); font-size: 13px; text-decoration: none; white-space: nowrap; }
+a.ext:hover { text-decoration: underline; }
+.zero td { color: var(--muted); }
+.matrix td, .matrix th { text-align: right; font-size: 13px; padding: 7px 10px; }
+.matrix td:first-child, .matrix th:first-child { text-align: left; }
+.matrix .na { color: var(--muted); opacity: .6; }
+.matrix th small { display: block; font-family: var(--f-body); text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 11.5px; }
+.method { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px 28px; }
+.method section { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.method p, .method li { font-size: 14px; color: var(--ink); margin: 0; max-width: 65ch; }
+.method ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.formula { font-family: var(--f-mono); font-size: 12.5px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; overflow-x: auto; white-space: pre; line-height: 1.6; }
+.method a { color: var(--accent); }
+footer { font-size: 12.5px; color: var(--muted); }
+@media (max-width: 520px) { .wrap { padding-inline: 16px; } .seg button { padding: 7px 9px; font-size: 13px; } }
+@media (prefers-reduced-motion: no-preference) { .fill { transition: width .25s ease; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="toprow">
+      <div class="eyebrow" data-i="eyebrow"></div>
+      <div class="seg small" id="lang" role="group" aria-label="Sprache / Language">
+        <button type="button" data-id="de">DE</button><button type="button" data-id="en">EN</button>
+      </div>
+    </div>
+    <h1>Tokenwert</h1>
+    <p class="lede" data-i="lede"></p>
+  </header>
+
+  <div class="controls" role="group">
+    <div class="row">
+      <div class="field">
+        <span class="lab" id="lab-profile" data-i="profile"></span>
+        <div class="seg" id="profile" role="group" aria-labelledby="lab-profile"></div>
+      </div>
+      <div class="field" id="model-field" hidden>
+        <label class="lab" for="model" data-i="model"></label>
+        <select id="model"></select>
+      </div>
+      <div class="field">
+        <label class="lab" for="ctx"><span data-i="ctx"></span>: <span class="mono" id="ctx-val">32k</span> Tokens</label>
+        <input type="range" id="ctx" min="0" max="5" step="1" value="3">
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <span class="lab" id="lab-vendor" data-i="vendor"></span>
+        <div class="seg" id="vendor" role="group" aria-labelledby="lab-vendor"></div>
+      </div>
+      <label class="check"><input type="checkbox" id="base" checked> <span data-i="base"></span> <input type="number" id="basecost" value="1300" min="0" step="50" style="width:84px"> €</label>
+      <label class="check"><input type="checkbox" id="wired"> <span data-i="wired"></span></label>
+      <button class="btn" id="reset" type="button" data-i="reset"></button>
+    </div>
+    <p class="hint" data-i="hint"></p>
+  </div>
+
+  <div class="summary" id="summary" aria-live="polite"></div>
+
+  <div class="tablebox">
+    <table id="rank">
+      <thead><tr id="rank-head"></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div style="display:grid;gap:10px">
+    <h2 data-i="mTitle"></h2>
+    <p class="hint" data-i="mHint"></p>
+    <div class="tablebox"><table class="matrix" id="matrix"><thead></thead><tbody></tbody></table></div>
+  </div>
+
+  <div class="method" id="method"></div>
+  <footer data-i="footer"></footer>
+</div>
+
+<script>
+(function () {
+  const MODELS = [
+    { id: "d8",     size: "8B",   dense: true,  ex: "Llama 3.1 8B, Qwen3 8B",       gb: 4.9,  agb: 4.9,  ap: 8.0,  kv: 0.125 },
+    { id: "moe30",  size: "30B",  eff: 0.55,    ex: "Qwen3 30B-A3B",                gb: 18.6, agb: 2.0,  ap: 3.3,  kv: 0.094 },
+    { id: "d32",    size: "32B",  dense: true,  ex: { de: "Qwen 32B-Klasse", en: "Qwen 32B class" }, gb: 19.9, agb: 19.9, ap: 32.8, kv: 0.25 },
+    { id: "d70",    size: "70B",  dense: true,  ex: "Llama 3.3 70B",                gb: 42.5, agb: 42.5, ap: 70.6, kv: 0.31 },
+    { id: "moe120", size: "120B", eff: 0.55,    ex: { de: "gpt-oss-120b-Klasse", en: "gpt-oss-120b class" }, gb: 63.0, agb: 2.9, ap: 5.1, kv: 0.07 },
+    { id: "moe235", size: "235B", eff: 0.55,    ex: "Qwen3 235B-A22B",              gb: 142,  agb: 13.4, ap: 22.0, kv: 0.19 }
+  ];
+  const PROFILES = [
+    { id: "chat",   ctx: 2, alpha: 0.8, w: { d8: .2, moe30: .25, d32: .25, d70: .15, moe120: .15 } },
+    { id: "agent",  ctx: 3, alpha: 0.5, w: { moe30: .25, d32: .2, moe120: .3, d70: .1, moe235: .15 } },
+    { id: "large",  ctx: 2, alpha: 0.6, w: { d70: .3, moe120: .3, moe235: .4 } },
+    { id: "single", ctx: 3, alpha: 0.6, w: null }
+  ];
+  const CTX = [4096, 8192, 16384, 32768, 65536, 131072];
+  const N = "nvidia", A = "apple";
+  // tf: NVIDIA = FP16 tensor dense (Blackwell AI TOPS/8, Ada /4), Apple = GPU FP32. pf = prefill factor (M5 Neural Accelerators).
+  let DEVICES = [];   // wird aus data/devices.json + data/prices.json geladen
+  let UPDATED = null;
+
+  const T = {
+    de: {
+      locale: "de-AT",
+      eyebrow: "Lokale LLM-Inferenz · Preis-Leistung",
+      lede: "Welche Hardware liefert für dein Szenario die meisten nutzbaren Tokens pro Euro? Der Score prüft zuerst, ob das Modell in den Speicher passt, und rechnet dann Generierung (Bandbreite) und Prompt-Verarbeitung (Rechenleistung) gegen den Systempreis.",
+      profile: "Nutzungsprofil", model: "Modell", ctx: "Kontext", vendor: "Hersteller", all: "Alle",
+      base: "GPU-Preis + PC-Basis", baseAria: "Kosten PC-Basis in Euro",
+      wired: "macOS-GPU-Speicherlimit auf 90 % angehoben", reset: "Preise zurücksetzen",
+      hint: "Klick auf eine Spaltenüberschrift sortiert, ein zweiter Klick dreht die Reihenfolge um. Preise sind editierbar und bleiben in deinem Browser gespeichert. Orange markierte Preise sind Schätzungen.",
+      profiles: { chat: "Chat", agent: "Agent & Coding", large: "Große Modelle", single: "Einzelmodell" },
+      dense: "dicht",
+      th: { rank: "#", name: "Gerät", price: "Systempreis €", fits: "Modelle passen", perf: "Leistung", score: "Score" },
+      kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini" },
+      src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", own: "eigener Preis" },
+      inclPc: (c) => `inkl. ${c} € PC`, edited: "Von dir geändert",
+      fitsYes: "passt", fitsNo: "passt nicht", need: "GB nötig", usable: "GB nutzbar", notInProfile: "nicht im Profil",
+      fitsAria: (a, b) => `${a} von ${b} Profil-Modellen passen`,
+      priceAria: (n) => `Preis ${n} in Euro`, prices: "Preise ↗",
+      sBest: "Bester Wert", sFast: "Schnellstes Gerät", sCheap: "Günstigstes, auf dem alle Modelle laufen", sCheapOne: "Günstigstes, auf dem es läuft",
+      none: "keins", sys: "€ System", noneFits: (c) => `Kein Gerät hat bei ${c} Kontext genug Speicher`,
+      mTitle: "Generierung je Modell",
+      mHint: "Obere Zahl: geschätzte Tokens/s beim Schreiben bei halb gefülltem Kontext. Untere Zahl: Prompt-Verarbeitung in Tokens/s. „—“ heißt: passt nicht in den Speicher. Spalten sind sortierbar.",
+      inProfile: "im Profil", ttft: (p, t) => `Prompt ${p} tok/s · erster Token nach ${t} s bei vollem Kontext`,
+      footer: "Modellrechnung, keine Messung. Abweichungen von ±20 % zu echten Benchmarks sind normal, je nach Backend (CUDA, MLX, llama.cpp), Treiber und Quantisierung.",
+      sortBy: (c) => `Nach ${c} sortieren`,
+      method: `
+    <section>
+      <h2>Wie der Score rechnet</h2>
+      <div class="formula">Speicher  = Modell_GB + KV_GB(Kontext) + 1 GB
+passt     = Speicher ≤ nutzbarer Speicher
+Generier. = η · ε · Bandbreite / (aktive_GB + KV_GB/2)
+Prompt    = η_c · TFLOPS · 1000 / (2 · aktive_Param_Mrd)
+
+Leistung  = Σ w_m · passt_m · Gen_m^α · Prompt_m^(1−α)
+Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
+      <p>α gewichtet Generierung gegen Prompt-Verarbeitung: Chat 0,8 · Agent &amp; Coding 0,5 · Große Modelle 0,6 · Einzelmodell 0,6. Bei Agents mit langem Kontext dominiert die Prompt-Verarbeitung, deshalb fällt dort Rechenleistung stärker ins Gewicht.</p>
+    </section>
+    <section>
+      <h2>Annahmen</h2>
+      <ul>
+        <li>Quantisierung Q4 (≈ 4,8 Bit/Parameter), bei der 120B-MoE-Klasse das native MXFP4.</li>
+        <li>Nutzbarer Speicher: GPU = VRAM − 0,8 GB. Mac = 67 % (≤ 36 GB) bzw. 75 % des Arbeitsspeichers, mit angehobenem Limit 90 %.</li>
+        <li>Bandbreiten-Effizienz η: NVIDIA 0,60, Apple Pro/Max 0,62, Apple Ultra 0,50.</li>
+        <li>Rechenleistung: NVIDIA = FP16-Tensor-Leistung (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0,5. Apple = GPU-FP32, η_c 0,6. M5-Chips mit Neural Accelerators ×3,5 (Apple nennt bis 3,9–4× gegenüber der Vorgängergeneration).</li>
+        <li>MoE-Modelle erreichen in der Praxis rund die Hälfte der rechnerischen Generierung (Routing, Attention, verteilte Zugriffe), daher ε = 0,55. Dichte Modelle ε = 1.</li>
+        <li>Kein Teil-Offloading: Wenn ein Modell nicht passt, zählt es mit 0. Multi-GPU ist nicht abgebildet.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Abgleich mit LocalScore</h2>
+      <p>Messwerte aus der öffentlichen LocalScore-Datenbank (llamafile, Q4_K_M) gegen die Modellrechnung:</p>
+      <div style="overflow-x:auto"><table class="calib"><thead><tr><th>RTX 4090</th><th>Gen. Modell</th><th>Gen. gemessen</th><th>Prompt Modell</th><th>Prompt gemessen</th></tr></thead>
+      <tbody><tr><td>Llama 3.1 8B</td><td class="mono">123</td><td class="mono">120</td><td class="mono">10.313</td><td class="mono">7.594</td></tr>
+      <tr><td>Qwen2.5 14B</td><td class="mono">67</td><td class="mono">69</td><td class="mono">5.574</td><td class="mono">4.208</td></tr></tbody></table></div>
+      <p>Die Generierung trifft auf ±3 %. Die Prompt-Werte liegen rund 35 % über llamafile, aber im Bereich aktueller llama.cpp-Builds. Blackwell-Karten liefern in LocalScore unplausibel niedrige Werte (RTX 5090 langsamer als RTX 4090). Das deutet auf ältere CUDA-Kernel im Benchmark hin, deshalb fließen sie nicht in die Kalibrierung ein.</p>
+    </section>
+    <section>
+      <h2>Datenstand</h2>
+      <ul>
+        <li>GPU-Preise: niedrigster Neupreis Deutschland laut gpuprix.com (Händlerdaten von Alternate), täglich automatisch aktualisiert, zuletzt {{updated}}. RTX 5090: 3-Monats-Median, weil der Tiefstpreis oft ein Notebook ist und die Tagespreise stark schwanken.</li>
+        <li>Mac Studio M5 Ultra 96 GB: Apple-Listenpreis 6.599 €. Ältere Macs: Gebrauchtpreise geschätzt.</li>
+        <li>Specs: NVIDIA- und Apple-Datenblätter. AI TOPS von RTX PRO 4000/4500 sind Näherungen.</li>
+        <li>Die Links führen zum Geizhals-Preisvergleich (ohne Affiliate).</li>
+      </ul>
+    </section>`
+    },
+    en: {
+      locale: "en-GB",
+      eyebrow: "Local LLM inference · value for money",
+      lede: "Which hardware gives you the most usable tokens per euro for your use case? The score first checks whether the model fits in memory, then weighs generation (bandwidth) and prompt processing (compute) against the system price.",
+      profile: "Use case", model: "Model", ctx: "Context", vendor: "Vendor", all: "All",
+      base: "GPU price + base PC", baseAria: "Base PC cost in euros",
+      wired: "macOS GPU memory limit raised to 90%", reset: "Reset prices",
+      hint: "Click a column header to sort, click again to reverse. Prices are editable and stay saved in your browser. Prices marked in orange are estimates.",
+      profiles: { chat: "Chat", agent: "Agents & coding", large: "Large models", single: "Single model" },
+      dense: "dense",
+      th: { rank: "#", name: "Device", price: "System price €", fits: "Models that fit", perf: "Performance", score: "Score" },
+      kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini" },
+      src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", own: "your price" },
+      inclPc: (c) => `incl. €${c} PC`, edited: "Changed by you",
+      fitsYes: "fits", fitsNo: "does not fit", need: "GB needed", usable: "GB usable", notInProfile: "not in this use case",
+      fitsAria: (a, b) => `${a} of ${b} models in this use case fit`,
+      priceAria: (n) => `Price of ${n} in euros`, prices: "Prices ↗",
+      sBest: "Best value", sFast: "Fastest device", sCheap: "Cheapest that runs every model", sCheapOne: "Cheapest that runs it",
+      none: "none", sys: "€ system", noneFits: (c) => `No device has enough memory at ${c} context`,
+      mTitle: "Generation per model",
+      mHint: "Top number: estimated tokens/s while writing, with the context half full. Bottom number: prompt processing in tokens/s. “—” means it does not fit in memory. Columns are sortable.",
+      inProfile: "in use case", ttft: (p, t) => `Prompt ${p} tok/s · first token after ${t} s at full context`,
+      footer: "Model estimate, not a measurement. Deviations of ±20% from real benchmarks are normal, depending on backend (CUDA, MLX, llama.cpp), drivers and quantization.",
+      sortBy: (c) => `Sort by ${c}`,
+      method: `
+    <section>
+      <h2>How the score works</h2>
+      <div class="formula">Memory    = model_GB + KV_GB(context) + 1 GB
+fits      = memory ≤ usable memory
+Generate  = η · ε · bandwidth / (active_GB + KV_GB/2)
+Prompt    = η_c · TFLOPS · 1000 / (2 · active_params_B)
+
+Perf      = Σ w_m · fits_m · Gen_m^α · Prompt_m^(1−α)
+Score     = Perf / system price   (best device = 100)</div>
+      <p>α weighs generation against prompt processing: chat 0.8 · agents &amp; coding 0.5 · large models 0.6 · single model 0.6. With long-context agents, prompt processing dominates, so compute counts for more there.</p>
+    </section>
+    <section>
+      <h2>Assumptions</h2>
+      <ul>
+        <li>Q4 quantization (≈ 4.8 bits per parameter); native MXFP4 for the 120B MoE class.</li>
+        <li>Usable memory: GPU = VRAM − 0.8 GB. Mac = 67% (≤ 36 GB) or 75% of RAM, 90% with the raised limit.</li>
+        <li>Bandwidth efficiency η: NVIDIA 0.60, Apple Pro/Max 0.62, Apple Ultra 0.50.</li>
+        <li>Compute: NVIDIA = FP16 tensor throughput (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0.5. Apple = GPU FP32, η_c 0.6. M5 chips with Neural Accelerators ×3.5 (Apple claims up to 3.9–4× over the previous generation).</li>
+        <li>MoE models reach about half their theoretical generation speed in practice (routing, attention, scattered reads), so ε = 0.55. Dense models ε = 1.</li>
+        <li>No partial offloading: a model that does not fit scores 0. Multi-GPU is not modelled.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Check against LocalScore</h2>
+      <p>Measurements from the public LocalScore database (llamafile, Q4_K_M) against the model:</p>
+      <div style="overflow-x:auto"><table class="calib"><thead><tr><th>RTX 4090</th><th>Gen. model</th><th>Gen. measured</th><th>Prompt model</th><th>Prompt measured</th></tr></thead>
+      <tbody><tr><td>Llama 3.1 8B</td><td class="mono">123</td><td class="mono">120</td><td class="mono">10,313</td><td class="mono">7,594</td></tr>
+      <tr><td>Qwen2.5 14B</td><td class="mono">67</td><td class="mono">69</td><td class="mono">5,574</td><td class="mono">4,208</td></tr></tbody></table></div>
+      <p>Generation lands within ±3%. Prompt numbers run about 35% above llamafile but match current llama.cpp builds. Blackwell cards show implausibly low results in LocalScore (RTX 5090 slower than RTX 4090), which points to older CUDA kernels in the benchmark, so they are left out of the calibration.</p>
+    </section>
+    <section>
+      <h2>Data as of</h2>
+      <ul>
+        <li>GPU prices: lowest new price in Germany per gpuprix.com (retailer data from Alternate), updated automatically every day, last on {{updated}}. RTX 5090: 3-month median, because the lowest listing is often a laptop and daily prices swing widely.</li>
+        <li>Mac Studio M5 Ultra 96 GB: Apple list price €6,599. Older Macs: estimated used prices.</li>
+        <li>Specs: NVIDIA and Apple datasheets. AI TOPS for RTX PRO 4000/4500 are approximations.</li>
+        <li>Links go to the Geizhals price comparison (no affiliate).</li>
+      </ul>
+    </section>`
+    }
+  };
+
+  const KEY = "tokenwert.v1";
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
+  let navLang = "de";
+  try { navLang = (navigator.language || "de").toLowerCase().startsWith("de") ? "de" : "en"; } catch (e) {}
+  const state = Object.assign({ profile: "agent", model: "moe120", ctx: 3, vendor: "all", sortKey: "score", sortDir: -1, base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
+  delete state.sort;
+  if (!T[state.lang]) state.lang = "de";
+  function persist() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  const $ = (s) => document.querySelector(s);
+  const L = () => T[state.lang];
+  const fmt = (n, d = 0) => n.toLocaleString(L().locale, { minimumFractionDigits: d, maximumFractionDigits: d });
+  const fmtTok = (n) => n >= 10 ? fmt(n) : fmt(n, 1);
+  const eur = (n) => state.lang === "de" ? `${fmt(n)} €` : `€${fmt(n)}`;
+  const ctxLabel = (c) => (c / 1024) + "k";
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const mName = (m) => m.size + " " + (m.dense ? L().dense : "MoE");
+  const mEx = (m) => typeof m.ex === "string" ? m.ex : m.ex[state.lang];
+  const srcText = (d) => { const s = L().src[d.src[0]]; return d.src[1] ? `${s} ${d.src[1]}` : s; };
+  const priceOf = (d) => state.prices[d.id] != null ? state.prices[d.id] : d.price;
+  const sysPrice = (d) => priceOf(d) + (d.v === N && state.base ? state.baseCost : 0);
+  function usable(d) {
+    if (d.v === N) return d.mem - 0.8;
+    if (state.wired) return d.mem * 0.9;
+    return d.mem * (d.mem <= 36 ? 0.67 : 0.75);
+  }
+  function calc(d, m, ctx) {
+    const kvGB = m.kv * ctx / 1024;
+    const need = m.gb + kvGB + 1.0;
+    const fits = need <= usable(d);
+    const tg = (m.eff || 1) * d.eta * d.bw / (m.agb + kvGB / 2);
+    const pp = d.etaC * d.tf * d.pf * 1000 / (2 * m.ap);
+    return { fits, need, tg, pp, ttft: ctx / pp };
+  }
+  function weights() {
+    const p = PROFILES.find((x) => x.id === state.profile);
+    if (p.w) return { w: p.w, alpha: p.alpha };
+    const w = {}; w[state.model] = 1; return { w, alpha: p.alpha };
+  }
+  function evaluate() {
+    const ctx = CTX[state.ctx];
+    const { w, alpha } = weights();
+    const rows = DEVICES.map((d) => {
+      const per = {}; let perf = 0, fitCount = 0;
+      MODELS.forEach((m) => {
+        const r = calc(d, m, ctx); per[m.id] = r;
+        const wm = w[m.id] || 0;
+        if (wm && r.fits) { perf += wm * Math.pow(r.tg, alpha) * Math.pow(r.pp, 1 - alpha); fitCount++; }
+      });
+      const sp = sysPrice(d);
+      return { d, per, perf, raw: sp > 0 ? perf / sp : 0, sp, fitCount };
+    });
+    const maxRaw = Math.max(...rows.map((r) => r.raw)) || 1;
+    const maxPerf = Math.max(...rows.map((r) => r.perf)) || 1;
+    rows.forEach((r) => { r.score = 100 * r.raw / maxRaw; r.perfN = 100 * r.perf / maxPerf; });
+    return { rows, ctx, w };
+  }
+
+  // Sorting: default direction per key (1 = ascending, -1 = descending)
+  const DEFAULT_DIR = { name: 1, price: 1, fits: -1, perf: -1, score: -1 };
+  function sortValue(r, key) {
+    if (key === "name") return r.d.name;
+    if (key === "price") return r.sp;
+    if (key === "fits") return r.fitCount;
+    if (key === "perf") return r.perf;
+    if (key === "score") return r.score;
+    if (key.startsWith("m:")) { const c = r.per[key.slice(2)]; return c.fits ? c.tg : -1; }
+    return 0;
+  }
+  function setSort(key) {
+    if (state.sortKey === key) state.sortDir = -state.sortDir;
+    else { state.sortKey = key; state.sortDir = key.startsWith("m:") ? -1 : DEFAULT_DIR[key]; }
+    persist(); render();
+  }
+  function sortHead(key, label, cls) {
+    const active = state.sortKey === key;
+    const arr = active ? (state.sortDir > 0 ? "↑" : "↓") : "";
+    const aria = active ? ` aria-sort="${state.sortDir > 0 ? "ascending" : "descending"}"` : "";
+    return `<th${cls ? ` class="${cls}"` : ""}${aria}><button type="button" class="sort" data-sort="${key}" title="${esc(L().sortBy(label.replace(/<[^>]+>/g, "")))}">${label}<span class="arr">${arr}</span></button></th>`;
+  }
+
+  function renderStatic() {
+    document.documentElement.lang = state.lang;
+    document.querySelectorAll("[data-i]").forEach((el) => { el.textContent = L()[el.dataset.i]; });
+    $("#basecost").setAttribute("aria-label", L().baseAria);
+    $("#method").innerHTML = L().method.replace(/\{\{updated\}\}/g, UPDATED ? new Date(UPDATED).toLocaleDateString(L().locale, { day: "numeric", month: "long", year: "numeric" }) : "–");
+    $("#model").innerHTML = MODELS.map((m) => `<option value="${m.id}">${esc(mName(m))} (${esc(mEx(m))})</option>`).join("");
+  }
+  function renderControls() {
+    document.querySelectorAll("#lang button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === state.lang));
+    $("#profile").innerHTML = PROFILES.map((p) => `<button type="button" data-id="${p.id}" aria-pressed="${p.id === state.profile}">${esc(L().profiles[p.id])}</button>`).join("");
+    $("#vendor").innerHTML = [["all", L().all], [N, "NVIDIA"], [A, "Apple"]].map(([id, n]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${n}</button>`).join("");
+    $("#model-field").hidden = state.profile !== "single";
+    $("#ctx").value = state.ctx; $("#ctx-val").textContent = ctxLabel(CTX[state.ctx]);
+    $("#base").checked = state.base; $("#basecost").value = state.baseCost; $("#wired").checked = state.wired;
+    $("#model").value = state.model;
+  }
+
+  function render() {
+    renderControls();
+    const t = L();
+    const { rows, ctx, w } = evaluate();
+    const vis = rows.filter((r) => state.vendor === "all" || r.d.v === state.vendor);
+    vis.sort((a, b) => {
+      const x = sortValue(a, state.sortKey), y = sortValue(b, state.sortKey);
+      const c = typeof x === "string" ? x.localeCompare(y, t.locale, { numeric: true }) : x - y;
+      return c * state.sortDir || b.score - a.score;
+    });
+    const usedModels = MODELS.filter((m) => w[m.id]);
+
+    // Summary
+    const best = [...vis].sort((a, b) => b.score - a.score)[0];
+    const fastest = [...vis].sort((a, b) => b.perf - a.perf)[0];
+    const cheapFull = [...vis].filter((r) => r.fitCount === usedModels.length).sort((a, b) => a.sp - b.sp)[0];
+    const single = state.profile === "single" ? MODELS.find((m) => m.id === state.model) : null;
+    const sumItem = (k, r, s) => `<div class="sum"><span class="k">${k}</span><span class="v">${r ? esc(r.d.name) : t.none}</span><span class="s">${s}</span></div>`;
+    const okBest = best && best.perf > 0;
+    $("#summary").innerHTML =
+      sumItem(t.sBest, okBest ? best : null, okBest ? `${eur(best.sp)} System · Score 100` : t.noneFits(ctxLabel(ctx))) +
+      sumItem(t.sFast, okBest ? fastest : null, okBest ? (single ? `${fmtTok(fastest.per[single.id].tg)} tok/s · Prompt ${fmt(fastest.per[single.id].pp)} tok/s` : `${eur(fastest.sp)} System · Score ${fmt(fastest.score)}`) : "") +
+      sumItem(single ? t.sCheapOne : t.sCheap, cheapFull, cheapFull ? `${eur(cheapFull.sp)} System` + (single ? ` · ${fmtTok(cheapFull.per[single.id].tg)} tok/s` : "") : t.noneFits(ctxLabel(ctx)));
+
+    // Ranking table
+    $("#rank-head").innerHTML = `<th>${t.th.rank}</th>` +
+      sortHead("name", t.th.name) + sortHead("price", t.th.price, "num") + sortHead("fits", t.th.fits) +
+      sortHead("perf", t.th.perf) + sortHead("score", t.th.score) + "<th></th>";
+    $("#rank tbody").innerHTML = vis.map((r, i) => {
+      const d = r.d;
+      const dots = MODELS.map((m) => {
+        const inP = !!w[m.id]; const f = r.per[m.id].fits;
+        const tip = `${mName(m)}: ${f ? t.fitsYes : t.fitsNo} (${fmt(r.per[m.id].need, 1)} ${t.need}, ${fmt(usable(d), 1)} ${t.usable})${inP ? "" : " · " + t.notInProfile}`;
+        return `<span class="dot ${f ? "on" : ""} ${inP ? "" : "off-w"}" title="${esc(tip)}"></span>`;
+      }).join("");
+      const edited = state.prices[d.id] != null;
+      const sub = `${d.mem} GB · ${fmt(d.bw)} GB/s` + (d.v === N && state.base ? ` · ${t.inclPc(fmt(state.baseCost))}` : "");
+      return `<tr class="${r.perf === 0 ? "zero" : ""}">
+        <td class="rank">${i + 1}</td>
+        <td><div class="dev"><b><span class="tag">${t.kinds[d.kind]}</span>${esc(d.name)}</b><span>${sub}</span></div></td>
+        <td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d)}" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${d.est && !edited ? "est" : ""}">${edited ? t.src.own : srcText(d)}</span></td>
+        <td><div class="dots" aria-label="${esc(t.fitsAria(r.fitCount, usedModels.length))}">${dots}</div></td>
+        <td><div class="barcell"><div class="track"><div class="fill p" style="width:${r.perfN.toFixed(1)}%"></div></div><span class="mono">${fmt(r.perfN)}</span></div></td>
+        <td><div class="barcell"><div class="track"><div class="fill" style="width:${r.score.toFixed(1)}%"></div></div><span class="mono">${fmt(r.score)}</span></div></td>
+        <td><a class="ext" href="https://geizhals.at/?fs=${encodeURIComponent(d.q)}" target="_blank" rel="noopener">${t.prices}</a></td>
+      </tr>`;
+    }).join("");
+
+    // Matrix
+    $("#matrix thead").innerHTML = `<tr>${sortHead("name", t.th.name)}${MODELS.map((m) =>
+      sortHead("m:" + m.id, `${esc(mName(m))}<small>${fmt(m.gb, 0)} GB${w[m.id] ? " · " + t.inProfile : ""}</small>`)).join("")}</tr>`;
+    $("#matrix tbody").innerHTML = vis.map((r) => `<tr><td>${esc(r.d.name)}</td>${MODELS.map((m) => {
+      const c = r.per[m.id];
+      return c.fits ? `<td class="mono" title="${esc(t.ttft(fmt(c.pp), fmt(c.ttft, 1)))}">${fmtTok(c.tg)}<br><span class="na">${fmt(c.pp)}</span></td>` : `<td class="na">—</td>`;
+    }).join("")}</tr>`).join("");
+  }
+
+  $("#lang").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.lang = b.dataset.id; persist(); renderStatic(); render(); });
+  $("#profile").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.profile = b.dataset.id; state.ctx = PROFILES.find((p) => p.id === state.profile).ctx; persist(); render(); });
+  $("#vendor").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.vendor = b.dataset.id; persist(); render(); });
+  $("#model").addEventListener("change", (e) => { state.model = e.target.value; persist(); render(); });
+  $("#ctx").addEventListener("input", (e) => { state.ctx = +e.target.value; persist(); render(); });
+  $("#base").addEventListener("change", (e) => { state.base = e.target.checked; persist(); render(); });
+  $("#basecost").addEventListener("change", (e) => { state.baseCost = Math.max(0, +e.target.value || 0); persist(); render(); });
+  $("#wired").addEventListener("change", (e) => { state.wired = e.target.checked; persist(); render(); });
+  $("#reset").addEventListener("click", () => { state.prices = {}; persist(); render(); });
+  document.addEventListener("click", (e) => { const b = e.target.closest("button.sort"); if (b) setSort(b.dataset.sort); });
+  $("#rank").addEventListener("change", (e) => {
+    const inp = e.target.closest("input[data-id]"); if (!inp) return;
+    const v = +inp.value; const d = DEVICES.find((x) => x.id === inp.dataset.id);
+    if (!(v > 0) || v === d.price) delete state.prices[d.id]; else state.prices[d.id] = v;
+    persist(); render();
+  });
+
+  function ddmm(iso) { const d = new Date(iso); return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.`; }
+  async function load() {
+    try {
+      const [dv, pr] = await Promise.all([
+        fetch("data/devices.json", { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+        fetch("data/prices.json", { cache: "no-cache" }).then((r) => r.ok ? r.json() : { prices: {} }).catch(() => ({ prices: {} }))
+      ]);
+      UPDATED = pr.updatedAt || null;
+      DEVICES = dv.devices.map((d) => {
+        const p = pr.prices && pr.prices[d.id];
+        if (!p) return d;
+        return Object.assign({}, d, { price: p.price, est: false, src: p.metric === "median3m" ? ["med"] : ["gp", ddmm(p.asOf)] });
+      });
+      renderStatic(); render();
+    } catch (e) {
+      $("#summary").innerHTML = `<div class="sum"><span class="k">Fehler / Error</span><span class="v">Daten nicht geladen</span><span class="s">data/devices.json fehlt oder die Seite wurde direkt als Datei geöffnet. Lokal mit „npm run dev“ starten.</span></div>`;
+    }
+  }
+  load();
+})();
+</script>
+</body>
+</html>
