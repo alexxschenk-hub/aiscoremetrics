@@ -32,9 +32,13 @@ async function fetchGpuprix(slug) {
   const m = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
   if (!m) throw new Error(`Keine Seitendaten gefunden (${url}), Seitenaufbau geändert?`);
   const pp = JSON.parse(m[1])?.props?.pageProps ?? {};
+  // Günstigste lieferbare Karte (Boards mit inStock). Fällt auf den Tiefstpreis zurück, wenn keine lieferbar ist.
+  const stock = (pp.boards || []).filter((b) => b.inStock && Number(b.lowestPrice) > 0 && (b.lowestPriceCurrency || "EUR") === "EUR").map((b) => Number(b.lowestPrice));
+  const low = Number(pp.regionSeo?.lowestPrice) || null;
   return {
     url,
-    low: Number(pp.regionSeo?.lowestPrice) || null,
+    low,
+    instock: stock.length ? Math.min(...stock) : null,
     median3m: Number(pp.priceStats?.median3mo) || null,
     currency: pp.regionSeo?.currency || pp.priceStats?.currency || null,
     asOf: pp.lastUpdated ? new Date(Number(pp.lastUpdated)).toISOString() : null
@@ -49,16 +53,24 @@ async function main() {
   const history = [];
   let ok = 0, failed = 0, kept = 0;
 
-  const targets = devices.filter((d) => d.source?.gpuprix);
+  // Manuelle Preise (Feld "override" in devices.json) haben Vorrang und werden nicht abgerufen.
+  for (const d of devices.filter((x) => x.override?.price > 0)) {
+    prices[d.id] = { price: round(d.override.price), metric: "manual", source: "manual", note: d.override.note || "", asOf: d.override.date || new Date().toISOString() };
+    console.log(`= ${d.name.padEnd(24)} ${String(round(d.override.price)).padStart(6)} € (manuell: ${d.override.note || "-"})`);
+  }
+
+  const targets = devices.filter((d) => d.source?.gpuprix && !(d.override?.price > 0));
   for (const d of targets) {
     try {
       const r = await fetchGpuprix(d.source.gpuprix);
       if (r.currency && r.currency !== "EUR") throw new Error(`Währung ${r.currency} statt EUR`);
-      const metric = d.source.metric || "low";
+      let metric = d.source.metric || "instock";
+      if (metric === "instock" && !(r.instock > 0)) metric = "low";   // nichts lieferbar: letzter Tiefstpreis
       const value = r[metric];
       if (!(value > 0)) throw new Error(`Kein Wert für "${metric}"`);
       const prev = prices[d.id]?.price;
-      if (prev && (value > prev * MAX_JUMP || value < prev / MAX_JUMP)) {
+      const sameMetric = prices[d.id]?.metric === metric;
+      if (prev && sameMetric && (value > prev * MAX_JUMP || value < prev / MAX_JUMP)) {
         console.log(`::warning::${d.name}: ${prev} → ${round(value)} € verworfen (Sprung > ${MAX_JUMP}×). Bitte manuell prüfen: ${r.url}`);
         kept++;
         continue;

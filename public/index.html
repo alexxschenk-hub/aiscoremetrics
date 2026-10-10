@@ -217,7 +217,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       dense: "dicht",
       th: { rank: "#", name: "Gerät", price: "Systempreis €", fits: "Modelle passen", perf: "Leistung", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini" },
-      src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", own: "eigener Preis" },
+      src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", man: "manuell:", own: "eigener Preis" },
       inclPc: (c) => `inkl. ${c} € PC`, edited: "Von dir geändert",
       fitsYes: "passt", fitsNo: "passt nicht", need: "GB nötig", usable: "GB nutzbar", notInProfile: "nicht im Profil",
       fitsAria: (a, b) => `${a} von ${b} Profil-Modellen passen`,
@@ -263,7 +263,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
     <section>
       <h2>Datenstand</h2>
       <ul>
-        <li>GPU-Preise: niedrigster Neupreis Deutschland laut gpuprix.com (Händlerdaten von Alternate), täglich automatisch aktualisiert, zuletzt {{updated}}. RTX 5090: 3-Monats-Median, weil der Tiefstpreis oft ein Notebook ist und die Tagespreise stark schwanken.</li>
+        <li>GPU-Preise: niedrigster Neupreis Deutschland laut gpuprix.com (Händlerdaten von Alternate), täglich automatisch aktualisiert, zuletzt {{updated}}. Gezeigt wird die günstigste lieferbare Karte. Ist keine lieferbar, der letzte Tiefstpreis. Einzelne Preise können manuell gesetzt werden, aktuell die RTX 5090 nach Geizhals.</li>
         <li>Mac Studio M5 Ultra 96 GB: Apple-Listenpreis 6.599 €. Ältere Macs: Gebrauchtpreise geschätzt.</li>
         <li>Specs: NVIDIA- und Apple-Datenblätter. AI TOPS von RTX PRO 4000/4500 sind Näherungen.</li>
         <li>Die Links führen zum Geizhals-Preisvergleich (ohne Affiliate).</li>
@@ -282,7 +282,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       dense: "dense",
       th: { rank: "#", name: "Device", price: "System price €", fits: "Models that fit", perf: "Performance", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini" },
-      src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", own: "your price" },
+      src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", man: "manual:", own: "your price" },
       inclPc: (c) => `incl. €${c} PC`, edited: "Changed by you",
       fitsYes: "fits", fitsNo: "does not fit", need: "GB needed", usable: "GB usable", notInProfile: "not in this use case",
       fitsAria: (a, b) => `${a} of ${b} models in this use case fit`,
@@ -328,7 +328,7 @@ Score     = Perf / system price   (best device = 100)</div>
     <section>
       <h2>Data as of</h2>
       <ul>
-        <li>GPU prices: lowest new price in Germany per gpuprix.com (retailer data from Alternate), updated automatically every day, last on {{updated}}. RTX 5090: 3-month median, because the lowest listing is often a laptop and daily prices swing widely.</li>
+        <li>GPU prices: lowest new price in Germany per gpuprix.com (retailer data from Alternate), updated automatically every day, last on {{updated}}. Shown is the cheapest card in stock, or the last lowest price if none is in stock. Individual prices can be set manually, currently the RTX 5090 per Geizhals.</li>
         <li>Mac Studio M5 Ultra 96 GB: Apple list price €6,599. Older Macs: estimated used prices.</li>
         <li>Specs: NVIDIA and Apple datasheets. AI TOPS for RTX PRO 4000/4500 are approximations.</li>
         <li>Links go to the Geizhals price comparison (no affiliate).</li>
@@ -521,7 +521,7 @@ Score     = Perf / system price   (best device = 100)</div>
       DEVICES = dv.devices.map((d) => {
         const p = pr.prices && pr.prices[d.id];
         if (!p) return d;
-        return Object.assign({}, d, { price: p.price, est: false, src: p.metric === "median3m" ? ["med"] : ["gp", ddmm(p.asOf)] });
+        return Object.assign({}, d, { price: p.price, est: false, src: p.metric === "median3m" ? ["med"] : p.metric === "manual" ? ["man", `${p.note ? p.note + " " : ""}${ddmm(p.asOf)}`] : ["gp", ddmm(p.asOf)] });
       });
       renderStatic(); render();
     } catch (e) {

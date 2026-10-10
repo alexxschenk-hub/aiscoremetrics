@@ -1,5 +1,5 @@
 {
-  "note": "Specs und Fallback-Preise. Preise mit source werden täglich von scripts/update-prices.mjs in prices.json überschrieben.",
+  "note": "Specs und Fallback-Preise. GPU-Preise mit source werden täglich von scripts/update-prices.mjs in prices.json geschrieben (metric: instock = günstigste lieferbare Karte, low = Tiefstpreis inkl. nicht lieferbarer, median3m = 3-Monats-Median). Ein Feld override {price, note, date} setzt einen manuellen Preis, der Vorrang hat.",
   "devices": [
     {
       "id": "5060ti",
@@ -20,7 +20,7 @@
       "q": "RTX 5060 Ti 16GB",
       "source": {
         "gpuprix": "geforce-rtx-5060-ti-16gb",
-        "metric": "low"
+        "metric": "instock"
       }
     },
     {
@@ -42,7 +42,7 @@
       "q": "RTX 5070 12GB",
       "source": {
         "gpuprix": "geforce-rtx-5070",
-        "metric": "low"
+        "metric": "instock"
       }
     },
     {
@@ -64,7 +64,7 @@
       "q": "RTX 5070 Ti",
       "source": {
         "gpuprix": "geforce-rtx-5070-ti",
-        "metric": "low"
+        "metric": "instock"
       }
     },
     {
@@ -86,7 +86,7 @@
       "q": "RTX 5080",
       "source": {
         "gpuprix": "geforce-rtx-5080",
-        "metric": "low"
+        "metric": "instock"
       }
     },
     {
@@ -108,7 +108,7 @@
       "q": "RTX 4090",
       "source": {
         "gpuprix": "geforce-rtx-4090",
-        "metric": "low"
+        "metric": "instock"
       }
     },
     {
@@ -129,7 +129,12 @@
       "q": "RTX 5090",
       "source": {
         "gpuprix": "geforce-rtx-5090",
-        "metric": "median3m"
+        "metric": "instock"
+      },
+      "override": {
+        "price": 6000,
+        "note": "Geizhals",
+        "date": "2026-10-10T00:00:00Z"
       }
     },
     {
@@ -151,7 +156,7 @@
       "q": "RTX PRO 4000 Blackwell",
       "source": {
         "gpuprix": "rtx-pro-4000-blackwell",
-        "metric": "low"
+        "metric": "instock"
       }
     },
     {
@@ -173,7 +178,7 @@
       "q": "RTX PRO 4500 Blackwell",
       "source": {
         "gpuprix": "rtx-pro-4500-blackwell",
-        "metric": "low"
+        "metric": "instock"
       }
     },
     {
@@ -195,7 +200,7 @@
       "q": "RTX PRO 5000 Blackwell 48GB",
       "source": {
         "gpuprix": "rtx-pro-5000-blackwell",
-        "metric": "low"
+        "metric": "instock"
       }
     },
     {
@@ -217,7 +222,7 @@
       "q": "RTX PRO 6000 Blackwell",
       "source": {
         "gpuprix": "rtx-pro-6000-blackwell",
-        "metric": "low"
+        "metric": "instock"
       }
     },
     {

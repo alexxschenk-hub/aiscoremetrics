@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-10-10T00:06:02.001Z",
+  "updatedAt": "2026-10-10T00:51:19.546Z",
   "region": "germany",
   "prices": {
     "4090": {
       "price": 3790,
-      "metric": "low",
+      "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
       "asOf": "2026-10-07T01:02:15.137Z",
@@ -12,7 +12,7 @@
     },
     "5070": {
       "price": 745,
-      "metric": "low",
+      "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
       "asOf": "2026-10-07T04:07:25.707Z",
@@ -20,23 +20,22 @@
     },
     "5080": {
       "price": 1351,
-      "metric": "low",
+      "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
       "asOf": "2026-10-07T04:07:09.674Z",
       "url": "https://gpuprix.com/germany/gpus/geforce-rtx-5080"
     },
     "5090": {
-      "price": 4074,
-      "metric": "median3m",
-      "source": "gpuprix",
-      "region": "germany",
-      "asOf": "2026-10-07T04:07:04.084Z",
-      "url": "https://gpuprix.com/germany/gpus/geforce-rtx-5090"
+      "price": 6000,
+      "metric": "manual",
+      "source": "manual",
+      "note": "Geizhals",
+      "asOf": "2026-10-10T00:00:00Z"
     },
     "5060ti": {
       "price": 729,
-      "metric": "low",
+      "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
       "asOf": "2026-10-07T04:07:12.639Z",
@@ -44,7 +43,7 @@
     },
     "5070ti": {
       "price": 1074,
-      "metric": "low",
+      "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
       "asOf": "2026-10-07T04:07:09.402Z",

@@ -63,7 +63,8 @@ Die Seite lädt ihre Daten per `fetch`. Direkt als Datei geöffnet (`file://`) f
 
 - **Mac-Preise** stehen von Hand in `public/data/devices.json` (Feld `price`, Schätzungen mit `"est": true`).
 - **Neue GPU:** Eintrag in `devices.json` ergänzen und `"source": { "gpuprix": "<slug>", "metric": "low" }` setzen. Der Slug ist der letzte Teil der gpuprix-URL, z. B. `geforce-rtx-5080`.
-- **`metric`:** `low` = niedrigster aktueller Neupreis, `median3m` = 3-Monats-Median. Die RTX 5090 nutzt den Median, weil der Tiefstpreis dort oft ein Notebook ist.
+- **`metric`:** `instock` (Standard) = günstigste lieferbare Karte, fällt auf `low` zurück, wenn nichts lieferbar ist. `low` = Tiefstpreis inkl. nicht lieferbarer Angebote, `median3m` = 3-Monats-Median.
+- **Manueller Preis:** `"override": { "price": 6000, "note": "Geizhals", "date": "2026-10-10T00:00:00Z" }` in `devices.json` hat Vorrang vor der automatischen Quelle. Zum Zurückschalten das Feld wieder löschen. Aktuell gesetzt für die RTX 5090, weil gpuprix für Deutschland nur Alternate auswertet.
 - **Preissprung-Schutz:** Ändert sich ein Preis an einem Tag um mehr als das Doppelte, behält das Script den alten Wert und schreibt eine Warnung ins Action-Log.
 
 ## Gut zu wissen
