@@ -17,9 +17,9 @@ let html = await readFile(htmlUrl, "utf8");
 const { devices } = JSON.parse(await readFile(new URL("data/devices.json", root), "utf8"));
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const VENDOR = { nvidia: "NVIDIA", amd: "AMD", apple: "Apple" };
+const VENDOR = { nvidia: "NVIDIA", amd: "AMD", intel: "Intel", apple: "Apple" };
 const KIND = { gpu: "Grafikkarte", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini-PC" };
-const ORDER = ["nvidia", "amd", "apple"];
+const ORDER = ["nvidia", "amd", "intel", "apple"];
 
 function replaceBetween(src, name, body) {
   const re = new RegExp(`(<!-- ${name}:start[^>]*-->)[\\s\\S]*?(\\s*<!-- ${name}:end -->)`);
@@ -36,7 +36,7 @@ const label = (d) => {
 const sorted = [...devices].sort((a, b) =>
   ORDER.indexOf(a.v) - ORDER.indexOf(b.v) || a.kind.localeCompare(b.kind) || a.mem - b.mem || a.name.localeCompare(b.name, "de", { numeric: true }));
 const rows = sorted.map((d) =>
-  `        <tr><td>${esc(label(d))}</td><td>${VENDOR[d.v]}</td><td>${KIND[d.kind]}</td><td class="num">${d.mem}</td><td class="num">${d.bw.toLocaleString("de-AT")}</td></tr>`).join("\n");
+  `        <tr><td>${esc(label(d))}</td><td>${VENDOR[d.v]}</td><td>${d.formFactor === "laptop" ? "Notebook-GPU" : d.formFactor === "sxm" ? "Server · SXM" : d.formFactor === "server" ? "Server · PCIe" : KIND[d.kind]}</td><td class="num">${d.mem}</td><td class="num">${d.bw.toLocaleString("de-AT")}</td></tr>`).join("\n");
 const noscript = `  <noscript>
     <div class="noscript-devs">
       <h2>Geräte im Vergleich / Devices compared</h2>
@@ -57,21 +57,21 @@ const URLS = { de: `${SITE}/`, en: `${SITE}/en/` };
 const META = {
   de: {
     title: "Welche GPU für lokale LLMs? Hardware-Rechner für Tokens/s & VRAM | AI Score Metrics",
-    desc: "Kostenloser Rechner: Passt dein LLM in den Speicher und wie schnell läuft es? NVIDIA- und AMD-Grafikkarten, Mac Studio, Mac mini und Ryzen AI Max im Vergleich – Tokens/s, VRAM, erster Token, Bildzeiten und Preis-Leistung.",
+    desc: "Kostenloser Rechner: Passt dein LLM in den Speicher und wie schnell läuft es? NVIDIA-, AMD- und Intel-Grafikkarten, Mac Studio, Mac mini und Ryzen AI Max im Vergleich – Tokens/s, VRAM, erster Token, Bildzeiten und Preis-Leistung.",
     ogTitle: "AI Score Metrics – Welche GPU oder welcher Mac für lokale LLMs?",
-    ogDesc: "60 Geräte, 17 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.",
+    ogDesc: `${devices.length} Geräte, 17 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.`,
     ogAlt: "AI Score Metrics – Hardware-Vergleich für lokale LLMs",
     locale: "de_DE", altLocale: "en_US",
-    app: "Rechner für lokale LLM-Hardware: NVIDIA- und AMD-Grafikkarten, Apple-Macs und Mini-PCs nach VRAM, Speicherbandbreite, Tokens pro Sekunde, Wartezeit und Preis-Leistung."
+    app: "Rechner für lokale LLM-Hardware: NVIDIA-, AMD- und Intel-Grafikkarten, Apple-Macs und Mini-PCs nach VRAM, Speicherbandbreite, Tokens pro Sekunde, Wartezeit und Preis-Leistung."
   },
   en: {
     title: "Best GPU for Local LLMs? Tokens/s & VRAM Hardware Calculator | AI Score Metrics",
-    desc: "Free calculator: does your LLM fit in memory and how fast will it run? Compare NVIDIA and AMD graphics cards, Mac Studio, Mac mini and Ryzen AI Max – tokens/s, VRAM, time to first token, image times and value for money.",
+    desc: "Free calculator: does your LLM fit in memory and how fast will it run? Compare NVIDIA, AMD and Intel graphics cards, Mac Studio, Mac mini and Ryzen AI Max – tokens/s, VRAM, time to first token, image times and value for money.",
     ogTitle: "AI Score Metrics – Which GPU or Mac for local LLMs?",
-    ogDesc: "60 devices, 17 LLMs: tokens/s, VRAM needs, memory usage and value for money for local AI, side by side.",
+    ogDesc: `${devices.length} devices, 17 LLMs: tokens/s, VRAM needs, memory usage and value for money for local AI, side by side.`,
     ogAlt: "AI Score Metrics – hardware comparison for local LLMs",
     locale: "en_US", altLocale: "de_DE",
-    app: "Calculator for local LLM hardware: NVIDIA and AMD graphics cards, Apple Macs and mini PCs by VRAM, memory bandwidth, tokens per second, wait time and value for money."
+    app: "Calculator for local LLM hardware: NVIDIA, AMD and Intel graphics cards, Apple Macs and mini PCs by VRAM, memory bandwidth, tokens per second, wait time and value for money."
   }
 };
 const attr = (s) => esc(s);

@@ -1193,6 +1193,1653 @@
       ],
       "q": "MacBook Pro M1 Pro 16GB",
       "est": true
+    },
+    {
+      "id": "rtx-5090-laptop",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 5090 Laptop GPU",
+      "mem": 24.0,
+      "bw": 896.0,
+      "tf": 228,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "formFactor": "laptop",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/laptops/50-series/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "arc-pro-b70",
+      "v": "intel",
+      "kind": "gpu",
+      "name": "Intel Arc Pro B70",
+      "mem": 32.0,
+      "bw": 608.0,
+      "tf": 183.5,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "Intel Arc Pro B70",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": true,
+      "imageSupported": false,
+      "specSources": [
+        "https://www.intel.com/content/www/us/en/products/sku/245797/intel-arc-pro-b70-graphics/specifications.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "arc-pro-b65",
+      "v": "intel",
+      "kind": "gpu",
+      "name": "Intel Arc Pro B65",
+      "mem": 32.0,
+      "bw": 608.0,
+      "tf": 98.5,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "Intel Arc Pro B65",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": true,
+      "imageSupported": false,
+      "specSources": [
+        "https://www.intel.de/content/www/de/de/ark/products/series/242616/intel-arc-pro-b-series-graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-3090-ti",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 3090 Ti",
+      "mem": 24.0,
+      "bw": 1008.0,
+      "tf": 160,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 3090 Ti",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-3080-ti",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 3080 Ti",
+      "mem": 12.0,
+      "bw": 912.0,
+      "tf": 136.4,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 3080 Ti",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-3080-12",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 3080 12GB",
+      "mem": 12.0,
+      "bw": 912.0,
+      "tf": 122.6,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 3080 12GB",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-4060-ti-8",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 4060 Ti 8GB",
+      "mem": 8.0,
+      "bw": 288.0,
+      "tf": 88.25,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 4060 Ti 8GB",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rx-7700-xt",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "Radeon RX 7700 XT",
+      "mem": 12.0,
+      "bw": 432.0,
+      "tf": 70.4,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "AMD Radeon RX 7700 XT",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.amd.com/en/products/specifications/graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-vector",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-4090-laptop",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 4090 Laptop GPU",
+      "mem": 16.0,
+      "bw": 576.0,
+      "tf": 171.5,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 4090 Laptop GPU",
+      "formFactor": "laptop",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/laptops/40-series/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-4060-laptop",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 4060 Laptop GPU",
+      "mem": 8.0,
+      "bw": 256.0,
+      "tf": 58.25,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "formFactor": "laptop",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/laptops/40-series/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-5060-ti-8",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 5060 Ti 8GB",
+      "mem": 8.0,
+      "bw": 448.0,
+      "tf": 94.875,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 5060 Ti 8GB",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-5060",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 5060",
+      "mem": 8.0,
+      "bw": 448.0,
+      "tf": 76.75,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 5060",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-4070-ti",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 4070 Ti",
+      "mem": 12.0,
+      "bw": 504.0,
+      "tf": 160.25,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 4070 Ti",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-4070-super",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 4070 Super",
+      "mem": 12.0,
+      "bw": 504.0,
+      "tf": 142,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 4070 Super",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-4080-super",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 4080 Super",
+      "mem": 16.0,
+      "bw": 736.0,
+      "tf": 209,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 4080 Super",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-4080",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 4080",
+      "mem": 16.0,
+      "bw": 717.0,
+      "tf": 195,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 4080",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-4070-ti-super",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 4070 Ti Super",
+      "mem": 16.0,
+      "bw": 672.0,
+      "tf": 176.5,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 4070 Ti Super",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-4070",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 4070",
+      "mem": 12.0,
+      "bw": 504.0,
+      "tf": 116.5,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 4070",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-4060-ti-16",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 4060 Ti 16GB",
+      "mem": 16.0,
+      "bw": 288.0,
+      "tf": 88.25,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 4060 Ti 16GB",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-4060",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 4060",
+      "mem": 8.0,
+      "bw": 272.0,
+      "tf": 60.5,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 4060",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-3070",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 3070",
+      "mem": 8.0,
+      "bw": 448.0,
+      "tf": 81.3,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 3070",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-3070-ti",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 3070 Ti",
+      "mem": 8.0,
+      "bw": 608.0,
+      "tf": 87,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 3070 Ti",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-3090",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 3090",
+      "mem": 24.0,
+      "bw": 936.0,
+      "tf": 142,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 3090",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-3080",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 3080 (10GB)",
+      "mem": 10.0,
+      "bw": 760.0,
+      "tf": 119,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 3080 (10GB)",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-3060",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 3060 (12GB)",
+      "mem": 12.0,
+      "bw": 360.0,
+      "tf": 51,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 3060 (12GB)",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rx-7900-xt",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "Radeon RX 7900 XT",
+      "mem": 20.0,
+      "bw": 800.0,
+      "tf": 103,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "AMD Radeon RX 7900 XT",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.amd.com/en/products/specifications/graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-vector",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rx-7800-xt",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "Radeon RX 7800 XT",
+      "mem": 16.0,
+      "bw": 624.0,
+      "tf": 74.6,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "AMD Radeon RX 7800 XT",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.amd.com/en/products/specifications/graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-vector",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rx-9060-xt-8",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "Radeon RX 9060 XT 8GB",
+      "mem": 8.0,
+      "bw": 320.0,
+      "tf": 51.3,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "AMD Radeon RX 9060 XT 8GB",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.amd.com/en/products/specifications/graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-vector",
+      "performanceEstimated": true
+    },
+    {
+      "id": "arc-b580",
+      "v": "intel",
+      "kind": "gpu",
+      "name": "Intel Arc B580",
+      "mem": 12.0,
+      "bw": 456.0,
+      "tf": 116.5,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "Intel Arc B580",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": false,
+      "specSources": [
+        "https://www.intel.com/content/www/us/en/products/details/discrete-gpus/arc/desktop/b-series.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "arc-b570",
+      "v": "intel",
+      "kind": "gpu",
+      "name": "Intel Arc B570",
+      "mem": 10.0,
+      "bw": 380.0,
+      "tf": 101.5,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "Intel Arc B570",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": false,
+      "specSources": [
+        "https://www.intel.com/content/www/us/en/products/details/discrete-gpus/arc/desktop/b-series.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "nvidia-l40s",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "L40S",
+      "mem": 48.0,
+      "bw": 864.0,
+      "tf": 362.05,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA L40S",
+      "formFactor": "server",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-in/data-center/l40s/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense",
+      "performanceEstimated": true
+    },
+    {
+      "id": "nvidia-a100-80gb",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "A100 80GB (PCIe)",
+      "mem": 80.0,
+      "bw": 1935.0,
+      "tf": 312,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA A100 80GB (PCIe)",
+      "formFactor": "server",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-us/data-center/a100/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense",
+      "performanceEstimated": true
+    },
+    {
+      "id": "nvidia-h100-80gb",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "H100 80GB (PCIe)",
+      "mem": 80.0,
+      "bw": 2000.0,
+      "tf": 756,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA H100 80GB (PCIe)",
+      "formFactor": "server",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/content/dam/en-zz/Solutions/gtcs22/data-center/h100/PB-11133-001_v01.pdf"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-3060-ti",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 3060 Ti",
+      "mem": 8.0,
+      "bw": 448.0,
+      "tf": 64.8,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 3060 Ti",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-5050",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 5050",
+      "mem": 8.0,
+      "bw": 320.0,
+      "tf": 52.625,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 5050",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rx-7600",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "Radeon RX 7600",
+      "mem": 8.0,
+      "bw": 288.0,
+      "tf": 43,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "AMD Radeon RX 7600",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.amd.com/en/products/specifications/graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-vector",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rx-7600-xt",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "Radeon RX 7600 XT",
+      "mem": 16.0,
+      "bw": 288.0,
+      "tf": 45.2,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "AMD Radeon RX 7600 XT",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.amd.com/en/products/specifications/graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-vector",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rx-7900-gre",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "Radeon RX 7900 GRE",
+      "mem": 16.0,
+      "bw": 576.0,
+      "tf": 92,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "AMD Radeon RX 7900 GRE",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.amd.com/en/products/specifications/graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-vector",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rx-9070-gre",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "Radeon RX 9070 GRE",
+      "mem": 12.0,
+      "bw": 432.0,
+      "tf": 137,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "AMD Radeon RX 9070 GRE",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.amd.com/en/products/specifications/graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-a6000",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "RTX A6000",
+      "mem": 48.0,
+      "bw": 768.0,
+      "tf": 154.8,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA RTX A6000",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": true,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-us/products/workstations/rtx-a6000/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-a5000",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "RTX A5000",
+      "mem": 24.0,
+      "bw": 768.0,
+      "tf": 111.1,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA RTX A5000",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": true,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-us/products/workstations/rtx-a5000/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "intel-arc-pro-b60",
+      "v": "intel",
+      "kind": "gpu",
+      "name": "Intel Arc Pro B60",
+      "mem": 24.0,
+      "bw": 456.0,
+      "tf": 98.5,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "Intel Arc Pro B60",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": true,
+      "imageSupported": false,
+      "specSources": [
+        "https://www.intel.de/content/www/de/de/ark/products/series/242616/intel-arc-pro-b-series-graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "intel-arc-pro-b50",
+      "v": "intel",
+      "kind": "gpu",
+      "name": "Intel Arc Pro B50",
+      "mem": 16.0,
+      "bw": 224.0,
+      "tf": 85,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "Intel Arc Pro B50",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": true,
+      "imageSupported": false,
+      "specSources": [
+        "https://www.intel.de/content/www/de/de/ark/products/series/242616/intel-arc-pro-b-series-graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "nvidia-l4",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "L4",
+      "mem": 24.0,
+      "bw": 300.0,
+      "tf": 121,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA L4",
+      "formFactor": "server",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-us/data-center/l4/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense",
+      "performanceEstimated": true
+    },
+    {
+      "id": "nvidia-a10",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "A10",
+      "mem": 24.0,
+      "bw": 600.0,
+      "tf": 125,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA A10",
+      "formFactor": "server",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-us/data-center/products/a10-gpu/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense",
+      "performanceEstimated": true
+    },
+    {
+      "id": "nvidia-l40",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "L40",
+      "mem": 48.0,
+      "bw": 864.0,
+      "tf": 181.05,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA L40",
+      "formFactor": "server",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://images.nvidia.com/content/Solutions/data-center/vgpu-L40-datasheet.pdf"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense",
+      "performanceEstimated": true
+    },
+    {
+      "id": "nvidia-h100-sxm-80gb",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "H100 80GB (SXM)",
+      "mem": 80.0,
+      "bw": 3350.0,
+      "tf": 989.5,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA H100 80GB (SXM)",
+      "formFactor": "sxm",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-us/data-center/h100/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-5080-laptop",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 5080 Laptop GPU",
+      "mem": 16.0,
+      "bw": 896.0,
+      "tf": 166.75,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 5080 Laptop GPU",
+      "formFactor": "laptop",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/laptops/50-series/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-5070-ti-laptop",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 5070 Ti Laptop GPU",
+      "mem": 12.0,
+      "bw": 672.0,
+      "tf": 124,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+      "formFactor": "laptop",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/laptops/50-series/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-5070-laptop",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 5070 Laptop GPU",
+      "mem": 8.0,
+      "bw": 384.0,
+      "tf": 99.75,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 5070 Laptop GPU",
+      "formFactor": "laptop",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/laptops/50-series/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-5060-laptop",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 5060 Laptop GPU",
+      "mem": 8.0,
+      "bw": 384.0,
+      "tf": 71.5,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 5060 Laptop GPU",
+      "formFactor": "laptop",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/laptops/50-series/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-4080-laptop",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 4080 Laptop GPU",
+      "mem": 12.0,
+      "bw": 432.0,
+      "tf": 135.5,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 4080 Laptop GPU",
+      "formFactor": "laptop",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/laptops/40-series/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-3080-ti-laptop",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 3080 Ti Laptop GPU",
+      "mem": 16.0,
+      "bw": 512.0,
+      "tf": 94.6,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 3080 Ti Laptop GPU",
+      "formFactor": "laptop",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/laptops/30-series/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-pro-5000-blackwell-laptop",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "RTX PRO 5000 Blackwell Laptop GPU",
+      "mem": 24.0,
+      "bw": 896.0,
+      "tf": 228,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA RTX PRO 5000 Blackwell Laptop GPU",
+      "formFactor": "laptop",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/products/workstations/professional-laptops/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rtx-2080-ti",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce RTX 2080 Ti",
+      "mem": 11.0,
+      "bw": 616.0,
+      "tf": 107.6,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce RTX 2080 Ti",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.nvidia.com/en-gb/geforce/graphics-cards/compare/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true
+    },
+    {
+      "id": "gtx-1080-ti",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "GeForce GTX 1080 Ti",
+      "mem": 11.0,
+      "bw": 484.0,
+      "tf": 11.34,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA GeForce GTX 1080 Ti",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": false,
+      "specSources": [
+        "https://forums.developer.nvidia.com/t/driver-for-gtx-1080-ti/48605"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp32-fallback",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rx-6800-xt",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "Radeon RX 6800 XT",
+      "mem": 16.0,
+      "bw": 512.0,
+      "tf": 41.47,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "AMD Radeon RX 6800 XT",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.amd.com/en/products/specifications/graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-vector",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rx-6900-xt",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "Radeon RX 6900 XT",
+      "mem": 16.0,
+      "bw": 512.0,
+      "tf": 46.08,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "AMD Radeon RX 6900 XT",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.amd.com/en/products/specifications/graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-vector",
+      "performanceEstimated": true
+    },
+    {
+      "id": "rx-6700-xt",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "Radeon RX 6700 XT",
+      "mem": 12.0,
+      "bw": 384.0,
+      "tf": 26.43,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "AMD Radeon RX 6700 XT",
+      "formFactor": "desktop",
+      "priceScope": "card",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.amd.com/en/products/specifications/graphics.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-vector",
+      "performanceEstimated": true
+    },
+    {
+      "id": "tesla-p40",
+      "v": "nvidia",
+      "kind": "gpu",
+      "name": "Tesla P40",
+      "mem": 24.0,
+      "bw": 346.0,
+      "tf": 12,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "NVIDIA Tesla P40",
+      "formFactor": "server",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": false,
+      "specSources": [
+        "https://developer.nvidia.com/blog/new-pascal-gpus-accelerate-inference-in-the-data-center/"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp32-fallback",
+      "performanceEstimated": true
+    },
+    {
+      "id": "amd-instinct-mi50-32gb",
+      "v": "amd",
+      "kind": "gpu",
+      "name": "Instinct MI50 32GB",
+      "mem": 32.0,
+      "bw": 1024.0,
+      "tf": 26.5,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": null,
+      "src": [
+        "unknown"
+      ],
+      "q": "AMD Instinct MI50 32GB",
+      "formFactor": "server",
+      "priceScope": "system",
+      "ws": false,
+      "imageSupported": true,
+      "specSources": [
+        "https://www.amd.com/en/products/specifications/accelerators.html"
+      ],
+      "specChecked": "2026-10-11",
+      "computeBasis": "fp16-vector",
+      "performanceEstimated": true
     }
   ]
 }

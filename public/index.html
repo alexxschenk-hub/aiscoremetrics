@@ -11,7 +11,7 @@
 <script src="/assets/theme.js"></script>
 <!-- meta:start (generiert von scripts/build-seo.mjs, nicht von Hand bearbeiten) -->
 <title>Welche GPU für lokale LLMs? Hardware-Rechner für Tokens/s &amp; VRAM | AI Score Metrics</title>
-<meta name="description" content="Kostenloser Rechner: Passt dein LLM in den Speicher und wie schnell läuft es? NVIDIA- und AMD-Grafikkarten, Mac Studio, Mac mini und Ryzen AI Max im Vergleich – Tokens/s, VRAM, erster Token, Bildzeiten und Preis-Leistung.">
+<meta name="description" content="Kostenloser Rechner: Passt dein LLM in den Speicher und wie schnell läuft es? NVIDIA-, AMD- und Intel-Grafikkarten, Mac Studio, Mac mini und Ryzen AI Max im Vergleich – Tokens/s, VRAM, erster Token, Bildzeiten und Preis-Leistung.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="msvalidate.01" content="2C9532B8A584350EA03F5A1340330146">
 <link rel="canonical" href="https://aiscoremetrics.com/">
@@ -22,7 +22,7 @@
 <meta property="og:url" content="https://aiscoremetrics.com/">
 <meta property="og:site_name" content="AI Score Metrics">
 <meta property="og:title" content="AI Score Metrics – Welche GPU oder welcher Mac für lokale LLMs?">
-<meta property="og:description" content="60 Geräte, 17 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
+<meta property="og:description" content="121 Geräte, 17 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
 <meta property="og:image" content="https://aiscoremetrics.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -31,7 +31,7 @@
 <meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AI Score Metrics – Welche GPU oder welcher Mac für lokale LLMs?">
-<meta name="twitter:description" content="60 Geräte, 17 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
+<meta name="twitter:description" content="121 Geräte, 17 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
 <meta name="twitter:image" content="https://aiscoremetrics.com/og-image.png">
 <script type="application/ld+json">
 {
@@ -39,7 +39,7 @@
   "@type": "WebApplication",
   "name": "AI Score Metrics",
   "url": "https://aiscoremetrics.com/",
-  "description": "Rechner für lokale LLM-Hardware: NVIDIA- und AMD-Grafikkarten, Apple-Macs und Mini-PCs nach VRAM, Speicherbandbreite, Tokens pro Sekunde, Wartezeit und Preis-Leistung.",
+  "description": "Rechner für lokale LLM-Hardware: NVIDIA-, AMD- und Intel-Grafikkarten, Apple-Macs und Mini-PCs nach VRAM, Speicherbandbreite, Tokens pro Sekunde, Wartezeit und Preis-Leistung.",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Any",
   "browserRequirements": "Requires JavaScript",
@@ -152,6 +152,7 @@ td.num, th.num { text-align: right; }
 .ico svg { width: 22px; height: 22px; }
 .ico.nvidia { color: var(--accent); }
 .ico.amd { color: var(--amd); }
+.ico.intel { color: #0071c5; }
 .seg .vi { width: 15px; height: 15px; vertical-align: -3px; margin-right: 5px; }
 .tag { font: 600 10.5px var(--f-display); letter-spacing: .08em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); margin-right: 6px; vertical-align: 1px; }
 .price { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
@@ -347,35 +348,96 @@ footer { font-size: 12.5px; color: var(--muted); }
   <noscript>
     <div class="noscript-devs">
       <h2>Geräte im Vergleich / Devices compared</h2>
-      <p class="hint">Der Rechner braucht JavaScript. Hier die Hardware-Daten aller 60 Geräte als Tabelle. / The calculator needs JavaScript. Below are the specs of all 60 devices.</p>
+      <p class="hint">Der Rechner braucht JavaScript. Hier die Hardware-Daten aller 121 Geräte als Tabelle. / The calculator needs JavaScript. Below are the specs of all 121 devices.</p>
       <div class="tablebox"><table>
         <thead><tr><th>Gerät / Device</th><th>Hersteller / Vendor</th><th>Typ / Type</th><th class="num">Speicher / Memory (GB)</th><th class="num">Bandbreite / Bandwidth (GB/s)</th></tr></thead>
         <tbody>
+        <tr><td>GeForce RTX 3060 Ti · 8 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">8</td><td class="num">448</td></tr>
+        <tr><td>GeForce RTX 3070 · 8 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">8</td><td class="num">448</td></tr>
+        <tr><td>GeForce RTX 3070 Ti · 8 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">8</td><td class="num">608</td></tr>
+        <tr><td>GeForce RTX 4060 · 8 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">8</td><td class="num">272</td></tr>
+        <tr><td>GeForce RTX 4060 Laptop GPU · 8 GB</td><td>NVIDIA</td><td>Notebook-GPU</td><td class="num">8</td><td class="num">256</td></tr>
+        <tr><td>GeForce RTX 4060 Ti 8GB · 8 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">8</td><td class="num">288</td></tr>
+        <tr><td>GeForce RTX 5050 · 8 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">8</td><td class="num">320</td></tr>
+        <tr><td>GeForce RTX 5060 · 8 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">8</td><td class="num">448</td></tr>
+        <tr><td>GeForce RTX 5060 Laptop GPU · 8 GB</td><td>NVIDIA</td><td>Notebook-GPU</td><td class="num">8</td><td class="num">384</td></tr>
+        <tr><td>GeForce RTX 5060 Ti 8GB · 8 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">8</td><td class="num">448</td></tr>
+        <tr><td>GeForce RTX 5070 Laptop GPU · 8 GB</td><td>NVIDIA</td><td>Notebook-GPU</td><td class="num">8</td><td class="num">384</td></tr>
+        <tr><td>GeForce RTX 3080 (10GB) · 10 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">10</td><td class="num">760</td></tr>
+        <tr><td>GeForce GTX 1080 Ti · 11 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">11</td><td class="num">484</td></tr>
+        <tr><td>GeForce RTX 2080 Ti · 11 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">11</td><td class="num">616</td></tr>
+        <tr><td>GeForce RTX 3060 (12GB) · 12 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">12</td><td class="num">360</td></tr>
+        <tr><td>GeForce RTX 3080 12GB · 12 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">12</td><td class="num">912</td></tr>
+        <tr><td>GeForce RTX 3080 Ti · 12 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">12</td><td class="num">912</td></tr>
+        <tr><td>GeForce RTX 4070 · 12 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">12</td><td class="num">504</td></tr>
+        <tr><td>GeForce RTX 4070 Super · 12 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">12</td><td class="num">504</td></tr>
+        <tr><td>GeForce RTX 4070 Ti · 12 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">12</td><td class="num">504</td></tr>
+        <tr><td>GeForce RTX 4080 Laptop GPU · 12 GB</td><td>NVIDIA</td><td>Notebook-GPU</td><td class="num">12</td><td class="num">432</td></tr>
+        <tr><td>GeForce RTX 5070 Ti Laptop GPU · 12 GB</td><td>NVIDIA</td><td>Notebook-GPU</td><td class="num">12</td><td class="num">672</td></tr>
         <tr><td>RTX 5070 · 12 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">12</td><td class="num">672</td></tr>
+        <tr><td>GeForce RTX 3080 Ti Laptop GPU · 16 GB</td><td>NVIDIA</td><td>Notebook-GPU</td><td class="num">16</td><td class="num">512</td></tr>
+        <tr><td>GeForce RTX 4060 Ti 16GB · 16 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">16</td><td class="num">288</td></tr>
+        <tr><td>GeForce RTX 4070 Ti Super · 16 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">16</td><td class="num">672</td></tr>
+        <tr><td>GeForce RTX 4080 · 16 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">16</td><td class="num">717</td></tr>
+        <tr><td>GeForce RTX 4080 Super · 16 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">16</td><td class="num">736</td></tr>
+        <tr><td>GeForce RTX 4090 Laptop GPU · 16 GB</td><td>NVIDIA</td><td>Notebook-GPU</td><td class="num">16</td><td class="num">576</td></tr>
+        <tr><td>GeForce RTX 5080 Laptop GPU · 16 GB</td><td>NVIDIA</td><td>Notebook-GPU</td><td class="num">16</td><td class="num">896</td></tr>
         <tr><td>RTX 5060 Ti 16 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">16</td><td class="num">448</td></tr>
         <tr><td>RTX 5070 Ti · 16 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">16</td><td class="num">896</td></tr>
         <tr><td>RTX 5080 · 16 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">16</td><td class="num">960</td></tr>
         <tr><td>RTX PRO 2000 Blackwell · 16 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">16</td><td class="num">288</td></tr>
         <tr><td>RTX 4000 Ada · 20 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">20</td><td class="num">360</td></tr>
+        <tr><td>A10 · 24 GB</td><td>NVIDIA</td><td>Server · PCIe</td><td class="num">24</td><td class="num">600</td></tr>
+        <tr><td>GeForce RTX 3090 · 24 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">24</td><td class="num">936</td></tr>
+        <tr><td>GeForce RTX 3090 Ti · 24 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">24</td><td class="num">1 008</td></tr>
+        <tr><td>GeForce RTX 5090 Laptop GPU · 24 GB</td><td>NVIDIA</td><td>Notebook-GPU</td><td class="num">24</td><td class="num">896</td></tr>
+        <tr><td>L4 · 24 GB</td><td>NVIDIA</td><td>Server · PCIe</td><td class="num">24</td><td class="num">300</td></tr>
         <tr><td>RTX 4090 · 24 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">24</td><td class="num">1 008</td></tr>
+        <tr><td>RTX A5000 · 24 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">24</td><td class="num">768</td></tr>
         <tr><td>RTX PRO 4000 Blackwell · 24 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">24</td><td class="num">672</td></tr>
+        <tr><td>RTX PRO 5000 Blackwell Laptop GPU · 24 GB</td><td>NVIDIA</td><td>Notebook-GPU</td><td class="num">24</td><td class="num">896</td></tr>
+        <tr><td>Tesla P40 · 24 GB</td><td>NVIDIA</td><td>Server · PCIe</td><td class="num">24</td><td class="num">346</td></tr>
         <tr><td>RTX 5000 Ada · 32 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">32</td><td class="num">576</td></tr>
         <tr><td>RTX 5090 · 32 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">32</td><td class="num">1 792</td></tr>
         <tr><td>RTX PRO 4500 Blackwell · 32 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">32</td><td class="num">896</td></tr>
+        <tr><td>L40 · 48 GB</td><td>NVIDIA</td><td>Server · PCIe</td><td class="num">48</td><td class="num">864</td></tr>
+        <tr><td>L40S · 48 GB</td><td>NVIDIA</td><td>Server · PCIe</td><td class="num">48</td><td class="num">864</td></tr>
         <tr><td>RTX 6000 Ada · 48 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">48</td><td class="num">960</td></tr>
+        <tr><td>RTX A6000 · 48 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">48</td><td class="num">768</td></tr>
         <tr><td>RTX PRO 5000 Blackwell 48 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">48</td><td class="num">1 344</td></tr>
         <tr><td>RTX PRO 5000 Blackwell 72 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">72</td><td class="num">1 344</td></tr>
+        <tr><td>A100 80GB (PCIe) · 80 GB</td><td>NVIDIA</td><td>Server · PCIe</td><td class="num">80</td><td class="num">1 935</td></tr>
+        <tr><td>H100 80GB (PCIe) · 80 GB</td><td>NVIDIA</td><td>Server · PCIe</td><td class="num">80</td><td class="num">2 000</td></tr>
+        <tr><td>H100 80GB (SXM) · 80 GB</td><td>NVIDIA</td><td>Server · SXM</td><td class="num">80</td><td class="num">3 350</td></tr>
         <tr><td>RTX PRO 6000 Blackwell · 96 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">96</td><td class="num">1 792</td></tr>
         <tr><td>RTX PRO 6000 Blackwell Max-Q · 96 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">96</td><td class="num">1 792</td></tr>
+        <tr><td>Radeon RX 7600 · 8 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">8</td><td class="num">288</td></tr>
+        <tr><td>Radeon RX 9060 XT 8GB · 8 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">8</td><td class="num">320</td></tr>
+        <tr><td>Radeon RX 6700 XT · 12 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">12</td><td class="num">384</td></tr>
+        <tr><td>Radeon RX 7700 XT · 12 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">12</td><td class="num">432</td></tr>
+        <tr><td>Radeon RX 9070 GRE · 12 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">12</td><td class="num">432</td></tr>
+        <tr><td>Radeon RX 6800 XT · 16 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">16</td><td class="num">512</td></tr>
+        <tr><td>Radeon RX 6900 XT · 16 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">16</td><td class="num">512</td></tr>
+        <tr><td>Radeon RX 7600 XT · 16 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">16</td><td class="num">288</td></tr>
+        <tr><td>Radeon RX 7800 XT · 16 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">16</td><td class="num">624</td></tr>
+        <tr><td>Radeon RX 7900 GRE · 16 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">16</td><td class="num">576</td></tr>
         <tr><td>RX 9060 XT 16 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">16</td><td class="num">322</td></tr>
         <tr><td>RX 9070 · 16 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">16</td><td class="num">640</td></tr>
         <tr><td>RX 9070 XT · 16 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">16</td><td class="num">640</td></tr>
+        <tr><td>Radeon RX 7900 XT · 20 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">20</td><td class="num">800</td></tr>
         <tr><td>RX 7900 XTX · 24 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">24</td><td class="num">960</td></tr>
+        <tr><td>Instinct MI50 32GB · 32 GB</td><td>AMD</td><td>Server · PCIe</td><td class="num">32</td><td class="num">1 024</td></tr>
         <tr><td>Radeon AI PRO R9700 · 32 GB (Workstation)</td><td>AMD</td><td>Grafikkarte</td><td class="num">32</td><td class="num">640</td></tr>
         <tr><td>Radeon PRO W7800 32 GB (Workstation)</td><td>AMD</td><td>Grafikkarte</td><td class="num">32</td><td class="num">576</td></tr>
         <tr><td>Radeon PRO W7800 48 GB (Workstation)</td><td>AMD</td><td>Grafikkarte</td><td class="num">48</td><td class="num">864</td></tr>
         <tr><td>Radeon PRO W7900 · 48 GB (Workstation)</td><td>AMD</td><td>Grafikkarte</td><td class="num">48</td><td class="num">864</td></tr>
         <tr><td>Ryzen AI Max+ 395 · 128 GB</td><td>AMD</td><td>Mini-PC</td><td class="num">128</td><td class="num">256</td></tr>
+        <tr><td>Intel Arc B570 · 10 GB</td><td>Intel</td><td>Grafikkarte</td><td class="num">10</td><td class="num">380</td></tr>
+        <tr><td>Intel Arc B580 · 12 GB</td><td>Intel</td><td>Grafikkarte</td><td class="num">12</td><td class="num">456</td></tr>
+        <tr><td>Intel Arc Pro B50 · 16 GB (Workstation)</td><td>Intel</td><td>Grafikkarte</td><td class="num">16</td><td class="num">224</td></tr>
+        <tr><td>Intel Arc Pro B60 · 24 GB (Workstation)</td><td>Intel</td><td>Grafikkarte</td><td class="num">24</td><td class="num">456</td></tr>
+        <tr><td>Intel Arc Pro B65 · 32 GB (Workstation)</td><td>Intel</td><td>Grafikkarte</td><td class="num">32</td><td class="num">608</td></tr>
+        <tr><td>Intel Arc Pro B70 · 32 GB (Workstation)</td><td>Intel</td><td>Grafikkarte</td><td class="num">32</td><td class="num">608</td></tr>
         <tr><td>MacBook Pro M1 Pro 16-GPU · 16 GB</td><td>Apple</td><td>MacBook Pro</td><td class="num">16</td><td class="num">200</td></tr>
         <tr><td>MacBook Pro M5 Pro 20-GPU · 24 GB</td><td>Apple</td><td>MacBook Pro</td><td class="num">24</td><td class="num">307</td></tr>
         <tr><td>MacBook Pro M1 Pro 16-GPU · 32 GB</td><td>Apple</td><td>MacBook Pro</td><td class="num">32</td><td class="num">200</td></tr>
@@ -607,8 +669,8 @@ Score = Perf / system price   (best device = 100)</div>
   ];
   const IMG_REF_INDEX = 330 * 0.5;                     // Rechenindex RTX 4090
   const IMG_VENDOR = { nvidia: 1, amd: 1.7, apple: 2.1 }; // kalibriert an typischen SDXL-Zeiten je Plattform
-  const N = "nvidia", A = "apple", AM = "amd";
-  const VENDOR = { nvidia: "NVIDIA", amd: "AMD", apple: "Apple" };
+  const N = "nvidia", A = "apple", AM = "amd", IN = "intel";
+  const VENDOR = { nvidia: "NVIDIA", amd: "AMD", intel: "Intel", apple: "Apple" };
   // tf: NVIDIA = FP16 tensor dense (Blackwell AI TOPS/8, Ada /4), Apple = GPU FP32. pf = prefill factor (M5 Neural Accelerators).
   let DEVICES = [];   // wird aus data/devices.json + data/prices.json geladen
   let UPDATED = null;
@@ -634,13 +696,14 @@ Score = Perf / system price   (best device = 100)</div>
       base: "GPU-Preis + PC-Basis", baseAria: "Kosten PC-Basis in Euro",
       wired: "GPU-Speicherlimit angehoben (alles außer dem System)", reset: "Preise zurücksetzen",
       hint: "Klick auf eine Spaltenüberschrift sortiert, ein zweiter Klick dreht die Reihenfolge um.",
-      hintPrices: "Preise sind editierbar und bleiben in deinem Browser gespeichert. Orange markierte Preise sind Schätzungen. Preise gelten für Deutschland in Euro.",
+      hintPrices: "Preise sind editierbar und bleiben in deinem Browser gespeichert. Orange markierte Preise sind Schätzungen. Preise gelten für Deutschland in Euro. Leere Felder zählen nicht zur Preis-Leistung. Bei Notebook- und Server-GPUs bitte den kompletten Systempreis eingeben; der PC-Aufpreis gilt nur für Desktopkarten.",
       showPrices: "Preise und Preis-Leistung einblenden (Deutschland, EUR)",
       uses: { all: "Alle Modelle", coding: "Agentic Coding", chat: "Chat & Assistenz", large: "Große Modelle" }, useLab: "Einsatzzweck", active: "aktiv",
       dense: "dicht", effective: "effektiv",
       th: { rank: "#", name: "Gerät", price: "Systempreis €", fits: "Modelle passen", perf: "Leistung", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini-PC" },
-      src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", man: "manuell:", own: "eigener Preis" },
+      src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", man: "manuell:", own: "eigener Preis", unknown: "Preis offen" },
+      nonePrice: "Preis eingeben, um die Kosten zu vergleichen.",
       inclPc: (c) => `inkl. ${c} € PC`, edited: "Von dir geändert",
       fitsYes: "passt", fitsNo: "passt nicht", need: "GB nötig", usable: "GB nutzbar", notInProfile: "nicht ausgewählt",
       fitsAria: (a, b) => `${a} von ${b} Profil-Modellen passen`,
@@ -728,7 +791,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
         <li>GPU-Preise: niedrigster Neupreis Deutschland laut gpuprix.com (Händlerdaten von Alternate), täglich automatisch aktualisiert, zuletzt {{updated}}. Gezeigt wird die günstigste lieferbare Karte. Ist keine lieferbar, der letzte Tiefstpreis. Einzelne Preise können manuell gesetzt werden, aktuell die RTX 5090 nach Geizhals.</li>
         <li>Mac Studio M5 Ultra 96 GB: Apple-Listenpreis 6.599 €. Mac Studio M5 Max 36 GB: 2.999 €. Mac mini M6 16 GB: 1.049 €, M5 Pro 24 GB: 1.999 €. Andere Speicherausbauten und ältere Macs: geschätzt.</li>
         <li>Ryzen AI Max+ 395 mit 128 GB: Mini-PCs von Framework, GMKtec oder Minisforum, Preis geschätzt.</li>
-        <li>Specs: NVIDIA-, AMD- und Apple-Datenblätter. Rechenleistung bei RTX PRO 2000/4000/4500 und den Ada-Workstation-Karten aus AI TOPS abgeleitet, daher Näherungen. RTX PRO 6000 Max-Q: Preis geschätzt. RTX PRO 4500: Amazon-Preis vom 11.10.</li>
+        <li>Specs: NVIDIA-, AMD-, Intel- und Apple-Datenblätter. Notebook-/Serverkarten ohne bestätigten Europreis haben offene Preisfelder. Tempo neuer Karten ist eine Roofline-Schätzung mit angenommenen Effizienzfaktoren; Intel ist nicht benchmark-kalibriert. Pascal nutzt FP32 als Rechenbasis. SXM benötigt eine passende Serverplattform; Notebooktempo hängt von TGP und Kühlung ab. Rechenleistung bei RTX PRO 2000/4000/4500 und den Ada-Workstation-Karten aus AI TOPS abgeleitet, daher Näherungen. RTX PRO 6000 Max-Q: Preis geschätzt. RTX PRO 4500: Amazon-Preis vom 11.10.</li>
         <li>Die Links führen zum Geizhals-Preisvergleich (ohne Affiliate).</li>
       </ul>
     </section>`
@@ -742,13 +805,14 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       base: "GPU price + base PC", baseAria: "Base PC cost in euros",
       wired: "GPU memory limit raised (everything except the OS)", reset: "Reset prices",
       hint: "Click a column header to sort, click again to reverse.",
-      hintPrices: "Prices are editable and stay saved in your browser. Prices marked in orange are estimates. Prices are for Germany in euros.",
+      hintPrices: "Prices are editable and stay saved in your browser. Prices marked in orange are estimates. Prices are for Germany in euros. Empty fields are excluded from value rankings. For laptop and server GPUs, enter the full system price; the PC surcharge applies only to desktop cards.",
       showPrices: "Show prices and value for money (Germany, EUR)",
       uses: { all: "All models", coding: "Agentic coding", chat: "Chat & assistant", large: "Large models" }, useLab: "Use case", active: "active",
       dense: "dense", effective: "effective",
       th: { rank: "#", name: "Device", price: "System price €", fits: "Models that fit", perf: "Performance", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini PC" },
-      src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", man: "manual:", own: "your price" },
+      src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", man: "manual:", own: "your price", unknown: "price unavailable" },
+      nonePrice: "Enter a price to compare costs.",
       inclPc: (c) => `incl. €${c} PC`, edited: "Changed by you",
       fitsYes: "fits", fitsNo: "does not fit", need: "GB needed", usable: "GB usable", notInProfile: "not selected",
       fitsAria: (a, b) => `${a} of ${b} models in this use case fit`,
@@ -836,7 +900,7 @@ Score     = Perf / system price   (best device = 100)</div>
         <li>GPU prices: lowest new price in Germany per gpuprix.com (retailer data from Alternate), updated automatically every day, last on {{updated}}. Shown is the cheapest card in stock, or the last lowest price if none is in stock. Individual prices can be set manually, currently the RTX 5090 per Geizhals.</li>
         <li>Mac Studio M5 Ultra 96 GB: Apple list price €6,599. Mac Studio M5 Max 36 GB: €2,999. Mac mini M6 16 GB: €1,049, M5 Pro 24 GB: €1,999. Other memory configurations and older Macs: estimated.</li>
         <li>Ryzen AI Max+ 395 with 128 GB: mini PCs from Framework, GMKtec or Minisforum, estimated price.</li>
-        <li>Specs: NVIDIA, AMD and Apple datasheets. Compute for RTX PRO 2000/4000/4500 and the Ada workstation cards is derived from AI TOPS, so approximate. RTX PRO 6000 Max-Q: estimated price. RTX PRO 4500: Amazon price from 11 Oct.</li>
+        <li>Specs: NVIDIA, AMD, Intel and Apple datasheets. Laptop/server cards without a verified euro price have empty price fields. New GPU speeds are roofline estimates with assumed efficiency factors; Intel has no benchmark calibration. Pascal uses an FP32 compute basis. SXM requires a compatible server platform; laptop speed depends on TGP and cooling. Compute for RTX PRO 2000/4000/4500 and the Ada workstation cards is derived from AI TOPS, so approximate. RTX PRO 6000 Max-Q: estimated price. RTX PRO 4500: Amazon price from 11 Oct.</li>
         <li>Links go to the Geizhals price comparison (no affiliate).</li>
       </ul>
     </section>`
@@ -871,7 +935,10 @@ Score     = Perf / system price   (best device = 100)</div>
   const shownModels = () => state.use === "all" ? MODELS : MODELS.filter((m) => m.use.includes(state.use));
   const srcText = (d) => { const s = L().src[d.src[0]]; return d.src[1] ? `${s} ${d.src[1]}` : s; };
   const priceOf = (d) => state.prices[d.id] != null ? state.prices[d.id] : d.price;
-  const sysPrice = (d) => priceOf(d) + (d.kind === "gpu" && state.base ? state.baseCost : 0);
+  const desktopCard = (d) => d.kind === "gpu" && (!d.formFactor || d.formFactor === "desktop");
+  const sysPrice = (d) => priceOf(d) > 0 ? priceOf(d) + (desktopCard(d) && state.base ? state.baseCost : 0) : null;
+  const devKind = (d) => d.formFactor === "laptop" ? (state.lang === "de" ? "Notebook-GPU" : "Laptop GPU") : ["server", "sxm"].includes(d.formFactor) ? (d.formFactor === "sxm" ? "Server · SXM" : "Server · PCIe") : d.ws ? L().ws : L().kinds[d.kind];
+  const specNote = (d) => d.performanceEstimated ? (state.lang === "de" ? "Tempo geschätzt" : "Speed estimated") + (d.formFactor === "laptop" ? (state.lang === "de" ? " · abhängig von TGP/Kühlung" : " · depends on TGP/cooling") : "") + (d.computeBasis === "fp32-fallback" ? " · FP32" : "") : "";
   // Reserve für Betriebssystem und Hintergrundprogramme bei geteiltem Arbeitsspeicher
   const osReserve = (d) => d.v === A ? 6 : 4;
   function usable(d) {
@@ -951,7 +1018,7 @@ Score     = Perf / system price   (best device = 100)</div>
     if (key === "price") return r.sp;
     if (key === "fits") return r.fitCount;
     if (key === "perf") return r.perf;
-    if (key === "score") return r.score;
+    if (key === "score") return r.sp > 0 ? r.score : null;
     if (key.startsWith("m:")) { const c = r.per[key.slice(2)]; return c.fits ? c.tg : -1; }
     if (key.startsWith("x:")) return r.px[key.slice(2)];
     return 0;
@@ -994,14 +1061,14 @@ Score     = Perf / system price   (best device = 100)</div>
   function renderControls() {
     document.querySelectorAll("#lang a").forEach((a) => { if (a.dataset.id === state.lang) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
     $("#use").innerHTML = USES.map((u) => `<button type="button" data-id="${u.id}" aria-pressed="${u.id === state.use}">${esc(L().uses[u.id])}</button>`).join("");
-    $("#vendor").innerHTML = [["all", L().all, ""], [N, "NVIDIA", ICONS.gpu], [AM, "AMD", ICONS.gpu], [A, "Apple", ICONS.mac], ["ws", L().ws, ICONS.gpu]].map(([id, n, ic]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${ic.replace("<svg ", '<svg class="vi" ')}${n}</button>`).join("");
+    $("#vendor").innerHTML = [["all", L().all, ""], [N, "NVIDIA", ICONS.gpu], [AM, "AMD", ICONS.gpu], [IN, "Intel", ICONS.gpu], [A, "Apple", ICONS.mac], ["ws", L().ws, ICONS.gpu]].map(([id, n, ic]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${ic.replace("<svg ", '<svg class="vi" ')}${n}</button>`).join("");
     $("#view").innerHTML = ["all", "one", "cmp"].map((id) => `<button type="button" data-id="${id}" aria-pressed="${id === state.view}">${L().views[id]}</button>`).join("");
     $("#vendor-field").hidden = state.view !== "all";
     const picker = (slot, label) => {
       const pk = state[slot];
       const devs = DEVICES.filter((d) => d.v === pk.v).sort((a, b) => a.name.localeCompare(b.name, L().locale, { numeric: true }));
       return `<span class="lab">${label}</span><div class="pair">
-        <select data-slot="${slot}" data-part="v" aria-label="${label}: ${L().vendor}"><option value="">${L().pickVendor}</option>${[N, AM, A].map((v) => `<option value="${v}" ${v === pk.v ? "selected" : ""}>${VENDOR[v]}</option>`).join("")}</select>
+        <select data-slot="${slot}" data-part="v" aria-label="${label}: ${L().vendor}"><option value="">${L().pickVendor}</option>${[N, AM, IN, A].map((v) => `<option value="${v}" ${v === pk.v ? "selected" : ""}>${VENDOR[v]}</option>`).join("")}</select>
         <select data-slot="${slot}" data-part="id" aria-label="${label}: ${L().model}" ${pk.v ? "" : "disabled"}><option value="">${pk.v ? L().pickModel : "–"}</option>${devs.map((d) => `<option value="${d.id}" ${d.id === pk.id ? "selected" : ""}>${esc(devLabel(d))}${d.kind !== "gpu" ? " (" + L().kinds[d.kind] + ")" : ""}</option>`).join("")}</select>
       </div>`;
     };
@@ -1035,7 +1102,7 @@ Score     = Perf / system price   (best device = 100)</div>
       const imgIdx = r.d.tf * r.d.etaC * r.d.pf * (IMG_VENDOR[r.d.v] || 1);
       const imgFits = usable(r.d) >= pxI.gb;
       r.px = c.fits ? { tg: c.tg, ttft: pxP / c.pp, code: pxP / c.pp + CODE_TOKENS / c.tg } : { tg: null, ttft: null, code: null };
-      r.px.img = imgFits ? pxI.ref * IMG_REF_INDEX / imgIdx : null;
+      r.px.img = imgFits && r.d.imageSupported !== false ? pxI.ref * IMG_REF_INDEX / imgIdx : null;
     });
     const picked = state.view === "all" ? [] : (state.view === "cmp" ? [state.pickA.id, state.pickB.id] : [state.pickA.id]).filter(Boolean);
     const vis = picked.length
@@ -1047,23 +1114,23 @@ Score     = Perf / system price   (best device = 100)</div>
     const usedModels = shownModels();
 
     // Summary
-    const best = [...vis].sort((a, b) => b.score - a.score)[0];
+    const best = vis.filter((r) => r.sp > 0).sort((a, b) => b.score - a.score)[0];
     const fastest = [...vis].sort((a, b) => b.perf - a.perf)[0];
-    const cheapFull = [...vis].filter((r) => r.fitCount === usedModels.length).sort((a, b) => a.sp - b.sp)[0];
+    const cheapFull = [...vis].filter((r) => r.fitCount === usedModels.length && r.sp > 0).sort((a, b) => a.sp - b.sp)[0];
     const single = MODELS.find((m) => m.id === state.pxModel);
     const sumItem = (k, r, s) => `<div class="sum"><span class="k">${k}</span><span class="v">${r ? esc(devLabel(r.d)) : t.none}</span><span class="s">${s}</span></div>`;
     const okBest = best && best.perf > 0;
     if (state.showPrices) {
       $("#summary").innerHTML =
-      sumItem(t.sBest, okBest ? best : null, okBest ? `${eur(best.sp)} System · Score 100` : t.noneFits(ctxLabel(ctx))) +
-      sumItem(t.sFast, okBest ? fastest : null, okBest ? (single ? `${fmtTok(fastest.per[single.id].tg)} tok/s · Prompt ${fmt(fastest.per[single.id].pp)} tok/s` : `${eur(fastest.sp)} System · Score ${fmt(fastest.score)}`) : "") +
-      sumItem(single ? t.sCheapOne : t.sCheap, cheapFull, cheapFull ? `${eur(cheapFull.sp)} System` + (single ? ` · ${fmtTok(cheapFull.per[single.id].tg)} tok/s` : "") : t.noneFits(ctxLabel(ctx)));
+      sumItem(t.sBest, okBest ? best : null, okBest ? `${eur(best.sp)} System · Score ${fmt(best.score)}` : vis.some((r) => r.perf > 0 && !(r.sp > 0)) ? t.nonePrice : t.noneFits(ctxLabel(ctx))) +
+      sumItem(t.sFast, fastest?.perf > 0 ? fastest : null, fastest?.perf > 0 ? (single ? `${fmtTok(fastest.per[single.id].tg)} tok/s · Prompt ${fmt(fastest.per[single.id].pp)} tok/s` : `${t.th.perf} ${fmt(fastest.perfN)}`) : "") +
+      sumItem(single ? t.sCheapOne : t.sCheap, cheapFull, cheapFull ? `${eur(cheapFull.sp)} System` + (single ? ` · ${fmtTok(cheapFull.per[single.id].tg)} tok/s` : "") : vis.some((r) => r.fitCount === usedModels.length && !(r.sp > 0)) ? t.nonePrice : t.noneFits(ctxLabel(ctx)));
     } else {
       const top = (f) => [...vis].filter(f).sort((a, b) => b.perf - a.perf)[0];
       const tg = top((r) => r.d.kind === "gpu"), tu = top((r) => r.d.kind !== "gpu");
       const line = (r) => r && r.perf > 0 ? `${t.th.perf} ${fmt(r.perfN)} · ${r.fitCount}/${usedModels.length} ${t.fitsShort}` : t.noneFits(ctxLabel(ctx));
       $("#summary").innerHTML =
-        sumItem(t.sFast, okBest ? fastest : null, okBest ? line(fastest) : t.noneFits(ctxLabel(ctx))) +
+        sumItem(t.sFast, fastest?.perf > 0 ? fastest : null, fastest?.perf > 0 ? line(fastest) : t.noneFits(ctxLabel(ctx))) +
         sumItem(t.sTopGpu, tg && tg.perf > 0 ? tg : null, line(tg)) +
         sumItem(t.sTopUni, tu && tu.perf > 0 ? tu : null, line(tu));
     }
@@ -1091,8 +1158,8 @@ Score     = Perf / system price   (best device = 100)</div>
         ["mem", (r) => r.d.mem, (v) => `${v} GB`, 1],
         ["bw", (r) => r.d.bw, (v) => `${fmt(v)} GB/s`, 1],
         ["grp", "score"],
-        ...(state.showPrices ? [["score", (r) => r.score, (v) => fmt(v), 1]] : []),
-        ["rank", (r) => byScore.indexOf(r) + 1, (v) => t.rankOf(v, rows.length), -1],
+        ...(state.showPrices ? [["score", (r) => r.sp > 0 ? r.score : null, (v) => fmt(v), 1]] : []),
+        ["rank", (r) => state.showPrices && !(r.sp > 0) ? null : byScore.indexOf(r) + 1, (v) => t.rankOf(v, rows.length), -1],
         ["perf", (r) => r.perfN, (v) => fmt(v), 1],
         ["fits", (r) => r.fitCount, (v) => `${v} / ${usedModels.length}`, 1],
         ["grp", "px"],
@@ -1104,7 +1171,7 @@ Score     = Perf / system price   (best device = 100)</div>
         ["memuse", () => null, null, 0, memTxt]
       ];
       const cols = vis;
-      const head = `<tr><th></th>${cols.map((r) => `<th><span class="devrow"><span class="ico ${r.d.v}">${ICONS[r.d.kind]}</span><span>${esc(devLabel(r.d))}<br><span class="tag" style="margin:0">${VENDOR[r.d.v]} · ${r.d.ws ? t.ws : t.kinds[r.d.kind]}</span></span></span></th>`).join("")}${cols.length === 2 ? "<th></th>" : ""}</tr>`;
+      const head = `<tr><th></th>${cols.map((r) => `<th><span class="devrow"><span class="ico ${r.d.v}">${ICONS[r.d.kind]}</span><span>${esc(devLabel(r.d))}<br><span class="tag" style="margin:0">${VENDOR[r.d.v]} · ${devKind(r.d)}</span></span></span></th>`).join("")}${cols.length === 2 ? "<th></th>" : ""}</tr>`;
       const body = ROWS.map((row) => {
         if (row[0] === "grp") return `<tr class="grp"><td colspan="${cols.length + (cols.length === 2 ? 2 : 1)}">${t.dGroups[row[1]]}</td></tr>`;
         const [key, val, show, dir, raw] = row;
@@ -1136,14 +1203,14 @@ Score     = Perf / system price   (best device = 100)</div>
         return `<span class="dot ${f ? "on" : ""} ${inP ? "sel" : ""}" title="${esc(tip)}"></span>`;
       }).join("");
       const edited = state.prices[d.id] != null;
-      const sub = `${d.mem} GB · ${fmt(d.bw)} GB/s` + (state.showPrices && d.kind === "gpu" && state.base ? ` · ${t.inclPc(fmt(state.baseCost))}` : "");
+      const sub = `${d.mem} GB · ${fmt(d.bw)} GB/s` + (state.showPrices && desktopCard(d) && state.base ? ` · ${t.inclPc(fmt(state.baseCost))}` : "");
       return `<tr class="${r.perf === 0 ? "zero" : ""}">
         <td class="rank">${picked.length ? globalRank.indexOf(r) + 1 : i + 1}</td>
-        <td><div class="devrow"><span class="ico ${d.v}" title="${t.kinds[d.kind]}">${ICONS[d.kind]}</span><div class="dev"><b><span class="tag">${VENDOR[d.v]} · ${d.ws ? t.ws : t.kinds[d.kind]}</span>${esc(devLabel(d))}</b><span>${sub}</span></div></div></td>
-        ${state.showPrices ? `<td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d)}" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${d.est && !edited ? "est" : ""}">${edited ? t.src.own : srcText(d)}</span></td>` : ""}
+        <td><div class="devrow"><span class="ico ${d.v}" title="${t.kinds[d.kind]}">${ICONS[d.kind]}</span><div class="dev"><b><span class="tag">${VENDOR[d.v]} · ${devKind(d)}</span>${esc(devLabel(d))}</b><span>${sub}${specNote(d) ? " · " + esc(specNote(d)) : ""}${d.specSources ? ` · <a href="${esc(d.specSources[0])}" target="_blank" rel="noopener">Specs</a>` : ""}</span></div></div></td>
+        ${state.showPrices ? `<td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d) ?? ""}" placeholder="—" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${d.est && !edited ? "est" : ""}">${edited ? t.src.own : srcText(d)}</span></td>` : ""}
         <td><div class="dots" aria-label="${esc(t.fitsAria(r.fitCount, usedModels.length))}">${dots}</div></td>
         <td><div class="barcell"><div class="track"><div class="fill ${state.showPrices ? "p" : ""}" style="width:${r.perfN.toFixed(1)}%"></div></div><span class="mono">${fmt(r.perfN)}</span></div></td>
-        ${state.showPrices ? `<td><div class="barcell"><div class="track"><div class="fill" style="width:${r.score.toFixed(1)}%"></div></div><span class="mono">${fmt(r.score)}</span></div></td>
+        ${state.showPrices ? `<td><div class="barcell"><div class="track"><div class="fill" style="width:${r.score.toFixed(1)}%"></div></div><span class="mono">${r.sp > 0 ? fmt(r.score) : "—"}</span></div></td>
         <td><a class="ext" href="https://geizhals.at/?fs=${encodeURIComponent(d.q)}" target="_blank" rel="noopener">${t.prices}</a></td>` : ""}
       </tr>`;
     }).join("");
