@@ -565,10 +565,11 @@ Score     = Perf / system price   (best device = 100)</div>
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   let navLang = "de";
   try { navLang = (navigator.language || "de").toLowerCase().startsWith("de") ? "de" : "en"; } catch (e) {}
-  const state = Object.assign({ showPrices: false, quant: "q4", view: "all", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", sortKey: "perf", sortDir: -1, base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
+  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, quant: "q4", view: "all", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
   delete state.sort;
   if (!T[state.lang]) state.lang = "de";
-  if (!state.showPrices && (state.sortKey === "price" || state.sortKey === "score")) { state.sortKey = "perf"; state.sortDir = -1; }
+  delete state.sortKey; delete state.sortDir;
+  state.sorts = Object.assign({ rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, state.sorts || {});
   function persist() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 
   const $ = (s) => document.querySelector(s);
@@ -652,7 +653,6 @@ Score     = Perf / system price   (best device = 100)</div>
   // Sorting: default direction per key (1 = ascending, -1 = descending)
   const DEFAULT_DIR = { name: 1, price: 1, fits: -1, perf: -1, score: -1, "x:tg": -1, "x:ttft": 1, "x:code": 1, "x:img": 1 };
   function sortValue(r, key) {
-    if (!state.showPrices && (key === "price" || key === "score")) key = "perf";
     if (key === "name") return r.d.name;
     if (key === "price") return r.sp;
     if (key === "fits") return r.fitCount;
@@ -662,16 +662,28 @@ Score     = Perf / system price   (best device = 100)</div>
     if (key.startsWith("x:")) return r.px[key.slice(2)];
     return 0;
   }
-  function setSort(key) {
-    if (state.sortKey === key) state.sortDir = -state.sortDir;
-    else { state.sortKey = key; state.sortDir = key.startsWith("m:") ? -1 : DEFAULT_DIR[key]; }
+  // Jede Tabelle hat ihre eigene Sortierung (rank, px, mx)
+  const effKey = (k) => !state.showPrices && (k === "price" || k === "score") ? "perf" : k;
+  function setSort(table, key) {
+    const st = state.sorts[table];
+    if (effKey(st.k) === key) st.d = key === st.k ? -st.d : 1;
+    else { st.k = key; st.d = key.startsWith("m:") ? -1 : DEFAULT_DIR[key]; }
     persist(); render();
   }
-  function sortHead(key, label, cls) {
-    const active = state.sortKey === key;
-    const arr = active ? (state.sortDir > 0 ? "↑" : "↓") : "";
-    const aria = active ? ` aria-sort="${state.sortDir > 0 ? "ascending" : "descending"}"` : "";
-    return `<th${cls ? ` class="${cls}"` : ""}${aria}><button type="button" class="sort" data-sort="${key}" title="${esc(L().sortBy(label.replace(/<[^>]+>/g, "")))}">${label}<span class="arr">${arr}</span></button></th>`;
+  function sortList(list, table) {
+    const st = state.sorts[table], key = effKey(st.k), dir = key === st.k ? st.d : -1;
+    return [...list].sort((a, b) => {
+      const x = sortValue(a, key), y = sortValue(b, key);
+      if (x == null || y == null) return x == null && y == null ? b.perf - a.perf : x == null ? 1 : -1;  // ohne Wert immer ans Ende
+      const c = typeof x === "string" ? x.localeCompare(y, L().locale, { numeric: true }) : x - y;
+      return c * dir || b.perf - a.perf || b.score - a.score;
+    });
+  }
+  function sortHead(table, key, label, cls) {
+    const st = state.sorts[table], active = effKey(st.k) === key, d = key === st.k ? st.d : -1;
+    const arr = active ? (d > 0 ? "↑" : "↓") : "";
+    const aria = active ? ` aria-sort="${d > 0 ? "ascending" : "descending"}"` : "";
+    return `<th${cls ? ` class="${cls}"` : ""}${aria}><button type="button" class="sort" data-table="${table}" data-sort="${key}" title="${esc(L().sortBy(label.replace(/<[^>]+>/g, "")))}">${label}<span class="arr">${arr}</span></button></th>`;
   }
 
   function renderStatic() {
@@ -731,12 +743,9 @@ Score     = Perf / system price   (best device = 100)</div>
     const vis = picked.length
       ? picked.map((id) => rows.find((r) => r.d.id === id)).filter(Boolean).filter((r, i, a) => a.indexOf(r) === i)
       : rows.filter((r) => state.vendor === "all" || (state.vendor === "ws" ? r.d.ws : r.d.v === state.vendor));
-    if (!picked.length) vis.sort((a, b) => {
-      const x = sortValue(a, state.sortKey), y = sortValue(b, state.sortKey);
-      if (x == null || y == null) return x == null && y == null ? b.score - a.score : x == null ? 1 : -1;  // ohne Wert immer ans Ende
-      const c = typeof x === "string" ? x.localeCompare(y, t.locale, { numeric: true }) : x - y;
-      return c * state.sortDir || b.score - a.score;
-    });
+    const visRank = picked.length ? vis : sortList(vis, "rank");
+    const visPx = picked.length ? vis : sortList(vis, "px");
+    const visMx = picked.length ? vis : sortList(vis, "mx");
     const usedModels = MODELS.filter((m) => w[m.id]);
 
     // Summary
@@ -819,9 +828,9 @@ Score     = Perf / system price   (best device = 100)</div>
 
     // Ranking table
     $("#rank-head").innerHTML = `<th>${t.th.rank}</th>` +
-      sortHead("name", t.th.name) + (state.showPrices ? sortHead("price", t.th.price, "num") : "") + sortHead("fits", t.th.fits) +
-      sortHead("perf", t.th.perf) + (state.showPrices ? sortHead("score", t.th.score) + "<th></th>" : "");
-    $("#rank tbody").innerHTML = vis.map((r, i) => {
+      sortHead("rank", "name", t.th.name) + (state.showPrices ? sortHead("rank", "price", t.th.price, "num") : "") + sortHead("rank", "fits", t.th.fits) +
+      sortHead("rank", "perf", t.th.perf) + (state.showPrices ? sortHead("rank", "score", t.th.score) + "<th></th>" : "");
+    $("#rank tbody").innerHTML = visRank.map((r, i) => {
       const d = r.d;
       const dots = MODELS.map((m) => {
         const inP = !!w[m.id]; const f = r.per[m.id].fits;
@@ -843,8 +852,8 @@ Score     = Perf / system price   (best device = 100)</div>
 
     // Praxiswerte
     const dur = (sec) => sec == null ? "—" : sec < 1 ? `${fmt(sec, 1)} s` : sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
-    $("#praxis thead").innerHTML = `<tr>${sortHead("name", t.th.name)}${sortHead("x:tg", t.pxTh.tg)}${sortHead("x:ttft", t.pxTh.ttft)}${sortHead("x:code", t.pxTh.code)}${sortHead("x:img", t.pxTh.img)}</tr>`;
-    $("#praxis tbody").innerHTML = vis.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(devLabel(r.d))}</span></td>
+    $("#praxis thead").innerHTML = `<tr>${sortHead("px", "name", t.th.name)}${sortHead("px", "x:tg", t.pxTh.tg)}${sortHead("px", "x:ttft", t.pxTh.ttft)}${sortHead("px", "x:code", t.pxTh.code)}${sortHead("px", "x:img", t.pxTh.img)}</tr>`;
+    $("#praxis tbody").innerHTML = visPx.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(devLabel(r.d))}</span></td>
       <td class="mono ${r.px.tg == null ? "na" : ""}">${r.px.tg == null ? "—" : fmtTok(r.px.tg)}</td>
       <td class="mono ${r.px.ttft == null ? "na" : ""}">${dur(r.px.ttft)}</td>
       <td class="mono ${r.px.code == null ? "na" : ""}">${dur(r.px.code)}</td>
@@ -861,7 +870,7 @@ Score     = Perf / system price   (best device = 100)</div>
       $("#mem-legend").innerHTML = [["w", "var(--m-weights)"], ["kv", "var(--m-kv)"], ["ov", "var(--m-ov)"], ["spill", ""], ["nofit", ""]].map(([k, c]) =>
         `<span><i class="${c ? "" : "seg " + k}" style="${c ? "background:" + c : ""}"></i>${t.memLeg[k]}</span>`).join("");
       const head = `<div class="memhead"><span></span><div class="memaxis">${[0, 0.5, 1, 1.5].map((f) => `<span class="${f === 1 ? "lim" : ""}" style="left:${pos(f)}">${f === 1 ? t.memLimit : Math.round(f * 100) + " %"}</span>`).join("")}</div><span></span></div>`;
-      const rowsHtml = vis.map((r) => {
+      const rowsHtml = visRank.map((r) => {
         const d = r.d, mi = memInfo(d, pxM, ctxM), cap = mi.cap;
         // Segmente: Overhead, KV-Cache, Gewichte – an der Kapazitätsgrenze aufgeteilt
         const parts = [["ov", mi.ov], ["kv", mi.kv], ["w", mi.w]];
@@ -901,9 +910,9 @@ Score     = Perf / system price   (best device = 100)</div>
     }
 
     // Matrix
-    $("#matrix thead").innerHTML = `<tr>${sortHead("name", t.th.name)}${MODELS.map((m) =>
-      sortHead("m:" + m.id, `${esc(mName(m))}<small>${fmt(qm(m).gb, 0)} GB${w[m.id] ? " · " + t.inProfile : ""}</small>`)).join("")}</tr>`;
-    $("#matrix tbody").innerHTML = vis.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(devLabel(r.d))}</span></td>${MODELS.map((m) => {
+    $("#matrix thead").innerHTML = `<tr>${sortHead("mx", "name", t.th.name)}${MODELS.map((m) =>
+      sortHead("mx", "m:" + m.id, `${esc(mName(m))}<small>${fmt(qm(m).gb, 0)} GB${w[m.id] ? " · " + t.inProfile : ""}</small>`)).join("")}</tr>`;
+    $("#matrix tbody").innerHTML = visMx.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(devLabel(r.d))}</span></td>${MODELS.map((m) => {
       const c = r.per[m.id];
       return c.fits ? `<td class="mono" title="${esc(t.ttft(fmt(c.pp), fmt(c.ttft, 1)))}">${fmtTok(c.tg)}<br><span class="na">${fmt(c.pp)}</span></td>` : `<td class="na">—</td>`;
     }).join("")}</tr>`).join("");
@@ -913,7 +922,7 @@ Score     = Perf / system price   (best device = 100)</div>
   $("#profile").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.profile = b.dataset.id; state.ctx = PROFILES.find((p) => p.id === state.profile).ctx; persist(); render(); });
   $("#vendor").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.vendor = b.dataset.id; persist(); render(); });
   $("#model").addEventListener("change", (e) => { state.model = e.target.value; persist(); render(); });
-  $("#showprices").addEventListener("change", (e) => { state.showPrices = e.target.checked; if (!state.showPrices && (state.sortKey === "price" || state.sortKey === "score")) { state.sortKey = "perf"; state.sortDir = -1; } persist(); render(); });
+  $("#showprices").addEventListener("change", (e) => { state.showPrices = e.target.checked; persist(); render(); });
   $("#quant").addEventListener("change", (e) => { state.quant = e.target.value; persist(); render(); });
   $("#pick-model").addEventListener("change", (e) => { state.pxModel = e.target.value; persist(); render(); });
   $("#pick-prompt").addEventListener("change", (e) => { state.pxPrompt = +e.target.value; persist(); render(); });
@@ -936,7 +945,7 @@ Score     = Perf / system price   (best device = 100)</div>
   $("#basecost").addEventListener("change", (e) => { state.baseCost = Math.max(0, +e.target.value || 0); persist(); render(); });
   $("#wired").addEventListener("change", (e) => { state.wired = e.target.checked; persist(); render(); });
   $("#reset").addEventListener("click", () => { state.prices = {}; persist(); render(); });
-  document.addEventListener("click", (e) => { const b = e.target.closest("button.sort"); if (b) setSort(b.dataset.sort); });
+  document.addEventListener("click", (e) => { const b = e.target.closest("button.sort"); if (b) setSort(b.dataset.table, b.dataset.sort); });
   $("#rank").addEventListener("change", (e) => {
     const inp = e.target.closest("input[data-id]"); if (!inp) return;
     const v = +inp.value; const d = DEVICES.find((x) => x.id === inp.dataset.id);
