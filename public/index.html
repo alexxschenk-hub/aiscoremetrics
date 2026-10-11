@@ -178,12 +178,21 @@ a.ext:hover { text-decoration: underline; }
 .pick { display: grid; gap: 6px; min-width: 0; }
 .pick .pair { display: grid; grid-template-columns: minmax(118px, 34%) minmax(0, 1fr); gap: 6px; }
 .pick select, .pick .ss { width: 100%; min-width: 0; }
-.pick select, .ss-btn { height: 36px; }
 @media (max-width: 640px) { .picks { grid-template-columns: minmax(0, 1fr); } }
 /* schmale Bildschirme: nichts darf breiter als die Steuerleiste werden */
 .controls { grid-template-columns: minmax(0, 1fr); }
 .pickrow, .picks { min-width: 0; }
 .row > .field { max-width: 100%; grid-template-columns: minmax(0, 1fr); }
+/* Steuerleiste: alle Bedienelemente gleich hoch, Labels gleich hoch → gleiche Grundlinie */
+.controls { --ctl-h: 36px; }
+.controls .lab { display: block; line-height: 18px; height: 18px; white-space: nowrap; }
+.controls .lab .mono { font-size: inherit; line-height: inherit; }
+.controls .seg { min-height: var(--ctl-h); }
+.controls .seg button { display: inline-flex; align-items: center; padding-block: 0; }
+.controls select, .controls input[type="number"], .controls .ss-btn, .controls .btn { height: var(--ctl-h); }
+.controls select { padding-block: 0; }
+.controls input[type="range"] { height: var(--ctl-h); margin: 0; }
+.controls .check { min-height: var(--ctl-h); }
 /* Suchbare Auswahlliste (ersetzt optisch ein <select>, das native Element bleibt für Wert und change-Event) */
 .ss { position: relative; min-width: 0; }
 #llm + .ss { width: 360px; max-width: 100%; }
@@ -220,6 +229,21 @@ a.ext:hover { text-decoration: underline; }
 .detail td.d { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
 .detail td.d small { display: block; font-size: 11.5px; color: var(--good); white-space: normal; max-width: 220px; }
 .detail th.dhead { vertical-align: bottom; }
+/* Gewinner im Vergleich */
+.verdict { margin: 16px 14px 6px; border-radius: 8px; border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; overflow: hidden; text-align: center; }
+.verdict .v-side { display: grid; gap: 6px; align-content: center; justify-items: center; padding: 18px 14px; min-width: 0; background: var(--bg); color: var(--muted); }
+.verdict .v-side.won { background: var(--accent); color: var(--surface); }
+.verdict .v-name { font: 700 clamp(18px, 2.4vw, 24px)/1.15 var(--f-display); overflow-wrap: anywhere; }
+.verdict .v-pts { font: 600 13px var(--f-display); letter-spacing: .06em; text-transform: uppercase; opacity: .85; }
+.verdict .v-badge { font: 700 12px var(--f-display); letter-spacing: .12em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; background: var(--surface); color: var(--accent); }
+.verdict .v-mid { display: grid; align-content: center; justify-items: center; gap: 4px; padding: 14px 22px; background: var(--surface); }
+.verdict .v-score { font: 700 clamp(30px, 4vw, 44px)/1 var(--f-mono); color: var(--ink); white-space: nowrap; }
+.verdict .v-why { grid-column: 1 / -1; margin: 0; padding: 12px 16px; font-size: 14px; color: var(--ink); background: var(--surface); border-top: 1px solid var(--line); }
+.verdict .v-why small { display: block; margin-top: 4px; font-size: 12px; color: var(--muted); }
+.verdict.tie { border-color: var(--warn); }
+.verdict.tie .v-side, .verdict.tie .v-mid { background: color-mix(in srgb, var(--warn) 16%, var(--surface)); color: var(--ink); }
+.verdict.tie .v-badge { background: var(--warn); color: var(--surface); }
+@media (max-width: 640px) { .verdict { grid-template-columns: minmax(0, 1fr); } .verdict .v-mid { padding: 10px; } }
 .detail tr.grp td { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--accent); padding-top: 14px; border-bottom: 1px solid var(--line); }
 .memhead, .memrow { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr) minmax(190px, 250px); gap: 12px; align-items: center; }
 .memchart { display: grid; gap: 7px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; }
@@ -233,10 +257,10 @@ a.ext:hover { text-decoration: underline; }
 .memcap { position: absolute; top: 0; bottom: 0; left: 0; background: var(--bg); border-radius: 4px; }
 .memcapline { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: .75; }
 .membar { position: absolute; top: 2px; bottom: 2px; left: 0; display: flex; gap: 2px; }
-.seg { height: 100%; min-width: 2px; cursor: default; }
-.seg:first-child { border-radius: 4px 0 0 4px; }
-.seg:last-child { border-radius: 0 4px 4px 0; }
-.seg:only-child { border-radius: 4px; }
+.membar .seg { height: 100%; min-width: 2px; cursor: default; }
+.membar .seg:first-child { border-radius: 4px 0 0 4px; }
+.membar .seg:last-child { border-radius: 0 4px 4px 0; }
+.membar .seg:only-child { border-radius: 4px; }
 .seg.w { background: var(--m-weights); } .seg.kv { background: var(--m-kv); } .seg.ov { background: var(--m-ov); }
 .seg.spill { background: repeating-linear-gradient(135deg, var(--warn) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 1.5px var(--warn); }
 .seg.nofit { background: repeating-linear-gradient(135deg, var(--bad) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 1.5px var(--bad); }
@@ -835,6 +859,10 @@ Score = Perf / system price   (best device = 100)</div>
       faster: (x) => `${x}× besser`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} Modelle zur Auswahl. Gerechnet wird mit <b>${m}</b> (${ex}): braucht ≈ <b>${need} GB</b> Speicher bei ${c} Kontext und ${q} und passt auf <b>${k} von ${total}</b> Geräten. Ein anderer Einsatzzweck oder ein anderes Modell ändert Speicherbedarf und Ranking.`,
       deltaHead: "Unterschied", deltaFor: (x) => `zugunsten ${x}`,
+      vWin: "Gewinner", vTie: "Gleichstand", vPts: (n) => `${n} ${n === 1 ? "Punkt" : "Punkte"}`, vAnd: "und",
+      vWhy: (list) => `Gewinnt bei ${list}.`, vTieWhy: (a, la, b, lb) => `${a} vorne bei ${la}, ${b} vorne bei ${lb}.`, vAllLevel: (n) => `In allen ${n} Kategorien gleichauf.`,
+      vRule: (n, e) => `1 Punkt je Kategorie (${n} verglichen), Unterschied unter 5 % zählt als Gleichstand${e ? ` (${e}× gleichauf)` : ""}. Platz wird nicht gezählt, weil er aus Leistung bzw. Score folgt.`,
+      vCat: { sys: "Preis", mem: "Speicher", bw: "Bandbreite", score: "Preis-Leistung", perf: "Leistung", fits: "Modellauswahl", eciSel: "gewähltem Modell", eciBest: "Modell-Intelligenz", tg: "Tokens/s", ttft: "Wartezeit", code: "Code-Tempo", img: "Bildern" },
       dHint: (m, p) => `Geschätzte Praxiswerte und Belegung für ${m} mit ${p} Prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Platz und Score beziehen sich auf alle Geräte für dieses Modell.`,
       memTitle: "Speicherauslastung",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, mit ${c} Kontext. 100 % ist der nutzbare Grafikspeicher, bei Macs und Mini-PCs der für die GPU freigegebene Teil des Arbeitsspeichers. Was darüber hinausgeht, lagern PCs mit Grafikkarte in den normalen Arbeitsspeicher aus.`,
@@ -961,6 +989,10 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       faster: (x) => `${x}× better`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} models to choose from. Calculated with <b>${m}</b> (${ex}): needs ≈ <b>${need} GB</b> of memory at ${c} context and ${q}, and fits on <b>${k} of ${total}</b> devices. A different use case or model changes the memory need and the ranking.`,
       deltaHead: "Difference", deltaFor: (x) => `in favour of ${x}`,
+      vWin: "Winner", vTie: "Tie", vPts: (n) => `${n} ${n === 1 ? "point" : "points"}`, vAnd: "and",
+      vWhy: (list) => `Wins on ${list}.`, vTieWhy: (a, la, b, lb) => `${a} leads on ${la}, ${b} leads on ${lb}.`, vAllLevel: (n) => `Level in all ${n} categories.`,
+      vRule: (n, e) => `1 point per category (${n} compared); differences under 5% count as a tie${e ? ` (${e} tied)` : ""}. Rank is not counted because it follows from performance or score.`,
+      vCat: { sys: "price", mem: "memory", bw: "bandwidth", score: "value for money", perf: "performance", fits: "model coverage", eciSel: "selected model", eciBest: "model intelligence", tg: "tokens/s", ttft: "wait time", code: "coding speed", img: "images" },
       dHint: (m, p) => `Estimated results and usage for ${m} with a ${p} prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Score and rank compare against all devices for this model.`,
       memTitle: "Memory usage",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, with ${c} context. 100% is the usable graphics memory; on Macs and mini PCs, the share of RAM released to the GPU. Anything beyond that, PCs with a graphics card offload into regular system RAM.`,
@@ -1473,7 +1505,33 @@ Score     = Perf / system price   (best device = 100)</div>
         const deltaCell = delta ? `${delta}<small>${esc(t.deltaFor(devLabel(cols[win].d)))}</small>` : "";
         return `<tr><td class="k">${t.dRows[key]}</td>${cells}${cols.length === 2 ? `<td class="d">${deltaCell}</td>` : ""}</tr>`;
       }).join("");
-      $("#detail").innerHTML = `<table><thead>${head}</thead><tbody>${body}</tbody></table><p class="hint" style="padding:0 14px 12px">${esc(t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>`;
+      // Punktewertung: 1 Punkt je Kategorie, < 5 % Unterschied = Gleichstand; "läuft nicht" (null) verliert bei Tempo/Intelligenz
+      let verdict = "";
+      if (cols.length === 2) {
+        const NULL_LOSES = ["tg", "ttft", "code", "img", "eciSel", "eciBest"];
+        const PRIO = ["score", "perf", "tg", "eciBest", "mem", "bw", "sys", "fits", "ttft", "code", "img", "eciSel"];
+        const pts = [0, 0], won = [[], []]; let compared = 0, level = 0;
+        ROWS.forEach(([key, val, , dir]) => {
+          if (key === "grp" || key === "rank" || !dir) return;
+          const v = cols.map((r) => val(r));
+          let w = -1;
+          if (v[0] != null && v[1] != null) {
+            const hi = Math.max(Math.abs(v[0]), Math.abs(v[1]));
+            if (hi > 0 && Math.abs(v[0] - v[1]) / hi >= 0.05) w = (v[0] > v[1]) === (dir > 0) ? 0 : 1;
+            else level++;
+          } else if (NULL_LOSES.includes(key) && (v[0] != null) !== (v[1] != null)) w = v[0] != null ? 0 : 1;
+          else return;
+          compared++;
+          if (w >= 0) { pts[w]++; won[w].push(key); }
+        });
+        const list = (keys) => { const k = [...keys].sort((a, b) => PRIO.indexOf(a) - PRIO.indexOf(b)).slice(0, 3).map((x) => t.vCat[x]);
+          return k.length > 1 ? `${k.slice(0, -1).join(", ")} ${t.vAnd} ${k.at(-1)}` : (k[0] || ""); };
+        const tie = pts[0] === pts[1], wi = pts[0] > pts[1] ? 0 : 1;
+        const side = (i) => `<div class="v-side${!tie && i === wi ? " won" : ""}">${!tie && i === wi ? `<span class="v-badge">${t.vWin}</span>` : ""}<b class="v-name">${esc(devLabel(cols[i].d))}</b><span class="v-pts">${t.vPts(pts[i])}</span></div>`;
+        const why = tie && !pts[0] ? t.vAllLevel(compared) : tie ? t.vTieWhy(esc(devLabel(cols[0].d)), list(won[0]), esc(devLabel(cols[1].d)), list(won[1])) : t.vWhy(list(won[wi]));
+        verdict = `<div class="verdict${tie ? " tie" : ""}" role="status">${side(0)}<div class="v-mid">${tie ? `<span class="v-badge">${t.vTie}</span>` : ""}<span class="v-score">${pts[0]} : ${pts[1]}</span></div>${side(1)}<p class="v-why">${why}<small>${esc(t.vRule(compared, level))}</small></p></div>`;
+      }
+      $("#detail").innerHTML = `<table><thead>${head}</thead><tbody>${body}</tbody></table>${verdict}<p class="hint" style="padding:0 14px 12px">${esc(t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>`;
     }
 
     // Ranking table
