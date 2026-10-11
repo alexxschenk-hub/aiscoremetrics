@@ -8,6 +8,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0A6B75">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="/assets/theme.js"></script>
 <!-- meta:start (generiert von scripts/build-seo.mjs, nicht von Hand bearbeiten) -->
 <title>Welche GPU für lokale LLMs? Hardware-Rechner für Tokens/s &amp; VRAM | AI Score Metrics</title>
 <meta name="description" content="Kostenloser Rechner: Passt dein LLM in den Speicher und wie schnell läuft es? NVIDIA- und AMD-Grafikkarten, Mac Studio, Mac mini und Ryzen AI Max im Vergleich – Tokens/s, VRAM, erster Token, Bildzeiten und Preis-Leistung.">
@@ -237,6 +238,7 @@ footer { font-size: 12.5px; color: var(--muted); }
 @media (max-width: 520px) { .wrap { padding-inline: 16px; } .seg button { padding: 7px 9px; font-size: 13px; } }
 @media (prefers-reduced-motion: no-preference) { .fill { transition: width .25s ease; } }
 </style>
+<link rel="stylesheet" href="/assets/design.css">
 </head>
 <body>
 
@@ -244,8 +246,13 @@ footer { font-size: 12.5px; color: var(--muted); }
   <header>
     <div class="toprow">
       <div class="eyebrow" data-i="eyebrow">KI-Hardware-Score · Lokale LLM-Inferenz</div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Dunkler Modus">
+          <span class="theme-label">Dark Mode</span><span class="theme-track" aria-hidden="true"><span class="theme-thumb"></span></span>
+        </button>
       <div class="seg small" id="lang" role="group" aria-label="Sprache / Language">
         <a href="/" data-id="de" hreflang="de" lang="de">DE</a><a href="/en/" data-id="en" hreflang="en" lang="en">EN</a>
+      </div>
       </div>
     </div>
     <h1>AI Score Metrics<span class="h1sub" data-i="h1sub">Welche GPU oder welcher Mac für lokale LLMs?</span></h1>

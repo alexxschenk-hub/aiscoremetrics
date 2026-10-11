@@ -1,0 +1,28 @@
+:root { color-scheme: light; --card-radius: 20px; --card-shadow: 0 6px 24px rgb(19 24 28 / 4%); }
+:root[data-theme="dark"] { color-scheme: dark; --card-shadow: 0 6px 24px rgb(0 0 0 / 16%); }
+.wrap { gap: 28px; padding-block-start: 36px; }
+header { gap: 12px; padding-block: 4px 12px; }
+.header-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.controls, .tablebox, .detail, .memchart { border-radius: var(--card-radius); box-shadow: var(--card-shadow); }
+.controls { padding: 22px; gap: 20px; }
+.sum { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; gap: 5px; box-shadow: var(--card-shadow); }
+.sum .k { color: var(--accent); }
+.sum .v { font-size: 24px; }
+.memchart { padding: 20px; gap: 12px; }
+select, input[type="number"], .btn { border-radius: 10px; }
+select, input[type="number"] { padding: 8px 10px; }
+.ico { border-radius: 10px; }
+.tag { border-radius: 6px; }
+.track, .fill { border-radius: 999px; }
+.formula { border-radius: 12px; }
+.seg:not(.membar .seg):not(.memlegend .seg) { border-radius: 10px; height: auto; }
+tbody tr:hover { background: var(--accent-soft); }
+.method section { padding: 20px; border: 1px solid var(--line); border-radius: var(--card-radius); background: var(--surface); }
+.theme-toggle { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 4px 0; border: 0; background: transparent; color: var(--ink); cursor: pointer; font: 600 13px var(--f-body); }
+.theme-track { display: inline-flex; align-items: center; width: 44px; height: 26px; padding: 3px; border-radius: 999px; background: var(--bar-2); box-shadow: inset 0 0 0 1px var(--line); }
+.theme-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 4px rgb(0 0 0 / 20%); }
+.theme-toggle[aria-checked="true"] .theme-track { background: var(--accent); }
+.theme-toggle[aria-checked="true"] .theme-thumb { transform: translateX(18px); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+@media (prefers-reduced-motion: no-preference) { .theme-thumb { transition: transform .2s ease; } .theme-track { transition: background-color .2s ease; } }
+@media (max-width: 520px) { .wrap { gap: 22px; padding-block-start: 22px; } .controls, .memchart { padding: 16px; } .header-actions { gap: 12px; } .method { grid-template-columns: minmax(0, 1fr); } }
