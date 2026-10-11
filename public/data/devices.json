@@ -157,7 +157,8 @@
       "source": {
         "gpuprix": "rtx-pro-4000-blackwell",
         "metric": "instock"
-      }
+      },
+      "ws": true
     },
     {
       "id": "p4500",
@@ -179,13 +180,19 @@
       "source": {
         "gpuprix": "rtx-pro-4500-blackwell",
         "metric": "instock"
-      }
+      },
+      "override": {
+        "price": 4669,
+        "note": "Amazon",
+        "date": "2026-10-11T00:00:00Z"
+      },
+      "ws": true
     },
     {
       "id": "p5000",
       "v": "nvidia",
       "kind": "gpu",
-      "name": "RTX PRO 5000 Blackwell",
+      "name": "RTX PRO 5000 Blackwell 48 GB",
       "mem": 48,
       "bw": 1344,
       "tf": 258,
@@ -201,7 +208,8 @@
       "source": {
         "gpuprix": "rtx-pro-5000-blackwell",
         "metric": "instock"
-      }
+      },
+      "ws": true
     },
     {
       "id": "p6000",
@@ -222,6 +230,141 @@
       "q": "RTX PRO 6000 Blackwell",
       "source": {
         "gpuprix": "rtx-pro-6000-blackwell",
+        "metric": "instock"
+      },
+      "ws": true
+    },
+    {
+      "id": "p2000",
+      "v": "nvidia",
+      "kind": "gpu",
+      "ws": true,
+      "name": "RTX PRO 2000 Blackwell",
+      "mem": 16,
+      "bw": 288,
+      "tf": 68,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 1458,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "RTX PRO 2000 Blackwell",
+      "source": {
+        "gpuprix": "rtx-pro-2000-blackwell",
+        "metric": "instock"
+      }
+    },
+    {
+      "id": "p5000x72",
+      "v": "nvidia",
+      "kind": "gpu",
+      "ws": true,
+      "name": "RTX PRO 5000 Blackwell 72 GB",
+      "mem": 72,
+      "bw": 1344,
+      "tf": 258,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 10000,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "RTX PRO 5000 Blackwell 72GB",
+      "source": {
+        "gpuprix": "rtx-pro-5000-blackwell-72gb",
+        "metric": "instock"
+      }
+    },
+    {
+      "id": "p6000mq",
+      "v": "nvidia",
+      "kind": "gpu",
+      "ws": true,
+      "name": "RTX PRO 6000 Blackwell Max-Q",
+      "mem": 96,
+      "bw": 1792,
+      "tf": 439,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 16000,
+      "src": [
+        "est"
+      ],
+      "q": "RTX PRO 6000 Blackwell Max-Q",
+      "est": true
+    },
+    {
+      "id": "a4000ada",
+      "v": "nvidia",
+      "kind": "gpu",
+      "ws": true,
+      "name": "RTX 4000 Ada",
+      "mem": 20,
+      "bw": 360,
+      "tf": 82,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 1848,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "RTX 4000 Ada Generation",
+      "source": {
+        "gpuprix": "rtx-4000-ada-generation",
+        "metric": "instock"
+      }
+    },
+    {
+      "id": "a5000ada",
+      "v": "nvidia",
+      "kind": "gpu",
+      "ws": true,
+      "name": "RTX 5000 Ada",
+      "mem": 32,
+      "bw": 576,
+      "tf": 261,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 3930,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "RTX 5000 Ada Generation",
+      "source": {
+        "gpuprix": "rtx-5000-ada-generation",
+        "metric": "instock"
+      }
+    },
+    {
+      "id": "a6000ada",
+      "v": "nvidia",
+      "kind": "gpu",
+      "ws": true,
+      "name": "RTX 6000 Ada",
+      "mem": 48,
+      "bw": 960,
+      "tf": 364,
+      "eta": 0.6,
+      "etaC": 0.5,
+      "pf": 1,
+      "price": 8002,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "RTX 6000 Ada Generation",
+      "source": {
+        "gpuprix": "rtx-6000-ada-generation",
         "metric": "instock"
       }
     },
@@ -332,6 +475,76 @@
       "q": "Radeon AI PRO R9700",
       "source": {
         "gpuprix": "radeon-ai-pro-r9700",
+        "metric": "instock"
+      },
+      "ws": true
+    },
+    {
+      "id": "w7800",
+      "v": "amd",
+      "kind": "gpu",
+      "ws": true,
+      "name": "Radeon PRO W7800 32 GB",
+      "mem": 32,
+      "bw": 576,
+      "tf": 90.5,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": 1880,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "Radeon PRO W7800 32 GB",
+      "source": {
+        "gpuprix": "radeon-pro-w7800",
+        "metric": "instock"
+      }
+    },
+    {
+      "id": "w7800x48",
+      "v": "amd",
+      "kind": "gpu",
+      "ws": true,
+      "name": "Radeon PRO W7800 48 GB",
+      "mem": 48,
+      "bw": 864,
+      "tf": 90.5,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": 2931,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "Radeon PRO W7800 48 GB",
+      "source": {
+        "gpuprix": "radeon-pro-w7800-48gb",
+        "metric": "instock"
+      }
+    },
+    {
+      "id": "w7900",
+      "v": "amd",
+      "kind": "gpu",
+      "ws": true,
+      "name": "Radeon PRO W7900",
+      "mem": 48,
+      "bw": 864,
+      "tf": 122.6,
+      "eta": 0.5,
+      "etaC": 0.35,
+      "pf": 1,
+      "price": 4035,
+      "src": [
+        "gp",
+        "07.10."
+      ],
+      "q": "Radeon PRO W7900",
+      "source": {
+        "gpuprix": "radeon-pro-w7900",
         "metric": "instock"
       }
     },

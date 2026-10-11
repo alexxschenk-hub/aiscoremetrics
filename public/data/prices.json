@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-11T10:53:20.559Z",
+  "updatedAt": "2026-10-11T13:45:28.189Z",
   "region": "germany",
   "prices": {
     "4090": {
@@ -58,12 +58,11 @@
       "url": "https://gpuprix.com/germany/gpus/rtx-pro-4000-blackwell"
     },
     "p4500": {
-      "price": 3891,
-      "metric": "low",
-      "source": "gpuprix",
-      "region": "germany",
-      "asOf": "2026-10-11T02:58:23.007Z",
-      "url": "https://gpuprix.com/germany/gpus/rtx-pro-4500-blackwell"
+      "price": 4669,
+      "metric": "manual",
+      "source": "manual",
+      "note": "Amazon",
+      "asOf": "2026-10-11T00:00:00Z"
     },
     "p5000": {
       "price": 7230,
@@ -120,6 +119,70 @@
       "region": "germany",
       "asOf": "2026-10-11T02:58:33.589Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-ai-pro-r9700"
+    },
+    "p2000": {
+      "price": 1458,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-11T02:58:24.190Z",
+      "url": "https://gpuprix.com/germany/gpus/rtx-pro-2000-blackwell"
+    },
+    "p5000x72": {
+      "price": 10000,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-11T02:58:23.597Z",
+      "url": "https://gpuprix.com/germany/gpus/rtx-pro-5000-blackwell-72gb"
+    },
+    "a4000ada": {
+      "price": 1848,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-11T00:10:34.933Z",
+      "url": "https://gpuprix.com/germany/gpus/rtx-4000-ada-generation"
+    },
+    "a5000ada": {
+      "price": 3930,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-10T20:54:27.889Z",
+      "url": "https://gpuprix.com/germany/gpus/rtx-5000-ada-generation"
+    },
+    "a6000ada": {
+      "price": 8002,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-11T06:04:41.672Z",
+      "url": "https://gpuprix.com/germany/gpus/rtx-6000-ada-generation"
+    },
+    "w7800": {
+      "price": 1880,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-11T06:04:44.655Z",
+      "url": "https://gpuprix.com/germany/gpus/radeon-pro-w7800"
+    },
+    "w7800x48": {
+      "price": 2931,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-06T20:11:13.777Z",
+      "url": "https://gpuprix.com/germany/gpus/radeon-pro-w7800-48gb"
+    },
+    "w7900": {
+      "price": 4035,
+      "metric": "low",
+      "source": "gpuprix",
+      "region": "germany",
+      "asOf": "2026-10-11T02:58:26.577Z",
+      "url": "https://gpuprix.com/germany/gpus/radeon-pro-w7900"
     }
   }
 }

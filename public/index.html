@@ -24,6 +24,9 @@
   --bad: #B3261E;
   --warn: #A0560B;
   --amd: #8A4B2E;
+  --m-weights: #2a78d6;
+  --m-kv: #1baf7a;
+  --m-ov: #6250d6;
   --f-display: "Barlow Semi Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
   --f-body: "Source Sans 3", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -32,13 +35,13 @@
   :root:not([data-theme="light"]) {
     --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A;
     --accent: #52C3CD; --accent-soft: #123338; --bar: #52C3CD; --bar-2: #4B5D66;
-    --good: #6CC070; --bad: #F2867E; --warn: #E3A256; --amd: #E39A72; color-scheme: dark;
+    --good: #6CC070; --bad: #F2867E; --warn: #E3A256; --amd: #E39A72; --m-weights: #3987e5; --m-kv: #199e70; --m-ov: #9085e9; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A;
   --accent: #52C3CD; --accent-soft: #123338; --bar: #52C3CD; --bar-2: #4B5D66;
-  --good: #6CC070; --bad: #F2867E; --warn: #E3A256; --amd: #E39A72; color-scheme: dark;
+  --good: #6CC070; --bad: #F2867E; --warn: #E3A256; --amd: #E39A72; --m-weights: #3987e5; --m-kv: #199e70; --m-ov: #9085e9; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
@@ -114,6 +117,35 @@ td.num, th.num { text-align: right; }
 a.ext { color: var(--accent); font-size: 13px; text-decoration: none; white-space: nowrap; }
 a.ext:hover { text-decoration: underline; }
 .zero td { color: var(--muted); }
+.memhead, .memrow { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr) minmax(190px, 250px); gap: 12px; align-items: center; }
+.memchart { display: grid; gap: 7px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; }
+.memhead { font-size: 11.5px; color: var(--muted); font-family: var(--f-mono); }
+.memaxis { position: relative; height: 16px; }
+.memaxis span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.memaxis span.lim { color: var(--ink); font-weight: 600; }
+.memname { display: flex; gap: 8px; align-items: center; min-width: 0; font-size: 13.5px; }
+.memname b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.memtrack { position: relative; height: 18px; }
+.memcap { position: absolute; top: 0; bottom: 0; left: 0; background: var(--bg); border-radius: 4px; }
+.memcapline { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: .75; }
+.membar { position: absolute; top: 2px; bottom: 2px; left: 0; display: flex; gap: 2px; }
+.seg { height: 100%; min-width: 2px; cursor: default; }
+.seg:first-child { border-radius: 4px 0 0 4px; }
+.seg:last-child { border-radius: 0 4px 4px 0; }
+.seg:only-child { border-radius: 4px; }
+.seg.w { background: var(--m-weights); } .seg.kv { background: var(--m-kv); } .seg.ov { background: var(--m-ov); }
+.seg.spill { background: repeating-linear-gradient(135deg, var(--warn) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 1.5px var(--warn); }
+.seg.nofit { background: repeating-linear-gradient(135deg, var(--bad) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 1.5px var(--bad); }
+.memclip { position: absolute; right: -2px; top: -1px; font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.memval { font-size: 12.5px; font-variant-numeric: tabular-nums; line-height: 1.35; }
+.memval .st { font-weight: 600; }
+.memval .st.ok { color: var(--good); } .memval .st.warn { color: var(--warn); } .memval .st.bad { color: var(--bad); }
+.memval small { display: block; color: var(--muted); font-size: 11.5px; }
+.memlegend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.memlegend span { display: inline-flex; align-items: center; gap: 6px; }
+.memlegend i { display: inline-block; width: 14px; height: 10px; border-radius: 2px; }
+#tip { position: fixed; z-index: 10; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 12.5px; padding: 6px 9px; border-radius: 5px; max-width: 260px; line-height: 1.35; }
+@media (max-width: 760px) { .memhead { display: none; } .memrow { grid-template-columns: 1fr; gap: 4px; padding-block: 4px; border-bottom: 1px solid var(--line); } .memrow:last-child { border-bottom: 0; } }
 .matrix td, .matrix th { text-align: right; font-size: 13px; padding: 7px 10px; }
 .matrix td:first-child, .matrix th:first-child { text-align: left; }
 .matrix .na { color: var(--muted); opacity: .6; }
@@ -164,6 +196,7 @@ footer { font-size: 12.5px; color: var(--muted); }
         <div class="seg" id="vendor" role="group" aria-labelledby="lab-vendor"></div>
       </div>
       <label class="check"><input type="checkbox" id="base" checked> <span data-i="base"></span> <input type="number" id="basecost" value="1300" min="0" step="50" style="width:84px"> €</label>
+      <label class="check"><span data-i="sysram"></span> <input type="number" id="sysram" value="64" min="0" step="16" style="width:70px"> GB</label>
       <label class="check"><input type="checkbox" id="wired"> <span data-i="wired"></span></label>
       <button class="btn" id="reset" type="button" data-i="reset"></button>
     </div>
@@ -189,6 +222,14 @@ footer { font-size: 12.5px; color: var(--muted); }
     </div>
     <div class="tablebox"><table class="matrix" id="praxis"><thead></thead><tbody></tbody></table></div>
   </div>
+
+  <div style="display:grid;gap:10px">
+    <h2 data-i="memTitle"></h2>
+    <p class="hint" id="mem-hint"></p>
+    <div class="memlegend" id="mem-legend"></div>
+    <div class="memchart" id="memchart" role="img"></div>
+  </div>
+  <div id="tip" hidden></div>
 
   <div style="display:grid;gap:10px">
     <h2 data-i="mTitle"></h2>
@@ -267,6 +308,20 @@ footer { font-size: 12.5px; color: var(--muted); }
       pxTitle: "Praxiswerte",
       pxHint: "Was du beim Arbeiten spürst: Geschwindigkeit beim Schreiben, Wartezeit bis zum ersten Wort, Dauer für 100 Zeilen Code (ca. 1.100 Tokens) und für ein Bild mit 1024 × 1024 Pixeln. Hochgerechnete Schätzwerte, typische Abweichung ±30 %.",
       pxModel: "Textmodell", pxPrompt: "Prompt-Länge", pxImg: "Bildmodell",
+      sysram: "PC-RAM", ws: "Workstation",
+      memTitle: "Speicherauslastung",
+      memHint: (m, c) => `${m} mit ${c} Kontext. 100 % ist der nutzbare Grafikspeicher, bei Macs und Mini-PCs der für die GPU freigegebene Teil des Arbeitsspeichers. Was darüber hinausgeht, lagern PCs mit Grafikkarte in den normalen Arbeitsspeicher aus.`,
+      memLeg: { w: "Modellgewichte", kv: "KV-Cache (Kontext)", ov: "Laufzeit-Overhead", spill: "Ausgelagert in PC-RAM", nofit: "Passt nicht" },
+      memLimit: "GPU-Limit",
+      memOk: (u, c, p) => `${u} / ${c} GB · ${p} %`,
+      memFree: (f) => `${f} GB frei`,
+      memSpill: (g) => `+${g} GB im PC-RAM`,
+      memSpillTok: (t) => `≈ ${t} tok/s mit Auslagerung`,
+      memSpillNo: (r) => `PC-RAM reicht nicht (${r} GB eingestellt)`,
+      memWired: "nur mit angehobenem GPU-Limit",
+      memNo: (n) => `braucht ${n} GB`,
+      memUnified: (t) => `von ${t} GB Arbeitsspeicher`,
+      memAria: (m) => `Speicherauslastung je Gerät für ${m}`,
       pxTh: { tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild" },
       tokens: "Tokens",
       mTitle: "Generierung je Modell",
@@ -302,6 +357,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       <h2>Praxiswerte</h2>
       <ul>
         <li>Erster Token = Prompt-Länge ÷ Prompt-Verarbeitung. Bei sehr langen Prompts wird es in der Praxis etwas langsamer, weil die Attention mitwächst.</li>
+        <li>Speicherauslastung: Gewichte + KV-Cache für den Kontext + rund 1 GB Laufzeit-Overhead. Passt das nicht in den Grafikspeicher, wandert der Rest der Gewichte in den PC-RAM (DDR5 Dual-Channel, effektiv ca. 58 GB/s). Jeder Token muss diesen Teil dann über den viel langsameren Arbeitsspeicher lesen. 8 GB PC-RAM sind für System und Programme reserviert.</li>
         <li>100 Zeilen Code ≈ 1.100 Tokens (rund 11 Tokens pro Zeile). Dauer = erster Token + 1.100 ÷ Tokens/s.</li>
         <li>Bilder sind rechenleistungsgebunden. Referenz RTX 4090 bei 1024 × 1024: SDXL 30 Schritte ≈ 4,5 s, FLUX.1 schnell ≈ 2,2 s, FLUX.1 dev ≈ 14 s. Andere Geräte werden über ihre Rechenleistung hochgerechnet, mit Plattformfaktor für Apple (2,1) und AMD (1,7), kalibriert an typischen SDXL-Zeiten.</li>
       </ul>
@@ -320,7 +376,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
         <li>GPU-Preise: niedrigster Neupreis Deutschland laut gpuprix.com (Händlerdaten von Alternate), täglich automatisch aktualisiert, zuletzt {{updated}}. Gezeigt wird die günstigste lieferbare Karte. Ist keine lieferbar, der letzte Tiefstpreis. Einzelne Preise können manuell gesetzt werden, aktuell die RTX 5090 nach Geizhals.</li>
         <li>Mac Studio M5 Ultra 96 GB: Apple-Listenpreis 6.599 €. Mac mini M6 16 GB: 1.049 €. Andere Konfigurationen und ältere Macs: geschätzt.</li>
         <li>Ryzen AI Max+ 395 mit 128 GB: Mini-PCs von Framework, GMKtec oder Minisforum, Preis geschätzt.</li>
-        <li>Specs: NVIDIA-, AMD- und Apple-Datenblätter. AI TOPS von RTX PRO 4000/4500 sind Näherungen.</li>
+        <li>Specs: NVIDIA-, AMD- und Apple-Datenblätter. Rechenleistung bei RTX PRO 2000/4000/4500 und den Ada-Workstation-Karten aus AI TOPS abgeleitet, daher Näherungen. RTX PRO 6000 Max-Q: Preis geschätzt. RTX PRO 4500: Amazon-Preis vom 11.10.</li>
         <li>Die Links führen zum Geizhals-Preisvergleich (ohne Affiliate).</li>
       </ul>
     </section>`
@@ -347,6 +403,20 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       pxTitle: "Real-world numbers",
       pxHint: "What you feel while working: writing speed, wait until the first word, time for 100 lines of code (about 1,100 tokens) and for one 1024 × 1024 image. Extrapolated estimates, typical deviation ±30%.",
       pxModel: "Text model", pxPrompt: "Prompt length", pxImg: "Image model",
+      sysram: "PC RAM", ws: "Workstation",
+      memTitle: "Memory usage",
+      memHint: (m, c) => `${m} with ${c} context. 100% is the usable graphics memory; on Macs and mini PCs, the share of RAM released to the GPU. Anything beyond that, PCs with a graphics card offload into regular system RAM.`,
+      memLeg: { w: "Model weights", kv: "KV cache (context)", ov: "Runtime overhead", spill: "Offloaded to PC RAM", nofit: "Does not fit" },
+      memLimit: "GPU limit",
+      memOk: (u, c, p) => `${u} / ${c} GB · ${p}%`,
+      memFree: (f) => `${f} GB free`,
+      memSpill: (g) => `+${g} GB in PC RAM`,
+      memSpillTok: (t) => `≈ ${t} tok/s with offloading`,
+      memSpillNo: (r) => `PC RAM too small (${r} GB set)`,
+      memWired: "only with a raised GPU limit",
+      memNo: (n) => `needs ${n} GB`,
+      memUnified: (t) => `of ${t} GB RAM`,
+      memAria: (m) => `Memory usage per device for ${m}`,
       pxTh: { tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image" },
       tokens: "tokens",
       mTitle: "Generation per model",
@@ -382,6 +452,7 @@ Score     = Perf / system price   (best device = 100)</div>
       <h2>Real-world numbers</h2>
       <ul>
         <li>First token = prompt length ÷ prompt processing speed. Very long prompts are somewhat slower in practice because attention grows too.</li>
+        <li>Memory usage: weights + KV cache for the context + about 1 GB runtime overhead. If that does not fit in graphics memory, the rest of the weights moves to PC RAM (DDR5 dual channel, about 58 GB/s effective). Every token then has to read that part through the much slower system memory. 8 GB of PC RAM are reserved for the OS and apps.</li>
         <li>100 lines of code ≈ 1,100 tokens (about 11 tokens per line). Time = first token + 1,100 ÷ tokens/s.</li>
         <li>Images are compute-bound. Reference RTX 4090 at 1024 × 1024: SDXL 30 steps ≈ 4.5 s, FLUX.1 schnell ≈ 2.2 s, FLUX.1 dev ≈ 14 s. Other devices are scaled by compute, with a platform factor for Apple (2.1) and AMD (1.7), calibrated against typical SDXL times.</li>
       </ul>
@@ -400,7 +471,7 @@ Score     = Perf / system price   (best device = 100)</div>
         <li>GPU prices: lowest new price in Germany per gpuprix.com (retailer data from Alternate), updated automatically every day, last on {{updated}}. Shown is the cheapest card in stock, or the last lowest price if none is in stock. Individual prices can be set manually, currently the RTX 5090 per Geizhals.</li>
         <li>Mac Studio M5 Ultra 96 GB: Apple list price €6,599. Mac mini M6 16 GB: €1,049. Other configurations and older Macs: estimated.</li>
         <li>Ryzen AI Max+ 395 with 128 GB: mini PCs from Framework, GMKtec or Minisforum, estimated price.</li>
-        <li>Specs: NVIDIA, AMD and Apple datasheets. AI TOPS for RTX PRO 4000/4500 are approximations.</li>
+        <li>Specs: NVIDIA, AMD and Apple datasheets. Compute for RTX PRO 2000/4000/4500 and the Ada workstation cards is derived from AI TOPS, so approximate. RTX PRO 6000 Max-Q: estimated price. RTX PRO 4500: Amazon price from 11 Oct.</li>
         <li>Links go to the Geizhals price comparison (no affiliate).</li>
       </ul>
     </section>`
@@ -412,7 +483,7 @@ Score     = Perf / system price   (best device = 100)</div>
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   let navLang = "de";
   try { navLang = (navigator.language || "de").toLowerCase().startsWith("de") ? "de" : "en"; } catch (e) {}
-  const state = Object.assign({ pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", sortKey: "score", sortDir: -1, base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
+  const state = Object.assign({ sysRam: 64, pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", sortKey: "score", sortDir: -1, base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
   delete state.sort;
   if (!T[state.lang]) state.lang = "de";
   function persist() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
@@ -435,6 +506,28 @@ Score     = Perf / system price   (best device = 100)</div>
     if (state.wired) return d.mem * 0.9;
     return d.mem * (d.mem <= 36 ? 0.67 : 0.75);
   }
+  // Speicher-Aufschlüsselung für die Grafik
+  const SYS_BW = 89.6 * 0.65;   // DDR5-5600 Dual-Channel, effektiv
+  function memInfo(d, m, ctx) {
+    const kv = m.kv * ctx / 1024, ov = 1.0, need = m.gb + kv + ov, cap = usable(d);
+    const unified = d.kind !== "gpu";
+    const info = { kv, ov, w: m.gb, need, cap, unified, spill: Math.max(0, need - cap), state: "ok", tg: null };
+    if (need <= cap) return info;
+    if (unified) {
+      const maxCap = d.usable ? d.usableMax : d.mem * 0.9;
+      info.state = !state.wired && need <= maxCap ? "wired" : "nofit";
+      return info;
+    }
+    const sysFree = Math.max(0, state.sysRam - 8);           // 8 GB für Betriebssystem und Programme
+    if (info.spill > sysFree) { info.state = "nosys"; return info; }
+    info.state = "spill";
+    const wGpu = Math.max(0, cap - kv - ov), f = Math.min(1, wGpu / m.gb);
+    const act = m.agb;
+    const t = (act * f + kv / 2) / (d.eta * d.bw) + act * (1 - f) / SYS_BW;
+    info.tg = (m.eff || 1) / t;
+    return info;
+  }
+
   function calc(d, m, ctx) {
     const kvGB = m.kv * ctx / 1024;
     const need = m.gb + kvGB + 1.0;
@@ -504,10 +597,10 @@ Score     = Perf / system price   (best device = 100)</div>
   function renderControls() {
     document.querySelectorAll("#lang button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === state.lang));
     $("#profile").innerHTML = PROFILES.map((p) => `<button type="button" data-id="${p.id}" aria-pressed="${p.id === state.profile}">${esc(L().profiles[p.id])}</button>`).join("");
-    $("#vendor").innerHTML = [["all", L().all, ""], [N, "NVIDIA", ICONS.gpu], [AM, "AMD", ICONS.gpu], [A, "Apple", ICONS.mac]].map(([id, n, ic]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${ic.replace("<svg ", '<svg class="vi" ')}${n}</button>`).join("");
+    $("#vendor").innerHTML = [["all", L().all, ""], [N, "NVIDIA", ICONS.gpu], [AM, "AMD", ICONS.gpu], [A, "Apple", ICONS.mac], ["ws", L().ws, ICONS.gpu]].map(([id, n, ic]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${ic.replace("<svg ", '<svg class="vi" ')}${n}</button>`).join("");
     $("#model-field").hidden = state.profile !== "single";
     $("#ctx").value = state.ctx; $("#ctx-val").textContent = ctxLabel(CTX[state.ctx]);
-    $("#base").checked = state.base; $("#basecost").value = state.baseCost; $("#wired").checked = state.wired;
+    $("#base").checked = state.base; $("#basecost").value = state.baseCost; $("#sysram").value = state.sysRam; $("#wired").checked = state.wired;
     $("#model").value = state.model; $("#px-model").value = state.pxModel; $("#px-prompt").value = state.pxPrompt; $("#px-img").value = state.pxImg;
   }
 
@@ -525,7 +618,7 @@ Score     = Perf / system price   (best device = 100)</div>
       r.px = c.fits ? { tg: c.tg, ttft: pxP / c.pp, code: pxP / c.pp + CODE_TOKENS / c.tg } : { tg: null, ttft: null, code: null };
       r.px.img = imgFits ? pxI.ref * IMG_REF_INDEX / imgIdx : null;
     });
-    const vis = rows.filter((r) => state.vendor === "all" || r.d.v === state.vendor);
+    const vis = rows.filter((r) => state.vendor === "all" || (state.vendor === "ws" ? r.d.ws : r.d.v === state.vendor));
     vis.sort((a, b) => {
       const x = sortValue(a, state.sortKey), y = sortValue(b, state.sortKey);
       if (x == null || y == null) return x == null && y == null ? b.score - a.score : x == null ? 1 : -1;  // ohne Wert immer ans Ende
@@ -561,7 +654,7 @@ Score     = Perf / system price   (best device = 100)</div>
       const sub = `${d.mem} GB · ${fmt(d.bw)} GB/s` + (d.kind === "gpu" && state.base ? ` · ${t.inclPc(fmt(state.baseCost))}` : "");
       return `<tr class="${r.perf === 0 ? "zero" : ""}">
         <td class="rank">${i + 1}</td>
-        <td><div class="devrow"><span class="ico ${d.v}" title="${t.kinds[d.kind]}">${ICONS[d.kind]}</span><div class="dev"><b><span class="tag">${VENDOR[d.v]} · ${t.kinds[d.kind]}</span>${esc(d.name)}</b><span>${sub}</span></div></div></td>
+        <td><div class="devrow"><span class="ico ${d.v}" title="${t.kinds[d.kind]}">${ICONS[d.kind]}</span><div class="dev"><b><span class="tag">${VENDOR[d.v]} · ${d.ws ? t.ws : t.kinds[d.kind]}</span>${esc(d.name)}</b><span>${sub}</span></div></div></td>
         <td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d)}" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${d.est && !edited ? "est" : ""}">${edited ? t.src.own : srcText(d)}</span></td>
         <td><div class="dots" aria-label="${esc(t.fitsAria(r.fitCount, usedModels.length))}">${dots}</div></td>
         <td><div class="barcell"><div class="track"><div class="fill p" style="width:${r.perfN.toFixed(1)}%"></div></div><span class="mono">${fmt(r.perfN)}</span></div></td>
@@ -579,6 +672,56 @@ Score     = Perf / system price   (best device = 100)</div>
       <td class="mono ${r.px.code == null ? "na" : ""}">${dur(r.px.code)}</td>
       <td class="mono ${r.px.img == null ? "na" : ""}">${dur(r.px.img)}</td></tr>`).join("");
 
+    // Speicherauslastung
+    {
+      const ctxM = pxP + CODE_TOKENS;
+      const SCALE = 1.5;   // Achse bis 150 % des nutzbaren Speichers
+      const g1 = (n) => fmt(n, n < 10 ? 1 : 0);
+      const pos = (frac) => `${(Math.min(frac, SCALE) / SCALE * 100).toFixed(2)}%`;
+      $("#mem-hint").textContent = t.memHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP) + " + 1,1k");
+      $("#memchart").setAttribute("aria-label", t.memAria(mName(pxM)));
+      $("#mem-legend").innerHTML = [["w", "var(--m-weights)"], ["kv", "var(--m-kv)"], ["ov", "var(--m-ov)"], ["spill", ""], ["nofit", ""]].map(([k, c]) =>
+        `<span><i class="${c ? "" : "seg " + k}" style="${c ? "background:" + c : ""}"></i>${t.memLeg[k]}</span>`).join("");
+      const head = `<div class="memhead"><span></span><div class="memaxis">${[0, 0.5, 1, 1.5].map((f) => `<span class="${f === 1 ? "lim" : ""}" style="left:${pos(f)}">${f === 1 ? t.memLimit : Math.round(f * 100) + " %"}</span>`).join("")}</div><span></span></div>`;
+      const rowsHtml = vis.map((r) => {
+        const d = r.d, mi = memInfo(d, pxM, ctxM), cap = mi.cap;
+        // Segmente: Overhead, KV-Cache, Gewichte – an der Kapazitätsgrenze aufgeteilt
+        const parts = [["ov", mi.ov], ["kv", mi.kv], ["w", mi.w]];
+        let acc = 0; const segs = [];
+        parts.forEach(([k, gb]) => {
+          const inCap = Math.max(0, Math.min(gb, cap - acc));
+          if (inCap > 0) segs.push([k, inCap, false]);
+          if (gb - inCap > 0) segs.push([k, gb - inCap, true]);
+          acc += gb;
+        });
+        const total = mi.need, clipped = total / cap > SCALE;
+        const shown = Math.min(total, cap * SCALE);
+        const segHtml = segs.map(([k, gb, over]) => {
+          const cls = over ? (mi.state === "spill" ? "spill" : "nofit") : k;
+          const tip = `${t.memLeg[k]}${over ? " · " + t.memLeg[mi.state === "spill" ? "spill" : "nofit"] : ""}: ${g1(gb)} GB`;
+          return `<span class="seg ${cls}" style="flex:${gb.toFixed(3)} 1 0" data-tip="${esc(tip)}"></span>`;
+        }).join("");
+        let st, sub;
+        const pct = Math.round(total / cap * 100);
+        if (mi.state === "ok") { st = `<span class="st ok">${t.memOk(g1(total), g1(cap), pct)}</span>`; sub = t.memFree(g1(cap - total)) + (mi.unified ? " · " + t.memUnified(d.mem) : ""); }
+        else if (mi.state === "spill") { st = `<span class="st warn">${t.memSpill(g1(mi.spill))}</span>`; sub = t.memSpillTok(fmtTok(mi.tg)); }
+        else if (mi.state === "nosys") { st = `<span class="st bad">${t.memSpill(g1(mi.spill))}</span>`; sub = t.memSpillNo(state.sysRam); }
+        else if (mi.state === "wired") { st = `<span class="st warn">${t.memOk(g1(total), g1(cap), pct)}</span>`; sub = t.memWired; }
+        else { st = `<span class="st bad">${t.memNo(g1(total))}</span>`; sub = `${g1(cap)} GB ${t.memLimit}` + (mi.unified ? " · " + t.memUnified(d.mem) : ""); }
+        return `<div class="memrow">
+          <div class="memname"><span class="ico ${d.v}" style="width:24px;height:24px">${ICONS[d.kind]}</span><b title="${esc(d.name)}">${esc(d.name)}</b></div>
+          <div class="memtrack">
+            <div class="memcap" style="width:${pos(1)}"></div>
+            <div class="membar" style="width:${pos(shown / cap)}">${segHtml}</div>
+            <div class="memcapline" style="left:calc(${pos(1)} - 1px)"></div>
+            ${clipped ? '<span class="memclip">»</span>' : ""}
+          </div>
+          <div class="memval">${st}<small>${sub}</small></div>
+        </div>`;
+      }).join("");
+      $("#memchart").innerHTML = head + rowsHtml;
+    }
+
     // Matrix
     $("#matrix thead").innerHTML = `<tr>${sortHead("name", t.th.name)}${MODELS.map((m) =>
       sortHead("m:" + m.id, `${esc(mName(m))}<small>${fmt(m.gb, 0)} GB${w[m.id] ? " · " + t.inProfile : ""}</small>`)).join("")}</tr>`;
@@ -592,6 +735,10 @@ Score     = Perf / system price   (best device = 100)</div>
   $("#profile").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.profile = b.dataset.id; state.ctx = PROFILES.find((p) => p.id === state.profile).ctx; persist(); render(); });
   $("#vendor").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.vendor = b.dataset.id; persist(); render(); });
   $("#model").addEventListener("change", (e) => { state.model = e.target.value; persist(); render(); });
+  $("#sysram").addEventListener("change", (e) => { state.sysRam = Math.max(0, +e.target.value || 0); persist(); render(); });
+  const tipEl = $("#tip");
+  document.addEventListener("mouseover", (e) => { const el = e.target.closest("[data-tip]"); if (!el) { tipEl.hidden = true; return; } tipEl.textContent = el.dataset.tip; tipEl.hidden = false; });
+  document.addEventListener("mousemove", (e) => { if (tipEl.hidden) return; const x = Math.min(e.clientX + 14, window.innerWidth - tipEl.offsetWidth - 8); tipEl.style.left = x + "px"; tipEl.style.top = (e.clientY + 16) + "px"; });
   $("#px-model").addEventListener("change", (e) => { state.pxModel = e.target.value; persist(); render(); });
   $("#px-prompt").addEventListener("change", (e) => { state.pxPrompt = +e.target.value; persist(); render(); });
   $("#px-img").addEventListener("change", (e) => { state.pxImg = e.target.value; persist(); render(); });
