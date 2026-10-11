@@ -2,9 +2,12 @@
   "name": "aiscoremetrics",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "prices": "node scripts/update-prices.mjs",
-    "dev": "npx --yes serve public"
+    "dev": "npx --yes serve public",
+    "seo": "node scripts/build-seo.mjs"
   }
 }

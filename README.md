@@ -8,6 +8,9 @@ public/
   data/devices.json     Specs + Fallback-Preise aller Geräte (von Hand gepflegt)
   data/prices.json      Aktuelle GPU-Preise (wird automatisch geschrieben)
   _headers              Cache-Regeln für Cloudflare Pages
+  robots.txt, sitemap.xml   für Suchmaschinen
+  og-image.png          Vorschaubild für Social Media (Quelle: scripts/og-image.html)
+scripts/build-seo.mjs       Schreibt <noscript>-Gerätetabelle und FAQ-JSON-LD in index.html
 scripts/update-prices.mjs   Holt Preise von gpuprix.com (Node 20, keine Abhängigkeiten)
 data/history.csv        Preisverlauf, eine Zeile pro Gerät und Tag (für spätere Charts)
 .github/workflows/update-prices.yml   Täglicher Lauf um 04:17 UTC
@@ -66,6 +69,7 @@ Die Seite lädt ihre Daten per `fetch`. Direkt als Datei geöffnet (`file://`) f
 - **Neue GPU:** Eintrag in `devices.json` ergänzen und `"source": { "gpuprix": "<slug>", "metric": "low" }` setzen. Der Slug ist der letzte Teil der gpuprix-URL, z. B. `geforce-rtx-5080`.
 - **`metric`:** `instock` (Standard) = günstigste lieferbare Karte, fällt auf `low` zurück, wenn nichts lieferbar ist. `low` = Tiefstpreis inkl. nicht lieferbarer Angebote, `median3m` = 3-Monats-Median.
 - **Manueller Preis:** `"override": { "price": 6000, "note": "Geizhals", "date": "2026-10-10T00:00:00Z" }` in `devices.json` hat Vorrang vor der automatischen Quelle. Zum Zurückschalten das Feld wieder löschen. Aktuell gesetzt für die RTX 5090 (Geizhals) und die RTX PRO 4500 (Amazon), weil gpuprix für Deutschland nur Alternate auswertet.
+- **SEO-Teile:** Nach Änderungen an `devices.json` (neue Geräte, Specs) oder am FAQ-Text in `index.html` einmal `npm run seo` laufen lassen. Das aktualisiert die `<noscript>`-Tabelle und das FAQPage-JSON-LD. Preise stehen bewusst nicht in der Tabelle, weil sie sich täglich ändern.
 - **Preissprung-Schutz:** Ändert sich ein Preis an einem Tag um mehr als das Doppelte, behält das Script den alten Wert und schreibt eine Warnung ins Action-Log.
 
 ## Gut zu wissen

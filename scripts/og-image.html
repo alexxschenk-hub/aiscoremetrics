@@ -1,0 +1,37 @@
+<!doctype html>
+<!-- Quelle für public/og-image.png (1200×630). Neu erzeugen:
+     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --hide-scrollbars \
+       --window-size=1200,630 --screenshot=public/og-image.png scripts/og-image.html -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body { background: #0E1215; color: #E4EAED; font-family: "Avenir Next Condensed", "Arial Narrow", Arial, sans-serif; display: grid; grid-template-columns: 1fr 380px; align-items: center; padding: 0 80px; box-sizing: border-box; gap: 40px; }
+  .eyebrow { font-weight: 600; text-transform: uppercase; letter-spacing: .12em; font-size: 24px; color: #52C3CD; }
+  h1 { font-weight: 700; font-size: 92px; line-height: 1; margin: 18px 0 26px; letter-spacing: -.01em; }
+  p { font-family: "Avenir Next", Arial, sans-serif; font-size: 30px; line-height: 1.35; color: #93A0A9; margin: 0; }
+  .bars { display: grid; gap: 18px; }
+  .bar { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: 14px; font-family: Menlo, monospace; font-size: 20px; color: #93A0A9; }
+  .track { height: 22px; background: #151B1F; border: 1px solid #29323A; border-radius: 4px; overflow: hidden; }
+  .fill { height: 100%; background: #52C3CD; }
+  .fill.b { background: #4B5D66; }
+  .vendors { margin-top: 34px; font-family: Menlo, monospace; font-size: 22px; color: #52C3CD; letter-spacing: .04em; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="eyebrow">Local LLM hardware score</div>
+    <h1>AI Score Metrics</h1>
+    <p>GPU price-performance for local LLMs: VRAM, bandwidth, tokens/s and price compared.</p>
+    <div class="vendors">NVIDIA · AMD · Apple Silicon</div>
+  </div>
+  <div class="bars" aria-hidden="true">
+    <div class="bar"><span>VRAM</span><div class="track"><div class="fill" style="width:88%"></div></div></div>
+    <div class="bar"><span>GB/s</span><div class="track"><div class="fill" style="width:72%"></div></div></div>
+    <div class="bar"><span>tok/s</span><div class="track"><div class="fill" style="width:61%"></div></div></div>
+    <div class="bar"><span>€</span><div class="track"><div class="fill b" style="width:44%"></div></div></div>
+    <div class="bar"><span>Score</span><div class="track"><div class="fill" style="width:100%"></div></div></div>
+  </div>
+</body>
+</html>
