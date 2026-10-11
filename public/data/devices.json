@@ -552,7 +552,7 @@
       "id": "strix128",
       "v": "amd",
       "kind": "minipc",
-      "name": "Ryzen AI Max+ 395 128 GB",
+      "name": "Ryzen AI Max+ 395 · 128 GB",
       "mem": 128,
       "usable": 96,
       "usableMax": 110,
@@ -572,7 +572,7 @@
       "id": "m1pro",
       "v": "apple",
       "kind": "mbp",
-      "name": "M1 Pro 16-GPU",
+      "name": "M1 Pro 16-GPU · 32 GB",
       "mem": 32,
       "bw": 200,
       "tf": 5.2,
@@ -590,7 +590,7 @@
       "id": "m1max",
       "v": "apple",
       "kind": "studio",
-      "name": "M1 Max 32-GPU",
+      "name": "M1 Max 32-GPU · 64 GB",
       "mem": 64,
       "bw": 400,
       "tf": 10.4,
@@ -608,7 +608,7 @@
       "id": "m1ultra",
       "v": "apple",
       "kind": "studio",
-      "name": "M1 Ultra 64-GPU",
+      "name": "M1 Ultra 64-GPU · 128 GB",
       "mem": 128,
       "bw": 800,
       "tf": 21,
@@ -626,7 +626,7 @@
       "id": "m2max",
       "v": "apple",
       "kind": "studio",
-      "name": "M2 Max 38-GPU",
+      "name": "M2 Max 38-GPU · 96 GB",
       "mem": 96,
       "bw": 400,
       "tf": 13.6,
@@ -644,7 +644,7 @@
       "id": "m2ultra",
       "v": "apple",
       "kind": "studio",
-      "name": "M2 Ultra 76-GPU",
+      "name": "M2 Ultra 76-GPU · 192 GB",
       "mem": 192,
       "bw": 800,
       "tf": 27.2,
@@ -662,7 +662,7 @@
       "id": "m3max",
       "v": "apple",
       "kind": "mbp",
-      "name": "M3 Max 40-GPU",
+      "name": "M3 Max 40-GPU · 128 GB",
       "mem": 128,
       "bw": 400,
       "tf": 16.4,
@@ -680,7 +680,7 @@
       "id": "m3ultra",
       "v": "apple",
       "kind": "studio",
-      "name": "M3 Ultra 80-GPU",
+      "name": "M3 Ultra 80-GPU · 256 GB",
       "mem": 256,
       "bw": 819,
       "tf": 28.4,
@@ -716,7 +716,7 @@
       "id": "m4max",
       "v": "apple",
       "kind": "studio",
-      "name": "M4 Max 40-GPU",
+      "name": "M4 Max 40-GPU · 128 GB",
       "mem": 128,
       "bw": 546,
       "tf": 18.4,
@@ -734,7 +734,7 @@
       "id": "m5pro",
       "v": "apple",
       "kind": "mbp",
-      "name": "M5 Pro 20-GPU",
+      "name": "M5 Pro 20-GPU · 64 GB",
       "mem": 64,
       "bw": 307,
       "tf": 10.5,
@@ -752,7 +752,7 @@
       "id": "m5max",
       "v": "apple",
       "kind": "studio",
-      "name": "M5 Max 40-GPU",
+      "name": "M5 Max 40-GPU · 128 GB",
       "mem": 128,
       "bw": 614,
       "tf": 21,
@@ -770,7 +770,7 @@
       "id": "m5u96",
       "v": "apple",
       "kind": "studio",
-      "name": "M5 Ultra 64-GPU",
+      "name": "M5 Ultra 64-GPU · 96 GB",
       "mem": 96,
       "bw": 1200,
       "tf": 33.6,
@@ -787,7 +787,7 @@
       "id": "m5u256",
       "v": "apple",
       "kind": "studio",
-      "name": "M5 Ultra 80-GPU",
+      "name": "M5 Ultra 80-GPU · 256 GB",
       "mem": 256,
       "bw": 1200,
       "tf": 42,
@@ -853,6 +853,346 @@
         "cfg"
       ],
       "q": "Mac mini M5 Pro 64GB"
+    },
+    {
+      "id": "m5max36",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M5 Max 32-GPU · 36 GB",
+      "mem": 36,
+      "bw": 460,
+      "tf": 16.8,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 2999,
+      "src": [
+        "apple"
+      ],
+      "q": "Mac Studio M5 Max 36GB"
+    },
+    {
+      "id": "m5max48",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M5 Max 40-GPU · 48 GB",
+      "mem": 48,
+      "bw": 614,
+      "tf": 21.0,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 3599,
+      "src": [
+        "cfg"
+      ],
+      "q": "Mac Studio M5 Max 48GB",
+      "est": true
+    },
+    {
+      "id": "m5max64",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M5 Max 40-GPU · 64 GB",
+      "mem": 64,
+      "bw": 614,
+      "tf": 21.0,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 3849,
+      "src": [
+        "cfg"
+      ],
+      "q": "Mac Studio M5 Max 64GB",
+      "est": true
+    },
+    {
+      "id": "m5u80x96",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M5 Ultra 80-GPU · 96 GB",
+      "mem": 96,
+      "bw": 1200,
+      "tf": 42.0,
+      "eta": 0.5,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 8099,
+      "src": [
+        "cfg"
+      ],
+      "q": "Mac Studio M5 Ultra 80-Core 96GB",
+      "est": true
+    },
+    {
+      "id": "m5u512",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M5 Ultra 80-GPU · 512 GB",
+      "mem": 512,
+      "bw": 1200,
+      "tf": 42.0,
+      "eta": 0.5,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 15999,
+      "src": [
+        "cfg"
+      ],
+      "q": "Mac Studio M5 Ultra 512GB",
+      "est": true
+    },
+    {
+      "id": "m5pro24",
+      "v": "apple",
+      "kind": "mbp",
+      "name": "M5 Pro 20-GPU · 24 GB",
+      "mem": 24,
+      "bw": 307,
+      "tf": 10.5,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 2499,
+      "src": [
+        "cfg"
+      ],
+      "q": "MacBook Pro M5 Pro 24GB",
+      "est": true
+    },
+    {
+      "id": "m5pro48",
+      "v": "apple",
+      "kind": "mbp",
+      "name": "M5 Pro 20-GPU · 48 GB",
+      "mem": 48,
+      "bw": 307,
+      "tf": 10.5,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 3199,
+      "src": [
+        "cfg"
+      ],
+      "q": "MacBook Pro M5 Pro 48GB",
+      "est": true
+    },
+    {
+      "id": "m5maxmbp36",
+      "v": "apple",
+      "kind": "mbp",
+      "name": "M5 Max 32-GPU · 36 GB",
+      "mem": 36,
+      "bw": 460,
+      "tf": 16.8,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 4099,
+      "src": [
+        "cfg"
+      ],
+      "q": "MacBook Pro M5 Max 36GB",
+      "est": true
+    },
+    {
+      "id": "m5maxmbp128",
+      "v": "apple",
+      "kind": "mbp",
+      "name": "M5 Max 40-GPU · 128 GB",
+      "mem": 128,
+      "bw": 614,
+      "tf": 21.0,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 6299,
+      "src": [
+        "cfg"
+      ],
+      "q": "MacBook Pro M5 Max 128GB",
+      "est": true
+    },
+    {
+      "id": "m6mini24",
+      "v": "apple",
+      "kind": "mini",
+      "name": "M6 12-GPU · 24 GB",
+      "mem": 24,
+      "bw": 170,
+      "tf": 6.6,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 1299,
+      "src": [
+        "cfg"
+      ],
+      "q": "Mac mini M6 24GB",
+      "est": true
+    },
+    {
+      "id": "m5promini24",
+      "v": "apple",
+      "kind": "mini",
+      "name": "M5 Pro 16-GPU · 24 GB",
+      "mem": 24,
+      "bw": 307,
+      "tf": 8.4,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 1999,
+      "src": [
+        "apple"
+      ],
+      "q": "Mac mini M5 Pro 24GB"
+    },
+    {
+      "id": "m5promini48",
+      "v": "apple",
+      "kind": "mini",
+      "name": "M5 Pro 20-GPU · 48 GB",
+      "mem": 48,
+      "bw": 307,
+      "tf": 10.5,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 3.5,
+      "price": 2499,
+      "src": [
+        "cfg"
+      ],
+      "q": "Mac mini M5 Pro 48GB",
+      "est": true
+    },
+    {
+      "id": "m4max36",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M4 Max 32-GPU · 36 GB",
+      "mem": 36,
+      "bw": 410,
+      "tf": 14.7,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 2200,
+      "src": [
+        "used"
+      ],
+      "q": "Mac Studio M4 Max 36GB",
+      "est": true
+    },
+    {
+      "id": "m4max64",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M4 Max 40-GPU · 64 GB",
+      "mem": 64,
+      "bw": 546,
+      "tf": 18.4,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 3000,
+      "src": [
+        "used"
+      ],
+      "q": "Mac Studio M4 Max 64GB",
+      "est": true
+    },
+    {
+      "id": "m3ultra96",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M3 Ultra 60-GPU · 96 GB",
+      "mem": 96,
+      "bw": 819,
+      "tf": 21.3,
+      "eta": 0.5,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 4300,
+      "src": [
+        "used"
+      ],
+      "q": "Mac Studio M3 Ultra 96GB",
+      "est": true
+    },
+    {
+      "id": "m3ultra512",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M3 Ultra 80-GPU · 512 GB",
+      "mem": 512,
+      "bw": 819,
+      "tf": 28.4,
+      "eta": 0.5,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 9500,
+      "src": [
+        "used"
+      ],
+      "q": "Mac Studio M3 Ultra 512GB",
+      "est": true
+    },
+    {
+      "id": "m2ultra64",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M2 Ultra 60-GPU · 64 GB",
+      "mem": 64,
+      "bw": 800,
+      "tf": 21.4,
+      "eta": 0.5,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 2600,
+      "src": [
+        "used"
+      ],
+      "q": "Mac Studio M2 Ultra 64GB",
+      "est": true
+    },
+    {
+      "id": "m1max32",
+      "v": "apple",
+      "kind": "studio",
+      "name": "M1 Max 24-GPU · 32 GB",
+      "mem": 32,
+      "bw": 400,
+      "tf": 7.8,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 1100,
+      "src": [
+        "used"
+      ],
+      "q": "Mac Studio M1 Max 32GB",
+      "est": true
+    },
+    {
+      "id": "m1pro16",
+      "v": "apple",
+      "kind": "mbp",
+      "name": "M1 Pro 16-GPU · 16 GB",
+      "mem": 16,
+      "bw": 200,
+      "tf": 5.2,
+      "eta": 0.62,
+      "etaC": 0.6,
+      "pf": 1,
+      "price": 800,
+      "src": [
+        "used"
+      ],
+      "q": "MacBook Pro M1 Pro 16GB",
+      "est": true
     }
   ]
 }

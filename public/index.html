@@ -441,7 +441,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       <h2>Datenstand</h2>
       <ul>
         <li>GPU-Preise: niedrigster Neupreis Deutschland laut gpuprix.com (Händlerdaten von Alternate), täglich automatisch aktualisiert, zuletzt {{updated}}. Gezeigt wird die günstigste lieferbare Karte. Ist keine lieferbar, der letzte Tiefstpreis. Einzelne Preise können manuell gesetzt werden, aktuell die RTX 5090 nach Geizhals.</li>
-        <li>Mac Studio M5 Ultra 96 GB: Apple-Listenpreis 6.599 €. Mac mini M6 16 GB: 1.049 €. Andere Konfigurationen und ältere Macs: geschätzt.</li>
+        <li>Mac Studio M5 Ultra 96 GB: Apple-Listenpreis 6.599 €. Mac Studio M5 Max 36 GB: 2.999 €. Mac mini M6 16 GB: 1.049 €, M5 Pro 24 GB: 1.999 €. Andere Speicherausbauten und ältere Macs: geschätzt.</li>
         <li>Ryzen AI Max+ 395 mit 128 GB: Mini-PCs von Framework, GMKtec oder Minisforum, Preis geschätzt.</li>
         <li>Specs: NVIDIA-, AMD- und Apple-Datenblätter. Rechenleistung bei RTX PRO 2000/4000/4500 und den Ada-Workstation-Karten aus AI TOPS abgeleitet, daher Näherungen. RTX PRO 6000 Max-Q: Preis geschätzt. RTX PRO 4500: Amazon-Preis vom 11.10.</li>
         <li>Die Links führen zum Geizhals-Preisvergleich (ohne Affiliate).</li>
@@ -544,7 +544,7 @@ Score     = Perf / system price   (best device = 100)</div>
       <h2>Data as of</h2>
       <ul>
         <li>GPU prices: lowest new price in Germany per gpuprix.com (retailer data from Alternate), updated automatically every day, last on {{updated}}. Shown is the cheapest card in stock, or the last lowest price if none is in stock. Individual prices can be set manually, currently the RTX 5090 per Geizhals.</li>
-        <li>Mac Studio M5 Ultra 96 GB: Apple list price €6,599. Mac mini M6 16 GB: €1,049. Other configurations and older Macs: estimated.</li>
+        <li>Mac Studio M5 Ultra 96 GB: Apple list price €6,599. Mac Studio M5 Max 36 GB: €2,999. Mac mini M6 16 GB: €1,049, M5 Pro 24 GB: €1,999. Other memory configurations and older Macs: estimated.</li>
         <li>Ryzen AI Max+ 395 with 128 GB: mini PCs from Framework, GMKtec or Minisforum, estimated price.</li>
         <li>Specs: NVIDIA, AMD and Apple datasheets. Compute for RTX PRO 2000/4000/4500 and the Ada workstation cards is derived from AI TOPS, so approximate. RTX PRO 6000 Max-Q: estimated price. RTX PRO 4500: Amazon price from 11 Oct.</li>
         <li>Links go to the Geizhals price comparison (no affiliate).</li>
@@ -570,6 +570,7 @@ Score     = Perf / system price   (best device = 100)</div>
   const eur = (n) => state.lang === "de" ? `${fmt(n)} €` : `€${fmt(n)}`;
   const ctxLabel = (c) => (c / 1024) + "k";
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const devLabel = (d) => /\bGB\b/.test(d.name) ? d.name : `${d.name} · ${d.mem} GB`;
   const mName = (m) => m.size + " " + (m.dense ? L().dense : "MoE");
   const mEx = (m) => typeof m.ex === "string" ? m.ex : m.ex[state.lang];
   const srcText = (d) => { const s = L().src[d.src[0]]; return d.src[1] ? `${s} ${d.src[1]}` : s; };
@@ -670,12 +671,9 @@ Score     = Perf / system price   (best device = 100)</div>
     $("#basecost").setAttribute("aria-label", L().baseAria);
     $("#method").innerHTML = L().method.replace(/\{\{updated\}\}/g, UPDATED ? new Date(UPDATED).toLocaleDateString(L().locale, { day: "numeric", month: "long", year: "numeric" }) : "–");
     $("#quant").innerHTML = QUANTS.map((q) => `<option value="${q.id}">${q.name} · ${q[state.lang]}</option>`).join("");
-    $("#pick-model").innerHTML = MODELS.map((m) => `<option value="${m.id}">${esc(mName(m))} (${esc(mEx(m))})</option>`).join("");
     $("#pick-prompt").innerHTML = PROMPTS.map((p, i) => `<option value="${i}">${ctxLabel(p)} ${L().tokens}</option>`).join("");
-    $("#px-model").innerHTML = MODELS.map((m) => `<option value="${m.id}">${esc(mName(m))} (${esc(mEx(m))})</option>`).join("");
     $("#px-prompt").innerHTML = PROMPTS.map((p, i) => `<option value="${i}">${ctxLabel(p)} ${L().tokens}</option>`).join("");
     $("#px-img").innerHTML = IMG.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join("");
-    $("#model").innerHTML = MODELS.map((m) => `<option value="${m.id}">${esc(mName(m))} (${esc(mEx(m))})</option>`).join("");
   }
   function renderControls() {
     document.querySelectorAll("#lang button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === state.lang));
@@ -688,7 +686,7 @@ Score     = Perf / system price   (best device = 100)</div>
       const devs = DEVICES.filter((d) => d.v === pk.v).sort((a, b) => a.name.localeCompare(b.name, L().locale, { numeric: true }));
       return `<span class="lab">${label}</span><div class="pair">
         <select data-slot="${slot}" data-part="v" aria-label="${label}: ${L().vendor}"><option value="">${L().pickVendor}</option>${[N, AM, A].map((v) => `<option value="${v}" ${v === pk.v ? "selected" : ""}>${VENDOR[v]}</option>`).join("")}</select>
-        <select data-slot="${slot}" data-part="id" aria-label="${label}: ${L().model}" ${pk.v ? "" : "disabled"}><option value="">${pk.v ? L().pickModel : "–"}</option>${devs.map((d) => `<option value="${d.id}" ${d.id === pk.id ? "selected" : ""}>${esc(d.name)}${d.kind !== "gpu" ? " (" + L().kinds[d.kind] + ")" : ""}</option>`).join("")}</select>
+        <select data-slot="${slot}" data-part="id" aria-label="${label}: ${L().model}" ${pk.v ? "" : "disabled"}><option value="">${pk.v ? L().pickModel : "–"}</option>${devs.map((d) => `<option value="${d.id}" ${d.id === pk.id ? "selected" : ""}>${esc(devLabel(d))}${d.kind !== "gpu" ? " (" + L().kinds[d.kind] + ")" : ""}</option>`).join("")}</select>
       </div>`;
     };
     $("#pick-a").hidden = state.view === "all"; $("#pick-b").hidden = state.view !== "cmp";
@@ -696,6 +694,9 @@ Score     = Perf / system price   (best device = 100)</div>
     $("#pick-model").value = state.pxModel; $("#pick-prompt").value = state.pxPrompt; $("#quant").value = state.quant;
     if (state.view !== "all") $("#pick-a").innerHTML = picker("pickA", state.view === "cmp" ? L().pickA : L().pickDev);
     if (state.view === "cmp") $("#pick-b").innerHTML = picker("pickB", L().pickB);
+    const modelOpts = MODELS.map((m) => `<option value="${m.id}">${esc(mName(m))} (${esc(mEx(m))}) · ${fmt(qm(m).gb, 0)} GB</option>`).join("");
+    ["#pick-model", "#px-model", "#model"].forEach((sel) => { $(sel).innerHTML = modelOpts; });
+    $("#pick-model").value = state.pxModel;
     $("#model-field").hidden = state.profile !== "single";
     $("#ctx").value = state.ctx; $("#ctx-val").textContent = ctxLabel(CTX[state.ctx]);
     $("#base").checked = state.base; $("#basecost").value = state.baseCost; $("#sysram").value = state.sysRam; $("#wired").checked = state.wired;
@@ -733,7 +734,7 @@ Score     = Perf / system price   (best device = 100)</div>
     const fastest = [...vis].sort((a, b) => b.perf - a.perf)[0];
     const cheapFull = [...vis].filter((r) => r.fitCount === usedModels.length).sort((a, b) => a.sp - b.sp)[0];
     const single = state.profile === "single" ? MODELS.find((m) => m.id === state.model) : null;
-    const sumItem = (k, r, s) => `<div class="sum"><span class="k">${k}</span><span class="v">${r ? esc(r.d.name) : t.none}</span><span class="s">${s}</span></div>`;
+    const sumItem = (k, r, s) => `<div class="sum"><span class="k">${k}</span><span class="v">${r ? esc(devLabel(r.d)) : t.none}</span><span class="s">${s}</span></div>`;
     const okBest = best && best.perf > 0;
     $("#summary").innerHTML =
       sumItem(t.sBest, okBest ? best : null, okBest ? `${eur(best.sp)} System · Score 100` : t.noneFits(ctxLabel(ctx))) +
@@ -773,7 +774,7 @@ Score     = Perf / system price   (best device = 100)</div>
         ["memuse", () => null, null, 0, memTxt]
       ];
       const cols = vis;
-      const head = `<tr><th></th>${cols.map((r) => `<th><span class="devrow"><span class="ico ${r.d.v}">${ICONS[r.d.kind]}</span><span>${esc(r.d.name)}<br><span class="tag" style="margin:0">${VENDOR[r.d.v]} · ${r.d.ws ? t.ws : t.kinds[r.d.kind]}</span></span></span></th>`).join("")}${cols.length === 2 ? "<th></th>" : ""}</tr>`;
+      const head = `<tr><th></th>${cols.map((r) => `<th><span class="devrow"><span class="ico ${r.d.v}">${ICONS[r.d.kind]}</span><span>${esc(devLabel(r.d))}<br><span class="tag" style="margin:0">${VENDOR[r.d.v]} · ${r.d.ws ? t.ws : t.kinds[r.d.kind]}</span></span></span></th>`).join("")}${cols.length === 2 ? "<th></th>" : ""}</tr>`;
       const body = ROWS.map((row) => {
         if (row[0] === "grp") return `<tr class="grp"><td colspan="${cols.length + (cols.length === 2 ? 2 : 1)}">${t.dGroups[row[1]]}</td></tr>`;
         const [key, val, show, dir, raw] = row;
@@ -808,7 +809,7 @@ Score     = Perf / system price   (best device = 100)</div>
       const sub = `${d.mem} GB · ${fmt(d.bw)} GB/s` + (d.kind === "gpu" && state.base ? ` · ${t.inclPc(fmt(state.baseCost))}` : "");
       return `<tr class="${r.perf === 0 ? "zero" : ""}">
         <td class="rank">${picked.length ? globalRank.indexOf(r) + 1 : i + 1}</td>
-        <td><div class="devrow"><span class="ico ${d.v}" title="${t.kinds[d.kind]}">${ICONS[d.kind]}</span><div class="dev"><b><span class="tag">${VENDOR[d.v]} · ${d.ws ? t.ws : t.kinds[d.kind]}</span>${esc(d.name)}</b><span>${sub}</span></div></div></td>
+        <td><div class="devrow"><span class="ico ${d.v}" title="${t.kinds[d.kind]}">${ICONS[d.kind]}</span><div class="dev"><b><span class="tag">${VENDOR[d.v]} · ${d.ws ? t.ws : t.kinds[d.kind]}</span>${esc(devLabel(d))}</b><span>${sub}</span></div></div></td>
         <td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d)}" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${d.est && !edited ? "est" : ""}">${edited ? t.src.own : srcText(d)}</span></td>
         <td><div class="dots" aria-label="${esc(t.fitsAria(r.fitCount, usedModels.length))}">${dots}</div></td>
         <td><div class="barcell"><div class="track"><div class="fill p" style="width:${r.perfN.toFixed(1)}%"></div></div><span class="mono">${fmt(r.perfN)}</span></div></td>
@@ -820,7 +821,7 @@ Score     = Perf / system price   (best device = 100)</div>
     // Praxiswerte
     const dur = (sec) => sec == null ? "—" : sec < 1 ? `${fmt(sec, 1)} s` : sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
     $("#praxis thead").innerHTML = `<tr>${sortHead("name", t.th.name)}${sortHead("x:tg", t.pxTh.tg)}${sortHead("x:ttft", t.pxTh.ttft)}${sortHead("x:code", t.pxTh.code)}${sortHead("x:img", t.pxTh.img)}</tr>`;
-    $("#praxis tbody").innerHTML = vis.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(r.d.name)}</span></td>
+    $("#praxis tbody").innerHTML = vis.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(devLabel(r.d))}</span></td>
       <td class="mono ${r.px.tg == null ? "na" : ""}">${r.px.tg == null ? "—" : fmtTok(r.px.tg)}</td>
       <td class="mono ${r.px.ttft == null ? "na" : ""}">${dur(r.px.ttft)}</td>
       <td class="mono ${r.px.code == null ? "na" : ""}">${dur(r.px.code)}</td>
@@ -863,7 +864,7 @@ Score     = Perf / system price   (best device = 100)</div>
         else if (mi.state === "wired") { st = `<span class="st warn">${t.memOk(g1(total), g1(cap), pct)}</span>`; sub = t.memWired; }
         else { st = `<span class="st bad">${t.memNo(g1(total))}</span>`; sub = `${g1(cap)} GB ${t.memLimit}` + (mi.unified ? " · " + t.memUnified(d.mem, osReserve(d)) : ""); }
         return `<div class="memrow">
-          <div class="memname"><span class="ico ${d.v}" style="width:24px;height:24px">${ICONS[d.kind]}</span><b title="${esc(d.name)}">${esc(d.name)}</b></div>
+          <div class="memname"><span class="ico ${d.v}" style="width:24px;height:24px">${ICONS[d.kind]}</span><b title="${esc(devLabel(d))}">${esc(devLabel(d))}</b></div>
           <div class="memtrack">
             <div class="memcap" style="width:${pos(1)}"></div>
             <div class="membar" style="width:${pos(shown / cap)}">${segHtml}</div>
@@ -879,7 +880,7 @@ Score     = Perf / system price   (best device = 100)</div>
     // Matrix
     $("#matrix thead").innerHTML = `<tr>${sortHead("name", t.th.name)}${MODELS.map((m) =>
       sortHead("m:" + m.id, `${esc(mName(m))}<small>${fmt(qm(m).gb, 0)} GB${w[m.id] ? " · " + t.inProfile : ""}</small>`)).join("")}</tr>`;
-    $("#matrix tbody").innerHTML = vis.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(r.d.name)}</span></td>${MODELS.map((m) => {
+    $("#matrix tbody").innerHTML = vis.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(devLabel(r.d))}</span></td>${MODELS.map((m) => {
       const c = r.per[m.id];
       return c.fits ? `<td class="mono" title="${esc(t.ttft(fmt(c.pp), fmt(c.ttft, 1)))}">${fmtTok(c.tg)}<br><span class="na">${fmt(c.pp)}</span></td>` : `<td class="na">—</td>`;
     }).join("")}</tr>`).join("");
