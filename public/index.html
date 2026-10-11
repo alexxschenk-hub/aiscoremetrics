@@ -114,7 +114,7 @@ td.num, th.num { text-align: right; }
 .dots { display: flex; gap: 3px; }
 .dot { width: 11px; height: 11px; border-radius: 2px; border: 1px solid var(--muted); }
 .dot.on { background: var(--accent); border-color: var(--accent); }
-.dot.off-w { opacity: .35; }
+.dot.sel { outline: 2px solid var(--ink); outline-offset: 1px; }
 .barcell { display: grid; grid-template-columns: 1fr 44px; gap: 8px; align-items: center; min-width: 150px; }
 .track { height: 8px; background: var(--bg); border-radius: 2px; overflow: hidden; }
 .fill { height: 100%; background: var(--bar); }
@@ -205,10 +205,6 @@ footer { font-size: 12.5px; color: var(--muted); }
       </div>
       <div class="pick" id="pick-a" hidden></div>
       <div class="pick" id="pick-b" hidden></div>
-      <div class="field" id="pick-llm" hidden>
-        <label class="lab" for="pick-model" data-i="pickLlm"></label>
-        <select id="pick-model"></select>
-      </div>
       <div class="field" id="pick-prompt-f" hidden>
         <label class="lab" for="pick-prompt" data-i="pxPrompt"></label>
         <select id="pick-prompt"></select>
@@ -216,12 +212,12 @@ footer { font-size: 12.5px; color: var(--muted); }
     </div>
     <div class="row">
       <div class="field">
-        <span class="lab" id="lab-profile" data-i="profile"></span>
-        <div class="seg" id="profile" role="group" aria-labelledby="lab-profile"></div>
+        <span class="lab" id="lab-use" data-i="useLab"></span>
+        <div class="seg" id="use" role="group" aria-labelledby="lab-use"></div>
       </div>
-      <div class="field" id="model-field" hidden>
-        <label class="lab" for="model" data-i="model"></label>
-        <select id="model"></select>
+      <div class="field">
+        <label class="lab" for="llm" data-i="pickLlm"></label>
+        <select id="llm"></select>
       </div>
       <div class="field">
         <label class="lab" for="ctx"><span data-i="ctx"></span>: <span class="mono" id="ctx-val">32k</span> Tokens</label>
@@ -261,7 +257,6 @@ footer { font-size: 12.5px; color: var(--muted); }
     <h2 data-i="pxTitle"></h2>
     <p class="hint" data-i="pxHint"></p>
     <div class="row">
-      <div class="field"><label class="lab" for="px-model" data-i="pxModel"></label><select id="px-model"></select></div>
       <div class="field"><label class="lab" for="px-prompt" data-i="pxPrompt"></label><select id="px-prompt"></select></div>
       <div class="field"><label class="lab" for="px-img" data-i="pxImg"></label><select id="px-img"></select></div>
     </div>
@@ -289,19 +284,29 @@ footer { font-size: 12.5px; color: var(--muted); }
 
 <script>
 (function () {
+  // Modelle: tp/ap = Parameter gesamt/aktiv (Mrd.), gb/agb = Größe gesamt/aktiv bei Q4_K_M, kv = KV-Cache GB je 1.000 Tokens (FP16)
   const MODELS = [
-    { id: "d8",     size: "8B",   dense: true,  ex: "Llama 3.1 8B, Qwen3 8B",       gb: 4.9,  agb: 4.9,  ap: 8.0,  kv: 0.125 },
-    { id: "moe30",  size: "30B",  eff: 0.55,    ex: "Qwen3 30B-A3B",                gb: 18.6, agb: 2.0,  ap: 3.3,  kv: 0.094 },
-    { id: "d32",    size: "32B",  dense: true,  ex: { de: "Qwen 32B-Klasse", en: "Qwen 32B class" }, gb: 19.9, agb: 19.9, ap: 32.8, kv: 0.25 },
-    { id: "d70",    size: "70B",  dense: true,  ex: "Llama 3.3 70B",                gb: 42.5, agb: 42.5, ap: 70.6, kv: 0.31 },
-    { id: "moe120", size: "120B", eff: 0.55, bpw: 4.25,    ex: { de: "gpt-oss-120b-Klasse", en: "gpt-oss-120b class" }, gb: 63.0, agb: 2.9, ap: 5.1, kv: 0.07 },
-    { id: "moe235", size: "235B", eff: 0.55,    ex: "Qwen3 235B-A22B",              gb: 142,  agb: 13.4, ap: 22.0, kv: 0.19 }
+    { id: "q35_9",     name: "Qwen3.5 9B",          tp: 9,   ap: 9,    dense: true, gb: 6.0,  agb: 5.5,  kv: 0.04,  use: ["chat"] },
+    { id: "gemma4_12", name: "Gemma 4 12B",         tp: 12,  ap: 12,   dense: true, gb: 7.6,  agb: 7.3,  kv: 0.08,  use: ["chat"] },
+    { id: "gptoss20",  name: "gpt-oss-20b",         tp: 21,  ap: 3.6,  eff: 0.55, bpw: 4.25, gb: 13.0, agb: 2.0, kv: 0.04, use: ["coding", "chat"] },
+    { id: "devstral24",name: "Devstral Small 24B",  tp: 24,  ap: 23.6, dense: true, gb: 14.3, agb: 14.3, kv: 0.16,  use: ["coding"] },
+    { id: "qwen36_27", name: "Qwen3.6 27B",         tp: 27,  ap: 27,   dense: true, gb: 17.0, agb: 16.4, kv: 0.06,  use: ["coding", "chat"] },
+    { id: "moe30",     name: "Qwen3-Coder 30B-A3B", tp: 30.5,ap: 3.3,  eff: 0.55, gb: 18.6, agb: 2.0,  kv: 0.098, use: ["coding"] },
+    { id: "qwen36_35", name: "Qwen3.6 35B-A3B",     tp: 35,  ap: 3,    eff: 0.55, gb: 21.5, agb: 1.9,  kv: 0.05,  use: ["coding", "chat"] },
+    { id: "gemma4_31", name: "Gemma 4 31B",         tp: 31,  ap: 31,   dense: true, gb: 20.0, agb: 18.8, kv: 0.2,   use: ["chat"] },
+    { id: "d70",       name: "Llama 3.3 70B",       tp: 70.6,ap: 70.6, dense: true, gb: 42.5, agb: 42.5, kv: 0.31,  use: ["chat", "large"] },
+    { id: "moe120",    name: "gpt-oss-120b",        tp: 117, ap: 5.1,  eff: 0.55, bpw: 4.25, gb: 63.0, agb: 2.9, kv: 0.07, use: ["coding", "large"] },
+    { id: "glm45air",  name: "GLM-4.5-Air",         tp: 106, ap: 12,   eff: 0.55, gb: 64.0, agb: 7.3,  kv: 0.19,  use: ["coding", "large"] },
+    { id: "q35_122",   name: "Qwen3.5 122B-A10B",   tp: 122, ap: 10,   eff: 0.55, gb: 74.0, agb: 6.1,  kv: 0.08,  use: ["chat", "large"] },
+    { id: "moe235",    name: "Qwen3 235B-A22B",     tp: 235, ap: 22,   eff: 0.55, gb: 142,  agb: 13.4, kv: 0.19,  use: ["large"] },
+    { id: "dsv3",      name: "DeepSeek V3.1",       tp: 671, ap: 37,   eff: 0.55, gb: 404,  agb: 22.4, kv: 0.07,  use: ["large"] }
   ];
-  const PROFILES = [
-    { id: "chat",   ctx: 2, alpha: 0.8, w: { d8: .2, moe30: .25, d32: .25, d70: .15, moe120: .15 } },
-    { id: "agent",  ctx: 3, alpha: 0.5, w: { moe30: .25, d32: .2, moe120: .3, d70: .1, moe235: .15 } },
-    { id: "large",  ctx: 2, alpha: 0.6, w: { d70: .3, moe120: .3, moe235: .4 } },
-    { id: "single", ctx: 3, alpha: 0.6, w: null }
+  // Einsatzzweck filtert die Modellauswahl; alpha gewichtet Generierung gegen Prompt-Verarbeitung
+  const USES = [
+    { id: "all",    alpha: 0.6, def: "moe30" },
+    { id: "coding", alpha: 0.5, def: "moe30" },
+    { id: "chat",   alpha: 0.8, def: "qwen36_27" },
+    { id: "large",  alpha: 0.6, def: "moe120" }
   ];
   const CTX = [4096, 8192, 16384, 32768, 65536, 131072];
   // Quantisierungen: Bits pro Gewicht inkl. Skalierungsfaktoren (GGUF-Richtwerte)
@@ -317,7 +322,7 @@ footer { font-size: 12.5px; color: var(--muted); }
   const QBASE = 4.85;   // Basis der Modellgrößen in MODELS (Q4_K_M), gpt-oss-120b: natives MXFP4
   function qm(m) {
     const q = QUANTS.find((x) => x.id === state.quant) || QUANTS[2];
-    const f = q.bpw / (m.bpw || QBASE);
+    const f = m.bpw && q.id === "q4" ? 1 : q.bpw / (m.bpw || QBASE);   // gpt-oss: bei Q4 das native MXFP4
     return f === 1 ? m : Object.assign({}, m, { gb: m.gb * f, agb: m.agb * f });
   }
   const PROMPTS = [1024, 4096, 16384, 32768, 65536];
@@ -358,13 +363,13 @@ footer { font-size: 12.5px; color: var(--muted); }
       hint: "Klick auf eine Spaltenüberschrift sortiert, ein zweiter Klick dreht die Reihenfolge um.",
       hintPrices: "Preise sind editierbar und bleiben in deinem Browser gespeichert. Orange markierte Preise sind Schätzungen. Preise gelten für Deutschland in Euro.",
       showPrices: "Preise und Preis-Leistung einblenden (Deutschland, EUR)",
-      profiles: { chat: "Chat", agent: "Agent & Coding", large: "Große Modelle", single: "Einzelmodell" },
+      uses: { all: "Alle Modelle", coding: "Agentic Coding", chat: "Chat & Assistenz", large: "Große Modelle" }, useLab: "Einsatzzweck", active: "aktiv",
       dense: "dicht",
       th: { rank: "#", name: "Gerät", price: "Systempreis €", fits: "Modelle passen", perf: "Leistung", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini-PC" },
       src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", man: "manuell:", own: "eigener Preis" },
       inclPc: (c) => `inkl. ${c} € PC`, edited: "Von dir geändert",
-      fitsYes: "passt", fitsNo: "passt nicht", need: "GB nötig", usable: "GB nutzbar", notInProfile: "nicht im Profil",
+      fitsYes: "passt", fitsNo: "passt nicht", need: "GB nötig", usable: "GB nutzbar", notInProfile: "nicht ausgewählt",
       fitsAria: (a, b) => `${a} von ${b} Profil-Modellen passen`,
       priceAria: (n) => `Preis ${n} in Euro`, prices: "Preise ↗",
       sBest: "Bester Wert", sTopGpu: "Schnellste Grafikkarte", fitsShort: "Modelle passen", sTopUni: "Schnellster Mac oder Mini-PC", sFast: "Schnellstes Gerät", sCheap: "Günstigstes, auf dem alle Modelle laufen", sCheapOne: "Günstigstes, auf dem es läuft",
@@ -380,7 +385,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       dRows: { sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
       rankOf: (a, b) => `${a} von ${b}`,
       faster: (x) => `${x}× besser`,
-      dHint: (m, p) => `Praxiswerte und Belegung für ${m} mit ${p} Prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Platz und Score beziehen sich auf alle Geräte im gewählten Profil.`,
+      dHint: (m, p) => `Praxiswerte und Belegung für ${m} mit ${p} Prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Platz und Score beziehen sich auf alle Geräte für dieses Modell.`,
       memTitle: "Speicherauslastung",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, mit ${c} Kontext. 100 % ist der nutzbare Grafikspeicher, bei Macs und Mini-PCs der für die GPU freigegebene Teil des Arbeitsspeichers. Was darüber hinausgeht, lagern PCs mit Grafikkarte in den normalen Arbeitsspeicher aus.`,
       memLeg: { w: "Modellgewichte", kv: "KV-Cache (Kontext)", ov: "Laufzeit-Overhead", spill: "Ausgelagert in PC-RAM", nofit: "Passt nicht" },
@@ -398,7 +403,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       tokens: "Tokens",
       mTitle: "Generierung je Modell",
       mHint: "Obere Zahl: geschätzte Tokens/s beim Schreiben bei halb gefülltem Kontext. Untere Zahl: Prompt-Verarbeitung in Tokens/s. „—“ heißt: passt nicht in den Speicher. Spalten sind sortierbar.",
-      inProfile: "im Profil", ttft: (p, t) => `Prompt ${p} tok/s · erster Token nach ${t} s bei vollem Kontext`,
+      inProfile: "ausgewählt", ttft: (p, t) => `Prompt ${p} tok/s · erster Token nach ${t} s bei vollem Kontext`,
       footer: "Modellrechnung, keine Messung. Abweichungen von ±20 % zu echten Benchmarks sind normal, je nach Backend (CUDA, MLX, llama.cpp), Treiber und Quantisierung.",
       sortBy: (c) => `Nach ${c} sortieren`,
       method: `
@@ -409,13 +414,14 @@ passt     = Speicher ≤ nutzbarer Speicher
 Generier. = η · ε · Bandbreite / (aktive_GB + KV_GB/2)
 Prompt    = η_c · TFLOPS · 1000 / (2 · aktive_Param_Mrd)
 
-Leistung  = Σ w_m · passt_m · Gen_m^α · Prompt_m^(1−α)
+Leistung  = passt · Gen^α · Prompt^(1−α)   (gewähltes Modell)
 Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
-      <p>α gewichtet Generierung gegen Prompt-Verarbeitung: Chat 0,8 · Agent &amp; Coding 0,5 · Große Modelle 0,6 · Einzelmodell 0,6. Bei Agents mit langem Kontext dominiert die Prompt-Verarbeitung, deshalb fällt dort Rechenleistung stärker ins Gewicht.</p>
+      <p>Die Leistung gilt für das gewählte LLM-Modell. α gewichtet Generierung gegen Prompt-Verarbeitung: Agentic Coding 0,5 · Chat 0,8 · sonst 0,6. Bei Agents mit langem Kontext dominiert die Prompt-Verarbeitung, deshalb fällt dort Rechenleistung stärker ins Gewicht. Der Einsatzzweck filtert nur die Modellauswahl; „Modelle passen“ zählt die Modelle dieser Auswahl.</p>
     </section>
     <section>
       <h2>Annahmen</h2>
       <ul>
+        <li>Modellwerte (Parameter, aktive Parameter, KV-Cache je Token) aus den Modellkarten. Bei Qwen3.5/3.6 und Gemma 4 sind KV-Cache und Größen Näherungen, weil hybride bzw. Sliding-Window-Attention den Cache stark verkleinert.</li>
         <li>Quantisierung wählbar von Q2_K (≈ 2,9 Bit pro Gewicht) bis FP16 (16 Bit). Standard ist Q4_K_M (≈ 4,85 Bit), bei der 120B-MoE-Klasse das native MXFP4. Größe und Lesemenge pro Token skalieren mit den Bits, der KV-Cache bleibt in FP16.</li>
         <li>Nutzbarer Speicher: GPU = VRAM − 0,8 GB. Mac: macOS-Standardlimit 67 % (≤ 36 GB) bzw. 75 % des Arbeitsspeichers, höchstens aber Arbeitsspeicher minus 6 GB für macOS und Hintergrundprogramme. Mit angehobenem Limit alles außer diesen 6 GB. Ryzen AI Max: 96 GB, angehoben 110 GB, Linux-Reserve 4 GB.</li>
         <li>Bandbreiten-Effizienz η: NVIDIA 0,60, AMD-Grafikkarten 0,50 (ROCm/Vulkan), Ryzen AI Max 0,72, Apple Pro/Max 0,62, Apple Ultra 0,50.</li>
@@ -463,13 +469,13 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       hint: "Click a column header to sort, click again to reverse.",
       hintPrices: "Prices are editable and stay saved in your browser. Prices marked in orange are estimates. Prices are for Germany in euros.",
       showPrices: "Show prices and value for money (Germany, EUR)",
-      profiles: { chat: "Chat", agent: "Agents & coding", large: "Large models", single: "Single model" },
+      uses: { all: "All models", coding: "Agentic coding", chat: "Chat & assistant", large: "Large models" }, useLab: "Use case", active: "active",
       dense: "dense",
       th: { rank: "#", name: "Device", price: "System price €", fits: "Models that fit", perf: "Performance", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini PC" },
       src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", man: "manual:", own: "your price" },
       inclPc: (c) => `incl. €${c} PC`, edited: "Changed by you",
-      fitsYes: "fits", fitsNo: "does not fit", need: "GB needed", usable: "GB usable", notInProfile: "not in this use case",
+      fitsYes: "fits", fitsNo: "does not fit", need: "GB needed", usable: "GB usable", notInProfile: "not selected",
       fitsAria: (a, b) => `${a} of ${b} models in this use case fit`,
       priceAria: (n) => `Price of ${n} in euros`, prices: "Prices ↗",
       sBest: "Best value", sTopGpu: "Fastest graphics card", fitsShort: "models fit", sTopUni: "Fastest Mac or mini PC", sFast: "Fastest device", sCheap: "Cheapest that runs every model", sCheapOne: "Cheapest that runs it",
@@ -485,7 +491,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       dRows: { sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
       rankOf: (a, b) => `${a} of ${b}`,
       faster: (x) => `${x}× better`,
-      dHint: (m, p) => `Real-world numbers and usage for ${m} with a ${p} prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Score and rank compare against all devices in the chosen use case.`,
+      dHint: (m, p) => `Real-world numbers and usage for ${m} with a ${p} prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Score and rank compare against all devices for this model.`,
       memTitle: "Memory usage",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, with ${c} context. 100% is the usable graphics memory; on Macs and mini PCs, the share of RAM released to the GPU. Anything beyond that, PCs with a graphics card offload into regular system RAM.`,
       memLeg: { w: "Model weights", kv: "KV cache (context)", ov: "Runtime overhead", spill: "Offloaded to PC RAM", nofit: "Does not fit" },
@@ -503,7 +509,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       tokens: "tokens",
       mTitle: "Generation per model",
       mHint: "Top number: estimated tokens/s while writing, with the context half full. Bottom number: prompt processing in tokens/s. “—” means it does not fit in memory. Columns are sortable.",
-      inProfile: "in use case", ttft: (p, t) => `Prompt ${p} tok/s · first token after ${t} s at full context`,
+      inProfile: "selected", ttft: (p, t) => `Prompt ${p} tok/s · first token after ${t} s at full context`,
       footer: "Model estimate, not a measurement. Deviations of ±20% from real benchmarks are normal, depending on backend (CUDA, MLX, llama.cpp), drivers and quantization.",
       sortBy: (c) => `Sort by ${c}`,
       method: `
@@ -514,13 +520,14 @@ fits      = memory ≤ usable memory
 Generate  = η · ε · bandwidth / (active_GB + KV_GB/2)
 Prompt    = η_c · TFLOPS · 1000 / (2 · active_params_B)
 
-Perf      = Σ w_m · fits_m · Gen_m^α · Prompt_m^(1−α)
+Perf      = fits · Gen^α · Prompt^(1−α)   (selected model)
 Score     = Perf / system price   (best device = 100)</div>
-      <p>α weighs generation against prompt processing: chat 0.8 · agents &amp; coding 0.5 · large models 0.6 · single model 0.6. With long-context agents, prompt processing dominates, so compute counts for more there.</p>
+      <p>Performance applies to the selected LLM. α weighs generation against prompt processing: agentic coding 0.5 · chat 0.8 · otherwise 0.6. With long-context agents, prompt processing dominates, so compute counts for more there. The use case only filters the model list; “models that fit” counts the models in that list.</p>
     </section>
     <section>
       <h2>Assumptions</h2>
       <ul>
+        <li>Model figures (parameters, active parameters, KV cache per token) from the model cards. For Qwen3.5/3.6 and Gemma 4, KV cache and sizes are approximations because hybrid or sliding-window attention shrinks the cache considerably.</li>
         <li>Quantization selectable from Q2_K (≈ 2.9 bits per weight) to FP16 (16 bits). Default is Q4_K_M (≈ 4.85 bits), native MXFP4 for the 120B MoE class. Size and bytes read per token scale with the bits; the KV cache stays FP16.</li>
         <li>Usable memory: GPU = VRAM − 0.8 GB. Mac: macOS default limit of 67% (≤ 36 GB) or 75% of RAM, but at most RAM minus 6 GB for macOS and background apps. With the raised limit, everything except those 6 GB. Ryzen AI Max: 96 GB, 110 GB raised, 4 GB Linux reserve.</li>
         <li>Bandwidth efficiency η: NVIDIA 0.60, AMD graphics cards 0.50 (ROCm/Vulkan), Ryzen AI Max 0.72, Apple Pro/Max 0.62, Apple Ultra 0.50.</li>
@@ -565,10 +572,12 @@ Score     = Perf / system price   (best device = 100)</div>
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   let navLang = "de";
   try { navLang = (navigator.language || "de").toLowerCase().startsWith("de") ? "de" : "en"; } catch (e) {}
-  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, quant: "q4", view: "all", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
+  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, quant: "q4", view: "all", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, use: "coding", pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
   delete state.sort;
   if (!T[state.lang]) state.lang = "de";
-  delete state.sortKey; delete state.sortDir;
+  delete state.sortKey; delete state.sortDir; delete state.profile; delete state.model;
+  if (!USES.some((u) => u.id === state.use)) state.use = "coding";
+  if (!MODELS.some((m) => m.id === state.pxModel && (state.use === "all" || m.use.includes(state.use)))) state.pxModel = (USES.find((u) => u.id === state.use) || USES[0]).def;
   state.sorts = Object.assign({ rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, state.sorts || {});
   function persist() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 
@@ -580,8 +589,10 @@ Score     = Perf / system price   (best device = 100)</div>
   const ctxLabel = (c) => (c / 1024) + "k";
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const devLabel = (d) => /\bGB\b/.test(d.name) ? d.name : `${d.name} · ${d.mem} GB`;
-  const mName = (m) => m.size + " " + (m.dense ? L().dense : "MoE");
-  const mEx = (m) => typeof m.ex === "string" ? m.ex : m.ex[state.lang];
+  const mName = (m) => m.name;
+  const mEx = (m) => m.dense ? `${fmt(m.tp, 0)}B ${L().dense}` : `${fmt(m.tp, 0)}B MoE, ${fmt(m.ap, m.ap < 10 ? 1 : 0)}B ${L().active}`;
+  const useOf = () => USES.find((u) => u.id === state.use) || USES[0];
+  const shownModels = () => state.use === "all" ? MODELS : MODELS.filter((m) => m.use.includes(state.use));
   const srcText = (d) => { const s = L().src[d.src[0]]; return d.src[1] ? `${s} ${d.src[1]}` : s; };
   const priceOf = (d) => state.prices[d.id] != null ? state.prices[d.id] : d.price;
   const sysPrice = (d) => priceOf(d) + (d.kind === "gpu" && state.base ? state.baseCost : 0);
@@ -627,19 +638,19 @@ Score     = Perf / system price   (best device = 100)</div>
     return { fits, need, tg, pp, ttft: ctx / pp };
   }
   function weights() {
-    const p = PROFILES.find((x) => x.id === state.profile);
-    if (p.w) return { w: p.w, alpha: p.alpha };
-    const w = {}; w[state.model] = 1; return { w, alpha: p.alpha };
+    const w = {}; w[state.pxModel] = 1; return { w, alpha: useOf().alpha };
   }
   function evaluate() {
     const ctx = CTX[state.ctx];
     const { w, alpha } = weights();
     const rows = DEVICES.map((d) => {
       const per = {}; let perf = 0, fitCount = 0;
+      const shown = shownModels();
       MODELS.forEach((m) => {
         const r = calc(d, m, ctx); per[m.id] = r;
         const wm = w[m.id] || 0;
-        if (wm && r.fits) { perf += wm * Math.pow(r.tg, alpha) * Math.pow(r.pp, 1 - alpha); fitCount++; }
+        if (wm && r.fits) perf += wm * Math.pow(r.tg, alpha) * Math.pow(r.pp, 1 - alpha);
+        if (r.fits && shown.includes(m)) fitCount++;
       });
       const sp = sysPrice(d);
       return { d, per, perf, raw: sp > 0 ? perf / sp : 0, sp, fitCount };
@@ -698,7 +709,7 @@ Score     = Perf / system price   (best device = 100)</div>
   }
   function renderControls() {
     document.querySelectorAll("#lang button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === state.lang));
-    $("#profile").innerHTML = PROFILES.map((p) => `<button type="button" data-id="${p.id}" aria-pressed="${p.id === state.profile}">${esc(L().profiles[p.id])}</button>`).join("");
+    $("#use").innerHTML = USES.map((u) => `<button type="button" data-id="${u.id}" aria-pressed="${u.id === state.use}">${esc(L().uses[u.id])}</button>`).join("");
     $("#vendor").innerHTML = [["all", L().all, ""], [N, "NVIDIA", ICONS.gpu], [AM, "AMD", ICONS.gpu], [A, "Apple", ICONS.mac], ["ws", L().ws, ICONS.gpu]].map(([id, n, ic]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${ic.replace("<svg ", '<svg class="vi" ')}${n}</button>`).join("");
     $("#view").innerHTML = ["all", "one", "cmp"].map((id) => `<button type="button" data-id="${id}" aria-pressed="${id === state.view}">${L().views[id]}</button>`).join("");
     $("#vendor-field").hidden = state.view !== "all";
@@ -711,18 +722,16 @@ Score     = Perf / system price   (best device = 100)</div>
       </div>`;
     };
     $("#pick-a").hidden = state.view === "all"; $("#pick-b").hidden = state.view !== "cmp";
-    $("#pick-llm").hidden = $("#pick-prompt-f").hidden = state.view === "all";
-    $("#pick-model").value = state.pxModel; $("#pick-prompt").value = state.pxPrompt; $("#quant").value = state.quant;
+    $("#pick-prompt-f").hidden = state.view === "all";
+    $("#pick-prompt").value = state.pxPrompt; $("#quant").value = state.quant;
     if (state.view !== "all") $("#pick-a").innerHTML = picker("pickA", state.view === "cmp" ? L().pickA : L().pickDev);
     if (state.view === "cmp") $("#pick-b").innerHTML = picker("pickB", L().pickB);
-    const modelOpts = MODELS.map((m) => `<option value="${m.id}">${esc(mName(m))} (${esc(mEx(m))}) · ${fmt(qm(m).gb, 0)} GB</option>`).join("");
-    ["#pick-model", "#px-model", "#model"].forEach((sel) => { $(sel).innerHTML = modelOpts; });
-    $("#pick-model").value = state.pxModel;
-    $("#model-field").hidden = state.profile !== "single";
+    $("#llm").innerHTML = shownModels().map((m) => `<option value="${m.id}">${esc(mName(m))} · ${esc(mEx(m))} · ${fmt(qm(m).gb, 0)} GB</option>`).join("");
+    $("#llm").value = state.pxModel;
     $("#ctx").value = state.ctx; $("#ctx-val").textContent = ctxLabel(CTX[state.ctx]);
     $("#showprices").checked = state.showPrices; $("#base-field").hidden = $("#reset").hidden = $("#hint-prices").hidden = !state.showPrices;
     $("#base").checked = state.base; $("#basecost").value = state.baseCost; $("#sysram").value = state.sysRam; $("#wired").checked = state.wired;
-    $("#model").value = state.model; $("#px-model").value = state.pxModel; $("#px-prompt").value = state.pxPrompt; $("#px-img").value = state.pxImg;
+    $("#px-prompt").value = state.pxPrompt; $("#px-img").value = state.pxImg;
   }
 
   function render() {
@@ -746,13 +755,13 @@ Score     = Perf / system price   (best device = 100)</div>
     const visRank = picked.length ? vis : sortList(vis, "rank");
     const visPx = picked.length ? vis : sortList(vis, "px");
     const visMx = picked.length ? vis : sortList(vis, "mx");
-    const usedModels = MODELS.filter((m) => w[m.id]);
+    const usedModels = shownModels();
 
     // Summary
     const best = [...vis].sort((a, b) => b.score - a.score)[0];
     const fastest = [...vis].sort((a, b) => b.perf - a.perf)[0];
     const cheapFull = [...vis].filter((r) => r.fitCount === usedModels.length).sort((a, b) => a.sp - b.sp)[0];
-    const single = state.profile === "single" ? MODELS.find((m) => m.id === state.model) : null;
+    const single = MODELS.find((m) => m.id === state.pxModel);
     const sumItem = (k, r, s) => `<div class="sum"><span class="k">${k}</span><span class="v">${r ? esc(devLabel(r.d)) : t.none}</span><span class="s">${s}</span></div>`;
     const okBest = best && best.perf > 0;
     if (state.showPrices) {
@@ -832,10 +841,10 @@ Score     = Perf / system price   (best device = 100)</div>
       sortHead("rank", "perf", t.th.perf) + (state.showPrices ? sortHead("rank", "score", t.th.score) + "<th></th>" : "");
     $("#rank tbody").innerHTML = visRank.map((r, i) => {
       const d = r.d;
-      const dots = MODELS.map((m) => {
+      const dots = usedModels.map((m) => {
         const inP = !!w[m.id]; const f = r.per[m.id].fits;
         const tip = `${mName(m)}: ${f ? t.fitsYes : t.fitsNo} (${fmt(r.per[m.id].need, 1)} ${t.need}, ${fmt(usable(d), 1)} ${t.usable})${inP ? "" : " · " + t.notInProfile}`;
-        return `<span class="dot ${f ? "on" : ""} ${inP ? "" : "off-w"}" title="${esc(tip)}"></span>`;
+        return `<span class="dot ${f ? "on" : ""} ${inP ? "sel" : ""}" title="${esc(tip)}"></span>`;
       }).join("");
       const edited = state.prices[d.id] != null;
       const sub = `${d.mem} GB · ${fmt(d.bw)} GB/s` + (state.showPrices && d.kind === "gpu" && state.base ? ` · ${t.inclPc(fmt(state.baseCost))}` : "");
@@ -910,21 +919,21 @@ Score     = Perf / system price   (best device = 100)</div>
     }
 
     // Matrix
-    $("#matrix thead").innerHTML = `<tr>${sortHead("mx", "name", t.th.name)}${MODELS.map((m) =>
+    $("#matrix thead").innerHTML = `<tr>${sortHead("mx", "name", t.th.name)}${usedModels.map((m) =>
       sortHead("mx", "m:" + m.id, `${esc(mName(m))}<small>${fmt(qm(m).gb, 0)} GB${w[m.id] ? " · " + t.inProfile : ""}</small>`)).join("")}</tr>`;
-    $("#matrix tbody").innerHTML = visMx.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(devLabel(r.d))}</span></td>${MODELS.map((m) => {
+    $("#matrix tbody").innerHTML = visMx.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(devLabel(r.d))}</span></td>${usedModels.map((m) => {
       const c = r.per[m.id];
       return c.fits ? `<td class="mono" title="${esc(t.ttft(fmt(c.pp), fmt(c.ttft, 1)))}">${fmtTok(c.tg)}<br><span class="na">${fmt(c.pp)}</span></td>` : `<td class="na">—</td>`;
     }).join("")}</tr>`).join("");
   }
 
   $("#lang").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.lang = b.dataset.id; persist(); renderStatic(); render(); });
-  $("#profile").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.profile = b.dataset.id; state.ctx = PROFILES.find((p) => p.id === state.profile).ctx; persist(); render(); });
+  $("#use").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.use = b.dataset.id;
+    if (!shownModels().some((m) => m.id === state.pxModel)) state.pxModel = useOf().def; persist(); render(); });
+  $("#llm").addEventListener("change", (e) => { state.pxModel = e.target.value; persist(); render(); });
   $("#vendor").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.vendor = b.dataset.id; persist(); render(); });
-  $("#model").addEventListener("change", (e) => { state.model = e.target.value; persist(); render(); });
   $("#showprices").addEventListener("change", (e) => { state.showPrices = e.target.checked; persist(); render(); });
   $("#quant").addEventListener("change", (e) => { state.quant = e.target.value; persist(); render(); });
-  $("#pick-model").addEventListener("change", (e) => { state.pxModel = e.target.value; persist(); render(); });
   $("#pick-prompt").addEventListener("change", (e) => { state.pxPrompt = +e.target.value; persist(); render(); });
   $("#view").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.view = b.dataset.id; persist(); render(); });
   document.querySelector(".pickrow").addEventListener("change", (e) => {
@@ -937,7 +946,6 @@ Score     = Perf / system price   (best device = 100)</div>
   const tipEl = $("#tip");
   document.addEventListener("mouseover", (e) => { const el = e.target.closest("[data-tip]"); if (!el) { tipEl.hidden = true; return; } tipEl.textContent = el.dataset.tip; tipEl.hidden = false; });
   document.addEventListener("mousemove", (e) => { if (tipEl.hidden) return; const x = Math.min(e.clientX + 14, window.innerWidth - tipEl.offsetWidth - 8); tipEl.style.left = x + "px"; tipEl.style.top = (e.clientY + 16) + "px"; });
-  $("#px-model").addEventListener("change", (e) => { state.pxModel = e.target.value; persist(); render(); });
   $("#px-prompt").addEventListener("change", (e) => { state.pxPrompt = +e.target.value; persist(); render(); });
   $("#px-img").addEventListener("change", (e) => { state.pxImg = e.target.value; persist(); render(); });
   $("#ctx").addEventListener("input", (e) => { state.ctx = +e.target.value; persist(); render(); });
