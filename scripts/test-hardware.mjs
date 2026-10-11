@@ -12,7 +12,7 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
  const html = readFileSync(file, 'utf8');
  const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].at(-1)[1];
  const node = { addEventListener() {} };
- const sandbox = { devices, document: { documentElement: { lang: file.includes('/en/') ? 'en' : 'de' }, querySelector: () => node, addEventListener() {} }, localStorage: { getItem: () => null } };
+ const sandbox = { devices, document: { documentElement: { lang: file.includes('/en/') ? 'en' : 'de' }, querySelector: () => node, addEventListener() {} }, window: { addEventListener() {} }, localStorage: { getItem: () => null } };
  vm.runInNewContext(script.replace('  load();', '  DEVICES = globalThis.devices; globalThis.hardwareTest = { state, MODELS, QUANTS, sysPrice, evaluate, calc };'), sandbox);
  const { state, MODELS, QUANTS, sysPrice, evaluate, calc } = sandbox.hardwareTest;
  state.base = true; state.baseCost = 1300;
@@ -20,6 +20,8 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
  for (const d of [laptop, server, sxm, intel]) assert.equal(sysPrice(d), null);
  state.prices[intel.id] = 1000; assert.equal(sysPrice(intel), 2300);
  for (const d of [laptop,server,sxm]) { state.prices[d.id] = 6000; assert.equal(sysPrice(d),6000); }
+ const priced = devices.find(d => d.price > 0);
+ state.prices[priced.id] = null; assert.equal(sysPrice(priced), null);
  state.prices = {};
  const rows = evaluate().rows;
  for (const r of rows.filter(r => r.d.price == null)) { assert.equal(r.sp,null); assert.equal(r.raw,0); assert.equal(r.score,0); }

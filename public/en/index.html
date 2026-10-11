@@ -306,6 +306,13 @@ footer { font-size: 12.5px; color: var(--muted); }
     <p class="hint"><span data-i="hint"></span> <span id="hint-prices" data-i="hintPrices"></span></p>
   </div>
 
+  <div class="share-tools" id="share-tools" hidden>
+    <button class="btn" id="share-compare" type="button" data-i="shareCompare"></button>
+    <span class="hint" id="share-status" role="status" aria-live="polite"></span>
+    <label id="share-link-label" hidden><span data-i="shareLink"></span><input id="share-link" type="text" readonly></label>
+  </div>
+  <div class="summary" id="compare-gains" hidden aria-live="polite"></div>
+  <p class="hint" id="evidence-note"></p>
   <div class="summary" id="summary" aria-live="polite"></div>
   <span id="mem-top" hidden></span>
   <div class="detail" id="detail" hidden></div>
@@ -606,6 +613,7 @@ Score = Perf / system price   (best device = 100)</div>
   <footer data-i="footer"></footer>
 </div>
 
+<script src="/assets/scenario.js"></script>
 <script>
 (function () {
   // Gemma-4-Quellen, Artefaktgrößen und Herleitung: docs/gemma4-research.md
@@ -704,6 +712,11 @@ Score = Perf / system price   (best device = 100)</div>
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini-PC" },
       src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", man: "manuell:", own: "eigener Preis", unknown: "Preis offen" },
       nonePrice: "Preis eingeben, um die Kosten zu vergleichen.",
+      shareCompare: "Vergleich teilen", shareLink: "Vergleichslink", shared: "Link kopiert – inklusive der Preise beider Geräte.", shareFallback: "Link auswählen und kopieren.", shareInvalid: "Der Vergleichslink ist ungültig oder enthält nicht mehr verfügbare Geräte/Modelle.",
+      estimate: "Schätzung", evidence: "Geschwindigkeit und Wartezeiten sind berechnet, keine Messung dieses Szenarios. Modell, Quantisierung und Kontext gelten für beide Geräte gleich. Eigene Preise werden im Link gespeichert.",
+      gainFirst: "Erster Token", gainCode: "100 Zeilen Code", gainPrice: "Systemkosten", gainEqual: "Gleichstand", gainUnavailable: "Kein direkter Vergleich möglich", gainNoPrice: "Preise für beide Geräte eingeben", gainUnknown: "Das Modell passt nicht in beide Geräte.",
+      gainTime: (name, value) => `${name}: geschätzt ${value} früher`, gainCost: (name, value) => `${name}: ${value} günstiger`,
+      assumed: "Backend angenommen", unmeasured: "Keine Messung für dieses Szenario; Softwareversion und Messdatum liegen nicht vor.",
       inclPc: (c) => `inkl. ${c} € PC`, edited: "Von dir geändert",
       fitsYes: "passt", fitsNo: "passt nicht", need: "GB nötig", usable: "GB nutzbar", notInProfile: "nicht ausgewählt",
       fitsAria: (a, b) => `${a} von ${b} Profil-Modellen passen`,
@@ -711,7 +724,7 @@ Score = Perf / system price   (best device = 100)</div>
       sBest: "Bester Wert", sTopGpu: "Schnellste Grafikkarte", fitsShort: "Modelle passen", sTopUni: "Schnellster Mac oder Mini-PC", sFast: "Schnellstes Gerät", sCheap: "Günstigstes, auf dem alle Modelle laufen", sCheapOne: "Günstigstes, auf dem es läuft",
       none: "keins", sys: "€ System", noneFits: (c) => `Kein Gerät hat bei ${c} Kontext genug Speicher`,
       pxTitle: "Praxiswerte",
-      pxHint: "Was du beim Arbeiten spürst: Geschwindigkeit beim Schreiben, Wartezeit bis zum ersten Wort, Dauer für 100 Zeilen Code (ca. 1.100 Tokens) und für ein Bild mit 1024 × 1024 Pixeln. Hochgerechnete Schätzwerte, typische Abweichung ±30 %.",
+      pxHint: "Was du beim Arbeiten spürst: Geschwindigkeit beim Schreiben, Wartezeit bis zum ersten Wort, Dauer für 100 Zeilen Code (ca. 1.100 Tokens) und für ein Bild mit 1024 × 1024 Pixeln. Hochgerechnete Schätzwerte, Die Genauigkeit hängt von Backend, Modell und Hardware ab.",
       pxModel: "Textmodell", pxPrompt: "Prompt-Länge", pxImg: "Bildmodell",
       sysram: "PC-RAM", ws: "Workstation", quant: "Quantisierung", pickLlm: "LLM-Modell",
       view: "Ansicht", views: { all: "Alle Geräte", one: "Ein Gerät", cmp: "Vergleich" },
@@ -721,7 +734,7 @@ Score = Perf / system price   (best device = 100)</div>
       dRows: { sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
       rankOf: (a, b) => `${a} von ${b}`,
       faster: (x) => `${x}× besser`,
-      dHint: (m, p) => `Praxiswerte und Belegung für ${m} mit ${p} Prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Platz und Score beziehen sich auf alle Geräte für dieses Modell.`,
+      dHint: (m, p) => `Geschätzte Praxiswerte und Belegung für ${m} mit ${p} Prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Platz und Score beziehen sich auf alle Geräte für dieses Modell.`,
       memTitle: "Speicherauslastung",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, mit ${c} Kontext. 100 % ist der nutzbare Grafikspeicher, bei Macs und Mini-PCs der für die GPU freigegebene Teil des Arbeitsspeichers. Was darüber hinausgeht, lagern PCs mit Grafikkarte in den normalen Arbeitsspeicher aus.`,
       memLeg: { w: "Modellgewichte", kv: "KV-Cache (Kontext)", ov: "Laufzeit-Overhead", spill: "Ausgelagert in PC-RAM", nofit: "Passt nicht" },
@@ -779,7 +792,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
     </section>
     <section>
       <h2>Abgleich mit LocalScore</h2>
-      <p>Messwerte aus der öffentlichen LocalScore-Datenbank (llamafile, Q4_K_M) gegen die Modellrechnung:</p>
+      <p>Messungen aus der öffentlichen <a href="https://www.localscore.ai/">LocalScore-Datenbank</a> (llamafile, Q4_K_M) gegen die Schätzung. Softwareversion und Messdatum sind in diesem übernommenen Referenzabgleich nicht dokumentiert; diese Zahlen sind keine Messung des aktuell gewählten Szenarios:</p>
       <div style="overflow-x:auto"><table class="calib"><thead><tr><th>RTX 4090</th><th>Gen. Modell</th><th>Gen. gemessen</th><th>Prompt Modell</th><th>Prompt gemessen</th></tr></thead>
       <tbody><tr><td>Llama 3.1 8B</td><td class="mono">123</td><td class="mono">120</td><td class="mono">10.313</td><td class="mono">7.594</td></tr>
       <tr><td>Qwen2.5 14B</td><td class="mono">67</td><td class="mono">69</td><td class="mono">5.574</td><td class="mono">4.208</td></tr></tbody></table></div>
@@ -813,6 +826,11 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini PC" },
       src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", man: "manual:", own: "your price", unknown: "price unavailable" },
       nonePrice: "Enter a price to compare costs.",
+      shareCompare: "Share comparison", shareLink: "Comparison link", shared: "Link copied – including both devices’ prices.", shareFallback: "Select and copy the link.", shareInvalid: "The comparison link is invalid or contains devices/models that are no longer available.",
+      estimate: "Estimate", evidence: "Speed and wait times are calculated, not measured for this scenario. Both devices use the same model, quantization and context. Custom prices are included in the link.",
+      gainFirst: "First token", gainCode: "100 lines of code", gainPrice: "System cost", gainEqual: "Equal", gainUnavailable: "No direct comparison available", gainNoPrice: "Enter prices for both devices", gainUnknown: "The model does not fit on both devices.",
+      gainTime: (name, value) => `${name}: an estimated ${value} sooner`, gainCost: (name, value) => `${name}: ${value} less expensive`,
+      assumed: "Assumed backend", unmeasured: "No measurement for this scenario; software version and measurement date are unavailable.",
       inclPc: (c) => `incl. €${c} PC`, edited: "Changed by you",
       fitsYes: "fits", fitsNo: "does not fit", need: "GB needed", usable: "GB usable", notInProfile: "not selected",
       fitsAria: (a, b) => `${a} of ${b} models in this use case fit`,
@@ -820,7 +838,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       sBest: "Best value", sTopGpu: "Fastest graphics card", fitsShort: "models fit", sTopUni: "Fastest Mac or mini PC", sFast: "Fastest device", sCheap: "Cheapest that runs every model", sCheapOne: "Cheapest that runs it",
       none: "none", sys: "€ system", noneFits: (c) => `No device has enough memory at ${c} context`,
       pxTitle: "Real-world numbers",
-      pxHint: "What you feel while working: writing speed, wait until the first word, time for 100 lines of code (about 1,100 tokens) and for one 1024 × 1024 image. Extrapolated estimates, typical deviation ±30%.",
+      pxHint: "What you feel while working: writing speed, wait until the first word, time for 100 lines of code (about 1,100 tokens) and for one 1024 × 1024 image. Extrapolated estimates, Accuracy depends on backend, model and hardware.",
       pxModel: "Text model", pxPrompt: "Prompt length", pxImg: "Image model",
       sysram: "PC RAM", ws: "Workstation", quant: "Quantization", pickLlm: "LLM model",
       view: "View", views: { all: "All devices", one: "One device", cmp: "Compare" },
@@ -830,7 +848,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       dRows: { sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
       rankOf: (a, b) => `${a} of ${b}`,
       faster: (x) => `${x}× better`,
-      dHint: (m, p) => `Real-world numbers and usage for ${m} with a ${p} prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Score and rank compare against all devices for this model.`,
+      dHint: (m, p) => `Estimated results and usage for ${m} with a ${p} prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Score and rank compare against all devices for this model.`,
       memTitle: "Memory usage",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, with ${c} context. 100% is the usable graphics memory; on Macs and mini PCs, the share of RAM released to the GPU. Anything beyond that, PCs with a graphics card offload into regular system RAM.`,
       memLeg: { w: "Model weights", kv: "KV cache (context)", ov: "Runtime overhead", spill: "Offloaded to PC RAM", nofit: "Does not fit" },
@@ -888,7 +906,7 @@ Score     = Perf / system price   (best device = 100)</div>
     </section>
     <section>
       <h2>Check against LocalScore</h2>
-      <p>Measurements from the public LocalScore database (llamafile, Q4_K_M) against the model:</p>
+      <p>Measurements from the public <a href="https://www.localscore.ai/">LocalScore database</a> (llamafile, Q4_K_M) against the estimate. Software version and measurement date are not documented in this reference comparison; these numbers are not measurements of the currently selected scenario:</p>
       <div style="overflow-x:auto"><table class="calib"><thead><tr><th>RTX 4090</th><th>Gen. model</th><th>Gen. measured</th><th>Prompt model</th><th>Prompt measured</th></tr></thead>
       <tbody><tr><td>Llama 3.1 8B</td><td class="mono">123</td><td class="mono">120</td><td class="mono">10,313</td><td class="mono">7,594</td></tr>
       <tr><td>Qwen2.5 14B</td><td class="mono">67</td><td class="mono">69</td><td class="mono">5,574</td><td class="mono">4,208</td></tr></tbody></table></div>
@@ -934,11 +952,11 @@ Score     = Perf / system price   (best device = 100)</div>
   const useOf = () => USES.find((u) => u.id === state.use) || USES[0];
   const shownModels = () => state.use === "all" ? MODELS : MODELS.filter((m) => m.use.includes(state.use));
   const srcText = (d) => { const s = L().src[d.src[0]]; return d.src[1] ? `${s} ${d.src[1]}` : s; };
-  const priceOf = (d) => state.prices[d.id] != null ? state.prices[d.id] : d.price;
+  const priceOf = (d) => Object.prototype.hasOwnProperty.call(state.prices, d.id) ? state.prices[d.id] : d.price;
   const desktopCard = (d) => d.kind === "gpu" && (!d.formFactor || d.formFactor === "desktop");
   const sysPrice = (d) => priceOf(d) > 0 ? priceOf(d) + (desktopCard(d) && state.base ? state.baseCost : 0) : null;
   const devKind = (d) => d.formFactor === "laptop" ? (state.lang === "de" ? "Notebook-GPU" : "Laptop GPU") : ["server", "sxm"].includes(d.formFactor) ? (d.formFactor === "sxm" ? "Server · SXM" : "Server · PCIe") : d.ws ? L().ws : L().kinds[d.kind];
-  const specNote = (d) => d.performanceEstimated ? (state.lang === "de" ? "Tempo geschätzt" : "Speed estimated") + (d.formFactor === "laptop" ? (state.lang === "de" ? " · abhängig von TGP/Kühlung" : " · depends on TGP/cooling") : "") + (d.computeBasis === "fp32-fallback" ? " · FP32" : "") : "";
+  const specNote = (d) => (state.lang === "de" ? "Tempo geschätzt" : "Speed estimated") + (d.formFactor === "laptop" ? (state.lang === "de" ? " · abhängig von TGP/Kühlung" : " · depends on TGP/cooling") : "") + (d.computeBasis === "fp32-fallback" ? " · FP32" : "");
   // Reserve für Betriebssystem und Hintergrundprogramme bei geteiltem Arbeitsspeicher
   const osReserve = (d) => d.v === A ? 6 : 4;
   function usable(d) {
@@ -1090,6 +1108,21 @@ Score     = Perf / system price   (best device = 100)</div>
     $("#px-prompt").value = state.pxPrompt; $("#px-img").value = state.pxImg;
   }
 
+  const backendOf = (d) => d.v === "apple" ? "Metal" : d.v === "intel" ? "SYCL / Vulkan" : d.v === "nvidia" ? "CUDA" : "ROCm / Vulkan";
+  function comparisonScenario() {
+    const ids = [state.pickA.id, state.pickB.id];
+    return { v: 1, devices: ids, model: state.pxModel, use: state.use, image: state.pxImg, quant: state.quant, ctx: state.ctx, prompt: state.pxPrompt, ram: state.sysRam, baseCost: state.baseCost, base: state.base, wired: state.wired, showPrices: state.showPrices,
+      prices: Object.fromEntries(ids.map(id => [id, priceOf(DEVICES.find(d => d.id === id)) ?? null])) };
+  }
+  function applySharedScenario(hash) {
+    if (!hash.startsWith("#compare=")) return;
+    const shared = AIScenario.decode(hash, { devices: DEVICES, models: MODELS, quants: QUANTS, uses: USES, images: IMG, contexts: CTX, prompts: PROMPTS });
+    if (!shared) { $("#share-tools").hidden = false; $("#share-compare").hidden = true; $("#share-status").textContent = L().shareInvalid; return; }
+    state.view = "cmp"; state.use = shared.use; state.pxImg = shared.image; state.pxModel = shared.model; state.quant = shared.quant; state.ctx = shared.ctx; state.pxPrompt = shared.prompt;
+    state.sysRam = shared.ram; state.baseCost = shared.baseCost; state.base = shared.base; state.wired = shared.wired; state.showPrices = shared.showPrices;
+    state.prices = { ...state.prices, ...shared.prices };
+    ["pickA", "pickB"].forEach((key, i) => { const d = DEVICES.find(d => d.id === shared.devices[i]); state[key] = { v: d.v, id: d.id }; });
+  }
   function render() {
     renderControls();
     const t = L();
@@ -1098,7 +1131,7 @@ Score     = Perf / system price   (best device = 100)</div>
     const pxP = PROMPTS[state.pxPrompt] || 16384;
     const pxI = IMG.find((x) => x.id === state.pxImg) || IMG[0];
     rows.forEach((r) => {
-      const c = calc(r.d, pxM, pxP + CODE_TOKENS);
+      const c = calc(r.d, pxM, Math.max(ctx, pxP + CODE_TOKENS));
       const imgIdx = r.d.tf * r.d.etaC * r.d.pf * (IMG_VENDOR[r.d.v] || 1);
       const imgFits = usable(r.d) >= pxI.gb;
       r.px = c.fits ? { tg: c.tg, ttft: pxP / c.pp, code: pxP / c.pp + CODE_TOKENS / c.tg } : { tg: null, ttft: null, code: null };
@@ -1113,6 +1146,21 @@ Score     = Perf / system price   (best device = 100)</div>
     const visMx = picked.length ? vis : sortList(vis, "mx");
     const usedModels = shownModels();
 
+    const compareReady = state.view === "cmp" && vis.length === 2;
+    $("#share-tools").hidden = !compareReady;
+    $("#share-compare").hidden = !compareReady;
+    $("#share-link-label").hidden = true; $("#share-status").textContent = "";
+    $("#compare-gains").hidden = !compareReady;
+    $("#evidence-note").textContent = `${t.evidence} ${t.unmeasured}`;
+    if (compareReady) {
+      const time = value => `${fmt(value, value < 10 ? 1 : 0)} s`;
+      const gain = (title, key, money = false) => {
+        const diff = AIScenario.difference(money ? vis[0].sp : vis[0].px[key], money ? vis[1].sp : vis[1].px[key]);
+        const text = !diff ? (money ? t.gainNoPrice : t.gainUnknown) : diff.winner == null ? t.gainEqual : (money ? t.gainCost : t.gainTime)(devLabel(vis[diff.winner].d), money ? eur(diff.amount) : time(diff.amount));
+        return `<div class="sum"><span class="k">${title}</span><span class="v gain-value">${esc(text)}</span><span class="s">${money ? "EUR" : t.estimate}</span></div>`;
+      };
+      $("#compare-gains").innerHTML = gain(t.gainFirst, "ttft") + gain(t.gainCode, "code") + (state.showPrices ? gain(t.gainPrice, "sys", true) : "");
+    }
     // Summary
     const best = vis.filter((r) => r.sp > 0).sort((a, b) => b.score - a.score)[0];
     const fastest = [...vis].sort((a, b) => b.perf - a.perf)[0];
@@ -1146,7 +1194,7 @@ Score     = Perf / system price   (best device = 100)</div>
       const byScore = globalRank;
       const durTxt = (sec) => sec == null ? "—" : sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
       const g1 = (n) => fmt(n, n < 10 ? 1 : 0);
-      const memTxt = (r) => { const mi = memInfo(r.d, pxM, pxP + CODE_TOKENS);
+      const memTxt = (r) => { const mi = memInfo(r.d, pxM, Math.max(ctx, pxP + CODE_TOKENS));
         if (mi.state === "ok") return `${g1(mi.need)} / ${g1(mi.cap)} GB`;
         if (mi.state === "spill") return `+${g1(mi.spill)} GB PC-RAM`;
         if (mi.state === "wired") return `${g1(mi.need)} / ${g1(mi.cap)} GB*`;
@@ -1171,7 +1219,7 @@ Score     = Perf / system price   (best device = 100)</div>
         ["memuse", () => null, null, 0, memTxt]
       ];
       const cols = vis;
-      const head = `<tr><th></th>${cols.map((r) => `<th><span class="devrow"><span class="ico ${r.d.v}">${ICONS[r.d.kind]}</span><span>${esc(devLabel(r.d))}<br><span class="tag" style="margin:0">${VENDOR[r.d.v]} · ${devKind(r.d)}</span></span></span></th>`).join("")}${cols.length === 2 ? "<th></th>" : ""}</tr>`;
+      const head = `<tr><th></th>${cols.map((r) => `<th><span class="devrow"><span class="ico ${r.d.v}">${ICONS[r.d.kind]}</span><span>${esc(devLabel(r.d))}<br><span class="tag" style="margin:0">${VENDOR[r.d.v]} · ${devKind(r.d)}</span><br><small class="evidence-badge" title="${esc(t.unmeasured)}">${t.estimate} · ${backendOf(r.d)}<br>${t.assumed}</small></span></span></th>`).join("")}${cols.length === 2 ? "<th></th>" : ""}</tr>`;
       const body = ROWS.map((row) => {
         if (row[0] === "grp") return `<tr class="grp"><td colspan="${cols.length + (cols.length === 2 ? 2 : 1)}">${t.dGroups[row[1]]}</td></tr>`;
         const [key, val, show, dir, raw] = row;
@@ -1180,7 +1228,9 @@ Score     = Perf / system price   (best device = 100)</div>
         if (cols.length === 2 && dir && vals[0] != null && vals[1] != null && vals[0] !== vals[1]) {
           win = (vals[0] > vals[1]) === (dir > 0) ? 0 : 1;
           const hi = Math.max(vals[0], vals[1]), lo = Math.min(vals[0], vals[1]);
-          if (lo > 0 && key !== "rank") delta = t.faster(fmt(hi / lo, hi / lo < 10 ? 1 : 0));
+          if (["ttft", "code", "img"].includes(key)) delta = `${durTxt(hi - lo)} ${state.lang === "de" ? "Unterschied" : "difference"}`;
+          else if (key === "sys") delta = eur(hi - lo);
+          else if (lo > 0 && key !== "rank") delta = t.faster(fmt(hi / lo, hi / lo < 10 ? 1 : 0));
         }
         const cells = cols.map((r, i) => {
           const txt = raw ? raw(r) : vals[i] == null ? "—" : show(vals[i]);
@@ -1203,11 +1253,12 @@ Score     = Perf / system price   (best device = 100)</div>
         return `<span class="dot ${f ? "on" : ""} ${inP ? "sel" : ""}" title="${esc(tip)}"></span>`;
       }).join("");
       const edited = state.prices[d.id] != null;
+      const frozenUnknown = Object.prototype.hasOwnProperty.call(state.prices, d.id) && state.prices[d.id] == null;
       const sub = `${d.mem} GB · ${fmt(d.bw)} GB/s` + (state.showPrices && desktopCard(d) && state.base ? ` · ${t.inclPc(fmt(state.baseCost))}` : "");
       return `<tr class="${r.perf === 0 ? "zero" : ""}">
         <td class="rank">${picked.length ? globalRank.indexOf(r) + 1 : i + 1}</td>
         <td><div class="devrow"><span class="ico ${d.v}" title="${t.kinds[d.kind]}">${ICONS[d.kind]}</span><div class="dev"><b><span class="tag">${VENDOR[d.v]} · ${devKind(d)}</span>${esc(devLabel(d))}</b><span>${sub}${specNote(d) ? " · " + esc(specNote(d)) : ""}${d.specSources ? ` · <a href="${esc(d.specSources[0])}" target="_blank" rel="noopener">Specs</a>` : ""}</span></div></div></td>
-        ${state.showPrices ? `<td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d) ?? ""}" placeholder="—" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${d.est && !edited ? "est" : ""}">${edited ? t.src.own : srcText(d)}</span></td>` : ""}
+        ${state.showPrices ? `<td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d) ?? ""}" placeholder="—" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${d.est && !edited ? "est" : ""}">${edited ? t.src.own : frozenUnknown ? t.src.unknown : srcText(d)}</span></td>` : ""}
         <td><div class="dots" aria-label="${esc(t.fitsAria(r.fitCount, usedModels.length))}">${dots}</div></td>
         <td><div class="barcell"><div class="track"><div class="fill ${state.showPrices ? "p" : ""}" style="width:${r.perfN.toFixed(1)}%"></div></div><span class="mono">${fmt(r.perfN)}</span></div></td>
         ${state.showPrices ? `<td><div class="barcell"><div class="track"><div class="fill" style="width:${r.score.toFixed(1)}%"></div></div><span class="mono">${r.sp > 0 ? fmt(r.score) : "—"}</span></div></td>
@@ -1226,7 +1277,7 @@ Score     = Perf / system price   (best device = 100)</div>
 
     // Speicherauslastung
     {
-      const ctxM = pxP + CODE_TOKENS;
+      const ctxM = Math.max(ctx, pxP + CODE_TOKENS);
       const SCALE = 1.5;   // Achse bis 150 % des nutzbaren Speichers
       const g1 = (n) => fmt(n, n < 10 ? 1 : 0);
       const pos = (frac) => `${(Math.min(frac, SCALE) / SCALE * 100).toFixed(2)}%`;
@@ -1281,6 +1332,9 @@ Score     = Perf / system price   (best device = 100)</div>
       const c = r.per[m.id];
       return c.fits ? `<td class="mono" title="${esc(t.ttft(fmt(c.pp), fmt(c.ttft, 1)))}">${fmtTok(c.tg)}<br><span class="na">${fmt(c.pp)}</span></td>` : `<td class="na">—</td>`;
     }).join("")}</tr>`).join("");
+    if (location.hash.startsWith("#compare=") && !AIScenario.decode(location.hash, { devices: DEVICES, models: MODELS, quants: QUANTS, uses: USES, images: IMG, contexts: CTX, prompts: PROMPTS })) {
+      $("#share-tools").hidden = false; $("#share-compare").hidden = true; $("#share-status").textContent = t.shareInvalid;
+    }
   }
 
   $("#use").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.use = b.dataset.id;
@@ -1317,6 +1371,16 @@ Score     = Perf / system price   (best device = 100)</div>
   });
 
   function ddmm(iso) { const d = new Date(iso); return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.`; }
+  $("#share-compare").addEventListener("click", async () => {
+    const button = $("#share-compare"); button.disabled = true;
+    try {
+      const url = new URL(location.href); url.search = ""; url.hash = AIScenario.encode(comparisonScenario());
+      const link = url.href;
+      try { await navigator.clipboard.writeText(link); $("#share-status").textContent = L().shared; }
+      catch { $("#share-link-label").hidden = false; $("#share-link").value = link; $("#share-link").focus(); $("#share-link").select(); $("#share-status").textContent = L().shareFallback; }
+    } finally { button.disabled = false; }
+  });
+  window.addEventListener("hashchange", () => { if (DEVICES.length) { applySharedScenario(location.hash); render(); } });
   async function load() {
     try {
       const [dv, pr] = await Promise.all([
@@ -1329,7 +1393,9 @@ Score     = Perf / system price   (best device = 100)</div>
         if (!p) return d;
         return Object.assign({}, d, { price: p.price, est: false, src: p.metric === "median3m" ? ["med"] : p.metric === "manual" ? ["man", `${p.note ? p.note + " " : ""}${ddmm(p.asOf)}`] : ["gp", ddmm(p.asOf)] });
       });
+      applySharedScenario(location.hash);
       renderStatic(); render();
+
     } catch (e) {
       $("#summary").innerHTML = `<div class="sum"><span class="k">Fehler / Error</span><span class="v">Daten nicht geladen</span><span class="s">data/devices.json fehlt oder die Seite wurde direkt als Datei geöffnet. Lokal mit „npm run dev“ starten.</span></div>`;
     }

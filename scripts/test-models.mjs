@@ -9,7 +9,7 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
   const node = { addEventListener() {} };
   const sandbox = {
     document: { documentElement: { lang: html.includes('<html lang="en">') ? 'en' : 'de' }, querySelector: () => node, addEventListener() {} },
-    localStorage: { getItem: () => null },
+    window: { addEventListener() {} }, localStorage: { getItem: () => null },
   };
   vm.runInNewContext(script.replace('  load();', '  globalThis.modelTest = { MODELS, QUANTS, state, qm, kvCache, calc, memInfo, shownModels, mEx };'), sandbox);
   const { MODELS, QUANTS, state, qm, kvCache, calc, memInfo, shownModels, mEx } = sandbox.modelTest;

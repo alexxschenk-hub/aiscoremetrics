@@ -29,3 +29,10 @@ tbody tr:hover { background: var(--accent-soft); }
 .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
 @media (prefers-reduced-motion: no-preference) { .theme-thumb { transition: transform .2s ease; } .theme-track { transition: background-color .2s ease; } }
 @media (max-width: 520px) { .wrap { gap: 22px; padding-block-start: 22px; } .controls, .memchart { padding: 16px; } .header-actions { gap: 12px; } .method { grid-template-columns: minmax(0, 1fr); } }
+
+.share-tools { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+.share-tools[hidden], #compare-gains[hidden] { display:none; }
+#share-link-label { width:100%; }
+#share-link { display:block; width:100%; padding:10px; border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--ink); }
+.gain-value { font-size:18px !important; overflow-wrap:anywhere; }
+.evidence-badge { display:inline-block; color:var(--muted); font-size:11px; font-weight:400; line-height:1.5; margin-top:6px; }

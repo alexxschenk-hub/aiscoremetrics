@@ -9,6 +9,6 @@
     "prices": "node scripts/update-prices.mjs",
     "dev": "npx --yes serve public",
     "seo": "node scripts/build-seo.mjs",
-    "test": "node scripts/test-models.mjs && node scripts/test-hardware.mjs"
+    "test": "node scripts/test-models.mjs && node scripts/test-hardware.mjs && node scripts/test-scenarios.mjs"
   }
 }
