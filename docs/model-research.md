@@ -43,3 +43,11 @@ Architekturdaten aus den jeweiligen `config.json` (bzw. `params.json` bei Mistra
 - DeepSeek V4 Pro (850 GB) und Kimi K3 (1,5 TB) passen auf kein Gerät im Rechner, auch nicht mit Q2_K. Sie sind als Referenz drin.
 - DeepSeek V4.1 Flash: Die Q4-Datei enthält die 196B Engram-Parameter, die nur per Token-Lookup gelesen werden. Prompt-Verarbeitung ist mit 16B aktiv konservativ gerechnet (Prefill laut Modellkarte 8B).
 - Mistral Large 3: 673B Sprachmodell + 2,5B Vision-Encoder; die GGUF-Größe ist ohne Vision-Teil.
+
+## Intelligenz-Score (ECI)
+
+- Quelle: Epoch Capabilities Index, CSV `https://epoch.ai/data/eci_scores.csv`, Stand 11.10.2026. Bestwert: Claude Opus 5.5 = 167,33.
+- Im Code: `ECI` in `public/index.html` (Wert, 90-%-Intervall, Modellname bei Epoch). Nur Modelle mit eigenem Epoch-Eintrag bekommen einen Wert; die übrigen zeigen „kein ECI-Wert“ (Mistral Large 3, Mistral Small 4, Ministral 3 3B, Gemma 4 E2B/E4B/12B, Devstral Small 24B, Qwen3-Coder 30B-A3B, GLM-4.5-Air, Qwen3.5 122B-A10B). Der alte „Ministral 3B“ (2024) bei Epoch ist ein anderes Modell als Ministral 3 3B.
+- DeepSeek V4 Pro: Epoch-Eintrag „DeepSeek V4 Pro 0813“ (155,3), passend zur verwendeten 0813-GGUF; die April-Preview steht bei 149,1.
+- Quantisierung: Epoch bewertet in voller Präzision. Ab Q4 wird der Epoch-Wert unverändert gezeigt (Verlust liegt innerhalb des Intervalls), Q3_K_M × 0,96 und Q2_K × 0,92 als markierte Schätzung.
+- Aktualisieren: CSV laden, Werte in `ECI` ersetzen, `ECI_TOP` auf den neuen Bestwert setzen, `npm run seo && npm test`.

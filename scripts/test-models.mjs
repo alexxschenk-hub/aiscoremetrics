@@ -11,8 +11,8 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
     document: { documentElement: { lang: html.includes('<html lang="en">') ? 'en' : 'de' }, querySelector: () => node, addEventListener() {} },
     window: { addEventListener() {} }, localStorage: { getItem: () => null },
   };
-  vm.runInNewContext(script.replace('  load();', '  globalThis.modelTest = { MODELS, QUANTS, state, qm, kvCache, calc, memInfo, shownModels, mEx };'), sandbox);
-  const { MODELS, QUANTS, state, qm, kvCache, calc, memInfo, shownModels, mEx } = sandbox.modelTest;
+  vm.runInNewContext(script.replace('  load();', '  globalThis.modelTest = { MODELS, QUANTS, state, qm, kvCache, calc, memInfo, shownModels, mEx, eciOf, ECI_TOP };'), sandbox);
+  const { MODELS, QUANTS, state, qm, kvCache, calc, memInfo, shownModels, mEx, eciOf, ECI_TOP } = sandbox.modelTest;
   const gemma = MODELS.filter(m => m.id.startsWith('gemma4_'));
   assert.equal(gemma.length, 5);
   assert.equal(MODELS.length, 29);
@@ -64,5 +64,18 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
   state.quant = 'q4';
   close(qm(MODELS.find(m => m.id === 'gptoss20')).gb, 13);
   assert.ok(html.includes(`${MODELS.length} LLMs`));
+  // ECI (Epoch AI): nur echte Epoch-Werte, innerhalb des eigenen Intervalls und unter dem Bestwert
+  const withEci = MODELS.filter(m => m.benchmark);
+  assert.equal(withEci.length, 19);
+  for (const m of withEci) {
+    const b = m.benchmark;
+    assert.ok(b.score > 0 && b.score < ECI_TOP.score && b.ci[0] <= b.score && b.score <= b.ci[1], `${m.id} ECI`);
+    assert.equal(b.maxScore, ECI_TOP.score); assert.equal(b.sourceUrl, 'https://epoch.ai/eci');
+  }
+  for (const id of ['mlarge3', 'msmall4', 'ministral3', 'gemma4_12']) assert.equal(MODELS.find(m => m.id === id).benchmark, null);
+  const k3 = MODELS.find(m => m.id === 'kimik3');
+  for (const q of ['q4', 'q5', 'q6', 'q8', 'f16']) { state.quant = q; close(eciOf(k3).adj, k3.benchmark.score); assert.equal(eciOf(k3).est, false); }
+  state.quant = 'q2'; close(eciOf(k3).adj, k3.benchmark.score * 0.92); assert.equal(eciOf(k3).est, true);
+  state.quant = 'q4';
 }
 console.log('Gemma models, filters, quantization, KV cache and fit boundaries passed for DE/EN.');

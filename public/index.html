@@ -215,6 +215,17 @@ a.ext:hover { text-decoration: underline; }
 .memval .st.ok { color: var(--good); } .memval .st.warn { color: var(--warn); } .memval .st.bad { color: var(--bad); }
 .use-model { margin-top: -4px; border-radius: 4px; }
 .use-model b { color: var(--ink); font-weight: 600; }
+.eci-line { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 6px; }
+.eci-line .lab { margin-right: 2px; }
+.eci { display: inline-flex; align-items: center; gap: 8px; cursor: help; font-family: var(--f-mono); font-size: 12.5px; color: var(--ink); white-space: nowrap; }
+.eci-track { width: 220px; max-width: 40vw; height: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
+.eci.small .eci-track { width: 110px; height: 8px; }
+.eci-fill { display: block; height: 100%; background-image: linear-gradient(90deg, var(--bad), var(--warn) 50%, var(--good)); background-repeat: no-repeat; }
+.eci-max { color: var(--muted); }
+.eci-est { font: 600 10.5px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--warn); border: 1px solid var(--warn); border-radius: 3px; padding: 0 4px; }
+.detail .na { color: var(--muted); font-family: var(--f-body); font-size: 13px; }
+.eci.none { color: var(--muted); font-family: var(--f-body); cursor: default; }
+.eci-name { display: block; font-family: var(--f-body); font-size: 13px; margin-bottom: 3px; }
 @media (prefers-reduced-motion: no-preference) { .use-model.flash { animation: useflash 1.2s ease-out; } }
 @keyframes useflash { from { background: var(--accent-soft); } to { background: transparent; } }
 .memval small { display: block; color: var(--muted); font-size: 11.5px; }
@@ -667,6 +678,30 @@ Score = Perf / system price   (best device = 100)</div>
     { id: "kimik3",    name: "Kimi K3",             tp: 2800,ap: 104,  eff: 0.55, bpw: 4.31, gb: 1509, agb: 56.0, kv: 0.028, use: ["large"] }
   ];
   // Einsatzzweck filtert die Modellauswahl; alpha gewichtet Generierung gegen Prompt-Verarbeitung
+  // Epoch Capabilities Index: epoch.ai/data/eci_scores.csv, Stand 11.10.2026 (Wert, 90-%-Intervall, Name bei Epoch).
+  // Modelle ohne eigenen Epoch-Eintrag bekommen bewusst keinen Wert (benchmark: null).
+  const ECI_TOP = { score: 167.33, model: "Claude Opus 5.5" };
+  const ECI = {
+    kimik3: [157.45, 155.15, 160.03, "Kimi K3"], dsv4pro: [155.31, 153.48, 157.45, "DeepSeek V4 Pro 0813"],
+    dsv41flash: [154.9, 148.49, 157.33, "DeepSeek V4.1 Flash"], glm53flash: [151.88, 149.64, 153.95, "GLM-5.3-Flash"],
+    q38_27: [149.38, 147.3, 151.13, "Qwen 3.8 27B"], q35_397: [146.65, 144.86, 148.26, "Qwen3.5 397B-A17B"],
+    qwen36_27: [146.5, 144.31, 147.72, "Qwen3.6 27B"], nemo3ultra: [146.17, 143.89, 148.03, "Nemotron 3 Ultra"],
+    qwen36_35: [143.93, 141.21, 145.93, "Qwen 3.6 35B-A3B"], gemma4_31: [142.74, 140.25, 145.1, "Gemma 4 31B IT"],
+    gemma4_26: [141.85, 138.71, 143.42, "Gemma 4 26B A4B"], moe120: [139.93, 135.23, 142.78, "gpt-oss-120b"],
+    dsv3: [139.92, 135.44, 143.18, "DeepSeek-V3.1"], q35_9: [139.46, 136.25, 141.51, "Qwen3.5-9B"],
+    moe235: [139.35, 135.49, 140.84, "Qwen3-235B-A22B"], gptoss20: [137.82, 132.91, 139.61, "gpt-oss-20b"],
+    llama4mav: [132.2, 127.74, 134.28, "Llama 4 Maverick"], d70: [127.33, 121.79, 129.67, "Llama 3.3 70B"],
+    l31_8: [116.57, 106.21, 121.11, "Llama 3.1-8B"]
+  };
+  MODELS.forEach((m) => { const e = ECI[m.id];
+    m.benchmark = e ? { score: e[0], ci: [e[1], e[2]], maxScore: ECI_TOP.score, source: "Epoch AI ECI", sourceUrl: "https://epoch.ai/eci", note: `Epoch: „${e[3]}“, Stand 11.10.2026` } : null; });
+  // Geschätzter Qualitätsverlust gegenüber dem Epoch-Wert (volle Präzision). Ab Q4 liegt er innerhalb des Konfidenzintervalls.
+  const ECI_QUANT = { q3: 0.96, q2: 0.92 };
+  function eciOf(m) {
+    const b = m && m.benchmark; if (!b) return null;
+    const f = ECI_QUANT[state.quant] || 1;
+    return Object.assign({}, b, { adj: b.score * f, est: f !== 1 });
+  }
   const USES = [
     { id: "all",    alpha: 0.6, def: "moe30" },
     { id: "coding", alpha: 0.5, def: "moe30" },
@@ -755,8 +790,11 @@ Score = Perf / system price   (best device = 100)</div>
       view: "Ansicht", views: { all: "Alle Geräte", one: "Ein Gerät", cmp: "Vergleich" },
       pickDev: "Gerät", pickA: "Gerät A", pickB: "Gerät B", pickVendor: "Hersteller wählen …", pickModel: "Modell wählen …",
       pickHint: "Wähle zuerst den Hersteller, dann das Modell.",
-      dGroups: { hw: "Hardware", basics: "Hardware & Preis", score: "Bewertung im Profil", px: "Praxiswerte", mem: "Speicher" },
-      dRows: { sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
+      eciLab: "Modell-Intelligenz", eciSrc: "Quelle: Epoch AI", eciNone: "kein ECI-Wert bei Epoch AI", eciNoFit: "kein Modell passt", eciEstShort: "geschätzt",
+      eciTip: (top, m) => `Der Epoch Capabilities Index (ECI) misst die allgemeine Leistungsfähigkeit von KI-Modellen auf einer Skala. Höher = intelligenter. Das beste Modell (${m}) hat ${top}.`,
+      eciEst: (q, raw) => `bei ${q} geschätzt (Quantisierungsverlust), Epoch-Wert ${raw}`,
+      dGroups: { intel: "Modell-Intelligenz", hw: "Hardware", basics: "Hardware & Preis", score: "Bewertung im Profil", px: "Praxiswerte", mem: "Speicher" },
+      dRows: { eciSel: "Gewähltes Modell", eciBest: "Bestes passendes Modell", sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
       rankOf: (a, b) => `${a} von ${b}`,
       faster: (x) => `${x}× besser`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} Modelle zur Auswahl. Gerechnet wird mit <b>${m}</b> (${ex}): braucht ≈ <b>${need} GB</b> Speicher bei ${c} Kontext und ${q} und passt auf <b>${k} von ${total}</b> Geräten. Ein anderer Einsatzzweck oder ein anderes Modell ändert Speicherbedarf und Ranking.`,
@@ -876,8 +914,11 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       view: "View", views: { all: "All devices", one: "One device", cmp: "Compare" },
       pickDev: "Device", pickA: "Device A", pickB: "Device B", pickVendor: "Choose vendor …", pickModel: "Choose model …",
       pickHint: "Choose the vendor first, then the model.",
-      dGroups: { hw: "Hardware", basics: "Hardware & price", score: "Rating in this use case", px: "Real-world numbers", mem: "Memory" },
-      dRows: { sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
+      eciLab: "Model intelligence", eciSrc: "Source: Epoch AI", eciNone: "no ECI score from Epoch AI", eciNoFit: "no model fits", eciEstShort: "estimated",
+      eciTip: (top, m) => `The Epoch Capabilities Index (ECI) measures the general capability of AI models on a single scale. Higher = more capable. The best model (${m}) scores ${top}.`,
+      eciEst: (q, raw) => `estimated for ${q} (quantization loss), Epoch score ${raw}`,
+      dGroups: { intel: "Model intelligence", hw: "Hardware", basics: "Hardware & price", score: "Rating in this use case", px: "Real-world numbers", mem: "Memory" },
+      dRows: { eciSel: "Selected model", eciBest: "Best model that fits", sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
       rankOf: (a, b) => `${a} of ${b}`,
       faster: (x) => `${x}× better`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} models to choose from. Calculated with <b>${m}</b> (${ex}): needs ≈ <b>${need} GB</b> of memory at ${c} context and ${q}, and fits on <b>${k} of ${total}</b> devices. A different use case or model changes the memory need and the ranking.`,
@@ -1162,6 +1203,17 @@ Score     = Perf / system price   (best device = 100)</div>
     state.prices = { ...state.prices, ...shared.prices };
     ["pickA", "pickB"].forEach((key, i) => { const d = DEVICES.find(d => d.id === shared.devices[i]); state[key] = { v: d.v, id: d.id }; });
   }
+  // Intelligenz-Balken 0 … bestes Modell; Farbverlauf rot → gelb → grün über die volle Skala
+  function eciBar(m, small) {
+    const t = L(), e = eciOf(m);
+    if (!e) return `<span class="eci none">${t.eciNone}</span>`;
+    const w = Math.max(1, Math.min(100, e.adj / e.maxScore * 100));
+    const qn = (QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name;
+    const tip = t.eciTip(fmt(ECI_TOP.score, 0), ECI_TOP.model) + ` ${mName(m)}: ${fmt(e.score, 1)} (${fmt(e.ci[0], 0)}–${fmt(e.ci[1], 0)}).` + (e.est ? ` ${t.eciEst(qn, fmt(e.score, 0))}.` : "");
+    return `<span class="eci${small ? " small" : ""}" data-tip="${esc(tip)}" aria-label="${esc(tip)}">ECI ${fmt(e.adj, 0)}`
+      + `<span class="eci-track" aria-hidden="true"><span class="eci-fill" style="width:${w.toFixed(1)}%;background-size:${(10000 / w).toFixed(1)}% 100%"></span></span>`
+      + `<span class="eci-max">/ ${fmt(e.maxScore, 0)}</span>${e.est ? `<span class="eci-est">${t.eciEstShort}</span>` : ""}</span>`;
+  }
   function render() {
     renderControls();
     const t = L();
@@ -1190,7 +1242,8 @@ Score     = Perf / system price   (best device = 100)</div>
       const mq = qm(pxM), need = mq.gb + kvCache(mq, ctx) + 1.0;
       const k = DEVICES.filter((d) => calc(d, pxM, ctx).fits).length;
       const el = $("#use-model"), key = `${state.use}|${pxM.id}`;
-      el.innerHTML = t.useModel(esc(t.uses[state.use]), usedModels.length, esc(mName(pxM)), esc(mEx(pxM)), fmt(need, 1), ctxLabel(ctx), qn, k, DEVICES.length);
+      el.innerHTML = t.useModel(esc(t.uses[state.use]), usedModels.length, esc(mName(pxM)), esc(mEx(pxM)), fmt(need, 1), ctxLabel(ctx), qn, k, DEVICES.length)
+        + `<span class="eci-line"><span class="lab">${t.eciLab}</span>${eciBar(pxM)}${pxM.benchmark ? `<a class="ext" href="${pxM.benchmark.sourceUrl}" target="_blank" rel="noopener">${t.eciSrc} ↗</a>` : ""}</span>`;
       if (el.dataset.key && el.dataset.key !== key) { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }
       el.dataset.key = key; }
 
@@ -1258,6 +1311,9 @@ Score     = Perf / system price   (best device = 100)</div>
         ["rank", (r) => state.showPrices && !(r.sp > 0) ? null : byScore.indexOf(r) + 1, (v) => t.rankOf(v, rows.length), -1],
         ["perf", (r) => r.perfN, (v) => fmt(v), 1],
         ["fits", (r) => r.fitCount, (v) => `${v} / ${usedModels.length}`, 1],
+        ["grp", "intel"],
+        ["eciSel", (r) => r.px.tg != null ? eciOf(pxM)?.adj ?? null : null, null, 1, (r) => r.px.tg != null ? eciBar(pxM, true) : `<span class="na">${mName(pxM)}: ${t.fitsNo}</span>`],
+        ["eciBest", (r) => bestFit(r.d)?.e.adj ?? null, null, 1, (r) => { const b = bestFit(r.d); return b ? `<span class="eci-name">${esc(mName(b.m))}</span>${eciBar(b.m, true)}` : `<span class="na">${t.eciNoFit}</span>`; }],
         ["grp", "px"],
         ["tg", (r) => r.px.tg, (v) => `${fmtTok(v)} tok/s`, 1],
         ["ttft", (r) => r.px.ttft, durTxt, -1],
@@ -1267,6 +1323,9 @@ Score     = Perf / system price   (best device = 100)</div>
         ["memuse", () => null, null, 0, memTxt]
       ];
       const cols = vis;
+      // Intelligentestes Modell der aktuellen Auswahl, das bei diesem Kontext und dieser Quantisierung passt
+      const ctxD = Math.max(ctx, pxP + CODE_TOKENS);
+      const bestFit = (d) => usedModels.map((m) => ({ m, e: eciOf(m) })).filter((x) => x.e && calc(d, x.m, ctxD).fits).sort((a, b) => b.e.adj - a.e.adj)[0] || null;
       const head = `<tr><th></th>${cols.map((r) => `<th><span class="devrow"><span class="ico ${r.d.v}">${ICONS[r.d.kind]}</span><span>${esc(devLabel(r.d))}<br><span class="tag" style="margin:0">${VENDOR[r.d.v]} · ${devKind(r.d)}</span><br><small class="evidence-badge" title="${esc(t.unmeasured)}">${t.estimate} · ${backendOf(r.d)}<br>${t.assumed}</small></span></span></th>`).join("")}${cols.length === 2 ? `<th class="dhead">${t.deltaHead}</th>` : ""}</tr>`;
       const body = ROWS.map((row) => {
         if (row[0] === "grp") return `<tr class="grp"><td colspan="${cols.length + (cols.length === 2 ? 2 : 1)}">${t.dGroups[row[1]]}</td></tr>`;
@@ -1278,6 +1337,7 @@ Score     = Perf / system price   (best device = 100)</div>
           const hi = Math.max(vals[0], vals[1]), lo = Math.min(vals[0], vals[1]);
           if (["ttft", "code", "img"].includes(key)) delta = `${durTxt(hi - lo)} ${state.lang === "de" ? "Unterschied" : "difference"}`;
           else if (key === "sys") delta = eur(hi - lo);
+          else if (key.startsWith("eci")) delta = `+${fmt(hi - lo, 1)} ECI`;
           else if (lo > 0 && key !== "rank") delta = t.faster(fmt(hi / lo, hi / lo < 10 ? 1 : 0));
         }
         const cells = cols.map((r, i) => {
