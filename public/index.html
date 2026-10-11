@@ -173,9 +173,40 @@ a.ext { color: var(--accent); font-size: 13px; text-decoration: none; white-spac
 a.ext:hover { text-decoration: underline; }
 .zero td { color: var(--muted); }
 .pickrow { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: end; }
+/* Gerät A/B: eigene Zeile, immer 50/50, auf dem Handy untereinander */
+.picks { flex: 1 1 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; align-items: start; }
 .pick { display: grid; gap: 6px; min-width: 0; }
-.pick .pair { display: flex; gap: 6px; flex-wrap: wrap; }
-.pick select { max-width: 100%; }
+.pick .pair { display: grid; grid-template-columns: minmax(118px, 34%) minmax(0, 1fr); gap: 6px; }
+.pick select, .pick .ss { width: 100%; min-width: 0; }
+.pick select, .ss-btn { height: 36px; }
+@media (max-width: 640px) { .picks { grid-template-columns: minmax(0, 1fr); } }
+/* schmale Bildschirme: nichts darf breiter als die Steuerleiste werden */
+.controls { grid-template-columns: minmax(0, 1fr); }
+.pickrow, .picks { min-width: 0; }
+.row > .field { max-width: 100%; grid-template-columns: minmax(0, 1fr); }
+/* Suchbare Auswahlliste (ersetzt optisch ein <select>, das native Element bleibt für Wert und change-Event) */
+.ss { position: relative; min-width: 0; }
+#llm + .ss { width: 360px; max-width: 100%; }
+.ss-native { display: none; }
+.ss-btn { display: flex; align-items: center; gap: 8px; width: 100%; font: 400 14px var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; cursor: pointer; text-align: left; }
+.ss-btn:hover { border-color: var(--muted); }
+.ss-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ss-btn .ss-val { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ss-btn .ss-val.ph { color: var(--muted); }
+.ss-btn .ss-caret { flex: none; color: var(--muted); font-size: 11px; }
+.ss-panel { position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; width: max(100%, 300px); max-width: min(440px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px rgba(0, 0, 0, .18); padding: 6px; display: grid; gap: 6px; }
+.ss-search { position: relative; }
+.ss-search input { width: 100%; font: 400 14px var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 7px 30px 7px 9px; }
+.ss-search input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
+.ss-clear { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border: 0; border-radius: 3px; background: transparent; color: var(--muted); font-size: 17px; line-height: 1; cursor: pointer; }
+.ss-clear:hover { color: var(--ink); background: var(--accent-soft); }
+.ss-list { position: relative; list-style: none; margin: 0; padding: 0; max-height: 300px; overflow-y: auto; }
+.ss-list li { padding: 6px 8px; border-radius: 4px; font-size: 14px; cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
+.ss-list li small { color: var(--muted); font-size: 12px; margin-left: auto; white-space: nowrap; }
+.ss-list li[aria-selected="true"] { font-weight: 600; color: var(--accent); }
+.ss-list li.act { background: var(--accent-soft); }
+.ss-list li.grp { cursor: default; padding: 8px 8px 3px; font: 600 11px var(--f-display); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.ss-list li.empty { cursor: default; color: var(--muted); }
 .pick .lab b { color: var(--ink); }
 .detail { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; overflow-x: auto; }
 .detail table { min-width: 0; }
@@ -283,11 +314,13 @@ footer { font-size: 12.5px; color: var(--muted); }
         <span class="lab" id="lab-view" data-i="view"></span>
         <div class="seg" id="view" role="group" aria-labelledby="lab-view"></div>
       </div>
-      <div class="pick" id="pick-a" hidden></div>
-      <div class="pick" id="pick-b" hidden></div>
       <div class="field" id="pick-prompt-f" hidden>
         <label class="lab" for="pick-prompt" data-i="pxPrompt"></label>
         <select id="pick-prompt"></select>
+      </div>
+      <div class="picks" id="picks" hidden>
+        <div class="pick" id="pick-a" hidden></div>
+        <div class="pick" id="pick-b" hidden></div>
       </div>
     </div>
     <div class="row">
@@ -297,7 +330,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       </div>
       <div class="field">
         <label class="lab" for="llm" data-i="pickLlm"></label>
-        <select id="llm" aria-describedby="model-note"></select>
+        <select id="llm" data-ss="model" aria-describedby="model-note"></select>
       </div>
       <div class="field">
         <label class="lab" for="ctx"><span data-i="ctx"></span>: <span class="mono" id="ctx-val">32k</span> Tokens</label>
@@ -791,7 +824,7 @@ Score = Perf / system price   (best device = 100)</div>
       pxModel: "Textmodell", pxPrompt: "Prompt-Länge", pxImg: "Bildmodell",
       sysram: "PC-RAM", ws: "Workstation", quant: "Quantisierung", pickLlm: "LLM-Modell",
       view: "Ansicht", views: { all: "Alle Geräte", one: "Ein Gerät", cmp: "Vergleich" },
-      pickDev: "Gerät", pickA: "Gerät A", pickB: "Gerät B", pickVendor: "Hersteller wählen …", pickModel: "Modell wählen …",
+      pickDev: "Gerät", pickA: "Gerät A", pickB: "Gerät B", pickVendor: "Alle Hersteller", pickModel: "Gerät wählen …", ssSearch: "Suchen …", ssClear: "Suche leeren", ssNone: "Keine Treffer",
       pickHint: "Wähle zuerst den Hersteller, dann das Modell.",
       eciLab: "Modell-Intelligenz", eciSrc: "Quelle: Epoch AI", eciNone: "kein ECI-Wert bei Epoch AI", eciNoFit: "kein Modell passt", eciEstShort: "geschätzt",
       eciTip: (top, m) => `Der Epoch Capabilities Index (ECI) misst die allgemeine Leistungsfähigkeit von KI-Modellen auf einer Skala. Höher = intelligenter. Das beste Modell (${m}) hat ${top}.`,
@@ -917,7 +950,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       pxModel: "Text model", pxPrompt: "Prompt length", pxImg: "Image model",
       sysram: "PC RAM", ws: "Workstation", quant: "Quantization", pickLlm: "LLM model",
       view: "View", views: { all: "All devices", one: "One device", cmp: "Compare" },
-      pickDev: "Device", pickA: "Device A", pickB: "Device B", pickVendor: "Choose vendor …", pickModel: "Choose model …",
+      pickDev: "Device", pickA: "Device A", pickB: "Device B", pickVendor: "All vendors", pickModel: "Choose device …", ssSearch: "Search …", ssClear: "Clear search", ssNone: "No matches",
       pickHint: "Choose the vendor first, then the model.",
       eciLab: "Model intelligence", eciSrc: "Source: Epoch AI", eciNone: "no ECI score from Epoch AI", eciNoFit: "no model fits", eciEstShort: "estimated",
       eciTip: (top, m) => `The Epoch Capabilities Index (ECI) measures the general capability of AI models on a single scale. Higher = more capable. The best model (${m}) scores ${top}.`,
@@ -1163,6 +1196,90 @@ Score     = Perf / system price   (best device = 100)</div>
     $("#px-prompt").innerHTML = PROMPTS.map((p, i) => `<option value="${i}">${ctxLabel(p)} ${L().tokens}</option>`).join("");
     $("#px-img").innerHTML = IMG.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join("");
   }
+  // Hersteller/Organisation eines LLMs für die Suche
+  const ORGS = [[/^qwen/i, "Alibaba Qwen"], [/^(llama)/i, "Meta"], [/^gemma/i, "Google"], [/^gpt-oss/i, "OpenAI"], [/^(mistral|ministral|devstral)/i, "Mistral AI"],
+    [/^deepseek/i, "DeepSeek"], [/^glm/i, "Zhipu Z.ai"], [/^kimi/i, "Moonshot"], [/^nemotron/i, "NVIDIA"]];
+  const modelOrg = (m) => (ORGS.find(([re]) => re.test(m.name)) || [0, ""])[1];
+
+  // Suchbare Auswahlliste ohne Bibliothek: Button + Panel mit Suchfeld und Liste über einem versteckten <select>.
+  // Auswahl setzt select.value und löst "change" aus, die bestehenden Handler bleiben unverändert.
+  const ssNorm = (x) => x.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  function ssSync(sel) {
+    let w = sel.nextElementSibling;
+    if (!w || !w.classList.contains("ss")) {
+      sel.classList.add("ss-native");
+      w = document.createElement("div"); w.className = "ss";
+      w.innerHTML = `<button type="button" class="ss-btn" aria-haspopup="listbox" aria-expanded="false"><span class="ss-val"></span><span class="ss-caret" aria-hidden="true">▼</span></button>`;
+      sel.after(w);
+      const btn = w.querySelector(".ss-btn");
+      btn.addEventListener("click", () => w.querySelector(".ss-panel") ? ssClose(w) : ssOpen(sel, w));
+      btn.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") { e.preventDefault(); ssOpen(sel, w); }
+        else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); ssOpen(sel, w, e.key); }
+      });
+    }
+    const btn = w.querySelector(".ss-btn"), o = sel.selectedOptions[0];
+    btn.setAttribute("aria-label", sel.getAttribute("aria-label") || (sel.id && document.querySelector(`label[for="${sel.id}"]`)?.textContent) || "");
+    const val = btn.querySelector(".ss-val"); val.textContent = o ? o.textContent : ""; val.classList.toggle("ph", !o || !o.value);
+  }
+  function ssClose(w, focus) {
+    const panel = w.querySelector(".ss-panel"); if (!panel) return;
+    panel.remove(); w.querySelector(".ss-btn").setAttribute("aria-expanded", "false");
+    if (focus) w.querySelector(".ss-btn").focus();
+  }
+  function ssOpen(sel, w, initial = "") {
+    document.querySelectorAll(".ss").forEach((x) => x !== w && ssClose(x));
+    const t = L(), listId = `ss-${Math.random().toString(36).slice(2, 8)}`;
+    const panel = document.createElement("div"); panel.className = "ss-panel";
+    panel.innerHTML = `<div class="ss-search"><input type="text" role="combobox" aria-expanded="true" aria-autocomplete="list" aria-controls="${listId}" placeholder="${t.ssSearch}" autocomplete="off" spellcheck="false"><button type="button" class="ss-clear" aria-label="${t.ssClear}" hidden>×</button></div><ul class="ss-list" role="listbox" id="${listId}"></ul>`;
+    w.appendChild(panel); w.querySelector(".ss-btn").setAttribute("aria-expanded", "true");
+    // Panel im Bildschirm halten: bei Platzmangel rechtsbündig unter dem Button
+    if (panel.getBoundingClientRect().right > document.documentElement.clientWidth - 8) { panel.style.left = "auto"; panel.style.right = "0"; }
+    const input = panel.querySelector("input"), clear = panel.querySelector(".ss-clear"), list = panel.querySelector(".ss-list");
+    const all = [...sel.options].filter((o) => o.value).map((o) => ({ o, group: o.parentElement.tagName === "OPTGROUP" ? o.parentElement.label : "",
+      hay: ssNorm(`${o.textContent} ${o.dataset.k || ""} ${o.parentElement.label || ""}`) }));
+    let shown = [], act = -1;
+    const draw = () => {
+      const q = ssNorm(input.value.trim()), terms = q.split(/\s+/).filter(Boolean);
+      // Ohne Suchtext gilt der gewählte Hersteller als Filter, beim Tippen wird über alle Hersteller gesucht
+      shown = all.filter((x) => terms.length ? terms.every((tm) => x.hay.includes(tm)) : !sel.dataset.vendor || x.o.dataset.v === sel.dataset.vendor);
+      act = shown.findIndex((x) => x.o.selected); if (act < 0 && terms.length) act = 0;
+      let last = null, html = "";
+      shown.forEach((x, i) => {
+        if (x.group && x.group !== last) { html += `<li class="grp" role="presentation">${esc(x.group)}</li>`; last = x.group; }
+        const k = x.o.dataset.k && !x.group ? `<small>${esc(x.o.dataset.k)}</small>` : "";
+        html += `<li role="option" id="${listId}-${i}" data-i="${i}" aria-selected="${x.o.selected}" class="${i === act ? "act" : ""}">${esc(x.o.textContent)}${k}</li>`;
+      });
+      list.innerHTML = html || `<li class="empty" role="presentation">${t.ssNone}</li>`;
+      clear.hidden = !input.value;
+      mark();
+    };
+    const mark = () => {
+      list.querySelectorAll("li.act").forEach((li) => li.classList.remove("act"));
+      const li = act >= 0 && list.querySelector(`li[data-i="${act}"]`);
+      if (li) {
+        li.classList.add("act"); input.setAttribute("aria-activedescendant", li.id);
+        // nur die Liste scrollen, nie die Seite (scrollIntoView würde auf schmalen Bildschirmen seitlich mitscrollen)
+        if (li.offsetTop < list.scrollTop) list.scrollTop = li.offsetTop;
+        else if (li.offsetTop + li.offsetHeight > list.scrollTop + list.clientHeight) list.scrollTop = li.offsetTop + li.offsetHeight - list.clientHeight;
+      } else input.removeAttribute("aria-activedescendant");
+    };
+    const choose = (x) => { ssClose(w, true); if (sel.value !== x.o.value) { sel.value = x.o.value; sel.dispatchEvent(new Event("change", { bubbles: true })); } };
+    input.addEventListener("input", draw);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown") { e.preventDefault(); act = Math.min(shown.length - 1, act + 1); mark(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); act = Math.max(0, act - 1); mark(); }
+      else if (e.key === "Enter") { e.preventDefault(); const x = shown.length === 1 ? shown[0] : shown[act]; if (x) choose(x); }
+      else if (e.key === "Escape") { e.preventDefault(); ssClose(w, true); }
+      else if (e.key === "Tab") ssClose(w);
+    });
+    clear.addEventListener("click", () => { input.value = ""; draw(); input.focus(); });
+    list.addEventListener("mousedown", (e) => e.preventDefault());
+    list.addEventListener("click", (e) => { const li = e.target.closest("li[data-i]"); if (li) choose(shown[+li.dataset.i]); });
+    input.value = initial; draw(); input.focus({ preventScroll: true });
+  }
+  document.addEventListener("mousedown", (e) => { if (!e.target.closest(".ss")) document.querySelectorAll(".ss").forEach((w) => ssClose(w)); });
+
   function renderControls() {
     document.querySelectorAll("#lang a").forEach((a) => { if (a.dataset.id === state.lang) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
     $("#use").innerHTML = USES.map((u) => `<button type="button" data-id="${u.id}" aria-pressed="${u.id === state.use}">${esc(L().uses[u.id])}</button>`).join("");
@@ -1171,19 +1288,21 @@ Score     = Perf / system price   (best device = 100)</div>
     $("#vendor-field").hidden = state.view !== "all";
     const picker = (slot, label) => {
       const pk = state[slot];
-      const devs = DEVICES.filter((d) => d.v === pk.v).sort((a, b) => a.name.localeCompare(b.name, L().locale, { numeric: true }));
+      const byName = (a, b) => a.name.localeCompare(b.name, L().locale, { numeric: true });
+      const devOpt = (d) => `<option value="${d.id}" data-v="${d.v}" data-k="${esc(VENDOR[d.v] + " " + L().kinds[d.kind])}" ${d.id === pk.id ? "selected" : ""}>${esc(devLabel(d))}${d.kind !== "gpu" ? " (" + L().kinds[d.kind] + ")" : ""}</option>`;
       return `<span class="lab">${label}</span><div class="pair">
         <select data-slot="${slot}" data-part="v" aria-label="${label}: ${L().vendor}"><option value="">${L().pickVendor}</option>${[N, AM, IN, A].map((v) => `<option value="${v}" ${v === pk.v ? "selected" : ""}>${VENDOR[v]}</option>`).join("")}</select>
-        <select data-slot="${slot}" data-part="id" aria-label="${label}: ${L().model}" ${pk.v ? "" : "disabled"}><option value="">${pk.v ? L().pickModel : "–"}</option>${devs.map((d) => `<option value="${d.id}" ${d.id === pk.id ? "selected" : ""}>${esc(devLabel(d))}${d.kind !== "gpu" ? " (" + L().kinds[d.kind] + ")" : ""}</option>`).join("")}</select>
+        <select data-slot="${slot}" data-part="id" data-ss="device" data-vendor="${pk.v}" aria-label="${label}: ${L().pickDev}"><option value="">${L().pickModel}</option>${[N, AM, IN, A].map((v) => `<optgroup label="${VENDOR[v]}">${DEVICES.filter((d) => d.v === v).sort(byName).map(devOpt).join("")}</optgroup>`).join("")}</select>
       </div>`;
     };
-    $("#pick-a").hidden = state.view === "all"; $("#pick-b").hidden = state.view !== "cmp";
+    $("#picks").hidden = $("#pick-a").hidden = state.view === "all"; $("#pick-b").hidden = state.view !== "cmp";
     $("#pick-prompt-f").hidden = state.view === "all";
     $("#pick-prompt").value = state.pxPrompt; $("#quant").value = state.quant;
     if (state.view !== "all") $("#pick-a").innerHTML = picker("pickA", state.view === "cmp" ? L().pickA : L().pickDev);
     if (state.view === "cmp") $("#pick-b").innerHTML = picker("pickB", L().pickB);
-    $("#llm").innerHTML = shownModels().map((m) => `<option value="${m.id}">${esc(mName(m))} · ${esc(mEx(m))} · ${fmt(qm(m).gb, 0)} GB</option>`).join("");
+    $("#llm").innerHTML = shownModels().map((m) => `<option value="${m.id}" data-k="${esc(modelOrg(m))}">${esc(mName(m))} · ${esc(mEx(m))} · ${fmt(qm(m).gb, 0)} GB</option>`).join("");
     $("#llm").value = state.pxModel;
+    document.querySelectorAll("select[data-ss]").forEach(ssSync);
     const selectedModel = MODELS.find((m) => m.id === state.pxModel);
     $("#model-note").hidden = !selectedModel?.cache;
     if (selectedModel?.cache) $("#model-note").innerHTML = state.lang === "de"
@@ -1464,7 +1583,8 @@ Score     = Perf / system price   (best device = 100)</div>
   document.querySelector(".pickrow").addEventListener("change", (e) => {
     const sel = e.target.closest("select[data-slot]"); if (!sel) return;
     const pk = state[sel.dataset.slot];
-    if (sel.dataset.part === "v") { pk.v = sel.value; pk.id = ""; } else pk.id = sel.value;
+    if (sel.dataset.part === "v") { pk.v = sel.value; const cur = DEVICES.find((d) => d.id === pk.id); if (pk.v && cur && cur.v !== pk.v) pk.id = ""; }
+    else { pk.id = sel.value; const d = DEVICES.find((x) => x.id === pk.id); if (d) pk.v = d.v; }
     persist(); render();
   });
   $("#sysram").addEventListener("change", (e) => { state.sysRam = Math.max(0, +e.target.value || 0); persist(); render(); });
