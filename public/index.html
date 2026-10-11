@@ -22,7 +22,7 @@
 <meta property="og:url" content="https://aiscoremetrics.com/">
 <meta property="og:site_name" content="AI Score Metrics">
 <meta property="og:title" content="AI Score Metrics – Welche GPU oder welcher Mac für lokale LLMs?">
-<meta property="og:description" content="121 Geräte, 29 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
+<meta property="og:description" content="124 Geräte, 29 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
 <meta property="og:image" content="https://aiscoremetrics.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -31,7 +31,7 @@
 <meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AI Score Metrics – Welche GPU oder welcher Mac für lokale LLMs?">
-<meta name="twitter:description" content="121 Geräte, 29 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
+<meta name="twitter:description" content="124 Geräte, 29 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
 <meta name="twitter:image" content="https://aiscoremetrics.com/og-image.png">
 <script type="application/ld+json">
 {
@@ -373,7 +373,7 @@ footer { font-size: 12.5px; color: var(--muted); }
   <noscript>
     <div class="noscript-devs">
       <h2>Geräte im Vergleich / Devices compared</h2>
-      <p class="hint">Der Rechner braucht JavaScript. Hier die Hardware-Daten aller 121 Geräte als Tabelle. / The calculator needs JavaScript. Below are the specs of all 121 devices.</p>
+      <p class="hint">Der Rechner braucht JavaScript. Hier die Hardware-Daten aller 124 Geräte als Tabelle. / The calculator needs JavaScript. Below are the specs of all 124 devices.</p>
       <div class="tablebox"><table>
         <thead><tr><th>Gerät / Device</th><th>Hersteller / Vendor</th><th>Typ / Type</th><th class="num">Speicher / Memory (GB)</th><th class="num">Bandbreite / Bandwidth (GB/s)</th></tr></thead>
         <tbody>
@@ -436,6 +436,9 @@ footer { font-size: 12.5px; color: var(--muted); }
         <tr><td>H100 80GB (SXM) · 80 GB</td><td>NVIDIA</td><td>Server · SXM</td><td class="num">80</td><td class="num">3 350</td></tr>
         <tr><td>RTX PRO 6000 Blackwell · 96 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">96</td><td class="num">1 792</td></tr>
         <tr><td>RTX PRO 6000 Blackwell Max-Q · 96 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">96</td><td class="num">1 792</td></tr>
+        <tr><td>DGX Spark · 64 GB</td><td>NVIDIA</td><td>Mini-PC</td><td class="num">64</td><td class="num">273</td></tr>
+        <tr><td>DGX Spark · 128 GB</td><td>NVIDIA</td><td>Mini-PC</td><td class="num">128</td><td class="num">273</td></tr>
+        <tr><td>Microsoft Surface RTX Spark Dev Box · 128 GB</td><td>NVIDIA</td><td>Mini-PC</td><td class="num">128</td><td class="num">273</td></tr>
         <tr><td>Radeon RX 7600 · 8 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">8</td><td class="num">288</td></tr>
         <tr><td>Radeon RX 9060 XT 8GB · 8 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">8</td><td class="num">320</td></tr>
         <tr><td>Radeon RX 6700 XT · 12 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">12</td><td class="num">384</td></tr>
@@ -846,6 +849,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
         <li>Nutzbarer Speicher: GPU = VRAM − 0,8 GB. Mac: macOS-Standardlimit 67 % (≤ 36 GB) bzw. 75 % des Arbeitsspeichers, höchstens aber Arbeitsspeicher minus 6 GB für macOS und Hintergrundprogramme. Mit angehobenem Limit alles außer diesen 6 GB. Ryzen AI Max: 96 GB, angehoben 110 GB, Linux-Reserve 4 GB.</li>
         <li>Bandbreiten-Effizienz η: NVIDIA 0,60, AMD-Grafikkarten 0,50 (ROCm/Vulkan), Ryzen AI Max 0,72, Apple Pro/Max 0,62, Apple Ultra 0,50.</li>
         <li>Ryzen AI Max+ 395: von 128 GB sind unter Linux rund 96 GB als Grafikspeicher nutzbar, mit angepasstem Limit etwa 110 GB.</li>
+        <li>NVIDIA GB10 (DGX Spark, Surface RTX Spark Dev Box): 273 GB/s LPDDR5X, gemeinsamer Speicher. Nutzbar für die GPU: DGX Spark 128 GB ≈ 119 GB (angehoben 124 GB), DGX Spark 64 GB ≈ 56 GB (8 GB fürs System laut NVIDIA), Surface 112 GB laut Microsoft. Bandbreiten-Effizienz η 0,72 wie Ryzen AI Max; Rechenleistung 1.000 AI TOPS ÷ 8 = 125 TFLOPS, η_c 0,3. Die Surface-Bandbreite hat Microsoft nicht veröffentlicht; angenommen ist derselbe Wert wie beim DGX Spark.</li>
         <li>Rechenleistung: NVIDIA = FP16-Tensor-Leistung (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0,5. AMD = FP16-Spitzenleistung laut Datenblatt, η_c 0,35 (Ryzen AI Max 0,3). Apple = GPU-FP32, η_c 0,6. M5-Chips mit Neural Accelerators ×3,5 (Apple nennt bis 3,9–4× gegenüber der Vorgängergeneration).</li>
         <li>MoE-Modelle erreichen in der Praxis rund die Hälfte der rechnerischen Generierung (Routing, Attention, verteilte Zugriffe), daher ε = 0,55. Dichte Modelle ε = 1.</li>
         <li>Kein Teil-Offloading: Wenn ein Modell nicht passt, zählt es mit 0. Multi-GPU ist nicht abgebildet.</li>
@@ -874,6 +878,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
         <li>GPU-Preise: niedrigster Neupreis Deutschland laut gpuprix.com (Händlerdaten von Alternate), täglich automatisch aktualisiert, zuletzt {{updated}}. Gezeigt wird die günstigste lieferbare Karte. Ist keine lieferbar, der letzte Tiefstpreis. Einzelne Preise können manuell gesetzt werden, aktuell die RTX 5090 nach Geizhals.</li>
         <li>Mac Studio M5 Ultra 96 GB: Apple-Listenpreis 6.599 €. Mac Studio M5 Max 36 GB: 2.999 €. Mac mini M6 16 GB: 1.049 €, M5 Pro 24 GB: 1.999 €. Andere Speicherausbauten und ältere Macs: geschätzt.</li>
         <li>Ryzen AI Max+ 395 mit 128 GB: Mini-PCs von Framework, GMKtec oder Minisforum, Preis geschätzt.</li>
+        <li>DGX Spark: 128 GB geschätzt 6.300 € (NVIDIA-Listenpreis seit 2.10.2026: 6.950 $), 64 GB geschätzt 5.000 € (4.999 $, ab 23.10. über OEM-Partner). Surface RTX Spark Dev Box: 5.999 $, bisher nur in den USA bestellbar, 6.000 € geschätzt.</li>
         <li>Specs: NVIDIA-, AMD-, Intel- und Apple-Datenblätter. Notebook-/Serverkarten ohne bestätigten Europreis haben offene Preisfelder. Tempo neuer Karten ist eine Roofline-Schätzung mit angenommenen Effizienzfaktoren; Intel ist nicht benchmark-kalibriert. Pascal nutzt FP32 als Rechenbasis. SXM benötigt eine passende Serverplattform; Notebooktempo hängt von TGP und Kühlung ab. Rechenleistung bei RTX PRO 2000/4000/4500 und den Ada-Workstation-Karten aus AI TOPS abgeleitet, daher Näherungen. RTX PRO 6000 Max-Q: Preis geschätzt. RTX PRO 4500: Amazon-Preis vom 11.10.</li>
         <li>Die Links führen zum Geizhals-Preisvergleich (ohne Affiliate).</li>
       </ul>
@@ -970,6 +975,7 @@ Score     = Perf / system price   (best device = 100)</div>
         <li>Usable memory: GPU = VRAM − 0.8 GB. Mac: macOS default limit of 67% (≤ 36 GB) or 75% of RAM, but at most RAM minus 6 GB for macOS and background apps. With the raised limit, everything except those 6 GB. Ryzen AI Max: 96 GB, 110 GB raised, 4 GB Linux reserve.</li>
         <li>Bandwidth efficiency η: NVIDIA 0.60, AMD graphics cards 0.50 (ROCm/Vulkan), Ryzen AI Max 0.72, Apple Pro/Max 0.62, Apple Ultra 0.50.</li>
         <li>Ryzen AI Max+ 395: of 128 GB, about 96 GB is usable as graphics memory on Linux, about 110 GB with a raised limit.</li>
+        <li>NVIDIA GB10 (DGX Spark, Surface RTX Spark Dev Box): 273 GB/s LPDDR5X, shared memory. Usable by the GPU: DGX Spark 128 GB ≈ 119 GB (124 GB raised), DGX Spark 64 GB ≈ 56 GB (8 GB reserved for the system per NVIDIA), Surface 112 GB per Microsoft. Bandwidth efficiency η 0.72 as for Ryzen AI Max; compute 1,000 AI TOPS ÷ 8 = 125 TFLOPS, η_c 0.3. Microsoft has not published the Surface bandwidth; it is assumed to match the DGX Spark.</li>
         <li>Compute: NVIDIA = FP16 tensor throughput (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0.5. AMD = datasheet FP16 peak, η_c 0.35 (Ryzen AI Max 0.3). Apple = GPU FP32, η_c 0.6. M5 chips with Neural Accelerators ×3.5 (Apple claims up to 3.9–4× over the previous generation).</li>
         <li>MoE models reach about half their theoretical generation speed in practice (routing, attention, scattered reads), so ε = 0.55. Dense models ε = 1.</li>
         <li>No partial offloading: a model that does not fit scores 0. Multi-GPU is not modelled.</li>
@@ -998,6 +1004,7 @@ Score     = Perf / system price   (best device = 100)</div>
         <li>GPU prices: lowest new price in Germany per gpuprix.com (retailer data from Alternate), updated automatically every day, last on {{updated}}. Shown is the cheapest card in stock, or the last lowest price if none is in stock. Individual prices can be set manually, currently the RTX 5090 per Geizhals.</li>
         <li>Mac Studio M5 Ultra 96 GB: Apple list price €6,599. Mac Studio M5 Max 36 GB: €2,999. Mac mini M6 16 GB: €1,049, M5 Pro 24 GB: €1,999. Other memory configurations and older Macs: estimated.</li>
         <li>Ryzen AI Max+ 395 with 128 GB: mini PCs from Framework, GMKtec or Minisforum, estimated price.</li>
+        <li>DGX Spark: 128 GB estimated at €6,300 (NVIDIA list price since 2 Oct 2026: $6,950), 64 GB estimated at €5,000 ($4,999, from 23 Oct via OEM partners). Surface RTX Spark Dev Box: $5,999, US-only preorders so far, €6,000 estimated.</li>
         <li>Specs: NVIDIA, AMD, Intel and Apple datasheets. Laptop/server cards without a verified euro price have empty price fields. New GPU speeds are roofline estimates with assumed efficiency factors; Intel has no benchmark calibration. Pascal uses an FP32 compute basis. SXM requires a compatible server platform; laptop speed depends on TGP and cooling. Compute for RTX PRO 2000/4000/4500 and the Ada workstation cards is derived from AI TOPS, so approximate. RTX PRO 6000 Max-Q: estimated price. RTX PRO 4500: Amazon price from 11 Oct.</li>
         <li>Links go to the Geizhals price comparison (no affiliate).</li>
       </ul>

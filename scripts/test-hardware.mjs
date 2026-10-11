@@ -4,7 +4,7 @@ import vm from 'node:vm';
 const { devices } = JSON.parse(readFileSync('public/data/devices.json', 'utf8'));
 const { mapping } = JSON.parse(readFileSync('docs/gpu-coverage.json', 'utf8'));
 assert.equal(Object.keys(mapping).length, 82);
-assert.equal(devices.length, 121);
+assert.equal(devices.length, 124);
 assert.equal(new Set(devices.map(d => d.id)).size, devices.length);
 for (const id of Object.values(mapping)) assert.ok(devices.find(d => d.id === id), `Missing ${id}`);
 for (const d of devices) for (const key of ['mem','bw','tf','eta','etaC','pf']) assert.ok(Number.isFinite(d[key]) && d[key] > 0, `${d.id}: ${key}`);
@@ -16,6 +16,11 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
  vm.runInNewContext(script.replace('  load();', '  DEVICES = globalThis.devices; globalThis.hardwareTest = { state, MODELS, QUANTS, sysPrice, evaluate, calc };'), sandbox);
  const { state, MODELS, QUANTS, sysPrice, evaluate, calc } = sandbox.hardwareTest;
  state.base = true; state.baseCost = 1300;
+ // GB10-Geräte (DGX Spark, Surface): gemeinsamer Speicher, kein PC-Basispreis, gpt-oss-120b passt nur mit 128 GB
+ { const big = devices.find(d => d.id === 'dgx-spark-128'), small = devices.find(d => d.id === 'dgx-spark-64'), surf = devices.find(d => d.id === 'surface-rtx-spark');
+   const oss = MODELS.find(m => m.id === 'moe120'); state.quant = 'q4';
+   assert.equal(sysPrice(big), big.price); assert.equal(sysPrice(surf), surf.price);
+   assert.equal(calc(big, oss, 32768).fits, true); assert.equal(calc(surf, oss, 32768).fits, true); assert.equal(calc(small, oss, 32768).fits, false); }
  const laptop = devices.find(d => d.formFactor === 'laptop'), server = devices.find(d => d.formFactor === 'server'), sxm = devices.find(d => d.formFactor === 'sxm'), intel = devices.find(d => d.v === 'intel');
  for (const d of [laptop, server, sxm, intel]) assert.equal(sysPrice(d), null);
  state.prices[intel.id] = 1000; assert.equal(sysPrice(intel), 2300);

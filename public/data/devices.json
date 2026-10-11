@@ -569,6 +569,89 @@
       "q": "Ryzen AI Max+ 395 128GB"
     },
     {
+      "id": "dgx-spark-128",
+      "v": "nvidia",
+      "kind": "minipc",
+      "name": "DGX Spark · 128 GB",
+      "mem": 128,
+      "usable": 119,
+      "usableMax": 124,
+      "bw": 273,
+      "tf": 125,
+      "eta": 0.72,
+      "etaC": 0.3,
+      "pf": 1,
+      "price": 6300,
+      "est": true,
+      "src": [
+        "est"
+      ],
+      "q": "NVIDIA DGX Spark 128GB",
+      "specSources": [
+        "https://www.nvidia.com/en-us/products/workstations/dgx-spark/",
+        "https://hothardware.com/news/nvidia-dgx-spark-64gb-release"
+      ],
+      "specChecked": "2026-10-12",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true,
+      "imageSupported": true
+    },
+    {
+      "id": "dgx-spark-64",
+      "v": "nvidia",
+      "kind": "minipc",
+      "name": "DGX Spark · 64 GB",
+      "mem": 64,
+      "usable": 56,
+      "usableMax": 56,
+      "bw": 273,
+      "tf": 125,
+      "eta": 0.72,
+      "etaC": 0.3,
+      "pf": 1,
+      "price": 5000,
+      "est": true,
+      "src": [
+        "est"
+      ],
+      "q": "NVIDIA DGX Spark 64GB",
+      "specSources": [
+        "https://hothardware.com/news/nvidia-dgx-spark-64gb-release",
+        "https://www.guru3d.com/story/idia-launches-64gb-dgx-spark-desktop-ai-system-for/"
+      ],
+      "specChecked": "2026-10-12",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true,
+      "imageSupported": true
+    },
+    {
+      "id": "surface-rtx-spark",
+      "v": "nvidia",
+      "kind": "minipc",
+      "name": "Microsoft Surface RTX Spark Dev Box · 128 GB",
+      "mem": 128,
+      "usable": 112,
+      "usableMax": 112,
+      "bw": 273,
+      "tf": 125,
+      "eta": 0.72,
+      "etaC": 0.3,
+      "pf": 1,
+      "price": 6000,
+      "est": true,
+      "src": [
+        "est"
+      ],
+      "q": "Microsoft Surface RTX Spark Dev Box",
+      "specSources": [
+        "https://tomshardware.com/desktops/mini-pcs/microsoft-debuts-surface-rtx-spark-dev-box-nvidia-powered-mini-pc-helps-devs-get-ready-for-an-agentic-windows"
+      ],
+      "specChecked": "2026-10-12",
+      "computeBasis": "fp16-dense-derived",
+      "performanceEstimated": true,
+      "imageSupported": true
+    },
+    {
       "id": "m1pro",
       "v": "apple",
       "kind": "mbp",
