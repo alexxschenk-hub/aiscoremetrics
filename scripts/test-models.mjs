@@ -15,7 +15,23 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
   const { MODELS, QUANTS, state, qm, kvCache, calc, memInfo, shownModels, mEx } = sandbox.modelTest;
   const gemma = MODELS.filter(m => m.id.startsWith('gemma4_'));
   assert.equal(gemma.length, 5);
-  assert.equal(MODELS.length, 17);
+  assert.equal(MODELS.length, 29);
+  // Plausibilität aller Modelle: Pflichtfelder, gültige Einsatzzwecke, MoE-Logik
+  const USE_IDS = ['coding', 'chat', 'large'];
+  for (const m of MODELS) {
+    for (const k of ['tp', 'ap', 'gb', 'agb']) assert.ok(Number.isFinite(m[k]) && m[k] > 0, `${m.id}.${k}`);
+    assert.ok(m.cache || (Number.isFinite(m.kv) && m.kv > 0), `${m.id}.kv`);
+    assert.ok(m.ap <= m.tp && m.agb <= m.gb, `${m.id}: aktiv <= gesamt`);
+    assert.ok(m.use.length && m.use.every(u => USE_IDS.includes(u)), `${m.id}.use`);
+    if (!m.dense) assert.ok(m.eff === 0.55, `${m.id}: MoE braucht eff`);
+  }
+  // Neue Modelle: Q4_K_M-Größe aus den GGUF-Dateien, Speicherbedarf = gesamte Parameter
+  const q4 = { ministral3: 2.15, l31_8: 4.9, q38_27: 16.5, msmall4: 73.8, glm53flash: 199.7, llama4mav: 242.8, q35_397: 244.1, nemo3ultra: 359.2, mlarge3: 407, dsv41flash: 444.7, dsv4pro: 850, kimik3: 1509 };
+  state.quant = 'q4';
+  for (const [id, gb] of Object.entries(q4)) close(qm(MODELS.find(m => m.id === id)).gb, gb);
+  // Llama 3.1 8B ist die LocalScore-Kalibrierung: RTX 4090 ≈ 123 tok/s Generierung, ≈ 10.313 tok/s Prompt
+  { const r = calc({ kind: 'gpu', v: 'nvidia', mem: 24, eta: .6, bw: 1008, etaC: .5, tf: 330, pf: 1 }, MODELS.find(m => m.id === 'l31_8'), 4096);
+    assert.ok(Math.abs(r.tg - 123) < 2, `Llama 3.1 8B tg ${r.tg}`); assert.ok(Math.abs(r.pp - 10313) < 1, `Llama 3.1 8B pp ${r.pp}`); }
   assert.equal(new Set(MODELS.map(m => m.id)).size, MODELS.length);
   for (const use of ['coding', 'chat', 'all']) {
     state.use = use;
@@ -47,6 +63,6 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
   close(kvCache(old, 32768), .098 * 32);
   state.quant = 'q4';
   close(qm(MODELS.find(m => m.id === 'gptoss20')).gb, 13);
-  assert.ok(html.includes('17 LLMs'));
+  assert.ok(html.includes(`${MODELS.length} LLMs`));
 }
 console.log('Gemma models, filters, quantization, KV cache and fit boundaries passed for DE/EN.');

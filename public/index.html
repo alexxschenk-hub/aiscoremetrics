@@ -22,7 +22,7 @@
 <meta property="og:url" content="https://aiscoremetrics.com/">
 <meta property="og:site_name" content="AI Score Metrics">
 <meta property="og:title" content="AI Score Metrics – Welche GPU oder welcher Mac für lokale LLMs?">
-<meta property="og:description" content="121 Geräte, 17 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
+<meta property="og:description" content="121 Geräte, 29 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
 <meta property="og:image" content="https://aiscoremetrics.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -31,7 +31,7 @@
 <meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AI Score Metrics – Welche GPU oder welcher Mac für lokale LLMs?">
-<meta name="twitter:description" content="121 Geräte, 17 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
+<meta name="twitter:description" content="121 Geräte, 29 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
 <meta name="twitter:image" content="https://aiscoremetrics.com/og-image.png">
 <script type="application/ld+json">
 {
@@ -640,18 +640,31 @@ Score = Perf / system price   (best device = 100)</div>
       cache: { localLayers: 25, globalLayers: 5, localHeads: 8, globalHeads: 2, localDim: 256, globalDim: 512, window: 1024 } },
     { id: "gemma4_31", name: "Gemma 4 31B", tp: 30.7, ap: 30.7, gb: 19.598489952, agb: 19.598489952, qatGb: 17.651001568, use: ["coding", "chat"], maxCtx: 262144, dense: true,
       cache: { localLayers: 50, globalLayers: 10, localHeads: 16, globalHeads: 4, localDim: 256, globalDim: 512, window: 1024 } },
+    // Weitere Modelle: Quellen, GGUF-Dateigrößen und KV-Cache-Herleitung in docs/model-research.md
+    { id: "ministral3",name: "Ministral 3 3B",      tp: 3.4, ap: 3.4,  dense: true, gb: 2.15, agb: 1.9,  kv: 0.109, use: ["chat"] },
+    { id: "l31_8",     name: "Llama 3.1 8B",        tp: 8,   ap: 8,    dense: true, gb: 4.9,  agb: 4.65, kv: 0.134, use: ["chat"] },
     { id: "q35_9",     name: "Qwen3.5 9B",          tp: 9,   ap: 9,    dense: true, gb: 6.0,  agb: 5.5,  kv: 0.04,  use: ["chat"] },
     { id: "gptoss20",  name: "gpt-oss-20b",         tp: 21,  ap: 3.6,  eff: 0.55, bpw: 4.25, gb: 13.0, agb: 2.0, kv: 0.04, use: ["coding", "chat"] },
     { id: "devstral24",name: "Devstral Small 24B",  tp: 24,  ap: 23.6, dense: true, gb: 14.3, agb: 14.3, kv: 0.16,  use: ["coding"] },
+    { id: "q38_27",    name: "Qwen3.8 27B",         tp: 27.8,ap: 27.8, dense: true, gb: 16.5, agb: 15.7, kv: 0.067, use: ["coding", "chat"] },
     { id: "qwen36_27", name: "Qwen3.6 27B",         tp: 27,  ap: 27,   dense: true, gb: 17.0, agb: 16.4, kv: 0.06,  use: ["coding", "chat"] },
     { id: "moe30",     name: "Qwen3-Coder 30B-A3B", tp: 30.5,ap: 3.3,  eff: 0.55, gb: 18.6, agb: 2.0,  kv: 0.098, use: ["coding"] },
     { id: "qwen36_35", name: "Qwen3.6 35B-A3B",     tp: 35,  ap: 3,    eff: 0.55, gb: 21.5, agb: 1.9,  kv: 0.05,  use: ["coding", "chat"] },
     { id: "d70",       name: "Llama 3.3 70B",       tp: 70.6,ap: 70.6, dense: true, gb: 42.5, agb: 42.5, kv: 0.31,  use: ["chat", "large"] },
     { id: "moe120",    name: "gpt-oss-120b",        tp: 117, ap: 5.1,  eff: 0.55, bpw: 4.25, gb: 63.0, agb: 2.9, kv: 0.07, use: ["coding", "large"] },
     { id: "glm45air",  name: "GLM-4.5-Air",         tp: 106, ap: 12,   eff: 0.55, gb: 64.0, agb: 7.3,  kv: 0.19,  use: ["coding", "large"] },
+    { id: "msmall4",   name: "Mistral Small 4 119B",tp: 119, ap: 6.5,  eff: 0.55, gb: 73.8, agb: 4.0,  kv: 0.024, use: ["coding", "chat", "large"] },
     { id: "q35_122",   name: "Qwen3.5 122B-A10B",   tp: 122, ap: 10,   eff: 0.55, gb: 74.0, agb: 6.1,  kv: 0.08,  use: ["chat", "large"] },
     { id: "moe235",    name: "Qwen3 235B-A22B",     tp: 235, ap: 22,   eff: 0.55, gb: 142,  agb: 13.4, kv: 0.19,  use: ["large"] },
-    { id: "dsv3",      name: "DeepSeek V3.1",       tp: 671, ap: 37,   eff: 0.55, gb: 404,  agb: 22.4, kv: 0.07,  use: ["large"] }
+    { id: "glm53flash",name: "GLM-5.3-Flash",       tp: 320, ap: 18,   eff: 0.55, gb: 199.7,agb: 11.2, kv: 0.012, use: ["coding", "large"] },
+    { id: "llama4mav", name: "Llama 4 Maverick",    tp: 400, ap: 17,   eff: 0.55, gb: 242.8,agb: 10.3, kv: 0.201, use: ["chat", "large"] },
+    { id: "q35_397",   name: "Qwen3.5 397B-A17B",   tp: 397, ap: 17,   eff: 0.55, gb: 244.1,agb: 10.5, kv: 0.031, use: ["chat", "large"] },
+    { id: "nemo3ultra",name: "Nemotron 3 Ultra",    tp: 550, ap: 55,   eff: 0.55, gb: 359.2,agb: 35.9, kv: 0.013, use: ["chat", "large"] },
+    { id: "dsv3",      name: "DeepSeek V3.1",       tp: 671, ap: 37,   eff: 0.55, gb: 404,  agb: 22.4, kv: 0.07,  use: ["large"] },
+    { id: "mlarge3",   name: "Mistral Large 3",     tp: 675, ap: 41,   eff: 0.55, gb: 407,  agb: 24.7, kv: 0.072, use: ["chat", "large"] },
+    { id: "dsv41flash",name: "DeepSeek V4.1 Flash", tp: 552, ap: 16,   eff: 0.55, gb: 444.7,agb: 9.7,  kv: 0.0009,use: ["coding", "large"] },
+    { id: "dsv4pro",   name: "DeepSeek V4 Pro",     tp: 1600,ap: 49,   eff: 0.55, bpw: 4.25, gb: 850, agb: 26.0, kv: 0.008, use: ["large"] },
+    { id: "kimik3",    name: "Kimi K3",             tp: 2800,ap: 104,  eff: 0.55, bpw: 4.31, gb: 1509, agb: 56.0, kv: 0.028, use: ["large"] }
   ];
   // Einsatzzweck filtert die Modellauswahl; alpha gewichtet Generierung gegen Prompt-Verarbeitung
   const USES = [
@@ -789,7 +802,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
     <section>
       <h2>Annahmen</h2>
       <ul>
-        <li>Modellwerte (Parameter, aktive Parameter, KV-Cache je Token) aus den Modellkarten. Bei Qwen3.5/3.6 sind KV-Cache und Größen Näherungen. Gemma 4: FP16-KV-Cache aus den offiziellen Attention-Konfigurationen, mit begrenztem Sliding Window und gemeinsam genutzten Layern; Backend-Puffer können zusätzlichen Speicher benötigen.</li>
+        <li>Modellwerte (Parameter, aktive Parameter, KV-Cache je Token) aus den Modellkarten. Bei Qwen3.5/3.6 sind KV-Cache und Größen Näherungen. Größen der neueren Modelle (u. a. Qwen3.8, Mistral 3/4, Llama 4, DeepSeek V4/V4.1, GLM-5.3, Kimi K3, Nemotron 3) = tatsächliche Q4_K_M-GGUF-Dateien; wo es kein Q4_K_M gibt (GLM-5.3-Flash, DeepSeek V4 Pro, Kimi K3), die gleich große Q4_K_XL-Datei. Bei MoE-Modellen zählen alle Parameter für den Speicher, die aktiven nur für die Geschwindigkeit. Hybride Modelle (lineare Attention, Mamba, komprimierte Attention) haben nur in den Attention-Layern einen mit dem Kontext wachsenden KV-Cache; ihr fester Zustandsspeicher steckt im Overhead. Gemma 4: FP16-KV-Cache aus den offiziellen Attention-Konfigurationen, mit begrenztem Sliding Window und gemeinsam genutzten Layern; Backend-Puffer können zusätzlichen Speicher benötigen.</li>
         <li>Gemma 4 umfasst E2B, E4B, 12B, 26B-A4B und 31B. E2B/E4B haben 5,1/8 Mrd. Gesamtparameter, aber 2,3/4,5 Mrd. effektive Parameter; 26B-A4B hat 25,2 Mrd. gesamt und 3,8 Mrd. aktiv. Die Geschwindigkeiten sind Schätzungen für Textgenerierung ohne MTP. Base und Instruction-Tuned teilen sich einen Hardware-Eintrag. Gewichte: veröffentlichte Q4_K_M-GGUF-Dateigrößen, Q4_0: offizielle Google-QAT-Dateien. Andere Präzisionen und aktive Lesemengen werden skaliert geschätzt. Bild-/Audio-Zusatzgewichte, Mobile-Spezialformate und MTP sind nicht Teil dieser Berechnung. <a href="https://ai.google.dev/gemma/docs/core/model_card_4" target="_blank" rel="noopener">Google-Modellkarte</a> · <a href="https://huggingface.co/collections/google/gemma-4-qat-q4-0" target="_blank" rel="noopener">QAT-Modelle</a></li>
         <li>Quantisierung wählbar von Q2_K (≈ 2,9 Bit pro Gewicht) bis FP16 (16 Bit). Standard ist Q4_K_M (≈ 4,85 Bit), bei der 120B-MoE-Klasse das native MXFP4. Größe und Lesemenge pro Token skalieren mit den Bits, der KV-Cache bleibt in FP16.</li>
         <li>Nutzbarer Speicher: GPU = VRAM − 0,8 GB. Mac: macOS-Standardlimit 67 % (≤ 36 GB) bzw. 75 % des Arbeitsspeichers, höchstens aber Arbeitsspeicher minus 6 GB für macOS und Hintergrundprogramme. Mit angehobenem Limit alles außer diesen 6 GB. Ryzen AI Max: 96 GB, angehoben 110 GB, Linux-Reserve 4 GB.</li>
@@ -910,7 +923,7 @@ Score     = Perf / system price   (best device = 100)</div>
     <section>
       <h2>Assumptions</h2>
       <ul>
-        <li>Model figures (parameters, active parameters, KV cache per token) from the model cards. For Qwen3.5/3.6, KV cache and sizes are approximations. Gemma 4: FP16 KV cache derived from official attention configurations, with bounded sliding windows and shared layers; backend buffers can require additional memory.</li>
+        <li>Model figures (parameters, active parameters, KV cache per token) from the model cards. For Qwen3.5/3.6, KV cache and sizes are approximations. Sizes for the newer models (including Qwen3.8, Mistral 3/4, Llama 4, DeepSeek V4/V4.1, GLM-5.3, Kimi K3, Nemotron 3) are the actual Q4_K_M GGUF files; where no Q4_K_M exists (GLM-5.3-Flash, DeepSeek V4 Pro, Kimi K3), the equally sized Q4_K_XL file. For MoE models all parameters count towards memory, the active ones only towards speed. Hybrid models (linear attention, Mamba, compressed attention) only grow a context-dependent KV cache in their attention layers; their fixed state memory is part of the overhead. Gemma 4: FP16 KV cache derived from official attention configurations, with bounded sliding windows and shared layers; backend buffers can require additional memory.</li>
         <li>Gemma 4 includes E2B, E4B, 12B, 26B-A4B and 31B. E2B/E4B have 5.1/8 billion total parameters but 2.3/4.5 billion effective parameters; 26B-A4B has 25.2 billion total and 3.8 billion active. Speeds are estimates for text generation without MTP. Base and instruction-tuned weights share one hardware entry. Weights: published Q4_K_M GGUF file sizes; Q4_0: official Google QAT files. Other precisions and active bytes read are scaled estimates. Image/audio add-on weights, mobile-specific formats and MTP are outside this calculation. <a href="https://ai.google.dev/gemma/docs/core/model_card_4" target="_blank" rel="noopener">Google model card</a> · <a href="https://huggingface.co/collections/google/gemma-4-qat-q4-0" target="_blank" rel="noopener">QAT models</a></li>
         <li>Quantization selectable from Q2_K (≈ 2.9 bits per weight) to FP16 (16 bits). Default is Q4_K_M (≈ 4.85 bits), native MXFP4 for the 120B MoE class. Size and bytes read per token scale with the bits; the KV cache stays FP16.</li>
         <li>Usable memory: GPU = VRAM − 0.8 GB. Mac: macOS default limit of 67% (≤ 36 GB) or 75% of RAM, but at most RAM minus 6 GB for macOS and background apps. With the raised limit, everything except those 6 GB. Ryzen AI Max: 96 GB, 110 GB raised, 4 GB Linux reserve.</li>
