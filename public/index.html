@@ -187,6 +187,8 @@ a.ext:hover { text-decoration: underline; }
 .detail td.v.win { font-weight: 600; color: var(--ink); }
 .detail td.v.win::after { content: " ✓"; color: var(--good); }
 .detail td.d { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.detail td.d small { display: block; font-size: 11.5px; color: var(--good); white-space: normal; max-width: 220px; }
+.detail th.dhead { vertical-align: bottom; }
 .detail tr.grp td { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--accent); padding-top: 14px; border-bottom: 1px solid var(--line); }
 .memhead, .memrow { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr) minmax(190px, 250px); gap: 12px; align-items: center; }
 .memchart { display: grid; gap: 7px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; }
@@ -211,6 +213,10 @@ a.ext:hover { text-decoration: underline; }
 .memval { font-size: 12.5px; font-variant-numeric: tabular-nums; line-height: 1.35; }
 .memval .st { font-weight: 600; }
 .memval .st.ok { color: var(--good); } .memval .st.warn { color: var(--warn); } .memval .st.bad { color: var(--bad); }
+.use-model { margin-top: -4px; border-radius: 4px; }
+.use-model b { color: var(--ink); font-weight: 600; }
+@media (prefers-reduced-motion: no-preference) { .use-model.flash { animation: useflash 1.2s ease-out; } }
+@keyframes useflash { from { background: var(--accent-soft); } to { background: transparent; } }
 .memval small { display: block; color: var(--muted); font-size: 11.5px; }
 .memlegend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
 .memlegend span { display: inline-flex; align-items: center; gap: 6px; }
@@ -291,6 +297,7 @@ footer { font-size: 12.5px; color: var(--muted); }
         <select id="quant"></select>
       </div>
     </div>
+    <p class="hint use-model" id="use-model" aria-live="polite"></p>
     <p class="hint" id="model-note" hidden></p>
     <div class="row">
       <div class="field" id="vendor-field">
@@ -684,6 +691,7 @@ Score = Perf / system price   (best device = 100)</div>
   const N = "nvidia", A = "apple", AM = "amd", IN = "intel";
   const VENDOR = { nvidia: "NVIDIA", amd: "AMD", intel: "Intel", apple: "Apple" };
   // tf: NVIDIA = FP16 tensor dense (Blackwell AI TOPS/8, Ada /4), Apple = GPU FP32. pf = prefill factor (M5 Neural Accelerators).
+  const DEFAULT_DEVICE = "4090";   // vorausgewählt in der Ansicht "Ein Gerät" (Kalibrierungs-Referenz)
   let DEVICES = [];   // wird aus data/devices.json + data/prices.json geladen
   let UPDATED = null;
 
@@ -738,6 +746,8 @@ Score = Perf / system price   (best device = 100)</div>
       dRows: { sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
       rankOf: (a, b) => `${a} von ${b}`,
       faster: (x) => `${x}× besser`,
+      useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} Modelle zur Auswahl. Gerechnet wird mit <b>${m}</b> (${ex}): braucht ≈ <b>${need} GB</b> Speicher bei ${c} Kontext und ${q} und passt auf <b>${k} von ${total}</b> Geräten. Ein anderer Einsatzzweck oder ein anderes Modell ändert Speicherbedarf und Ranking.`,
+      deltaHead: "Unterschied", deltaFor: (x) => `zugunsten ${x}`,
       dHint: (m, p) => `Geschätzte Praxiswerte und Belegung für ${m} mit ${p} Prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Platz und Score beziehen sich auf alle Geräte für dieses Modell.`,
       memTitle: "Speicherauslastung",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, mit ${c} Kontext. 100 % ist der nutzbare Grafikspeicher, bei Macs und Mini-PCs der für die GPU freigegebene Teil des Arbeitsspeichers. Was darüber hinausgeht, lagern PCs mit Grafikkarte in den normalen Arbeitsspeicher aus.`,
@@ -857,6 +867,8 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       dRows: { sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
       rankOf: (a, b) => `${a} of ${b}`,
       faster: (x) => `${x}× better`,
+      useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} models to choose from. Calculated with <b>${m}</b> (${ex}): needs ≈ <b>${need} GB</b> of memory at ${c} context and ${q}, and fits on <b>${k} of ${total}</b> devices. A different use case or model changes the memory need and the ranking.`,
+      deltaHead: "Difference", deltaFor: (x) => `in favour of ${x}`,
       dHint: (m, p) => `Estimated results and usage for ${m} with a ${p} prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Score and rank compare against all devices for this model.`,
       memTitle: "Memory usage",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, with ${c} context. 100% is the usable graphics memory; on Macs and mini PCs, the share of RAM released to the GPU. Anything beyond that, PCs with a graphics card offload into regular system RAM.`,
@@ -944,7 +956,7 @@ Score     = Perf / system price   (best device = 100)</div>
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   // Sprache kommt aus der URL: / = Deutsch, /en/ = Englisch (eigene Seiten für Suchmaschinen)
   const navLang = document.documentElement.lang === "en" ? "en" : "de";
-  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, quant: "q4", view: "all", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, use: "coding", pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
+  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, quant: "q4", view: "one", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, use: "coding", pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
   delete state.sort;
   state.lang = navLang;
   delete state.sortKey; delete state.sortDir; delete state.profile; delete state.model;
@@ -1160,6 +1172,15 @@ Score     = Perf / system price   (best device = 100)</div>
     const visMx = picked.length ? vis : sortList(vis, "mx");
     const usedModels = shownModels();
 
+    // Welches Modell der Einsatzzweck ergibt und was es an Speicher braucht
+    { const qn = (QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name;
+      const mq = qm(pxM), need = mq.gb + kvCache(mq, ctx) + 1.0;
+      const k = DEVICES.filter((d) => calc(d, pxM, ctx).fits).length;
+      const el = $("#use-model"), key = `${state.use}|${pxM.id}`;
+      el.innerHTML = t.useModel(esc(t.uses[state.use]), usedModels.length, esc(mName(pxM)), esc(mEx(pxM)), fmt(need, 1), ctxLabel(ctx), qn, k, DEVICES.length);
+      if (el.dataset.key && el.dataset.key !== key) { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }
+      el.dataset.key = key; }
+
     const compareReady = state.view === "cmp" && vis.length === 2;
     $("#share-tools").hidden = !compareReady;
     $("#share-compare").hidden = !compareReady;
@@ -1233,7 +1254,7 @@ Score     = Perf / system price   (best device = 100)</div>
         ["memuse", () => null, null, 0, memTxt]
       ];
       const cols = vis;
-      const head = `<tr><th></th>${cols.map((r) => `<th><span class="devrow"><span class="ico ${r.d.v}">${ICONS[r.d.kind]}</span><span>${esc(devLabel(r.d))}<br><span class="tag" style="margin:0">${VENDOR[r.d.v]} · ${devKind(r.d)}</span><br><small class="evidence-badge" title="${esc(t.unmeasured)}">${t.estimate} · ${backendOf(r.d)}<br>${t.assumed}</small></span></span></th>`).join("")}${cols.length === 2 ? "<th></th>" : ""}</tr>`;
+      const head = `<tr><th></th>${cols.map((r) => `<th><span class="devrow"><span class="ico ${r.d.v}">${ICONS[r.d.kind]}</span><span>${esc(devLabel(r.d))}<br><span class="tag" style="margin:0">${VENDOR[r.d.v]} · ${devKind(r.d)}</span><br><small class="evidence-badge" title="${esc(t.unmeasured)}">${t.estimate} · ${backendOf(r.d)}<br>${t.assumed}</small></span></span></th>`).join("")}${cols.length === 2 ? `<th class="dhead">${t.deltaHead}</th>` : ""}</tr>`;
       const body = ROWS.map((row) => {
         if (row[0] === "grp") return `<tr class="grp"><td colspan="${cols.length + (cols.length === 2 ? 2 : 1)}">${t.dGroups[row[1]]}</td></tr>`;
         const [key, val, show, dir, raw] = row;
@@ -1250,7 +1271,8 @@ Score     = Perf / system price   (best device = 100)</div>
           const txt = raw ? raw(r) : vals[i] == null ? "—" : show(vals[i]);
           return `<td class="v ${i === win ? "win" : ""}">${txt}</td>`;
         }).join("");
-        return `<tr><td class="k">${t.dRows[key]}</td>${cells}${cols.length === 2 ? `<td class="d">${delta}</td>` : ""}</tr>`;
+        const deltaCell = delta ? `${delta}<small>${esc(t.deltaFor(devLabel(cols[win].d)))}</small>` : "";
+        return `<tr><td class="k">${t.dRows[key]}</td>${cells}${cols.length === 2 ? `<td class="d">${deltaCell}</td>` : ""}</tr>`;
       }).join("");
       $("#detail").innerHTML = `<table><thead>${head}</thead><tbody>${body}</tbody></table><p class="hint" style="padding:0 14px 12px">${esc(t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>`;
     }
@@ -1408,6 +1430,8 @@ Score     = Perf / system price   (best device = 100)</div>
         return Object.assign({}, d, { price: p.price, est: false, src: p.metric === "median3m" ? ["med"] : p.metric === "manual" ? ["man", `${p.note ? p.note + " " : ""}${ddmm(p.asOf)}`] : ["gp", ddmm(p.asOf)] });
       });
       applySharedScenario(location.hash);
+      // Ansicht "Ein Gerät" ohne Auswahl: mit einem Referenzgerät starten statt leer
+      if (state.view === "one" && !state.pickA.id) { const d = DEVICES.find((x) => x.id === DEFAULT_DEVICE); if (d) state.pickA = { v: d.v, id: d.id }; }
       renderStatic(); render();
 
     } catch (e) {
