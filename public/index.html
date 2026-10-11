@@ -22,7 +22,7 @@
 <meta property="og:url" content="https://aiscoremetrics.com/">
 <meta property="og:site_name" content="AI Score Metrics">
 <meta property="og:title" content="AI Score Metrics – Welche GPU oder welcher Mac für lokale LLMs?">
-<meta property="og:description" content="60 Geräte, 14 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
+<meta property="og:description" content="60 Geräte, 17 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
 <meta property="og:image" content="https://aiscoremetrics.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -31,7 +31,7 @@
 <meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AI Score Metrics – Welche GPU oder welcher Mac für lokale LLMs?">
-<meta name="twitter:description" content="60 Geräte, 14 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
+<meta name="twitter:description" content="60 Geräte, 17 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
 <meta name="twitter:image" content="https://aiscoremetrics.com/og-image.png">
 <script type="application/ld+json">
 {
@@ -279,7 +279,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       </div>
       <div class="field">
         <label class="lab" for="llm" data-i="pickLlm"></label>
-        <select id="llm"></select>
+        <select id="llm" aria-describedby="model-note"></select>
       </div>
       <div class="field">
         <label class="lab" for="ctx"><span data-i="ctx"></span>: <span class="mono" id="ctx-val">32k</span> Tokens</label>
@@ -290,6 +290,7 @@ footer { font-size: 12.5px; color: var(--muted); }
         <select id="quant"></select>
       </div>
     </div>
+    <p class="hint" id="model-note" hidden></p>
     <div class="row">
       <div class="field" id="vendor-field">
         <span class="lab" id="lab-vendor" data-i="vendor"></span>
@@ -545,16 +546,25 @@ Score = Perf / system price   (best device = 100)</div>
 
 <script>
 (function () {
+  // Gemma-4-Quellen, Artefaktgrößen und Herleitung: docs/gemma4-research.md
   // Modelle: tp/ap = Parameter gesamt/aktiv (Mrd.), gb/agb = Größe gesamt/aktiv bei Q4_K_M, kv = KV-Cache GB je 1.000 Tokens (FP16)
   const MODELS = [
+    { id: "gemma4_e2", name: "Gemma 4 E2B", tp: 5.1, ap: 2.3, gb: 3.462680032, agb: 1.561600799, qatGb: 3.349516256, use: ["coding", "chat"], maxCtx: 131072, dense: true, effective: true,
+      cache: { localLayers: 12, globalLayers: 3, localHeads: 1, globalHeads: 1, localDim: 256, globalDim: 512, window: 512 } },
+    { id: "gemma4_e4", name: "Gemma 4 E4B", tp: 8, ap: 4.5, gb: 5.405170144, agb: 3.040408206, qatGb: 5.15494128, use: ["coding", "chat"], maxCtx: 131072, dense: true, effective: true,
+      cache: { localLayers: 20, globalLayers: 4, localHeads: 2, globalHeads: 2, localDim: 256, globalDim: 512, window: 512 } },
+    { id: "gemma4_12", name: "Gemma 4 12B", tp: 11.95, ap: 11.95, gb: 7.38138368, agb: 7.38138368, qatGb: 6.975879296, use: ["coding", "chat"], maxCtx: 262144, dense: true,
+      cache: { localLayers: 40, globalLayers: 8, localHeads: 8, globalHeads: 1, localDim: 256, globalDim: 512, window: 1024 } },
+    { id: "gemma4_26", name: "Gemma 4 26B-A4B", tp: 25.2, ap: 3.8, gb: 17.035039872, agb: 2.568775854, qatGb: 14.439363584, use: ["coding", "chat"], maxCtx: 262144, eff: 0.55,
+      cache: { localLayers: 25, globalLayers: 5, localHeads: 8, globalHeads: 2, localDim: 256, globalDim: 512, window: 1024 } },
+    { id: "gemma4_31", name: "Gemma 4 31B", tp: 30.7, ap: 30.7, gb: 19.598489952, agb: 19.598489952, qatGb: 17.651001568, use: ["coding", "chat"], maxCtx: 262144, dense: true,
+      cache: { localLayers: 50, globalLayers: 10, localHeads: 16, globalHeads: 4, localDim: 256, globalDim: 512, window: 1024 } },
     { id: "q35_9",     name: "Qwen3.5 9B",          tp: 9,   ap: 9,    dense: true, gb: 6.0,  agb: 5.5,  kv: 0.04,  use: ["chat"] },
-    { id: "gemma4_12", name: "Gemma 4 12B",         tp: 12,  ap: 12,   dense: true, gb: 7.6,  agb: 7.3,  kv: 0.08,  use: ["chat"] },
     { id: "gptoss20",  name: "gpt-oss-20b",         tp: 21,  ap: 3.6,  eff: 0.55, bpw: 4.25, gb: 13.0, agb: 2.0, kv: 0.04, use: ["coding", "chat"] },
     { id: "devstral24",name: "Devstral Small 24B",  tp: 24,  ap: 23.6, dense: true, gb: 14.3, agb: 14.3, kv: 0.16,  use: ["coding"] },
     { id: "qwen36_27", name: "Qwen3.6 27B",         tp: 27,  ap: 27,   dense: true, gb: 17.0, agb: 16.4, kv: 0.06,  use: ["coding", "chat"] },
     { id: "moe30",     name: "Qwen3-Coder 30B-A3B", tp: 30.5,ap: 3.3,  eff: 0.55, gb: 18.6, agb: 2.0,  kv: 0.098, use: ["coding"] },
     { id: "qwen36_35", name: "Qwen3.6 35B-A3B",     tp: 35,  ap: 3,    eff: 0.55, gb: 21.5, agb: 1.9,  kv: 0.05,  use: ["coding", "chat"] },
-    { id: "gemma4_31", name: "Gemma 4 31B",         tp: 31,  ap: 31,   dense: true, gb: 20.0, agb: 18.8, kv: 0.2,   use: ["chat"] },
     { id: "d70",       name: "Llama 3.3 70B",       tp: 70.6,ap: 70.6, dense: true, gb: 42.5, agb: 42.5, kv: 0.31,  use: ["chat", "large"] },
     { id: "moe120",    name: "gpt-oss-120b",        tp: 117, ap: 5.1,  eff: 0.55, bpw: 4.25, gb: 63.0, agb: 2.9, kv: 0.07, use: ["coding", "large"] },
     { id: "glm45air",  name: "GLM-4.5-Air",         tp: 106, ap: 12,   eff: 0.55, gb: 64.0, agb: 7.3,  kv: 0.19,  use: ["coding", "large"] },
@@ -575,6 +585,7 @@ Score = Perf / system price   (best device = 100)</div>
     { id: "q2", name: "Q2_K", bpw: 2.9, de: "deutlich schlechtere Qualität", en: "noticeably lower quality" },
     { id: "q3", name: "Q3_K_M", bpw: 3.9, de: "spürbar schlechter", en: "somewhat lower quality" },
     { id: "q4", name: "Q4_K_M", bpw: 4.85, de: "Standard, guter Kompromiss", en: "default, good trade-off" },
+    { id: "q4_0", name: "Q4_0", bpw: 4.5, de: "Gemma 4: offizielles QAT", en: "Gemma 4: official QAT" },
     { id: "q5", name: "Q5_K_M", bpw: 5.7, de: "kaum Verlust", en: "minimal loss" },
     { id: "q6", name: "Q6_K", bpw: 6.6, de: "nahezu verlustfrei", en: "near lossless" },
     { id: "q8", name: "Q8_0", bpw: 8.5, de: "praktisch verlustfrei", en: "practically lossless" },
@@ -583,7 +594,7 @@ Score = Perf / system price   (best device = 100)</div>
   const QBASE = 4.85;   // Basis der Modellgrößen in MODELS (Q4_K_M), gpt-oss-120b: natives MXFP4
   function qm(m) {
     const q = QUANTS.find((x) => x.id === state.quant) || QUANTS[2];
-    const f = m.bpw && q.id === "q4" ? 1 : q.bpw / (m.bpw || QBASE);   // gpt-oss: bei Q4 das native MXFP4
+    const f = q.id === "q4_0" && m.qatGb ? m.qatGb / m.gb : m.bpw && q.id === "q4" ? 1 : q.bpw / (m.bpw || QBASE);   // gpt-oss: bei Q4 das native MXFP4
     return f === 1 ? m : Object.assign({}, m, { gb: m.gb * f, agb: m.agb * f });
   }
   const PROMPTS = [1024, 4096, 16384, 32768, 65536];
@@ -626,7 +637,7 @@ Score = Perf / system price   (best device = 100)</div>
       hintPrices: "Preise sind editierbar und bleiben in deinem Browser gespeichert. Orange markierte Preise sind Schätzungen. Preise gelten für Deutschland in Euro.",
       showPrices: "Preise und Preis-Leistung einblenden (Deutschland, EUR)",
       uses: { all: "Alle Modelle", coding: "Agentic Coding", chat: "Chat & Assistenz", large: "Große Modelle" }, useLab: "Einsatzzweck", active: "aktiv",
-      dense: "dicht",
+      dense: "dicht", effective: "effektiv",
       th: { rank: "#", name: "Gerät", price: "Systempreis €", fits: "Modelle passen", perf: "Leistung", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini-PC" },
       src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", man: "manuell:", own: "eigener Preis" },
@@ -683,7 +694,8 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
     <section>
       <h2>Annahmen</h2>
       <ul>
-        <li>Modellwerte (Parameter, aktive Parameter, KV-Cache je Token) aus den Modellkarten. Bei Qwen3.5/3.6 und Gemma 4 sind KV-Cache und Größen Näherungen, weil hybride bzw. Sliding-Window-Attention den Cache stark verkleinert.</li>
+        <li>Modellwerte (Parameter, aktive Parameter, KV-Cache je Token) aus den Modellkarten. Bei Qwen3.5/3.6 sind KV-Cache und Größen Näherungen. Gemma 4: FP16-KV-Cache aus den offiziellen Attention-Konfigurationen, mit begrenztem Sliding Window und gemeinsam genutzten Layern; Backend-Puffer können zusätzlichen Speicher benötigen.</li>
+        <li>Gemma 4 umfasst E2B, E4B, 12B, 26B-A4B und 31B. E2B/E4B haben 5,1/8 Mrd. Gesamtparameter, aber 2,3/4,5 Mrd. effektive Parameter; 26B-A4B hat 25,2 Mrd. gesamt und 3,8 Mrd. aktiv. Die Geschwindigkeiten sind Schätzungen für Textgenerierung ohne MTP. Base und Instruction-Tuned teilen sich einen Hardware-Eintrag. Gewichte: veröffentlichte Q4_K_M-GGUF-Dateigrößen, Q4_0: offizielle Google-QAT-Dateien. Andere Präzisionen und aktive Lesemengen werden skaliert geschätzt. Bild-/Audio-Zusatzgewichte, Mobile-Spezialformate und MTP sind nicht Teil dieser Berechnung. <a href="https://ai.google.dev/gemma/docs/core/model_card_4" target="_blank" rel="noopener">Google-Modellkarte</a> · <a href="https://huggingface.co/collections/google/gemma-4-qat-q4-0" target="_blank" rel="noopener">QAT-Modelle</a></li>
         <li>Quantisierung wählbar von Q2_K (≈ 2,9 Bit pro Gewicht) bis FP16 (16 Bit). Standard ist Q4_K_M (≈ 4,85 Bit), bei der 120B-MoE-Klasse das native MXFP4. Größe und Lesemenge pro Token skalieren mit den Bits, der KV-Cache bleibt in FP16.</li>
         <li>Nutzbarer Speicher: GPU = VRAM − 0,8 GB. Mac: macOS-Standardlimit 67 % (≤ 36 GB) bzw. 75 % des Arbeitsspeichers, höchstens aber Arbeitsspeicher minus 6 GB für macOS und Hintergrundprogramme. Mit angehobenem Limit alles außer diesen 6 GB. Ryzen AI Max: 96 GB, angehoben 110 GB, Linux-Reserve 4 GB.</li>
         <li>Bandbreiten-Effizienz η: NVIDIA 0,60, AMD-Grafikkarten 0,50 (ROCm/Vulkan), Ryzen AI Max 0,72, Apple Pro/Max 0,62, Apple Ultra 0,50.</li>
@@ -733,7 +745,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       hintPrices: "Prices are editable and stay saved in your browser. Prices marked in orange are estimates. Prices are for Germany in euros.",
       showPrices: "Show prices and value for money (Germany, EUR)",
       uses: { all: "All models", coding: "Agentic coding", chat: "Chat & assistant", large: "Large models" }, useLab: "Use case", active: "active",
-      dense: "dense",
+      dense: "dense", effective: "effective",
       th: { rank: "#", name: "Device", price: "System price €", fits: "Models that fit", perf: "Performance", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini PC" },
       src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", man: "manual:", own: "your price" },
@@ -790,7 +802,8 @@ Score     = Perf / system price   (best device = 100)</div>
     <section>
       <h2>Assumptions</h2>
       <ul>
-        <li>Model figures (parameters, active parameters, KV cache per token) from the model cards. For Qwen3.5/3.6 and Gemma 4, KV cache and sizes are approximations because hybrid or sliding-window attention shrinks the cache considerably.</li>
+        <li>Model figures (parameters, active parameters, KV cache per token) from the model cards. For Qwen3.5/3.6, KV cache and sizes are approximations. Gemma 4: FP16 KV cache derived from official attention configurations, with bounded sliding windows and shared layers; backend buffers can require additional memory.</li>
+        <li>Gemma 4 includes E2B, E4B, 12B, 26B-A4B and 31B. E2B/E4B have 5.1/8 billion total parameters but 2.3/4.5 billion effective parameters; 26B-A4B has 25.2 billion total and 3.8 billion active. Speeds are estimates for text generation without MTP. Base and instruction-tuned weights share one hardware entry. Weights: published Q4_K_M GGUF file sizes; Q4_0: official Google QAT files. Other precisions and active bytes read are scaled estimates. Image/audio add-on weights, mobile-specific formats and MTP are outside this calculation. <a href="https://ai.google.dev/gemma/docs/core/model_card_4" target="_blank" rel="noopener">Google model card</a> · <a href="https://huggingface.co/collections/google/gemma-4-qat-q4-0" target="_blank" rel="noopener">QAT models</a></li>
         <li>Quantization selectable from Q2_K (≈ 2.9 bits per weight) to FP16 (16 bits). Default is Q4_K_M (≈ 4.85 bits), native MXFP4 for the 120B MoE class. Size and bytes read per token scale with the bits; the KV cache stays FP16.</li>
         <li>Usable memory: GPU = VRAM − 0.8 GB. Mac: macOS default limit of 67% (≤ 36 GB) or 75% of RAM, but at most RAM minus 6 GB for macOS and background apps. With the raised limit, everything except those 6 GB. Ryzen AI Max: 96 GB, 110 GB raised, 4 GB Linux reserve.</li>
         <li>Bandwidth efficiency η: NVIDIA 0.60, AMD graphics cards 0.50 (ROCm/Vulkan), Ryzen AI Max 0.72, Apple Pro/Max 0.62, Apple Ultra 0.50.</li>
@@ -853,7 +866,7 @@ Score     = Perf / system price   (best device = 100)</div>
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const devLabel = (d) => /\bGB\b/.test(d.name) ? d.name : `${d.name} · ${d.mem} GB`;
   const mName = (m) => m.name;
-  const mEx = (m) => m.dense ? `${fmt(m.tp, 0)}B ${L().dense}` : `${fmt(m.tp, 0)}B MoE, ${fmt(m.ap, m.ap < 10 ? 1 : 0)}B ${L().active}`;
+  const mEx = (m) => m.effective ? `${fmt(m.tp, 1)}B · ${fmt(m.ap, 1)}B ${L().effective}` : m.dense ? `${fmt(m.tp, 0)}B ${L().dense}` : `${fmt(m.tp, 0)}B MoE, ${fmt(m.ap, m.ap < 10 ? 1 : 0)}B ${L().active}`;
   const useOf = () => USES.find((u) => u.id === state.use) || USES[0];
   const shownModels = () => state.use === "all" ? MODELS : MODELS.filter((m) => m.use.includes(state.use));
   const srcText = (d) => { const s = L().src[d.src[0]]; return d.src[1] ? `${s} ${d.src[1]}` : s; };
@@ -870,9 +883,16 @@ Score     = Perf / system price   (best device = 100)</div>
   }
   // Speicher-Aufschlüsselung für die Grafik
   const SYS_BW = 89.6 * 0.65;   // DDR5-5600 Dual-Channel, effektiv
+  // FP16 K und V separat; nur nicht geteilte Layer. Lokaler Cache endet am Sliding Window.
+  function kvCache(m, ctx) {
+    if (!m.cache) return m.kv * ctx / 1024;
+    const c = m.cache;
+    return 4 * (c.globalLayers * c.globalHeads * c.globalDim * ctx +
+      c.localLayers * c.localHeads * c.localDim * Math.min(ctx, c.window)) / 1e9;
+  }
   function memInfo(d, m, ctx) {
     m = qm(m);
-    const kv = m.kv * ctx / 1024, ov = 1.0, need = m.gb + kv + ov, cap = usable(d);
+    const kv = kvCache(m, ctx), ov = 1.0, need = m.gb + kv + ov, cap = usable(d);
     const unified = d.kind !== "gpu";
     const info = { kv, ov, w: m.gb, need, cap, unified, spill: Math.max(0, need - cap), state: "ok", tg: null };
     if (need <= cap) return info;
@@ -893,7 +913,7 @@ Score     = Perf / system price   (best device = 100)</div>
 
   function calc(d, m, ctx) {
     m = qm(m);
-    const kvGB = m.kv * ctx / 1024;
+    const kvGB = kvCache(m, ctx);
     const need = m.gb + kvGB + 1.0;
     const fits = need <= usable(d);
     const tg = (m.eff || 1) * d.eta * d.bw / (m.agb + kvGB / 2);
@@ -992,6 +1012,11 @@ Score     = Perf / system price   (best device = 100)</div>
     if (state.view === "cmp") $("#pick-b").innerHTML = picker("pickB", L().pickB);
     $("#llm").innerHTML = shownModels().map((m) => `<option value="${m.id}">${esc(mName(m))} · ${esc(mEx(m))} · ${fmt(qm(m).gb, 0)} GB</option>`).join("");
     $("#llm").value = state.pxModel;
+    const selectedModel = MODELS.find((m) => m.id === state.pxModel);
+    $("#model-note").hidden = !selectedModel?.cache;
+    if (selectedModel?.cache) $("#model-note").innerHTML = state.lang === "de"
+      ? `Gemma 4: ${ctxLabel(selectedModel.maxCtx)} Tokens maximal. Textgenerierung; Bild-/Audio-Zusatzgewichte und MTP-Draft-Modell sind nicht eingerechnet. Q4_0 nutzt die offizielle QAT-Dateigröße. <a href="https://ai.google.dev/gemma/docs/core" target="_blank" rel="noopener">Modellübersicht</a>`
+      : `Gemma 4: ${ctxLabel(selectedModel.maxCtx)} tokens maximum. Text generation; image/audio add-on weights and the MTP draft model are excluded. Q4_0 uses the official QAT file size. <a href="https://ai.google.dev/gemma/docs/core" target="_blank" rel="noopener">Model overview</a>`;
     $("#ctx").value = state.ctx; $("#ctx-val").textContent = ctxLabel(CTX[state.ctx]);
     $("#showprices").checked = state.showPrices; $("#base-field").hidden = $("#reset").hidden = $("#hint-prices").hidden = !state.showPrices;
     $("#base").checked = state.base; $("#basecost").value = state.baseCost; $("#sysram").value = state.sysRam; $("#wired").checked = state.wired;
@@ -1002,7 +1027,7 @@ Score     = Perf / system price   (best device = 100)</div>
     renderControls();
     const t = L();
     const { rows, ctx, w } = evaluate();
-    const pxM = MODELS.find((m) => m.id === state.pxModel) || MODELS[1];
+    const pxM = MODELS.find((m) => m.id === state.pxModel) || MODELS.find((m) => m.id === "moe30");
     const pxP = PROMPTS[state.pxPrompt] || 16384;
     const pxI = IMG.find((x) => x.id === state.pxImg) || IMG[0];
     rows.forEach((r) => {

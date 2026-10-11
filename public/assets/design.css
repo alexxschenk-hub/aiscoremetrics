@@ -1,6 +1,9 @@
 :root { color-scheme: light; --card-radius: 20px; --card-shadow: 0 6px 24px rgb(19 24 28 / 4%); }
 :root[data-theme="dark"] { color-scheme: dark; --card-shadow: 0 6px 24px rgb(0 0 0 / 16%); }
 .wrap { gap: 28px; padding-block-start: 36px; }
+.wrap > * { min-width: 0; }
+.field { max-width: 100%; }
+select { max-width: 100%; min-width: 0; }
 header { gap: 12px; padding-block: 4px 12px; }
 .header-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .controls, .tablebox, .detail, .memchart { border-radius: var(--card-radius); box-shadow: var(--card-shadow); }

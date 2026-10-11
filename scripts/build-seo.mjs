@@ -59,7 +59,7 @@ const META = {
     title: "Welche GPU für lokale LLMs? Hardware-Rechner für Tokens/s & VRAM | AI Score Metrics",
     desc: "Kostenloser Rechner: Passt dein LLM in den Speicher und wie schnell läuft es? NVIDIA- und AMD-Grafikkarten, Mac Studio, Mac mini und Ryzen AI Max im Vergleich – Tokens/s, VRAM, erster Token, Bildzeiten und Preis-Leistung.",
     ogTitle: "AI Score Metrics – Welche GPU oder welcher Mac für lokale LLMs?",
-    ogDesc: "60 Geräte, 14 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.",
+    ogDesc: "60 Geräte, 17 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.",
     ogAlt: "AI Score Metrics – Hardware-Vergleich für lokale LLMs",
     locale: "de_DE", altLocale: "en_US",
     app: "Rechner für lokale LLM-Hardware: NVIDIA- und AMD-Grafikkarten, Apple-Macs und Mini-PCs nach VRAM, Speicherbandbreite, Tokens pro Sekunde, Wartezeit und Preis-Leistung."
@@ -68,7 +68,7 @@ const META = {
     title: "Best GPU for Local LLMs? Tokens/s & VRAM Hardware Calculator | AI Score Metrics",
     desc: "Free calculator: does your LLM fit in memory and how fast will it run? Compare NVIDIA and AMD graphics cards, Mac Studio, Mac mini and Ryzen AI Max – tokens/s, VRAM, time to first token, image times and value for money.",
     ogTitle: "AI Score Metrics – Which GPU or Mac for local LLMs?",
-    ogDesc: "60 devices, 14 LLMs: tokens/s, VRAM needs, memory usage and value for money for local AI, side by side.",
+    ogDesc: "60 devices, 17 LLMs: tokens/s, VRAM needs, memory usage and value for money for local AI, side by side.",
     ogAlt: "AI Score Metrics – hardware comparison for local LLMs",
     locale: "en_US", altLocale: "de_DE",
     app: "Calculator for local LLM hardware: NVIDIA and AMD graphics cards, Apple Macs and mini PCs by VRAM, memory bandwidth, tokens per second, wait time and value for money."

@@ -8,6 +8,7 @@
   "scripts": {
     "prices": "node scripts/update-prices.mjs",
     "dev": "npx --yes serve public",
-    "seo": "node scripts/build-seo.mjs"
+    "seo": "node scripts/build-seo.mjs",
+    "test": "node scripts/test-models.mjs"
   }
 }
