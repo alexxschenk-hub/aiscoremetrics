@@ -83,6 +83,7 @@ function metaBlock(lang) {
   return `<title>${esc(m.title)}</title>
 <meta name="description" content="${attr(m.desc)}">
 <meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="msvalidate.01" content="2C9532B8A584350EA03F5A1340330146">
 <link rel="canonical" href="${URLS[lang]}">
 <link rel="alternate" hreflang="de" href="${URLS.de}">
 <link rel="alternate" hreflang="en" href="${URLS.en}">
