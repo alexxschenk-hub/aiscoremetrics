@@ -8,23 +8,28 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0A6B75">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>AI Score Metrics — GPU Preis-Leistungs-Vergleich für lokale LLM Hardware</title>
-<meta name="description" content="Welche GPU für lokale LLMs? Vergleiche NVIDIA- und AMD-Grafikkarten, Apple-Macs und Mini-PCs nach VRAM, Speicherbandbreite, Tokens/s und Preis-Leistung – mit täglich aktualisierten GPU-Preisen.">
+<!-- meta:start (generiert von scripts/build-seo.mjs, nicht von Hand bearbeiten) -->
+<title>Welche GPU für lokale LLMs? Hardware-Rechner für Tokens/s &amp; VRAM | AI Score Metrics</title>
+<meta name="description" content="Kostenloser Rechner: Passt dein LLM in den Speicher und wie schnell läuft es? NVIDIA- und AMD-Grafikkarten, Mac Studio, Mac mini und Ryzen AI Max im Vergleich – Tokens/s, VRAM, erster Token, Bildzeiten und Preis-Leistung.">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://aiscoremetrics.com/">
+<link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/">
+<link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/">
+<link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aiscoremetrics.com/">
 <meta property="og:site_name" content="AI Score Metrics">
-<meta property="og:title" content="AI Score Metrics — GPU Preis-Leistungs-Vergleich für lokale LLM Hardware">
-<meta property="og:description" content="NVIDIA, AMD und Apple Silicon für lokale LLMs im Vergleich: VRAM, Bandbreite, Tokens/s und Preis-Leistung.">
+<meta property="og:title" content="AI Score Metrics – Welche GPU oder welcher Mac für lokale LLMs?">
+<meta property="og:description" content="60 Geräte, 14 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
 <meta property="og:image" content="https://aiscoremetrics.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="AI Score Metrics – GPU-Preis-Leistung für lokale LLMs">
+<meta property="og:image:alt" content="AI Score Metrics – Hardware-Vergleich für lokale LLMs">
 <meta property="og:locale" content="de_DE">
-<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AI Score Metrics — GPU Preis-Leistungs-Vergleich für lokale LLM Hardware">
-<meta name="twitter:description" content="NVIDIA, AMD und Apple Silicon für lokale LLMs im Vergleich: VRAM, Bandbreite, Tokens/s und Preis-Leistung.">
+<meta name="twitter:title" content="AI Score Metrics – Welche GPU oder welcher Mac für lokale LLMs?">
+<meta name="twitter:description" content="60 Geräte, 14 LLMs: Tokens/s, VRAM-Bedarf, Speicherauslastung und Preis-Leistung für lokale KI im Vergleich.">
 <meta name="twitter:image" content="https://aiscoremetrics.com/og-image.png">
 <script type="application/ld+json">
 {
@@ -32,16 +37,21 @@
   "@type": "WebApplication",
   "name": "AI Score Metrics",
   "url": "https://aiscoremetrics.com/",
-  "description": "Preis-Leistungs-Rechner für lokale LLM-Hardware: NVIDIA- und AMD-Grafikkarten, Apple-Macs und Mini-PCs nach VRAM, Speicherbandbreite, Tokens/s und Preis.",
+  "description": "Rechner für lokale LLM-Hardware: NVIDIA- und AMD-Grafikkarten, Apple-Macs und Mini-PCs nach VRAM, Speicherbandbreite, Tokens pro Sekunde, Wartezeit und Preis-Leistung.",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Any",
   "browserRequirements": "Requires JavaScript",
-  "inLanguage": ["de", "en"],
+  "inLanguage": "de",
   "isAccessibleForFree": true,
   "image": "https://aiscoremetrics.com/og-image.png",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  }
 }
 </script>
+<!-- meta:end -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -86,7 +96,11 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f
 .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 22px; }
 header { display: grid; gap: 6px; }
 .toprow { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-.seg.small button { font-size: 12.5px; padding: 4px 9px; }
+.seg.small button, .seg.small a { font: 600 12.5px var(--f-display); letter-spacing: .02em; padding: 4px 9px; color: var(--ink); text-decoration: none; border-right: 1px solid var(--line); }
+.seg.small a:last-child { border-right: 0; }
+.seg.small a[aria-current="page"] { background: var(--accent); color: var(--surface); }
+.seg.small a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1 .h1sub { display: block; font-size: clamp(17px, 2.4vw, 22px); font-weight: 600; letter-spacing: 0; color: var(--muted); margin-top: 8px; }
 th button.sort { all: unset; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
 th button.sort:hover { color: var(--ink); }
 th button.sort:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -228,13 +242,13 @@ footer { font-size: 12.5px; color: var(--muted); }
 <div class="wrap">
   <header>
     <div class="toprow">
-      <div class="eyebrow" data-i="eyebrow"></div>
+      <div class="eyebrow" data-i="eyebrow">KI-Hardware-Score · Lokale LLM-Inferenz</div>
       <div class="seg small" id="lang" role="group" aria-label="Sprache / Language">
-        <button type="button" data-id="de">DE</button><button type="button" data-id="en">EN</button>
+        <a href="/" data-id="de" hreflang="de" lang="de">DE</a><a href="/en/" data-id="en" hreflang="en" lang="en">EN</a>
       </div>
     </div>
-    <h1>AI Score Metrics</h1>
-    <p class="lede" data-i="lede"></p>
+    <h1>AI Score Metrics<span class="h1sub" data-i="h1sub">Welche GPU oder welcher Mac für lokale LLMs?</span></h1>
+    <p class="lede" data-i="lede">Welche Hardware ist für dein Szenario am schnellsten, und passt dein Modell überhaupt in den Speicher? Die Werte rechnen Speicherbandbreite und Rechenleistung in Tokens pro Sekunde, Wartezeiten und Bildzeiten um. Preise und Preis-Leistung lassen sich optional einblenden.</p>
   </header>
 
   <div class="controls" role="group">
@@ -399,7 +413,7 @@ footer { font-size: 12.5px; color: var(--muted); }
   <div class="seo" data-seo="de" lang="de">
     <section>
       <h2>Was ist AI Score Metrics?</h2>
-      <p>AI Score Metrics ist ein kostenloser Preis-Leistungs-Rechner für Hardware, auf der große Sprachmodelle (LLMs) lokal laufen. Er vergleicht NVIDIA- und AMD-Grafikkarten, Apple-Macs mit M-Chips und Mini-PCs mit Ryzen AI Max danach, ob ein Modell in den Speicher passt, wie schnell es Text erzeugt und was das System kostet. GPU-Preise für Deutschland werden täglich automatisch aktualisiert.</p>
+      <p>AI Score Metrics ist ein kostenloser Rechner für Hardware, auf der große Sprachmodelle (LLMs) lokal laufen. Er vergleicht NVIDIA- und AMD-Grafikkarten, Apple-Macs mit M-Chips und Mini-PCs mit Ryzen AI Max danach, ob ein Modell in den Speicher passt, wie schnell es Text erzeugt, wie lange der erste Token dauert und wie viel Leistung es pro Euro gibt. GPU-Preise für Deutschland werden täglich automatisch aktualisiert und lassen sich optional einblenden.</p>
     </section>
     <section>
       <h2>Wie wird der Score berechnet?</h2>
@@ -430,7 +444,7 @@ Score    = Leistung / Systempreis   (bestes Gerät = 100)</div>
   <div class="seo" data-seo="en" lang="en" hidden>
     <section>
       <h2>What is AI Score Metrics?</h2>
-      <p>AI Score Metrics is a free price-performance calculator for hardware that runs large language models (LLMs) locally. It compares NVIDIA and AMD graphics cards, Apple Macs with M-series chips and Ryzen AI Max mini PCs by whether a model fits in memory, how fast it generates text and what the system costs. GPU prices for Germany are updated automatically every day.</p>
+      <p>AI Score Metrics is a free calculator for hardware that runs large language models (LLMs) locally. It compares NVIDIA and AMD graphics cards, Apple Macs with M-series chips and Ryzen AI Max mini PCs by whether a model fits in memory, how fast it generates text, how long the first token takes and how much performance you get per euro. GPU prices for Germany are updated automatically every day and can be shown optionally.</p>
     </section>
     <section>
       <h2>How is the score calculated?</h2>
@@ -594,6 +608,7 @@ Score = Perf / system price   (best device = 100)</div>
   const T = {
     de: {
       locale: "de-AT",
+      h1sub: "Welche GPU oder welcher Mac für lokale LLMs?",
       eyebrow: "KI-Hardware-Score · Lokale LLM-Inferenz",
       lede: "Welche Hardware ist für dein Szenario am schnellsten, und passt dein Modell überhaupt in den Speicher? Die Werte rechnen Speicherbandbreite und Rechenleistung in Tokens pro Sekunde, Wartezeiten und Bildzeiten um. Preise und Preis-Leistung lassen sich optional einblenden.",
       profile: "Nutzungsprofil", model: "Modell", ctx: "Kontext", vendor: "Hersteller", all: "Alle",
@@ -700,6 +715,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
     },
     en: {
       locale: "en-GB",
+      h1sub: "Which GPU or Mac for local LLMs?",
       eyebrow: "AI hardware score · local LLM inference",
       lede: "Which hardware is fastest for your use case, and does your model even fit in memory? Memory bandwidth and compute are turned into tokens per second, wait times and image times. Prices and value for money can be shown optionally.",
       profile: "Use case", model: "Model", ctx: "Context", vendor: "Vendor", all: "All",
@@ -809,16 +825,16 @@ Score     = Perf / system price   (best device = 100)</div>
   const KEY = "aiscoremetrics.v1";
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
-  let navLang = "de";
-  try { navLang = (navigator.language || "de").toLowerCase().startsWith("de") ? "de" : "en"; } catch (e) {}
+  // Sprache kommt aus der URL: / = Deutsch, /en/ = Englisch (eigene Seiten für Suchmaschinen)
+  const navLang = document.documentElement.lang === "en" ? "en" : "de";
   const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, quant: "q4", view: "all", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, use: "coding", pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
   delete state.sort;
-  if (!T[state.lang]) state.lang = "de";
+  state.lang = navLang;
   delete state.sortKey; delete state.sortDir; delete state.profile; delete state.model;
   if (!USES.some((u) => u.id === state.use)) state.use = "coding";
   if (!MODELS.some((m) => m.id === state.pxModel && (state.use === "all" || m.use.includes(state.use)))) state.pxModel = (USES.find((u) => u.id === state.use) || USES[0]).def;
   state.sorts = Object.assign({ rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, state.sorts || {});
-  function persist() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function persist() { try { const { lang, ...rest } = state; localStorage.setItem(KEY, JSON.stringify(rest)); } catch (e) {} }
 
   const $ = (s) => document.querySelector(s);
   const L = () => T[state.lang];
@@ -948,7 +964,7 @@ Score     = Perf / system price   (best device = 100)</div>
     $("#px-img").innerHTML = IMG.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join("");
   }
   function renderControls() {
-    document.querySelectorAll("#lang button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === state.lang));
+    document.querySelectorAll("#lang a").forEach((a) => { if (a.dataset.id === state.lang) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
     $("#use").innerHTML = USES.map((u) => `<button type="button" data-id="${u.id}" aria-pressed="${u.id === state.use}">${esc(L().uses[u.id])}</button>`).join("");
     $("#vendor").innerHTML = [["all", L().all, ""], [N, "NVIDIA", ICONS.gpu], [AM, "AMD", ICONS.gpu], [A, "Apple", ICONS.mac], ["ws", L().ws, ICONS.gpu]].map(([id, n, ic]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${ic.replace("<svg ", '<svg class="vi" ')}${n}</button>`).join("");
     $("#view").innerHTML = ["all", "one", "cmp"].map((id) => `<button type="button" data-id="${id}" aria-pressed="${id === state.view}">${L().views[id]}</button>`).join("");
@@ -1167,7 +1183,6 @@ Score     = Perf / system price   (best device = 100)</div>
     }).join("")}</tr>`).join("");
   }
 
-  $("#lang").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.lang = b.dataset.id; persist(); renderStatic(); render(); });
   $("#use").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.use = b.dataset.id;
     if (!shownModels().some((m) => m.id === state.pxModel)) state.pxModel = useOf().def; persist(); render(); });
   $("#llm").addEventListener("change", (e) => { state.pxModel = e.target.value; persist(); render(); });
@@ -1205,8 +1220,8 @@ Score     = Perf / system price   (best device = 100)</div>
   async function load() {
     try {
       const [dv, pr] = await Promise.all([
-        fetch("data/devices.json", { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }),
-        fetch("data/prices.json", { cache: "no-cache" }).then((r) => r.ok ? r.json() : { prices: {} }).catch(() => ({ prices: {} }))
+        fetch("/data/devices.json", { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+        fetch("/data/prices.json", { cache: "no-cache" }).then((r) => r.ok ? r.json() : { prices: {} }).catch(() => ({ prices: {} }))
       ]);
       UPDATED = pr.updatedAt || null;
       DEVICES = dv.devices.map((d) => {

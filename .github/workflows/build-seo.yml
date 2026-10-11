@@ -1,0 +1,36 @@
+name: SEO-Seiten bauen
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "public/index.html"
+      - "public/data/devices.json"
+      - "scripts/build-seo.mjs"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Sprachseiten, Meta-Tags und Sitemap erzeugen
+        run: node scripts/build-seo.mjs
+      - name: Änderungen committen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add public/index.html public/en/index.html public/sitemap.xml
+          if git diff --cached --quiet; then
+            echo "SEO-Seiten sind aktuell."
+          else
+            git commit -m "SEO-Seiten neu gebaut"
+            git push
+          fi

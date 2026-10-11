@@ -1,0 +1,1241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0A6B75">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- meta:start (generiert von scripts/build-seo.mjs, nicht von Hand bearbeiten) -->
+<title>Best GPU for Local LLMs? Tokens/s &amp; VRAM Hardware Calculator | AI Score Metrics</title>
+<meta name="description" content="Free calculator: does your LLM fit in memory and how fast will it run? Compare NVIDIA and AMD graphics cards, Mac Studio, Mac mini and Ryzen AI Max – tokens/s, VRAM, time to first token, image times and value for money.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://aiscoremetrics.com/en/">
+<link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/">
+<link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/">
+<link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aiscoremetrics.com/en/">
+<meta property="og:site_name" content="AI Score Metrics">
+<meta property="og:title" content="AI Score Metrics – Which GPU or Mac for local LLMs?">
+<meta property="og:description" content="60 devices, 14 LLMs: tokens/s, VRAM needs, memory usage and value for money for local AI, side by side.">
+<meta property="og:image" content="https://aiscoremetrics.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI Score Metrics – hardware comparison for local LLMs">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="de_DE">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI Score Metrics – Which GPU or Mac for local LLMs?">
+<meta name="twitter:description" content="60 devices, 14 LLMs: tokens/s, VRAM needs, memory usage and value for money for local AI, side by side.">
+<meta name="twitter:image" content="https://aiscoremetrics.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "AI Score Metrics",
+  "url": "https://aiscoremetrics.com/en/",
+  "description": "Calculator for local LLM hardware: NVIDIA and AMD graphics cards, Apple Macs and mini PCs by VRAM, memory bandwidth, tokens per second, wait time and value for money.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "browserRequirements": "Requires JavaScript",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "image": "https://aiscoremetrics.com/og-image.png",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  }
+}
+</script>
+<!-- meta:end -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: spec-sheet tool. Control strip on top, summary line, ranked table, model matrix, method notes. */
+:root {
+  --bg: #F1F3F4;
+  --surface: #FFFFFF;
+  --ink: #13181C;
+  --muted: #5A6670;
+  --line: #D6DCE0;
+  --accent: #0A6B75;
+  --accent-soft: #D4EAEC;
+  --bar: #0A6B75;
+  --bar-2: #8FA7AE;
+  --good: #2E7A33;
+  --bad: #B3261E;
+  --warn: #A0560B;
+  --amd: #8A4B2E;
+  --m-weights: #2a78d6;
+  --m-kv: #1baf7a;
+  --m-ov: #6250d6;
+  --f-display: "Barlow Semi Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A;
+    --accent: #52C3CD; --accent-soft: #123338; --bar: #52C3CD; --bar-2: #4B5D66;
+    --good: #6CC070; --bad: #F2867E; --warn: #E3A256; --amd: #E39A72; --m-weights: #3987e5; --m-kv: #199e70; --m-ov: #9085e9; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A;
+  --accent: #52C3CD; --accent-soft: #123338; --bar: #52C3CD; --bar-2: #4B5D66;
+  --good: #6CC070; --bad: #F2867E; --warn: #E3A256; --amd: #E39A72; --m-weights: #3987e5; --m-kv: #199e70; --m-ov: #9085e9; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 22px; }
+header { display: grid; gap: 6px; }
+.toprow { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.seg.small button, .seg.small a { font: 600 12.5px var(--f-display); letter-spacing: .02em; padding: 4px 9px; color: var(--ink); text-decoration: none; border-right: 1px solid var(--line); }
+.seg.small a:last-child { border-right: 0; }
+.seg.small a[aria-current="page"] { background: var(--accent); color: var(--surface); }
+.seg.small a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1 .h1sub { display: block; font-size: clamp(17px, 2.4vw, 22px); font-weight: 600; letter-spacing: 0; color: var(--muted); margin-top: 8px; }
+th button.sort { all: unset; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+th button.sort:hover { color: var(--ink); }
+th button.sort:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+th[aria-sort] button.sort { color: var(--accent); }
+th .arr { font-family: var(--f-mono); font-size: 11px; width: 10px; display: inline-block; }
+.calib { border-collapse: collapse; min-width: 0; width: 100%; font-size: 13px; }
+.calib th, .calib td { padding: 5px 8px; border-bottom: 1px solid var(--line); text-align: right; }
+.calib th:first-child, .calib td:first-child { text-align: left; }
+.eyebrow { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; color: var(--accent); }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(30px, 5vw, 44px); line-height: 1; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 68ch; }
+h2 { font-family: var(--f-display); font-weight: 600; font-size: 20px; margin: 0; letter-spacing: .01em; }
+.controls { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 14px; }
+.row { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: end; }
+.field { display: grid; gap: 6px; min-width: 0; }
+.lab { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--muted); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.seg button { font: 600 14px var(--f-display); letter-spacing: .02em; padding: 7px 12px; border: 0; background: transparent; color: var(--ink); cursor: pointer; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+.seg button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+select, input[type="number"] { font: 400 14px var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
+input[type="range"] { accent-color: var(--accent); width: 200px; max-width: 100%; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.check input { accent-color: var(--accent); }
+.hint { font-size: 13px; color: var(--muted); margin: 0; }
+.btn { font: 600 13px var(--f-display); letter-spacing: .04em; text-transform: uppercase; border: 1px solid var(--line); background: transparent; color: var(--muted); padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+.btn:hover { color: var(--ink); border-color: var(--muted); }
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+.sum { border-left: 3px solid var(--accent); padding: 4px 0 4px 12px; display: grid; gap: 2px; min-width: 0; }
+.sum .k { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--muted); }
+.sum .v { font-family: var(--f-display); font-weight: 700; font-size: 21px; line-height: 1.15; }
+.sum .s { font-size: 13px; color: var(--muted); }
+.tablebox { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; min-width: 860px; }
+th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: 0; }
+th { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--muted); white-space: nowrap; background: var(--surface); }
+td.num, th.num { text-align: right; }
+.rank { font-family: var(--f-mono); color: var(--muted); width: 36px; }
+.dev { display: grid; gap: 1px; }
+.dev b { font-weight: 600; }
+.dev span { font-size: 12.5px; color: var(--muted); }
+.devrow { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.ico { flex: none; width: 34px; height: 34px; border-radius: 6px; display: grid; place-items: center; background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.ico svg { width: 22px; height: 22px; }
+.ico.nvidia { color: var(--accent); }
+.ico.amd { color: var(--amd); }
+.seg .vi { width: 15px; height: 15px; vertical-align: -3px; margin-right: 5px; }
+.tag { font: 600 10.5px var(--f-display); letter-spacing: .08em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); margin-right: 6px; vertical-align: 1px; }
+.price { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.price input { width: 92px; text-align: right; font-family: var(--f-mono); font-size: 13px; padding: 4px 6px; }
+.price .edited { width: 7px; height: 7px; border-radius: 50%; background: var(--warn); }
+.src { display: block; font-size: 11.5px; color: var(--muted); text-align: right; white-space: nowrap; }
+.src.est { color: var(--warn); }
+.dots { display: flex; gap: 3px; }
+.dot { width: 11px; height: 11px; border-radius: 2px; border: 1px solid var(--muted); }
+.dot.on { background: var(--accent); border-color: var(--accent); }
+.dot.sel { outline: 2px solid var(--ink); outline-offset: 1px; }
+.barcell { display: grid; grid-template-columns: 1fr 44px; gap: 8px; align-items: center; min-width: 150px; }
+.track { height: 8px; background: var(--bg); border-radius: 2px; overflow: hidden; }
+.fill { height: 100%; background: var(--bar); }
+.fill.p { background: var(--bar-2); }
+.barcell .mono { text-align: right; font-size: 13px; }
+a.ext { color: var(--accent); font-size: 13px; text-decoration: none; white-space: nowrap; }
+a.ext:hover { text-decoration: underline; }
+.zero td { color: var(--muted); }
+.pickrow { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: end; }
+.pick { display: grid; gap: 6px; min-width: 0; }
+.pick .pair { display: flex; gap: 6px; flex-wrap: wrap; }
+.pick select { max-width: 100%; }
+.pick .lab b { color: var(--ink); }
+.detail { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; overflow-x: auto; }
+.detail table { min-width: 0; }
+.detail th, .detail td { padding: 9px 14px; }
+.detail thead th { vertical-align: bottom; }
+.detail thead .devrow { font-family: var(--f-body); text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--ink); font-weight: 600; }
+.detail td.k { color: var(--muted); font-size: 13.5px; white-space: nowrap; }
+.detail td.v { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: 14px; }
+.detail td.v.win { font-weight: 600; color: var(--ink); }
+.detail td.v.win::after { content: " ✓"; color: var(--good); }
+.detail td.d { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.detail tr.grp td { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--accent); padding-top: 14px; border-bottom: 1px solid var(--line); }
+.memhead, .memrow { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr) minmax(190px, 250px); gap: 12px; align-items: center; }
+.memchart { display: grid; gap: 7px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; }
+.memhead { font-size: 11.5px; color: var(--muted); font-family: var(--f-mono); }
+.memaxis { position: relative; height: 16px; }
+.memaxis span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.memaxis span.lim { color: var(--ink); font-weight: 600; }
+.memname { display: flex; gap: 8px; align-items: center; min-width: 0; font-size: 13.5px; }
+.memname b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.memtrack { position: relative; height: 18px; }
+.memcap { position: absolute; top: 0; bottom: 0; left: 0; background: var(--bg); border-radius: 4px; }
+.memcapline { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: .75; }
+.membar { position: absolute; top: 2px; bottom: 2px; left: 0; display: flex; gap: 2px; }
+.seg { height: 100%; min-width: 2px; cursor: default; }
+.seg:first-child { border-radius: 4px 0 0 4px; }
+.seg:last-child { border-radius: 0 4px 4px 0; }
+.seg:only-child { border-radius: 4px; }
+.seg.w { background: var(--m-weights); } .seg.kv { background: var(--m-kv); } .seg.ov { background: var(--m-ov); }
+.seg.spill { background: repeating-linear-gradient(135deg, var(--warn) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 1.5px var(--warn); }
+.seg.nofit { background: repeating-linear-gradient(135deg, var(--bad) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 1.5px var(--bad); }
+.memclip { position: absolute; right: -2px; top: -1px; font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.memval { font-size: 12.5px; font-variant-numeric: tabular-nums; line-height: 1.35; }
+.memval .st { font-weight: 600; }
+.memval .st.ok { color: var(--good); } .memval .st.warn { color: var(--warn); } .memval .st.bad { color: var(--bad); }
+.memval small { display: block; color: var(--muted); font-size: 11.5px; }
+.memlegend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.memlegend span { display: inline-flex; align-items: center; gap: 6px; }
+.memlegend i { display: inline-block; width: 14px; height: 10px; border-radius: 2px; }
+#tip { position: fixed; z-index: 10; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 12.5px; padding: 6px 9px; border-radius: 5px; max-width: 260px; line-height: 1.35; }
+@media (max-width: 760px) { .memhead { display: none; } .memrow { grid-template-columns: 1fr; gap: 4px; padding-block: 4px; border-bottom: 1px solid var(--line); } .memrow:last-child { border-bottom: 0; } }
+.matrix td, .matrix th { text-align: right; font-size: 13px; padding: 7px 10px; }
+.matrix td:first-child, .matrix th:first-child { text-align: left; }
+.matrix .na { color: var(--muted); opacity: .6; }
+.matrix th small { display: block; font-family: var(--f-body); text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 11.5px; }
+.method { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px 28px; }
+.method section { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.method p, .method li { font-size: 14px; color: var(--ink); margin: 0; max-width: 65ch; }
+.method ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.formula { font-family: var(--f-mono); font-size: 12.5px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; overflow-x: auto; white-space: pre; line-height: 1.6; }
+.method a { color: var(--accent); }
+/* Statischer Erklärtext + FAQ unter dem Tool (für Suchmaschinen und Leser ohne JS) */
+.seo { display: grid; gap: 22px; border-top: 1px solid var(--line); padding-top: 22px; }
+.seo section { display: grid; gap: 8px; align-content: start; }
+.seo p { font-size: 14px; margin: 0; max-width: 75ch; }
+.seo h3 { font: 600 15.5px var(--f-body); margin: 8px 0 0; }
+.seo .formula { max-width: 75ch; }
+.noscript-devs { display: grid; gap: 10px; }
+.noscript-devs table { min-width: 0; font-size: 13.5px; }
+footer { font-size: 12.5px; color: var(--muted); }
+@media (max-width: 520px) { .wrap { padding-inline: 16px; } .seg button { padding: 7px 9px; font-size: 13px; } }
+@media (prefers-reduced-motion: no-preference) { .fill { transition: width .25s ease; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="toprow">
+      <div class="eyebrow" data-i="eyebrow">AI hardware score · local LLM inference</div>
+      <div class="seg small" id="lang" role="group" aria-label="Sprache / Language">
+        <a href="/" data-id="de" hreflang="de" lang="de">DE</a><a href="/en/" data-id="en" hreflang="en" lang="en">EN</a>
+      </div>
+    </div>
+    <h1>AI Score Metrics<span class="h1sub" data-i="h1sub">Which GPU or Mac for local LLMs?</span></h1>
+    <p class="lede" data-i="lede">Which hardware is fastest for your use case, and does your model even fit in memory? Memory bandwidth and compute are turned into tokens per second, wait times and image times. Prices and value for money can be shown optionally.</p>
+  </header>
+
+  <div class="controls" role="group">
+    <div class="pickrow">
+      <div class="field">
+        <span class="lab" id="lab-view" data-i="view"></span>
+        <div class="seg" id="view" role="group" aria-labelledby="lab-view"></div>
+      </div>
+      <div class="pick" id="pick-a" hidden></div>
+      <div class="pick" id="pick-b" hidden></div>
+      <div class="field" id="pick-prompt-f" hidden>
+        <label class="lab" for="pick-prompt" data-i="pxPrompt"></label>
+        <select id="pick-prompt"></select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <span class="lab" id="lab-use" data-i="useLab"></span>
+        <div class="seg" id="use" role="group" aria-labelledby="lab-use"></div>
+      </div>
+      <div class="field">
+        <label class="lab" for="llm" data-i="pickLlm"></label>
+        <select id="llm"></select>
+      </div>
+      <div class="field">
+        <label class="lab" for="ctx"><span data-i="ctx"></span>: <span class="mono" id="ctx-val">32k</span> Tokens</label>
+        <input type="range" id="ctx" min="0" max="5" step="1" value="3">
+      </div>
+      <div class="field">
+        <label class="lab" for="quant" data-i="quant"></label>
+        <select id="quant"></select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field" id="vendor-field">
+        <span class="lab" id="lab-vendor" data-i="vendor"></span>
+        <div class="seg" id="vendor" role="group" aria-labelledby="lab-vendor"></div>
+      </div>
+      <label class="check"><input type="checkbox" id="showprices"> <span data-i="showPrices"></span></label>
+      <label class="check" id="base-field"><input type="checkbox" id="base" checked> <span data-i="base"></span> <input type="number" id="basecost" value="1300" min="0" step="50" style="width:84px"> €</label>
+      <label class="check"><span data-i="sysram"></span> <input type="number" id="sysram" value="64" min="0" step="16" style="width:70px"> GB</label>
+      <label class="check"><input type="checkbox" id="wired"> <span data-i="wired"></span></label>
+      <button class="btn" id="reset" type="button" data-i="reset"></button>
+    </div>
+    <p class="hint"><span data-i="hint"></span> <span id="hint-prices" data-i="hintPrices"></span></p>
+  </div>
+
+  <div class="summary" id="summary" aria-live="polite"></div>
+  <span id="mem-top" hidden></span>
+  <div class="detail" id="detail" hidden></div>
+
+  <div class="tablebox">
+    <table id="rank">
+      <thead><tr id="rank-head"></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div style="display:grid;gap:10px">
+    <h2 data-i="pxTitle"></h2>
+    <p class="hint" data-i="pxHint"></p>
+    <div class="row">
+      <div class="field"><label class="lab" for="px-prompt" data-i="pxPrompt"></label><select id="px-prompt"></select></div>
+      <div class="field"><label class="lab" for="px-img" data-i="pxImg"></label><select id="px-img"></select></div>
+    </div>
+    <div class="tablebox"><table class="matrix" id="praxis"><thead></thead><tbody></tbody></table></div>
+  </div>
+
+  <span id="mem-anchor" hidden></span>
+  <div style="display:grid;gap:10px" id="mem-section">
+    <h2 data-i="memTitle"></h2>
+    <p class="hint" id="mem-hint"></p>
+    <div class="memlegend" id="mem-legend"></div>
+    <div class="memchart" id="memchart" role="img"></div>
+  </div>
+  <div id="tip" hidden></div>
+
+  <div style="display:grid;gap:10px">
+    <h2 data-i="mTitle"></h2>
+    <p class="hint" data-i="mHint"></p>
+    <div class="tablebox"><table class="matrix" id="matrix"><thead></thead><tbody></tbody></table></div>
+  </div>
+
+  <div class="method" id="method"></div>
+
+  <!-- noscript:start (generiert von scripts/build-seo.mjs aus data/devices.json, nicht von Hand bearbeiten) -->
+  <noscript>
+    <div class="noscript-devs">
+      <h2>Geräte im Vergleich / Devices compared</h2>
+      <p class="hint">Der Rechner braucht JavaScript. Hier die Hardware-Daten aller 60 Geräte als Tabelle. / The calculator needs JavaScript. Below are the specs of all 60 devices.</p>
+      <div class="tablebox"><table>
+        <thead><tr><th>Gerät / Device</th><th>Hersteller / Vendor</th><th>Typ / Type</th><th class="num">Speicher / Memory (GB)</th><th class="num">Bandbreite / Bandwidth (GB/s)</th></tr></thead>
+        <tbody>
+        <tr><td>RTX 5070 · 12 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">12</td><td class="num">672</td></tr>
+        <tr><td>RTX 5060 Ti 16 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">16</td><td class="num">448</td></tr>
+        <tr><td>RTX 5070 Ti · 16 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">16</td><td class="num">896</td></tr>
+        <tr><td>RTX 5080 · 16 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">16</td><td class="num">960</td></tr>
+        <tr><td>RTX PRO 2000 Blackwell · 16 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">16</td><td class="num">288</td></tr>
+        <tr><td>RTX 4000 Ada · 20 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">20</td><td class="num">360</td></tr>
+        <tr><td>RTX 4090 · 24 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">24</td><td class="num">1 008</td></tr>
+        <tr><td>RTX PRO 4000 Blackwell · 24 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">24</td><td class="num">672</td></tr>
+        <tr><td>RTX 5000 Ada · 32 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">32</td><td class="num">576</td></tr>
+        <tr><td>RTX 5090 · 32 GB</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">32</td><td class="num">1 792</td></tr>
+        <tr><td>RTX PRO 4500 Blackwell · 32 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">32</td><td class="num">896</td></tr>
+        <tr><td>RTX 6000 Ada · 48 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">48</td><td class="num">960</td></tr>
+        <tr><td>RTX PRO 5000 Blackwell 48 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">48</td><td class="num">1 344</td></tr>
+        <tr><td>RTX PRO 5000 Blackwell 72 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">72</td><td class="num">1 344</td></tr>
+        <tr><td>RTX PRO 6000 Blackwell · 96 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">96</td><td class="num">1 792</td></tr>
+        <tr><td>RTX PRO 6000 Blackwell Max-Q · 96 GB (Workstation)</td><td>NVIDIA</td><td>Grafikkarte</td><td class="num">96</td><td class="num">1 792</td></tr>
+        <tr><td>RX 9060 XT 16 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">16</td><td class="num">322</td></tr>
+        <tr><td>RX 9070 · 16 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">16</td><td class="num">640</td></tr>
+        <tr><td>RX 9070 XT · 16 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">16</td><td class="num">640</td></tr>
+        <tr><td>RX 7900 XTX · 24 GB</td><td>AMD</td><td>Grafikkarte</td><td class="num">24</td><td class="num">960</td></tr>
+        <tr><td>Radeon AI PRO R9700 · 32 GB (Workstation)</td><td>AMD</td><td>Grafikkarte</td><td class="num">32</td><td class="num">640</td></tr>
+        <tr><td>Radeon PRO W7800 32 GB (Workstation)</td><td>AMD</td><td>Grafikkarte</td><td class="num">32</td><td class="num">576</td></tr>
+        <tr><td>Radeon PRO W7800 48 GB (Workstation)</td><td>AMD</td><td>Grafikkarte</td><td class="num">48</td><td class="num">864</td></tr>
+        <tr><td>Radeon PRO W7900 · 48 GB (Workstation)</td><td>AMD</td><td>Grafikkarte</td><td class="num">48</td><td class="num">864</td></tr>
+        <tr><td>Ryzen AI Max+ 395 · 128 GB</td><td>AMD</td><td>Mini-PC</td><td class="num">128</td><td class="num">256</td></tr>
+        <tr><td>MacBook Pro M1 Pro 16-GPU · 16 GB</td><td>Apple</td><td>MacBook Pro</td><td class="num">16</td><td class="num">200</td></tr>
+        <tr><td>MacBook Pro M5 Pro 20-GPU · 24 GB</td><td>Apple</td><td>MacBook Pro</td><td class="num">24</td><td class="num">307</td></tr>
+        <tr><td>MacBook Pro M1 Pro 16-GPU · 32 GB</td><td>Apple</td><td>MacBook Pro</td><td class="num">32</td><td class="num">200</td></tr>
+        <tr><td>MacBook Pro M5 Max 32-GPU · 36 GB</td><td>Apple</td><td>MacBook Pro</td><td class="num">36</td><td class="num">460</td></tr>
+        <tr><td>MacBook Pro M5 Pro 20-GPU · 48 GB</td><td>Apple</td><td>MacBook Pro</td><td class="num">48</td><td class="num">307</td></tr>
+        <tr><td>MacBook Pro M5 Pro 20-GPU · 64 GB</td><td>Apple</td><td>MacBook Pro</td><td class="num">64</td><td class="num">307</td></tr>
+        <tr><td>MacBook Pro M3 Max 40-GPU · 128 GB</td><td>Apple</td><td>MacBook Pro</td><td class="num">128</td><td class="num">400</td></tr>
+        <tr><td>MacBook Pro M5 Max 40-GPU · 128 GB</td><td>Apple</td><td>MacBook Pro</td><td class="num">128</td><td class="num">614</td></tr>
+        <tr><td>Mac mini M6 12-GPU · 16 GB</td><td>Apple</td><td>Mac mini</td><td class="num">16</td><td class="num">170</td></tr>
+        <tr><td>Mac mini M5 Pro 16-GPU · 24 GB</td><td>Apple</td><td>Mac mini</td><td class="num">24</td><td class="num">307</td></tr>
+        <tr><td>Mac mini M6 12-GPU · 24 GB</td><td>Apple</td><td>Mac mini</td><td class="num">24</td><td class="num">170</td></tr>
+        <tr><td>Mac mini M6 12-GPU · 32 GB</td><td>Apple</td><td>Mac mini</td><td class="num">32</td><td class="num">170</td></tr>
+        <tr><td>Mac mini M5 Pro 20-GPU · 48 GB</td><td>Apple</td><td>Mac mini</td><td class="num">48</td><td class="num">307</td></tr>
+        <tr><td>Mac mini M4 Pro 20-GPU · 64 GB</td><td>Apple</td><td>Mac mini</td><td class="num">64</td><td class="num">273</td></tr>
+        <tr><td>Mac mini M5 Pro 20-GPU · 64 GB</td><td>Apple</td><td>Mac mini</td><td class="num">64</td><td class="num">307</td></tr>
+        <tr><td>Mac Studio M1 Max 24-GPU · 32 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">32</td><td class="num">400</td></tr>
+        <tr><td>Mac Studio M4 Max 32-GPU · 36 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">36</td><td class="num">410</td></tr>
+        <tr><td>Mac Studio M5 Max 32-GPU · 36 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">36</td><td class="num">460</td></tr>
+        <tr><td>Mac Studio M5 Max 40-GPU · 48 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">48</td><td class="num">614</td></tr>
+        <tr><td>Mac Studio M1 Max 32-GPU · 64 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">64</td><td class="num">400</td></tr>
+        <tr><td>Mac Studio M2 Ultra 60-GPU · 64 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">64</td><td class="num">800</td></tr>
+        <tr><td>Mac Studio M4 Max 40-GPU · 64 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">64</td><td class="num">546</td></tr>
+        <tr><td>Mac Studio M5 Max 40-GPU · 64 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">64</td><td class="num">614</td></tr>
+        <tr><td>Mac Studio M2 Max 38-GPU · 96 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">96</td><td class="num">400</td></tr>
+        <tr><td>Mac Studio M3 Ultra 60-GPU · 96 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">96</td><td class="num">819</td></tr>
+        <tr><td>Mac Studio M5 Ultra 64-GPU · 96 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">96</td><td class="num">1 200</td></tr>
+        <tr><td>Mac Studio M5 Ultra 80-GPU · 96 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">96</td><td class="num">1 200</td></tr>
+        <tr><td>Mac Studio M1 Ultra 64-GPU · 128 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">128</td><td class="num">800</td></tr>
+        <tr><td>Mac Studio M4 Max 40-GPU · 128 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">128</td><td class="num">546</td></tr>
+        <tr><td>Mac Studio M5 Max 40-GPU · 128 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">128</td><td class="num">614</td></tr>
+        <tr><td>Mac Studio M2 Ultra 76-GPU · 192 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">192</td><td class="num">800</td></tr>
+        <tr><td>Mac Studio M3 Ultra 80-GPU · 256 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">256</td><td class="num">819</td></tr>
+        <tr><td>Mac Studio M5 Ultra 80-GPU · 256 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">256</td><td class="num">1 200</td></tr>
+        <tr><td>Mac Studio M3 Ultra 80-GPU · 512 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">512</td><td class="num">819</td></tr>
+        <tr><td>Mac Studio M5 Ultra 80-GPU · 512 GB</td><td>Apple</td><td>Mac Studio</td><td class="num">512</td><td class="num">1 200</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </noscript>
+  <!-- noscript:end -->
+
+  <!-- Statischer Text für Suchmaschinen; die Sprachumschaltung blendet data-seo per JS ein/aus.
+       FAQ-Änderungen hier vornehmen, danach "npm run seo" (aktualisiert das FAQPage-JSON-LD). -->
+  <div class="seo" data-seo="de" lang="de" hidden>
+    <section>
+      <h2>Was ist AI Score Metrics?</h2>
+      <p>AI Score Metrics ist ein kostenloser Rechner für Hardware, auf der große Sprachmodelle (LLMs) lokal laufen. Er vergleicht NVIDIA- und AMD-Grafikkarten, Apple-Macs mit M-Chips und Mini-PCs mit Ryzen AI Max danach, ob ein Modell in den Speicher passt, wie schnell es Text erzeugt, wie lange der erste Token dauert und wie viel Leistung es pro Euro gibt. GPU-Preise für Deutschland werden täglich automatisch aktualisiert und lassen sich optional einblenden.</p>
+    </section>
+    <section>
+      <h2>Wie wird der Score berechnet?</h2>
+      <p>Für das gewählte Modell prüft der Rechner zuerst, ob Modellgewichte, KV-Cache für den Kontext und rund 1 GB Laufzeit-Overhead in den nutzbaren Grafikspeicher passen. Passt das Modell, ergibt sich die Generierungsgeschwindigkeit aus der Speicherbandbreite, weil für jeden Token die aktiven Gewichte einmal gelesen werden. Die Prompt-Verarbeitung hängt von der Rechenleistung (TFLOPS) ab. Beides wird je nach Einsatzzweck gewichtet zur Leistung zusammengefasst und durch den Systempreis geteilt; das beste Gerät erhält 100 Punkte.</p>
+      <div class="formula">Leistung = passt · Generierung^α · Prompt^(1−α)
+Score    = Leistung / Systempreis   (bestes Gerät = 100)</div>
+      <p>α ist 0,5 für Agentic Coding und 0,8 für Chat. Bei Grafikkarten zählt zum Systempreis ein einstellbarer Betrag für den restlichen PC.</p>
+    </section>
+    <section>
+      <h2>Häufige Fragen</h2>
+      <div class="faq">
+        <h3>Welche GPU ist die beste für lokale LLMs?</h3>
+        <p>Das hängt vor allem von der Modellgröße ab. Grafikkarten mit 16 GB VRAM wie die RTX 5060 Ti 16 GB oder RX 9070 reichen für Modelle bis etwa 12 Milliarden Parameter und für gpt-oss-20b. Mit 24–32 GB (RTX 4090, RTX 5090) laufen Modelle der 27–32B-Klasse schnell. Für 70B-Modelle und große MoE-Modelle wie gpt-oss-120b braucht es 48–96 GB: Workstation-Karten, Macs mit viel Unified Memory oder Mini-PCs mit Ryzen AI Max+ 395 und 128 GB.</p>
+        <h3>Wie viel VRAM brauche ich für ein LLM?</h3>
+        <p>Bei der üblichen Quantisierung Q4_K_M braucht ein Modell rund 0,6 GB pro Milliarde Parameter, dazu kommen der KV-Cache für den Kontext und etwa 1 GB Overhead. Ein 27B-Modell belegt so rund 17 GB plus Kontext, ein 70B-Modell gut 42 GB plus bis zu 10 GB KV-Cache bei 32k Tokens. Der Rechner zeigt die Belegung je Gerät in der Speicherauslastung.</p>
+        <h3>Was bedeutet Speicherbandbreite und warum ist sie so wichtig?</h3>
+        <p>Die Speicherbandbreite (GB/s) gibt an, wie schnell die GPU Daten aus ihrem Speicher lesen kann. Beim Erzeugen jedes Tokens müssen alle aktiven Modellgewichte einmal gelesen werden, deshalb bestimmt die Bandbreite fast direkt die Tokens pro Sekunde. Eine RTX 4090 mit 1.008 GB/s schafft so mit einem 8B-Modell rund 120 Tokens/s.</p>
+        <h3>Mac oder Grafikkarte für lokale KI?</h3>
+        <p>Macs mit M-Chips teilen sich den Arbeitsspeicher zwischen CPU und GPU und können dadurch sehr große Modelle laden, die auf keine einzelne Consumer-Grafikkarte passen. Grafikkarten haben dafür meist mehr Bandbreite und deutlich mehr Rechenleistung pro Euro, sie sind bei Modellen, die in den VRAM passen, oft schneller – vor allem bei der Verarbeitung langer Prompts.</p>
+        <h3>Was sind MoE-Modelle?</h3>
+        <p>Mixture-of-Experts-Modelle wie gpt-oss-120b oder Qwen3-Coder 30B-A3B nutzen pro Token nur einen kleinen Teil ihrer Parameter. Sie erzeugen Text dadurch viel schneller als gleich große dichte Modelle, müssen aber trotzdem vollständig in den Speicher passen.</p>
+        <h3>Wie genau sind die Werte?</h3>
+        <p>Die Werte sind eine Modellrechnung, keine Messung. Abweichungen von ±20 % zu echten Benchmarks sind je nach Backend (CUDA, MLX, llama.cpp), Treiber und Quantisierung normal. Der Abgleich mit der LocalScore-Datenbank zeigt bei der Generierung eine Abweichung von etwa ±3 %.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="seo" data-seo="en" lang="en">
+    <section>
+      <h2>What is AI Score Metrics?</h2>
+      <p>AI Score Metrics is a free calculator for hardware that runs large language models (LLMs) locally. It compares NVIDIA and AMD graphics cards, Apple Macs with M-series chips and Ryzen AI Max mini PCs by whether a model fits in memory, how fast it generates text, how long the first token takes and how much performance you get per euro. GPU prices for Germany are updated automatically every day and can be shown optionally.</p>
+    </section>
+    <section>
+      <h2>How is the score calculated?</h2>
+      <p>For the selected model, the calculator first checks whether the model weights, the KV cache for the context and about 1 GB of runtime overhead fit in usable graphics memory. If the model fits, generation speed follows from memory bandwidth, because the active weights are read once for every token. Prompt processing depends on compute (TFLOPS). Both are weighted by use case into a performance figure and divided by the system price; the best device gets 100 points.</p>
+      <div class="formula">Perf  = fits · Generation^α · Prompt^(1−α)
+Score = Perf / system price   (best device = 100)</div>
+      <p>α is 0.5 for agentic coding and 0.8 for chat. For graphics cards, the system price includes an adjustable amount for the rest of the PC.</p>
+    </section>
+    <section>
+      <h2>Frequently asked questions</h2>
+      <div class="faq">
+        <h3>Which GPU is best for local LLMs?</h3>
+        <p>Mostly it depends on model size. Graphics cards with 16 GB of VRAM such as the RTX 5060 Ti 16 GB or RX 9070 handle models up to about 12 billion parameters and gpt-oss-20b. With 24–32 GB (RTX 4090, RTX 5090), models in the 27–32B class run fast. 70B models and large MoE models such as gpt-oss-120b need 48–96 GB: workstation cards, Macs with plenty of unified memory, or Ryzen AI Max+ 395 mini PCs with 128 GB.</p>
+        <h3>How much VRAM do I need for an LLM?</h3>
+        <p>At the common Q4_K_M quantization, a model needs about 0.6 GB per billion parameters, plus the KV cache for the context and about 1 GB of overhead. A 27B model takes about 17 GB plus context; a 70B model a little over 42 GB plus up to 10 GB of KV cache at 32k tokens. The calculator shows per-device usage in the memory chart.</p>
+        <h3>What is memory bandwidth and why does it matter?</h3>
+        <p>Memory bandwidth (GB/s) is how fast the GPU can read data from its memory. Every generated token requires reading all active model weights once, so bandwidth almost directly sets tokens per second. An RTX 4090 with 1,008 GB/s reaches about 120 tokens/s with an 8B model.</p>
+        <h3>Mac or graphics card for local AI?</h3>
+        <p>Macs with M-series chips share RAM between CPU and GPU, so they can load very large models that do not fit on any single consumer graphics card. Graphics cards usually offer more bandwidth and far more compute per euro, so they are often faster for models that fit in VRAM – especially when processing long prompts.</p>
+        <h3>What are MoE models?</h3>
+        <p>Mixture-of-experts models such as gpt-oss-120b or Qwen3-Coder 30B-A3B use only a small share of their parameters per token. That makes them generate text much faster than dense models of the same size, but they still have to fit in memory completely.</p>
+        <h3>How accurate are the numbers?</h3>
+        <p>The numbers are a model estimate, not a measurement. Deviations of ±20% from real benchmarks are normal, depending on backend (CUDA, MLX, llama.cpp), drivers and quantization. A check against the LocalScore database shows generation within about ±3%.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- faq-jsonld:start (generiert von scripts/build-seo.mjs aus dem deutschen FAQ oben) -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "inLanguage": "en",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Which GPU is best for local LLMs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Mostly it depends on model size. Graphics cards with 16 GB of VRAM such as the RTX 5060 Ti 16 GB or RX 9070 handle models up to about 12 billion parameters and gpt-oss-20b. With 24–32 GB (RTX 4090, RTX 5090), models in the 27–32B class run fast. 70B models and large MoE models such as gpt-oss-120b need 48–96 GB: workstation cards, Macs with plenty of unified memory, or Ryzen AI Max+ 395 mini PCs with 128 GB."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much VRAM do I need for an LLM?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "At the common Q4_K_M quantization, a model needs about 0.6 GB per billion parameters, plus the KV cache for the context and about 1 GB of overhead. A 27B model takes about 17 GB plus context; a 70B model a little over 42 GB plus up to 10 GB of KV cache at 32k tokens. The calculator shows per-device usage in the memory chart."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is memory bandwidth and why does it matter?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Memory bandwidth (GB/s) is how fast the GPU can read data from its memory. Every generated token requires reading all active model weights once, so bandwidth almost directly sets tokens per second. An RTX 4090 with 1,008 GB/s reaches about 120 tokens/s with an 8B model."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mac or graphics card for local AI?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Macs with M-series chips share RAM between CPU and GPU, so they can load very large models that do not fit on any single consumer graphics card. Graphics cards usually offer more bandwidth and far more compute per euro, so they are often faster for models that fit in VRAM – especially when processing long prompts."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are MoE models?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Mixture-of-experts models such as gpt-oss-120b or Qwen3-Coder 30B-A3B use only a small share of their parameters per token. That makes them generate text much faster than dense models of the same size, but they still have to fit in memory completely."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How accurate are the numbers?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The numbers are a model estimate, not a measurement. Deviations of ±20% from real benchmarks are normal, depending on backend (CUDA, MLX, llama.cpp), drivers and quantization. A check against the LocalScore database shows generation within about ±3%."
+      }
+    }
+  ]
+}
+  </script>
+  <!-- faq-jsonld:end -->
+
+  <footer data-i="footer"></footer>
+</div>
+
+<script>
+(function () {
+  // Modelle: tp/ap = Parameter gesamt/aktiv (Mrd.), gb/agb = Größe gesamt/aktiv bei Q4_K_M, kv = KV-Cache GB je 1.000 Tokens (FP16)
+  const MODELS = [
+    { id: "q35_9",     name: "Qwen3.5 9B",          tp: 9,   ap: 9,    dense: true, gb: 6.0,  agb: 5.5,  kv: 0.04,  use: ["chat"] },
+    { id: "gemma4_12", name: "Gemma 4 12B",         tp: 12,  ap: 12,   dense: true, gb: 7.6,  agb: 7.3,  kv: 0.08,  use: ["chat"] },
+    { id: "gptoss20",  name: "gpt-oss-20b",         tp: 21,  ap: 3.6,  eff: 0.55, bpw: 4.25, gb: 13.0, agb: 2.0, kv: 0.04, use: ["coding", "chat"] },
+    { id: "devstral24",name: "Devstral Small 24B",  tp: 24,  ap: 23.6, dense: true, gb: 14.3, agb: 14.3, kv: 0.16,  use: ["coding"] },
+    { id: "qwen36_27", name: "Qwen3.6 27B",         tp: 27,  ap: 27,   dense: true, gb: 17.0, agb: 16.4, kv: 0.06,  use: ["coding", "chat"] },
+    { id: "moe30",     name: "Qwen3-Coder 30B-A3B", tp: 30.5,ap: 3.3,  eff: 0.55, gb: 18.6, agb: 2.0,  kv: 0.098, use: ["coding"] },
+    { id: "qwen36_35", name: "Qwen3.6 35B-A3B",     tp: 35,  ap: 3,    eff: 0.55, gb: 21.5, agb: 1.9,  kv: 0.05,  use: ["coding", "chat"] },
+    { id: "gemma4_31", name: "Gemma 4 31B",         tp: 31,  ap: 31,   dense: true, gb: 20.0, agb: 18.8, kv: 0.2,   use: ["chat"] },
+    { id: "d70",       name: "Llama 3.3 70B",       tp: 70.6,ap: 70.6, dense: true, gb: 42.5, agb: 42.5, kv: 0.31,  use: ["chat", "large"] },
+    { id: "moe120",    name: "gpt-oss-120b",        tp: 117, ap: 5.1,  eff: 0.55, bpw: 4.25, gb: 63.0, agb: 2.9, kv: 0.07, use: ["coding", "large"] },
+    { id: "glm45air",  name: "GLM-4.5-Air",         tp: 106, ap: 12,   eff: 0.55, gb: 64.0, agb: 7.3,  kv: 0.19,  use: ["coding", "large"] },
+    { id: "q35_122",   name: "Qwen3.5 122B-A10B",   tp: 122, ap: 10,   eff: 0.55, gb: 74.0, agb: 6.1,  kv: 0.08,  use: ["chat", "large"] },
+    { id: "moe235",    name: "Qwen3 235B-A22B",     tp: 235, ap: 22,   eff: 0.55, gb: 142,  agb: 13.4, kv: 0.19,  use: ["large"] },
+    { id: "dsv3",      name: "DeepSeek V3.1",       tp: 671, ap: 37,   eff: 0.55, gb: 404,  agb: 22.4, kv: 0.07,  use: ["large"] }
+  ];
+  // Einsatzzweck filtert die Modellauswahl; alpha gewichtet Generierung gegen Prompt-Verarbeitung
+  const USES = [
+    { id: "all",    alpha: 0.6, def: "moe30" },
+    { id: "coding", alpha: 0.5, def: "moe30" },
+    { id: "chat",   alpha: 0.8, def: "qwen36_27" },
+    { id: "large",  alpha: 0.6, def: "moe120" }
+  ];
+  const CTX = [4096, 8192, 16384, 32768, 65536, 131072];
+  // Quantisierungen: Bits pro Gewicht inkl. Skalierungsfaktoren (GGUF-Richtwerte)
+  const QUANTS = [
+    { id: "q2", name: "Q2_K", bpw: 2.9, de: "deutlich schlechtere Qualität", en: "noticeably lower quality" },
+    { id: "q3", name: "Q3_K_M", bpw: 3.9, de: "spürbar schlechter", en: "somewhat lower quality" },
+    { id: "q4", name: "Q4_K_M", bpw: 4.85, de: "Standard, guter Kompromiss", en: "default, good trade-off" },
+    { id: "q5", name: "Q5_K_M", bpw: 5.7, de: "kaum Verlust", en: "minimal loss" },
+    { id: "q6", name: "Q6_K", bpw: 6.6, de: "nahezu verlustfrei", en: "near lossless" },
+    { id: "q8", name: "Q8_0", bpw: 8.5, de: "praktisch verlustfrei", en: "practically lossless" },
+    { id: "f16", name: "FP16", bpw: 16, de: "volle Präzision", en: "full precision" }
+  ];
+  const QBASE = 4.85;   // Basis der Modellgrößen in MODELS (Q4_K_M), gpt-oss-120b: natives MXFP4
+  function qm(m) {
+    const q = QUANTS.find((x) => x.id === state.quant) || QUANTS[2];
+    const f = m.bpw && q.id === "q4" ? 1 : q.bpw / (m.bpw || QBASE);   // gpt-oss: bei Q4 das native MXFP4
+    return f === 1 ? m : Object.assign({}, m, { gb: m.gb * f, agb: m.agb * f });
+  }
+  const PROMPTS = [1024, 4096, 16384, 32768, 65536];
+  const CODE_TOKENS = 1100;   // 100 Zeilen Code ≈ 11 Tokens pro Zeile
+  // Bildmodelle: Referenzzeit auf RTX 4090 bei 1024×1024, Speicherbedarf in GB
+  const IMG = [
+    { id: "sdxl",   name: "SDXL · 30 Schritte",           gb: 8,  ref: 4.5 },
+    { id: "fluxs",  name: "FLUX.1 schnell FP8 · 4 Schritte", gb: 14, ref: 2.2 },
+    { id: "fluxd",  name: "FLUX.1 dev FP8 · 28 Schritte",  gb: 14, ref: 14 }
+  ];
+  const IMG_REF_INDEX = 330 * 0.5;                     // Rechenindex RTX 4090
+  const IMG_VENDOR = { nvidia: 1, amd: 1.7, apple: 2.1 }; // kalibriert an typischen SDXL-Zeiten je Plattform
+  const N = "nvidia", A = "apple", AM = "amd";
+  const VENDOR = { nvidia: "NVIDIA", amd: "AMD", apple: "Apple" };
+  // tf: NVIDIA = FP16 tensor dense (Blackwell AI TOPS/8, Ada /4), Apple = GPU FP32. pf = prefill factor (M5 Neural Accelerators).
+  let DEVICES = [];   // wird aus data/devices.json + data/prices.json geladen
+  let UPDATED = null;
+
+  // Eigene, neutrale Bauform-Symbole (keine Hersteller-Logos)
+  const SVG = (b) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${b}</svg>`;
+  const ICONS = {
+    gpu: SVG('<rect x="2.5" y="6" width="19" height="10" rx="1.5"/><circle cx="8" cy="11" r="2.6"/><circle cx="16" cy="11" r="2.6"/><path d="M5 16v2.5M9 16v2.5M13 16v2.5"/>'),
+    mbp: SVG('<rect x="4" y="5" width="16" height="10.5" rx="1.2"/><path d="M2 18.5h20l-1.2-3H3.2z"/>'),
+    studio: SVG('<rect x="4" y="6.5" width="16" height="11" rx="2.2"/><path d="M7.5 14.5h2M11 14.5h1"/><circle cx="16" cy="14.5" r=".6" fill="currentColor"/>'),
+    mini: SVG('<rect x="3" y="9.5" width="18" height="6" rx="2"/><circle cx="17.5" cy="12.5" r=".6" fill="currentColor"/>'),
+    minipc: SVG('<rect x="4.5" y="4.5" width="15" height="15" rx="2.5"/><path d="M8 16h4"/><circle cx="16" cy="16" r=".6" fill="currentColor"/>'),
+    mac: SVG('<rect x="4" y="6.5" width="16" height="11" rx="2.2"/><path d="M8 14.5h3"/>')
+  };
+
+  const T = {
+    de: {
+      locale: "de-AT",
+      h1sub: "Welche GPU oder welcher Mac für lokale LLMs?",
+      eyebrow: "KI-Hardware-Score · Lokale LLM-Inferenz",
+      lede: "Welche Hardware ist für dein Szenario am schnellsten, und passt dein Modell überhaupt in den Speicher? Die Werte rechnen Speicherbandbreite und Rechenleistung in Tokens pro Sekunde, Wartezeiten und Bildzeiten um. Preise und Preis-Leistung lassen sich optional einblenden.",
+      profile: "Nutzungsprofil", model: "Modell", ctx: "Kontext", vendor: "Hersteller", all: "Alle",
+      base: "GPU-Preis + PC-Basis", baseAria: "Kosten PC-Basis in Euro",
+      wired: "GPU-Speicherlimit angehoben (alles außer dem System)", reset: "Preise zurücksetzen",
+      hint: "Klick auf eine Spaltenüberschrift sortiert, ein zweiter Klick dreht die Reihenfolge um.",
+      hintPrices: "Preise sind editierbar und bleiben in deinem Browser gespeichert. Orange markierte Preise sind Schätzungen. Preise gelten für Deutschland in Euro.",
+      showPrices: "Preise und Preis-Leistung einblenden (Deutschland, EUR)",
+      uses: { all: "Alle Modelle", coding: "Agentic Coding", chat: "Chat & Assistenz", large: "Große Modelle" }, useLab: "Einsatzzweck", active: "aktiv",
+      dense: "dicht",
+      th: { rank: "#", name: "Gerät", price: "Systempreis €", fits: "Modelle passen", perf: "Leistung", score: "Score" },
+      kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini-PC" },
+      src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", man: "manuell:", own: "eigener Preis" },
+      inclPc: (c) => `inkl. ${c} € PC`, edited: "Von dir geändert",
+      fitsYes: "passt", fitsNo: "passt nicht", need: "GB nötig", usable: "GB nutzbar", notInProfile: "nicht ausgewählt",
+      fitsAria: (a, b) => `${a} von ${b} Profil-Modellen passen`,
+      priceAria: (n) => `Preis ${n} in Euro`, prices: "Preise ↗",
+      sBest: "Bester Wert", sTopGpu: "Schnellste Grafikkarte", fitsShort: "Modelle passen", sTopUni: "Schnellster Mac oder Mini-PC", sFast: "Schnellstes Gerät", sCheap: "Günstigstes, auf dem alle Modelle laufen", sCheapOne: "Günstigstes, auf dem es läuft",
+      none: "keins", sys: "€ System", noneFits: (c) => `Kein Gerät hat bei ${c} Kontext genug Speicher`,
+      pxTitle: "Praxiswerte",
+      pxHint: "Was du beim Arbeiten spürst: Geschwindigkeit beim Schreiben, Wartezeit bis zum ersten Wort, Dauer für 100 Zeilen Code (ca. 1.100 Tokens) und für ein Bild mit 1024 × 1024 Pixeln. Hochgerechnete Schätzwerte, typische Abweichung ±30 %.",
+      pxModel: "Textmodell", pxPrompt: "Prompt-Länge", pxImg: "Bildmodell",
+      sysram: "PC-RAM", ws: "Workstation", quant: "Quantisierung", pickLlm: "LLM-Modell",
+      view: "Ansicht", views: { all: "Alle Geräte", one: "Ein Gerät", cmp: "Vergleich" },
+      pickDev: "Gerät", pickA: "Gerät A", pickB: "Gerät B", pickVendor: "Hersteller wählen …", pickModel: "Modell wählen …",
+      pickHint: "Wähle zuerst den Hersteller, dann das Modell.",
+      dGroups: { hw: "Hardware", basics: "Hardware & Preis", score: "Bewertung im Profil", px: "Praxiswerte", mem: "Speicher" },
+      dRows: { sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
+      rankOf: (a, b) => `${a} von ${b}`,
+      faster: (x) => `${x}× besser`,
+      dHint: (m, p) => `Praxiswerte und Belegung für ${m} mit ${p} Prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Platz und Score beziehen sich auf alle Geräte für dieses Modell.`,
+      memTitle: "Speicherauslastung",
+      memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, mit ${c} Kontext. 100 % ist der nutzbare Grafikspeicher, bei Macs und Mini-PCs der für die GPU freigegebene Teil des Arbeitsspeichers. Was darüber hinausgeht, lagern PCs mit Grafikkarte in den normalen Arbeitsspeicher aus.`,
+      memLeg: { w: "Modellgewichte", kv: "KV-Cache (Kontext)", ov: "Laufzeit-Overhead", spill: "Ausgelagert in PC-RAM", nofit: "Passt nicht" },
+      memLimit: "GPU-Limit",
+      memOk: (u, c, p) => `${u} / ${c} GB · ${p} %`,
+      memFree: (f) => `${f} GB frei`,
+      memSpill: (g) => `+${g} GB im PC-RAM`,
+      memSpillTok: (t) => `≈ ${t} tok/s mit Auslagerung`,
+      memSpillNo: (r) => `PC-RAM reicht nicht (${r} GB eingestellt)`,
+      memWired: "nur mit angehobenem GPU-Limit",
+      memNo: (n) => `braucht ${n} GB`,
+      memUnified: (t, o) => `von ${t} GB, ${o} GB fürs System`,
+      memAria: (m) => `Speicherauslastung je Gerät für ${m}`,
+      pxTh: { tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild" },
+      tokens: "Tokens",
+      mTitle: "Generierung je Modell",
+      mHint: "Obere Zahl: geschätzte Tokens/s beim Schreiben bei halb gefülltem Kontext. Untere Zahl: Prompt-Verarbeitung in Tokens/s. „—“ heißt: passt nicht in den Speicher. Spalten sind sortierbar.",
+      inProfile: "ausgewählt", ttft: (p, t) => `Prompt ${p} tok/s · erster Token nach ${t} s bei vollem Kontext`,
+      footer: "Modellrechnung, keine Messung. Abweichungen von ±20 % zu echten Benchmarks sind normal, je nach Backend (CUDA, MLX, llama.cpp), Treiber und Quantisierung.",
+      sortBy: (c) => `Nach ${c} sortieren`,
+      method: `
+    <section>
+      <h2>Wie der Score rechnet</h2>
+      <div class="formula">Speicher  = Modell_GB + KV_GB(Kontext) + 1 GB
+passt     = Speicher ≤ nutzbarer Speicher
+Generier. = η · ε · Bandbreite / (aktive_GB + KV_GB/2)
+Prompt    = η_c · TFLOPS · 1000 / (2 · aktive_Param_Mrd)
+
+Leistung  = passt · Gen^α · Prompt^(1−α)   (gewähltes Modell)
+Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
+      <p>Die Leistung gilt für das gewählte LLM-Modell. α gewichtet Generierung gegen Prompt-Verarbeitung: Agentic Coding 0,5 · Chat 0,8 · sonst 0,6. Bei Agents mit langem Kontext dominiert die Prompt-Verarbeitung, deshalb fällt dort Rechenleistung stärker ins Gewicht. Der Einsatzzweck filtert nur die Modellauswahl; „Modelle passen“ zählt die Modelle dieser Auswahl.</p>
+    </section>
+    <section>
+      <h2>Annahmen</h2>
+      <ul>
+        <li>Modellwerte (Parameter, aktive Parameter, KV-Cache je Token) aus den Modellkarten. Bei Qwen3.5/3.6 und Gemma 4 sind KV-Cache und Größen Näherungen, weil hybride bzw. Sliding-Window-Attention den Cache stark verkleinert.</li>
+        <li>Quantisierung wählbar von Q2_K (≈ 2,9 Bit pro Gewicht) bis FP16 (16 Bit). Standard ist Q4_K_M (≈ 4,85 Bit), bei der 120B-MoE-Klasse das native MXFP4. Größe und Lesemenge pro Token skalieren mit den Bits, der KV-Cache bleibt in FP16.</li>
+        <li>Nutzbarer Speicher: GPU = VRAM − 0,8 GB. Mac: macOS-Standardlimit 67 % (≤ 36 GB) bzw. 75 % des Arbeitsspeichers, höchstens aber Arbeitsspeicher minus 6 GB für macOS und Hintergrundprogramme. Mit angehobenem Limit alles außer diesen 6 GB. Ryzen AI Max: 96 GB, angehoben 110 GB, Linux-Reserve 4 GB.</li>
+        <li>Bandbreiten-Effizienz η: NVIDIA 0,60, AMD-Grafikkarten 0,50 (ROCm/Vulkan), Ryzen AI Max 0,72, Apple Pro/Max 0,62, Apple Ultra 0,50.</li>
+        <li>Ryzen AI Max+ 395: von 128 GB sind unter Linux rund 96 GB als Grafikspeicher nutzbar, mit angepasstem Limit etwa 110 GB.</li>
+        <li>Rechenleistung: NVIDIA = FP16-Tensor-Leistung (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0,5. AMD = FP16-Spitzenleistung laut Datenblatt, η_c 0,35 (Ryzen AI Max 0,3). Apple = GPU-FP32, η_c 0,6. M5-Chips mit Neural Accelerators ×3,5 (Apple nennt bis 3,9–4× gegenüber der Vorgängergeneration).</li>
+        <li>MoE-Modelle erreichen in der Praxis rund die Hälfte der rechnerischen Generierung (Routing, Attention, verteilte Zugriffe), daher ε = 0,55. Dichte Modelle ε = 1.</li>
+        <li>Kein Teil-Offloading: Wenn ein Modell nicht passt, zählt es mit 0. Multi-GPU ist nicht abgebildet.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Praxiswerte</h2>
+      <ul>
+        <li>Erster Token = Prompt-Länge ÷ Prompt-Verarbeitung. Bei sehr langen Prompts wird es in der Praxis etwas langsamer, weil die Attention mitwächst.</li>
+        <li>Speicherauslastung: Gewichte + KV-Cache für den Kontext + rund 1 GB Laufzeit-Overhead. Passt das nicht in den Grafikspeicher, wandert der Rest der Gewichte in den PC-RAM (DDR5 Dual-Channel, effektiv ca. 58 GB/s). Jeder Token muss diesen Teil dann über den viel langsameren Arbeitsspeicher lesen. 8 GB PC-RAM sind für System und Programme reserviert.</li>
+        <li>100 Zeilen Code ≈ 1.100 Tokens (rund 11 Tokens pro Zeile). Dauer = erster Token + 1.100 ÷ Tokens/s.</li>
+        <li>Bilder sind rechenleistungsgebunden. Referenz RTX 4090 bei 1024 × 1024: SDXL 30 Schritte ≈ 4,5 s, FLUX.1 schnell ≈ 2,2 s, FLUX.1 dev ≈ 14 s. Andere Geräte werden über ihre Rechenleistung hochgerechnet, mit Plattformfaktor für Apple (2,1) und AMD (1,7), kalibriert an typischen SDXL-Zeiten.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Abgleich mit LocalScore</h2>
+      <p>Messwerte aus der öffentlichen LocalScore-Datenbank (llamafile, Q4_K_M) gegen die Modellrechnung:</p>
+      <div style="overflow-x:auto"><table class="calib"><thead><tr><th>RTX 4090</th><th>Gen. Modell</th><th>Gen. gemessen</th><th>Prompt Modell</th><th>Prompt gemessen</th></tr></thead>
+      <tbody><tr><td>Llama 3.1 8B</td><td class="mono">123</td><td class="mono">120</td><td class="mono">10.313</td><td class="mono">7.594</td></tr>
+      <tr><td>Qwen2.5 14B</td><td class="mono">67</td><td class="mono">69</td><td class="mono">5.574</td><td class="mono">4.208</td></tr></tbody></table></div>
+      <p>Die Generierung trifft auf ±3 %. Die Prompt-Werte liegen rund 35 % über llamafile, aber im Bereich aktueller llama.cpp-Builds. Blackwell-Karten liefern in LocalScore unplausibel niedrige Werte (RTX 5090 langsamer als RTX 4090). Das deutet auf ältere CUDA-Kernel im Benchmark hin, deshalb fließen sie nicht in die Kalibrierung ein.</p>
+    </section>
+    <section>
+      <h2>Datenstand</h2>
+      <ul>
+        <li>GPU-Preise: niedrigster Neupreis Deutschland laut gpuprix.com (Händlerdaten von Alternate), täglich automatisch aktualisiert, zuletzt {{updated}}. Gezeigt wird die günstigste lieferbare Karte. Ist keine lieferbar, der letzte Tiefstpreis. Einzelne Preise können manuell gesetzt werden, aktuell die RTX 5090 nach Geizhals.</li>
+        <li>Mac Studio M5 Ultra 96 GB: Apple-Listenpreis 6.599 €. Mac Studio M5 Max 36 GB: 2.999 €. Mac mini M6 16 GB: 1.049 €, M5 Pro 24 GB: 1.999 €. Andere Speicherausbauten und ältere Macs: geschätzt.</li>
+        <li>Ryzen AI Max+ 395 mit 128 GB: Mini-PCs von Framework, GMKtec oder Minisforum, Preis geschätzt.</li>
+        <li>Specs: NVIDIA-, AMD- und Apple-Datenblätter. Rechenleistung bei RTX PRO 2000/4000/4500 und den Ada-Workstation-Karten aus AI TOPS abgeleitet, daher Näherungen. RTX PRO 6000 Max-Q: Preis geschätzt. RTX PRO 4500: Amazon-Preis vom 11.10.</li>
+        <li>Die Links führen zum Geizhals-Preisvergleich (ohne Affiliate).</li>
+      </ul>
+    </section>`
+    },
+    en: {
+      locale: "en-GB",
+      h1sub: "Which GPU or Mac for local LLMs?",
+      eyebrow: "AI hardware score · local LLM inference",
+      lede: "Which hardware is fastest for your use case, and does your model even fit in memory? Memory bandwidth and compute are turned into tokens per second, wait times and image times. Prices and value for money can be shown optionally.",
+      profile: "Use case", model: "Model", ctx: "Context", vendor: "Vendor", all: "All",
+      base: "GPU price + base PC", baseAria: "Base PC cost in euros",
+      wired: "GPU memory limit raised (everything except the OS)", reset: "Reset prices",
+      hint: "Click a column header to sort, click again to reverse.",
+      hintPrices: "Prices are editable and stay saved in your browser. Prices marked in orange are estimates. Prices are for Germany in euros.",
+      showPrices: "Show prices and value for money (Germany, EUR)",
+      uses: { all: "All models", coding: "Agentic coding", chat: "Chat & assistant", large: "Large models" }, useLab: "Use case", active: "active",
+      dense: "dense",
+      th: { rank: "#", name: "Device", price: "System price €", fits: "Models that fit", perf: "Performance", score: "Score" },
+      kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini PC" },
+      src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", man: "manual:", own: "your price" },
+      inclPc: (c) => `incl. €${c} PC`, edited: "Changed by you",
+      fitsYes: "fits", fitsNo: "does not fit", need: "GB needed", usable: "GB usable", notInProfile: "not selected",
+      fitsAria: (a, b) => `${a} of ${b} models in this use case fit`,
+      priceAria: (n) => `Price of ${n} in euros`, prices: "Prices ↗",
+      sBest: "Best value", sTopGpu: "Fastest graphics card", fitsShort: "models fit", sTopUni: "Fastest Mac or mini PC", sFast: "Fastest device", sCheap: "Cheapest that runs every model", sCheapOne: "Cheapest that runs it",
+      none: "none", sys: "€ system", noneFits: (c) => `No device has enough memory at ${c} context`,
+      pxTitle: "Real-world numbers",
+      pxHint: "What you feel while working: writing speed, wait until the first word, time for 100 lines of code (about 1,100 tokens) and for one 1024 × 1024 image. Extrapolated estimates, typical deviation ±30%.",
+      pxModel: "Text model", pxPrompt: "Prompt length", pxImg: "Image model",
+      sysram: "PC RAM", ws: "Workstation", quant: "Quantization", pickLlm: "LLM model",
+      view: "View", views: { all: "All devices", one: "One device", cmp: "Compare" },
+      pickDev: "Device", pickA: "Device A", pickB: "Device B", pickVendor: "Choose vendor …", pickModel: "Choose model …",
+      pickHint: "Choose the vendor first, then the model.",
+      dGroups: { hw: "Hardware", basics: "Hardware & price", score: "Rating in this use case", px: "Real-world numbers", mem: "Memory" },
+      dRows: { sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
+      rankOf: (a, b) => `${a} of ${b}`,
+      faster: (x) => `${x}× better`,
+      dHint: (m, p) => `Real-world numbers and usage for ${m} with a ${p} prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Score and rank compare against all devices for this model.`,
+      memTitle: "Memory usage",
+      memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, with ${c} context. 100% is the usable graphics memory; on Macs and mini PCs, the share of RAM released to the GPU. Anything beyond that, PCs with a graphics card offload into regular system RAM.`,
+      memLeg: { w: "Model weights", kv: "KV cache (context)", ov: "Runtime overhead", spill: "Offloaded to PC RAM", nofit: "Does not fit" },
+      memLimit: "GPU limit",
+      memOk: (u, c, p) => `${u} / ${c} GB · ${p}%`,
+      memFree: (f) => `${f} GB free`,
+      memSpill: (g) => `+${g} GB in PC RAM`,
+      memSpillTok: (t) => `≈ ${t} tok/s with offloading`,
+      memSpillNo: (r) => `PC RAM too small (${r} GB set)`,
+      memWired: "only with a raised GPU limit",
+      memNo: (n) => `needs ${n} GB`,
+      memUnified: (t, o) => `of ${t} GB, ${o} GB for the OS`,
+      memAria: (m) => `Memory usage per device for ${m}`,
+      pxTh: { tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image" },
+      tokens: "tokens",
+      mTitle: "Generation per model",
+      mHint: "Top number: estimated tokens/s while writing, with the context half full. Bottom number: prompt processing in tokens/s. “—” means it does not fit in memory. Columns are sortable.",
+      inProfile: "selected", ttft: (p, t) => `Prompt ${p} tok/s · first token after ${t} s at full context`,
+      footer: "Model estimate, not a measurement. Deviations of ±20% from real benchmarks are normal, depending on backend (CUDA, MLX, llama.cpp), drivers and quantization.",
+      sortBy: (c) => `Sort by ${c}`,
+      method: `
+    <section>
+      <h2>How the score works</h2>
+      <div class="formula">Memory    = model_GB + KV_GB(context) + 1 GB
+fits      = memory ≤ usable memory
+Generate  = η · ε · bandwidth / (active_GB + KV_GB/2)
+Prompt    = η_c · TFLOPS · 1000 / (2 · active_params_B)
+
+Perf      = fits · Gen^α · Prompt^(1−α)   (selected model)
+Score     = Perf / system price   (best device = 100)</div>
+      <p>Performance applies to the selected LLM. α weighs generation against prompt processing: agentic coding 0.5 · chat 0.8 · otherwise 0.6. With long-context agents, prompt processing dominates, so compute counts for more there. The use case only filters the model list; “models that fit” counts the models in that list.</p>
+    </section>
+    <section>
+      <h2>Assumptions</h2>
+      <ul>
+        <li>Model figures (parameters, active parameters, KV cache per token) from the model cards. For Qwen3.5/3.6 and Gemma 4, KV cache and sizes are approximations because hybrid or sliding-window attention shrinks the cache considerably.</li>
+        <li>Quantization selectable from Q2_K (≈ 2.9 bits per weight) to FP16 (16 bits). Default is Q4_K_M (≈ 4.85 bits), native MXFP4 for the 120B MoE class. Size and bytes read per token scale with the bits; the KV cache stays FP16.</li>
+        <li>Usable memory: GPU = VRAM − 0.8 GB. Mac: macOS default limit of 67% (≤ 36 GB) or 75% of RAM, but at most RAM minus 6 GB for macOS and background apps. With the raised limit, everything except those 6 GB. Ryzen AI Max: 96 GB, 110 GB raised, 4 GB Linux reserve.</li>
+        <li>Bandwidth efficiency η: NVIDIA 0.60, AMD graphics cards 0.50 (ROCm/Vulkan), Ryzen AI Max 0.72, Apple Pro/Max 0.62, Apple Ultra 0.50.</li>
+        <li>Ryzen AI Max+ 395: of 128 GB, about 96 GB is usable as graphics memory on Linux, about 110 GB with a raised limit.</li>
+        <li>Compute: NVIDIA = FP16 tensor throughput (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0.5. AMD = datasheet FP16 peak, η_c 0.35 (Ryzen AI Max 0.3). Apple = GPU FP32, η_c 0.6. M5 chips with Neural Accelerators ×3.5 (Apple claims up to 3.9–4× over the previous generation).</li>
+        <li>MoE models reach about half their theoretical generation speed in practice (routing, attention, scattered reads), so ε = 0.55. Dense models ε = 1.</li>
+        <li>No partial offloading: a model that does not fit scores 0. Multi-GPU is not modelled.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Real-world numbers</h2>
+      <ul>
+        <li>First token = prompt length ÷ prompt processing speed. Very long prompts are somewhat slower in practice because attention grows too.</li>
+        <li>Memory usage: weights + KV cache for the context + about 1 GB runtime overhead. If that does not fit in graphics memory, the rest of the weights moves to PC RAM (DDR5 dual channel, about 58 GB/s effective). Every token then has to read that part through the much slower system memory. 8 GB of PC RAM are reserved for the OS and apps.</li>
+        <li>100 lines of code ≈ 1,100 tokens (about 11 tokens per line). Time = first token + 1,100 ÷ tokens/s.</li>
+        <li>Images are compute-bound. Reference RTX 4090 at 1024 × 1024: SDXL 30 steps ≈ 4.5 s, FLUX.1 schnell ≈ 2.2 s, FLUX.1 dev ≈ 14 s. Other devices are scaled by compute, with a platform factor for Apple (2.1) and AMD (1.7), calibrated against typical SDXL times.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Check against LocalScore</h2>
+      <p>Measurements from the public LocalScore database (llamafile, Q4_K_M) against the model:</p>
+      <div style="overflow-x:auto"><table class="calib"><thead><tr><th>RTX 4090</th><th>Gen. model</th><th>Gen. measured</th><th>Prompt model</th><th>Prompt measured</th></tr></thead>
+      <tbody><tr><td>Llama 3.1 8B</td><td class="mono">123</td><td class="mono">120</td><td class="mono">10,313</td><td class="mono">7,594</td></tr>
+      <tr><td>Qwen2.5 14B</td><td class="mono">67</td><td class="mono">69</td><td class="mono">5,574</td><td class="mono">4,208</td></tr></tbody></table></div>
+      <p>Generation lands within ±3%. Prompt numbers run about 35% above llamafile but match current llama.cpp builds. Blackwell cards show implausibly low results in LocalScore (RTX 5090 slower than RTX 4090), which points to older CUDA kernels in the benchmark, so they are left out of the calibration.</p>
+    </section>
+    <section>
+      <h2>Data as of</h2>
+      <ul>
+        <li>GPU prices: lowest new price in Germany per gpuprix.com (retailer data from Alternate), updated automatically every day, last on {{updated}}. Shown is the cheapest card in stock, or the last lowest price if none is in stock. Individual prices can be set manually, currently the RTX 5090 per Geizhals.</li>
+        <li>Mac Studio M5 Ultra 96 GB: Apple list price €6,599. Mac Studio M5 Max 36 GB: €2,999. Mac mini M6 16 GB: €1,049, M5 Pro 24 GB: €1,999. Other memory configurations and older Macs: estimated.</li>
+        <li>Ryzen AI Max+ 395 with 128 GB: mini PCs from Framework, GMKtec or Minisforum, estimated price.</li>
+        <li>Specs: NVIDIA, AMD and Apple datasheets. Compute for RTX PRO 2000/4000/4500 and the Ada workstation cards is derived from AI TOPS, so approximate. RTX PRO 6000 Max-Q: estimated price. RTX PRO 4500: Amazon price from 11 Oct.</li>
+        <li>Links go to the Geizhals price comparison (no affiliate).</li>
+      </ul>
+    </section>`
+    }
+  };
+
+  const KEY = "aiscoremetrics.v1";
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
+  // Sprache kommt aus der URL: / = Deutsch, /en/ = Englisch (eigene Seiten für Suchmaschinen)
+  const navLang = document.documentElement.lang === "en" ? "en" : "de";
+  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, quant: "q4", view: "all", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, use: "coding", pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
+  delete state.sort;
+  state.lang = navLang;
+  delete state.sortKey; delete state.sortDir; delete state.profile; delete state.model;
+  if (!USES.some((u) => u.id === state.use)) state.use = "coding";
+  if (!MODELS.some((m) => m.id === state.pxModel && (state.use === "all" || m.use.includes(state.use)))) state.pxModel = (USES.find((u) => u.id === state.use) || USES[0]).def;
+  state.sorts = Object.assign({ rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, state.sorts || {});
+  function persist() { try { const { lang, ...rest } = state; localStorage.setItem(KEY, JSON.stringify(rest)); } catch (e) {} }
+
+  const $ = (s) => document.querySelector(s);
+  const L = () => T[state.lang];
+  const fmt = (n, d = 0) => n.toLocaleString(L().locale, { minimumFractionDigits: d, maximumFractionDigits: d });
+  const fmtTok = (n) => n >= 10 ? fmt(n) : fmt(n, 1);
+  const eur = (n) => state.lang === "de" ? `${fmt(n)} €` : `€${fmt(n)}`;
+  const ctxLabel = (c) => (c / 1024) + "k";
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const devLabel = (d) => /\bGB\b/.test(d.name) ? d.name : `${d.name} · ${d.mem} GB`;
+  const mName = (m) => m.name;
+  const mEx = (m) => m.dense ? `${fmt(m.tp, 0)}B ${L().dense}` : `${fmt(m.tp, 0)}B MoE, ${fmt(m.ap, m.ap < 10 ? 1 : 0)}B ${L().active}`;
+  const useOf = () => USES.find((u) => u.id === state.use) || USES[0];
+  const shownModels = () => state.use === "all" ? MODELS : MODELS.filter((m) => m.use.includes(state.use));
+  const srcText = (d) => { const s = L().src[d.src[0]]; return d.src[1] ? `${s} ${d.src[1]}` : s; };
+  const priceOf = (d) => state.prices[d.id] != null ? state.prices[d.id] : d.price;
+  const sysPrice = (d) => priceOf(d) + (d.kind === "gpu" && state.base ? state.baseCost : 0);
+  // Reserve für Betriebssystem und Hintergrundprogramme bei geteiltem Arbeitsspeicher
+  const osReserve = (d) => d.v === A ? 6 : 4;
+  function usable(d) {
+    if (d.kind === "gpu") return d.mem - 0.8;
+    const free = d.mem - osReserve(d);                    // was nach dem System übrig bleibt
+    if (d.usable) return Math.min(state.wired ? d.usableMax : d.usable, free);
+    if (state.wired) return free;                          // GPU-Limit angehoben: alles außer System
+    return Math.min(d.mem * (d.mem <= 36 ? 0.67 : 0.75), free);   // macOS-Standardlimit
+  }
+  // Speicher-Aufschlüsselung für die Grafik
+  const SYS_BW = 89.6 * 0.65;   // DDR5-5600 Dual-Channel, effektiv
+  function memInfo(d, m, ctx) {
+    m = qm(m);
+    const kv = m.kv * ctx / 1024, ov = 1.0, need = m.gb + kv + ov, cap = usable(d);
+    const unified = d.kind !== "gpu";
+    const info = { kv, ov, w: m.gb, need, cap, unified, spill: Math.max(0, need - cap), state: "ok", tg: null };
+    if (need <= cap) return info;
+    if (unified) {
+      const maxCap = d.usable ? Math.min(d.usableMax, d.mem - osReserve(d)) : d.mem - osReserve(d);
+      info.state = !state.wired && need <= maxCap ? "wired" : "nofit";
+      return info;
+    }
+    const sysFree = Math.max(0, state.sysRam - 8);           // 8 GB für Betriebssystem und Programme
+    if (info.spill > sysFree) { info.state = "nosys"; return info; }
+    info.state = "spill";
+    const wGpu = Math.max(0, cap - kv - ov), f = Math.min(1, wGpu / m.gb);
+    const act = m.agb;
+    const t = (act * f + kv / 2) / (d.eta * d.bw) + act * (1 - f) / SYS_BW;
+    info.tg = (m.eff || 1) / t;
+    return info;
+  }
+
+  function calc(d, m, ctx) {
+    m = qm(m);
+    const kvGB = m.kv * ctx / 1024;
+    const need = m.gb + kvGB + 1.0;
+    const fits = need <= usable(d);
+    const tg = (m.eff || 1) * d.eta * d.bw / (m.agb + kvGB / 2);
+    const pp = d.etaC * d.tf * d.pf * 1000 / (2 * m.ap);
+    return { fits, need, tg, pp, ttft: ctx / pp };
+  }
+  function weights() {
+    const w = {}; w[state.pxModel] = 1; return { w, alpha: useOf().alpha };
+  }
+  function evaluate() {
+    const ctx = CTX[state.ctx];
+    const { w, alpha } = weights();
+    const rows = DEVICES.map((d) => {
+      const per = {}; let perf = 0, fitCount = 0;
+      const shown = shownModels();
+      MODELS.forEach((m) => {
+        const r = calc(d, m, ctx); per[m.id] = r;
+        const wm = w[m.id] || 0;
+        if (wm && r.fits) perf += wm * Math.pow(r.tg, alpha) * Math.pow(r.pp, 1 - alpha);
+        if (r.fits && shown.includes(m)) fitCount++;
+      });
+      const sp = sysPrice(d);
+      return { d, per, perf, raw: sp > 0 ? perf / sp : 0, sp, fitCount };
+    });
+    const maxRaw = Math.max(...rows.map((r) => r.raw)) || 1;
+    const maxPerf = Math.max(...rows.map((r) => r.perf)) || 1;
+    rows.forEach((r) => { r.score = 100 * r.raw / maxRaw; r.perfN = 100 * r.perf / maxPerf; });
+    return { rows, ctx, w };
+  }
+
+  // Sorting: default direction per key (1 = ascending, -1 = descending)
+  const DEFAULT_DIR = { name: 1, price: 1, fits: -1, perf: -1, score: -1, "x:tg": -1, "x:ttft": 1, "x:code": 1, "x:img": 1 };
+  function sortValue(r, key) {
+    if (key === "name") return r.d.name;
+    if (key === "price") return r.sp;
+    if (key === "fits") return r.fitCount;
+    if (key === "perf") return r.perf;
+    if (key === "score") return r.score;
+    if (key.startsWith("m:")) { const c = r.per[key.slice(2)]; return c.fits ? c.tg : -1; }
+    if (key.startsWith("x:")) return r.px[key.slice(2)];
+    return 0;
+  }
+  // Jede Tabelle hat ihre eigene Sortierung (rank, px, mx)
+  const effKey = (k) => !state.showPrices && (k === "price" || k === "score") ? "perf" : k;
+  function setSort(table, key) {
+    const st = state.sorts[table];
+    if (effKey(st.k) === key) st.d = key === st.k ? -st.d : 1;
+    else { st.k = key; st.d = key.startsWith("m:") ? -1 : DEFAULT_DIR[key]; }
+    persist(); render();
+  }
+  function sortList(list, table) {
+    const st = state.sorts[table], key = effKey(st.k), dir = key === st.k ? st.d : -1;
+    return [...list].sort((a, b) => {
+      const x = sortValue(a, key), y = sortValue(b, key);
+      if (x == null || y == null) return x == null && y == null ? b.perf - a.perf : x == null ? 1 : -1;  // ohne Wert immer ans Ende
+      const c = typeof x === "string" ? x.localeCompare(y, L().locale, { numeric: true }) : x - y;
+      return c * dir || b.perf - a.perf || b.score - a.score;
+    });
+  }
+  function sortHead(table, key, label, cls) {
+    const st = state.sorts[table], active = effKey(st.k) === key, d = key === st.k ? st.d : -1;
+    const arr = active ? (d > 0 ? "↑" : "↓") : "";
+    const aria = active ? ` aria-sort="${d > 0 ? "ascending" : "descending"}"` : "";
+    return `<th${cls ? ` class="${cls}"` : ""}${aria}><button type="button" class="sort" data-table="${table}" data-sort="${key}" title="${esc(L().sortBy(label.replace(/<[^>]+>/g, "")))}">${label}<span class="arr">${arr}</span></button></th>`;
+  }
+
+  function renderStatic() {
+    document.documentElement.lang = state.lang;
+    document.querySelectorAll("[data-seo]").forEach((el) => { el.hidden = el.dataset.seo !== state.lang; });
+    document.querySelectorAll("[data-i]").forEach((el) => { el.textContent = L()[el.dataset.i]; });
+    $("#basecost").setAttribute("aria-label", L().baseAria);
+    $("#method").innerHTML = L().method.replace(/\{\{updated\}\}/g, UPDATED ? new Date(UPDATED).toLocaleDateString(L().locale, { day: "numeric", month: "long", year: "numeric" }) : "–");
+    $("#quant").innerHTML = QUANTS.map((q) => `<option value="${q.id}">${q.name} · ${q[state.lang]}</option>`).join("");
+    $("#pick-prompt").innerHTML = PROMPTS.map((p, i) => `<option value="${i}">${ctxLabel(p)} ${L().tokens}</option>`).join("");
+    $("#px-prompt").innerHTML = PROMPTS.map((p, i) => `<option value="${i}">${ctxLabel(p)} ${L().tokens}</option>`).join("");
+    $("#px-img").innerHTML = IMG.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join("");
+  }
+  function renderControls() {
+    document.querySelectorAll("#lang a").forEach((a) => { if (a.dataset.id === state.lang) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+    $("#use").innerHTML = USES.map((u) => `<button type="button" data-id="${u.id}" aria-pressed="${u.id === state.use}">${esc(L().uses[u.id])}</button>`).join("");
+    $("#vendor").innerHTML = [["all", L().all, ""], [N, "NVIDIA", ICONS.gpu], [AM, "AMD", ICONS.gpu], [A, "Apple", ICONS.mac], ["ws", L().ws, ICONS.gpu]].map(([id, n, ic]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${ic.replace("<svg ", '<svg class="vi" ')}${n}</button>`).join("");
+    $("#view").innerHTML = ["all", "one", "cmp"].map((id) => `<button type="button" data-id="${id}" aria-pressed="${id === state.view}">${L().views[id]}</button>`).join("");
+    $("#vendor-field").hidden = state.view !== "all";
+    const picker = (slot, label) => {
+      const pk = state[slot];
+      const devs = DEVICES.filter((d) => d.v === pk.v).sort((a, b) => a.name.localeCompare(b.name, L().locale, { numeric: true }));
+      return `<span class="lab">${label}</span><div class="pair">
+        <select data-slot="${slot}" data-part="v" aria-label="${label}: ${L().vendor}"><option value="">${L().pickVendor}</option>${[N, AM, A].map((v) => `<option value="${v}" ${v === pk.v ? "selected" : ""}>${VENDOR[v]}</option>`).join("")}</select>
+        <select data-slot="${slot}" data-part="id" aria-label="${label}: ${L().model}" ${pk.v ? "" : "disabled"}><option value="">${pk.v ? L().pickModel : "–"}</option>${devs.map((d) => `<option value="${d.id}" ${d.id === pk.id ? "selected" : ""}>${esc(devLabel(d))}${d.kind !== "gpu" ? " (" + L().kinds[d.kind] + ")" : ""}</option>`).join("")}</select>
+      </div>`;
+    };
+    $("#pick-a").hidden = state.view === "all"; $("#pick-b").hidden = state.view !== "cmp";
+    $("#pick-prompt-f").hidden = state.view === "all";
+    $("#pick-prompt").value = state.pxPrompt; $("#quant").value = state.quant;
+    if (state.view !== "all") $("#pick-a").innerHTML = picker("pickA", state.view === "cmp" ? L().pickA : L().pickDev);
+    if (state.view === "cmp") $("#pick-b").innerHTML = picker("pickB", L().pickB);
+    $("#llm").innerHTML = shownModels().map((m) => `<option value="${m.id}">${esc(mName(m))} · ${esc(mEx(m))} · ${fmt(qm(m).gb, 0)} GB</option>`).join("");
+    $("#llm").value = state.pxModel;
+    $("#ctx").value = state.ctx; $("#ctx-val").textContent = ctxLabel(CTX[state.ctx]);
+    $("#showprices").checked = state.showPrices; $("#base-field").hidden = $("#reset").hidden = $("#hint-prices").hidden = !state.showPrices;
+    $("#base").checked = state.base; $("#basecost").value = state.baseCost; $("#sysram").value = state.sysRam; $("#wired").checked = state.wired;
+    $("#px-prompt").value = state.pxPrompt; $("#px-img").value = state.pxImg;
+  }
+
+  function render() {
+    renderControls();
+    const t = L();
+    const { rows, ctx, w } = evaluate();
+    const pxM = MODELS.find((m) => m.id === state.pxModel) || MODELS[1];
+    const pxP = PROMPTS[state.pxPrompt] || 16384;
+    const pxI = IMG.find((x) => x.id === state.pxImg) || IMG[0];
+    rows.forEach((r) => {
+      const c = calc(r.d, pxM, pxP + CODE_TOKENS);
+      const imgIdx = r.d.tf * r.d.etaC * r.d.pf * (IMG_VENDOR[r.d.v] || 1);
+      const imgFits = usable(r.d) >= pxI.gb;
+      r.px = c.fits ? { tg: c.tg, ttft: pxP / c.pp, code: pxP / c.pp + CODE_TOKENS / c.tg } : { tg: null, ttft: null, code: null };
+      r.px.img = imgFits ? pxI.ref * IMG_REF_INDEX / imgIdx : null;
+    });
+    const picked = state.view === "all" ? [] : (state.view === "cmp" ? [state.pickA.id, state.pickB.id] : [state.pickA.id]).filter(Boolean);
+    const vis = picked.length
+      ? picked.map((id) => rows.find((r) => r.d.id === id)).filter(Boolean).filter((r, i, a) => a.indexOf(r) === i)
+      : rows.filter((r) => state.vendor === "all" || (state.vendor === "ws" ? r.d.ws : r.d.v === state.vendor));
+    const visRank = picked.length ? vis : sortList(vis, "rank");
+    const visPx = picked.length ? vis : sortList(vis, "px");
+    const visMx = picked.length ? vis : sortList(vis, "mx");
+    const usedModels = shownModels();
+
+    // Summary
+    const best = [...vis].sort((a, b) => b.score - a.score)[0];
+    const fastest = [...vis].sort((a, b) => b.perf - a.perf)[0];
+    const cheapFull = [...vis].filter((r) => r.fitCount === usedModels.length).sort((a, b) => a.sp - b.sp)[0];
+    const single = MODELS.find((m) => m.id === state.pxModel);
+    const sumItem = (k, r, s) => `<div class="sum"><span class="k">${k}</span><span class="v">${r ? esc(devLabel(r.d)) : t.none}</span><span class="s">${s}</span></div>`;
+    const okBest = best && best.perf > 0;
+    if (state.showPrices) {
+      $("#summary").innerHTML =
+      sumItem(t.sBest, okBest ? best : null, okBest ? `${eur(best.sp)} System · Score 100` : t.noneFits(ctxLabel(ctx))) +
+      sumItem(t.sFast, okBest ? fastest : null, okBest ? (single ? `${fmtTok(fastest.per[single.id].tg)} tok/s · Prompt ${fmt(fastest.per[single.id].pp)} tok/s` : `${eur(fastest.sp)} System · Score ${fmt(fastest.score)}`) : "") +
+      sumItem(single ? t.sCheapOne : t.sCheap, cheapFull, cheapFull ? `${eur(cheapFull.sp)} System` + (single ? ` · ${fmtTok(cheapFull.per[single.id].tg)} tok/s` : "") : t.noneFits(ctxLabel(ctx)));
+    } else {
+      const top = (f) => [...vis].filter(f).sort((a, b) => b.perf - a.perf)[0];
+      const tg = top((r) => r.d.kind === "gpu"), tu = top((r) => r.d.kind !== "gpu");
+      const line = (r) => r && r.perf > 0 ? `${t.th.perf} ${fmt(r.perfN)} · ${r.fitCount}/${usedModels.length} ${t.fitsShort}` : t.noneFits(ctxLabel(ctx));
+      $("#summary").innerHTML =
+        sumItem(t.sFast, okBest ? fastest : null, okBest ? line(fastest) : t.noneFits(ctxLabel(ctx))) +
+        sumItem(t.sTopGpu, tg && tg.perf > 0 ? tg : null, line(tg)) +
+        sumItem(t.sTopUni, tu && tu.perf > 0 ? tu : null, line(tu));
+    }
+
+    const globalRank = [...rows].sort((a, b) => state.showPrices ? b.score - a.score : b.perf - a.perf);
+    // Einzelgerät / Vergleich
+    const showDetail = picked.length > 0;
+    // Speicherauslastung bei Einzelgerät und Vergleich ganz oben, vor der Detailtabelle
+    { const sec = $("#mem-section"), target = showDetail ? $("#mem-top") : $("#mem-anchor");
+      if (sec.previousElementSibling !== target) target.after(sec); }
+    $("#summary").hidden = showDetail; $("#detail").hidden = !showDetail;
+    if (showDetail) {
+      const byScore = globalRank;
+      const durTxt = (sec) => sec == null ? "—" : sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
+      const g1 = (n) => fmt(n, n < 10 ? 1 : 0);
+      const memTxt = (r) => { const mi = memInfo(r.d, pxM, pxP + CODE_TOKENS);
+        if (mi.state === "ok") return `${g1(mi.need)} / ${g1(mi.cap)} GB`;
+        if (mi.state === "spill") return `+${g1(mi.spill)} GB PC-RAM`;
+        if (mi.state === "wired") return `${g1(mi.need)} / ${g1(mi.cap)} GB*`;
+        return t.memNo(g1(mi.need)); };
+      // [Schlüssel, Wert-Funktion, Anzeige-Funktion, besser: 1 = höher, -1 = niedriger, 0 = kein Vergleich]
+      const ROWS = [
+        ["grp", state.showPrices ? "basics" : "hw"],
+        ...(state.showPrices ? [["sys", (r) => r.sp, (v) => eur(v), -1]] : []),
+        ["mem", (r) => r.d.mem, (v) => `${v} GB`, 1],
+        ["bw", (r) => r.d.bw, (v) => `${fmt(v)} GB/s`, 1],
+        ["grp", "score"],
+        ...(state.showPrices ? [["score", (r) => r.score, (v) => fmt(v), 1]] : []),
+        ["rank", (r) => byScore.indexOf(r) + 1, (v) => t.rankOf(v, rows.length), -1],
+        ["perf", (r) => r.perfN, (v) => fmt(v), 1],
+        ["fits", (r) => r.fitCount, (v) => `${v} / ${usedModels.length}`, 1],
+        ["grp", "px"],
+        ["tg", (r) => r.px.tg, (v) => `${fmtTok(v)} tok/s`, 1],
+        ["ttft", (r) => r.px.ttft, durTxt, -1],
+        ["code", (r) => r.px.code, durTxt, -1],
+        ["img", (r) => r.px.img, durTxt, -1],
+        ["grp", "mem"],
+        ["memuse", () => null, null, 0, memTxt]
+      ];
+      const cols = vis;
+      const head = `<tr><th></th>${cols.map((r) => `<th><span class="devrow"><span class="ico ${r.d.v}">${ICONS[r.d.kind]}</span><span>${esc(devLabel(r.d))}<br><span class="tag" style="margin:0">${VENDOR[r.d.v]} · ${r.d.ws ? t.ws : t.kinds[r.d.kind]}</span></span></span></th>`).join("")}${cols.length === 2 ? "<th></th>" : ""}</tr>`;
+      const body = ROWS.map((row) => {
+        if (row[0] === "grp") return `<tr class="grp"><td colspan="${cols.length + (cols.length === 2 ? 2 : 1)}">${t.dGroups[row[1]]}</td></tr>`;
+        const [key, val, show, dir, raw] = row;
+        const vals = cols.map((r) => val(r));
+        let win = -1, delta = "";
+        if (cols.length === 2 && dir && vals[0] != null && vals[1] != null && vals[0] !== vals[1]) {
+          win = (vals[0] > vals[1]) === (dir > 0) ? 0 : 1;
+          const hi = Math.max(vals[0], vals[1]), lo = Math.min(vals[0], vals[1]);
+          if (lo > 0 && key !== "rank") delta = t.faster(fmt(hi / lo, hi / lo < 10 ? 1 : 0));
+        }
+        const cells = cols.map((r, i) => {
+          const txt = raw ? raw(r) : vals[i] == null ? "—" : show(vals[i]);
+          return `<td class="v ${i === win ? "win" : ""}">${txt}</td>`;
+        }).join("");
+        return `<tr><td class="k">${t.dRows[key]}</td>${cells}${cols.length === 2 ? `<td class="d">${delta}</td>` : ""}</tr>`;
+      }).join("");
+      $("#detail").innerHTML = `<table><thead>${head}</thead><tbody>${body}</tbody></table><p class="hint" style="padding:0 14px 12px">${esc(t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>`;
+    }
+
+    // Ranking table
+    $("#rank-head").innerHTML = `<th>${t.th.rank}</th>` +
+      sortHead("rank", "name", t.th.name) + (state.showPrices ? sortHead("rank", "price", t.th.price, "num") : "") + sortHead("rank", "fits", t.th.fits) +
+      sortHead("rank", "perf", t.th.perf) + (state.showPrices ? sortHead("rank", "score", t.th.score) + "<th></th>" : "");
+    $("#rank tbody").innerHTML = visRank.map((r, i) => {
+      const d = r.d;
+      const dots = usedModels.map((m) => {
+        const inP = !!w[m.id]; const f = r.per[m.id].fits;
+        const tip = `${mName(m)}: ${f ? t.fitsYes : t.fitsNo} (${fmt(r.per[m.id].need, 1)} ${t.need}, ${fmt(usable(d), 1)} ${t.usable})${inP ? "" : " · " + t.notInProfile}`;
+        return `<span class="dot ${f ? "on" : ""} ${inP ? "sel" : ""}" title="${esc(tip)}"></span>`;
+      }).join("");
+      const edited = state.prices[d.id] != null;
+      const sub = `${d.mem} GB · ${fmt(d.bw)} GB/s` + (state.showPrices && d.kind === "gpu" && state.base ? ` · ${t.inclPc(fmt(state.baseCost))}` : "");
+      return `<tr class="${r.perf === 0 ? "zero" : ""}">
+        <td class="rank">${picked.length ? globalRank.indexOf(r) + 1 : i + 1}</td>
+        <td><div class="devrow"><span class="ico ${d.v}" title="${t.kinds[d.kind]}">${ICONS[d.kind]}</span><div class="dev"><b><span class="tag">${VENDOR[d.v]} · ${d.ws ? t.ws : t.kinds[d.kind]}</span>${esc(devLabel(d))}</b><span>${sub}</span></div></div></td>
+        ${state.showPrices ? `<td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d)}" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${d.est && !edited ? "est" : ""}">${edited ? t.src.own : srcText(d)}</span></td>` : ""}
+        <td><div class="dots" aria-label="${esc(t.fitsAria(r.fitCount, usedModels.length))}">${dots}</div></td>
+        <td><div class="barcell"><div class="track"><div class="fill ${state.showPrices ? "p" : ""}" style="width:${r.perfN.toFixed(1)}%"></div></div><span class="mono">${fmt(r.perfN)}</span></div></td>
+        ${state.showPrices ? `<td><div class="barcell"><div class="track"><div class="fill" style="width:${r.score.toFixed(1)}%"></div></div><span class="mono">${fmt(r.score)}</span></div></td>
+        <td><a class="ext" href="https://geizhals.at/?fs=${encodeURIComponent(d.q)}" target="_blank" rel="noopener">${t.prices}</a></td>` : ""}
+      </tr>`;
+    }).join("");
+
+    // Praxiswerte
+    const dur = (sec) => sec == null ? "—" : sec < 1 ? `${fmt(sec, 1)} s` : sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
+    $("#praxis thead").innerHTML = `<tr>${sortHead("px", "name", t.th.name)}${sortHead("px", "x:tg", t.pxTh.tg)}${sortHead("px", "x:ttft", t.pxTh.ttft)}${sortHead("px", "x:code", t.pxTh.code)}${sortHead("px", "x:img", t.pxTh.img)}</tr>`;
+    $("#praxis tbody").innerHTML = visPx.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(devLabel(r.d))}</span></td>
+      <td class="mono ${r.px.tg == null ? "na" : ""}">${r.px.tg == null ? "—" : fmtTok(r.px.tg)}</td>
+      <td class="mono ${r.px.ttft == null ? "na" : ""}">${dur(r.px.ttft)}</td>
+      <td class="mono ${r.px.code == null ? "na" : ""}">${dur(r.px.code)}</td>
+      <td class="mono ${r.px.img == null ? "na" : ""}">${dur(r.px.img)}</td></tr>`).join("");
+
+    // Speicherauslastung
+    {
+      const ctxM = pxP + CODE_TOKENS;
+      const SCALE = 1.5;   // Achse bis 150 % des nutzbaren Speichers
+      const g1 = (n) => fmt(n, n < 10 ? 1 : 0);
+      const pos = (frac) => `${(Math.min(frac, SCALE) / SCALE * 100).toFixed(2)}%`;
+      $("#mem-hint").textContent = t.memHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP) + " + 1,1k");
+      $("#memchart").setAttribute("aria-label", t.memAria(mName(pxM)));
+      $("#mem-legend").innerHTML = [["w", "var(--m-weights)"], ["kv", "var(--m-kv)"], ["ov", "var(--m-ov)"], ["spill", ""], ["nofit", ""]].map(([k, c]) =>
+        `<span><i class="${c ? "" : "seg " + k}" style="${c ? "background:" + c : ""}"></i>${t.memLeg[k]}</span>`).join("");
+      const head = `<div class="memhead"><span></span><div class="memaxis">${[0, 0.5, 1, 1.5].map((f) => `<span class="${f === 1 ? "lim" : ""}" style="left:${pos(f)}">${f === 1 ? t.memLimit : Math.round(f * 100) + " %"}</span>`).join("")}</div><span></span></div>`;
+      const rowsHtml = visRank.map((r) => {
+        const d = r.d, mi = memInfo(d, pxM, ctxM), cap = mi.cap;
+        // Segmente: Overhead, KV-Cache, Gewichte – an der Kapazitätsgrenze aufgeteilt
+        const parts = [["ov", mi.ov], ["kv", mi.kv], ["w", mi.w]];
+        let acc = 0; const segs = [];
+        parts.forEach(([k, gb]) => {
+          const inCap = Math.max(0, Math.min(gb, cap - acc));
+          if (inCap > 0) segs.push([k, inCap, false]);
+          if (gb - inCap > 0) segs.push([k, gb - inCap, true]);
+          acc += gb;
+        });
+        const total = mi.need, clipped = total / cap > SCALE;
+        const shown = Math.min(total, cap * SCALE);
+        const segHtml = segs.map(([k, gb, over]) => {
+          const cls = over ? (mi.state === "spill" ? "spill" : "nofit") : k;
+          const tip = `${t.memLeg[k]}${over ? " · " + t.memLeg[mi.state === "spill" ? "spill" : "nofit"] : ""}: ${g1(gb)} GB`;
+          return `<span class="seg ${cls}" style="flex:${gb.toFixed(3)} 1 0" data-tip="${esc(tip)}"></span>`;
+        }).join("");
+        let st, sub;
+        const pct = Math.round(total / cap * 100);
+        if (mi.state === "ok") { st = `<span class="st ok">${t.memOk(g1(total), g1(cap), pct)}</span>`; sub = t.memFree(g1(cap - total)) + (mi.unified ? " · " + t.memUnified(d.mem, osReserve(d)) : ""); }
+        else if (mi.state === "spill") { st = `<span class="st warn">${t.memSpill(g1(mi.spill))}</span>`; sub = t.memSpillTok(fmtTok(mi.tg)); }
+        else if (mi.state === "nosys") { st = `<span class="st bad">${t.memSpill(g1(mi.spill))}</span>`; sub = t.memSpillNo(state.sysRam); }
+        else if (mi.state === "wired") { st = `<span class="st warn">${t.memOk(g1(total), g1(cap), pct)}</span>`; sub = t.memWired; }
+        else { st = `<span class="st bad">${t.memNo(g1(total))}</span>`; sub = `${g1(cap)} GB ${t.memLimit}` + (mi.unified ? " · " + t.memUnified(d.mem, osReserve(d)) : ""); }
+        return `<div class="memrow">
+          <div class="memname"><span class="ico ${d.v}" style="width:24px;height:24px">${ICONS[d.kind]}</span><b title="${esc(devLabel(d))}">${esc(devLabel(d))}</b></div>
+          <div class="memtrack">
+            <div class="memcap" style="width:${pos(1)}"></div>
+            <div class="membar" style="width:${pos(shown / cap)}">${segHtml}</div>
+            <div class="memcapline" style="left:calc(${pos(1)} - 1px)"></div>
+            ${clipped ? '<span class="memclip">»</span>' : ""}
+          </div>
+          <div class="memval">${st}<small>${sub}</small></div>
+        </div>`;
+      }).join("");
+      $("#memchart").innerHTML = head + rowsHtml;
+    }
+
+    // Matrix
+    $("#matrix thead").innerHTML = `<tr>${sortHead("mx", "name", t.th.name)}${usedModels.map((m) =>
+      sortHead("mx", "m:" + m.id, `${esc(mName(m))}<small>${fmt(qm(m).gb, 0)} GB${w[m.id] ? " · " + t.inProfile : ""}</small>`)).join("")}</tr>`;
+    $("#matrix tbody").innerHTML = visMx.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(devLabel(r.d))}</span></td>${usedModels.map((m) => {
+      const c = r.per[m.id];
+      return c.fits ? `<td class="mono" title="${esc(t.ttft(fmt(c.pp), fmt(c.ttft, 1)))}">${fmtTok(c.tg)}<br><span class="na">${fmt(c.pp)}</span></td>` : `<td class="na">—</td>`;
+    }).join("")}</tr>`).join("");
+  }
+
+  $("#use").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.use = b.dataset.id;
+    if (!shownModels().some((m) => m.id === state.pxModel)) state.pxModel = useOf().def; persist(); render(); });
+  $("#llm").addEventListener("change", (e) => { state.pxModel = e.target.value; persist(); render(); });
+  $("#vendor").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.vendor = b.dataset.id; persist(); render(); });
+  $("#showprices").addEventListener("change", (e) => { state.showPrices = e.target.checked; persist(); render(); });
+  $("#quant").addEventListener("change", (e) => { state.quant = e.target.value; persist(); render(); });
+  $("#pick-prompt").addEventListener("change", (e) => { state.pxPrompt = +e.target.value; persist(); render(); });
+  $("#view").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.view = b.dataset.id; persist(); render(); });
+  document.querySelector(".pickrow").addEventListener("change", (e) => {
+    const sel = e.target.closest("select[data-slot]"); if (!sel) return;
+    const pk = state[sel.dataset.slot];
+    if (sel.dataset.part === "v") { pk.v = sel.value; pk.id = ""; } else pk.id = sel.value;
+    persist(); render();
+  });
+  $("#sysram").addEventListener("change", (e) => { state.sysRam = Math.max(0, +e.target.value || 0); persist(); render(); });
+  const tipEl = $("#tip");
+  document.addEventListener("mouseover", (e) => { const el = e.target.closest("[data-tip]"); if (!el) { tipEl.hidden = true; return; } tipEl.textContent = el.dataset.tip; tipEl.hidden = false; });
+  document.addEventListener("mousemove", (e) => { if (tipEl.hidden) return; const x = Math.min(e.clientX + 14, window.innerWidth - tipEl.offsetWidth - 8); tipEl.style.left = x + "px"; tipEl.style.top = (e.clientY + 16) + "px"; });
+  $("#px-prompt").addEventListener("change", (e) => { state.pxPrompt = +e.target.value; persist(); render(); });
+  $("#px-img").addEventListener("change", (e) => { state.pxImg = e.target.value; persist(); render(); });
+  $("#ctx").addEventListener("input", (e) => { state.ctx = +e.target.value; persist(); render(); });
+  $("#base").addEventListener("change", (e) => { state.base = e.target.checked; persist(); render(); });
+  $("#basecost").addEventListener("change", (e) => { state.baseCost = Math.max(0, +e.target.value || 0); persist(); render(); });
+  $("#wired").addEventListener("change", (e) => { state.wired = e.target.checked; persist(); render(); });
+  $("#reset").addEventListener("click", () => { state.prices = {}; persist(); render(); });
+  document.addEventListener("click", (e) => { const b = e.target.closest("button.sort"); if (b) setSort(b.dataset.table, b.dataset.sort); });
+  $("#rank").addEventListener("change", (e) => {
+    const inp = e.target.closest("input[data-id]"); if (!inp) return;
+    const v = +inp.value; const d = DEVICES.find((x) => x.id === inp.dataset.id);
+    if (!(v > 0) || v === d.price) delete state.prices[d.id]; else state.prices[d.id] = v;
+    persist(); render();
+  });
+
+  function ddmm(iso) { const d = new Date(iso); return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.`; }
+  async function load() {
+    try {
+      const [dv, pr] = await Promise.all([
+        fetch("/data/devices.json", { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+        fetch("/data/prices.json", { cache: "no-cache" }).then((r) => r.ok ? r.json() : { prices: {} }).catch(() => ({ prices: {} }))
+      ]);
+      UPDATED = pr.updatedAt || null;
+      DEVICES = dv.devices.map((d) => {
+        const p = pr.prices && pr.prices[d.id];
+        if (!p) return d;
+        return Object.assign({}, d, { price: p.price, est: false, src: p.metric === "median3m" ? ["med"] : p.metric === "manual" ? ["man", `${p.note ? p.note + " " : ""}${ddmm(p.asOf)}`] : ["gp", ddmm(p.asOf)] });
+      });
+      renderStatic(); render();
+    } catch (e) {
+      $("#summary").innerHTML = `<div class="sum"><span class="k">Fehler / Error</span><span class="v">Daten nicht geladen</span><span class="s">data/devices.json fehlt oder die Seite wurde direkt als Datei geöffnet. Lokal mit „npm run dev“ starten.</span></div>`;
+    }
+  }
+  load();
+})();
+</script>
+</body>
+</html>
