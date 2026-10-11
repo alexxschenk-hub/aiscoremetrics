@@ -247,6 +247,7 @@ footer { font-size: 12.5px; color: var(--muted); }
   </div>
 
   <div class="summary" id="summary" aria-live="polite"></div>
+  <span id="mem-top" hidden></span>
   <div class="detail" id="detail" hidden></div>
 
   <div class="tablebox">
@@ -267,7 +268,8 @@ footer { font-size: 12.5px; color: var(--muted); }
     <div class="tablebox"><table class="matrix" id="praxis"><thead></thead><tbody></tbody></table></div>
   </div>
 
-  <div style="display:grid;gap:10px">
+  <span id="mem-anchor" hidden></span>
+  <div style="display:grid;gap:10px" id="mem-section">
     <h2 data-i="memTitle"></h2>
     <p class="hint" id="mem-hint"></p>
     <div class="memlegend" id="mem-legend"></div>
@@ -762,6 +764,9 @@ Score     = Perf / system price   (best device = 100)</div>
     const globalRank = [...rows].sort((a, b) => state.showPrices ? b.score - a.score : b.perf - a.perf);
     // Einzelgerät / Vergleich
     const showDetail = picked.length > 0;
+    // Speicherauslastung bei Einzelgerät und Vergleich ganz oben, vor der Detailtabelle
+    { const sec = $("#mem-section"), target = showDetail ? $("#mem-top") : $("#mem-anchor");
+      if (sec.previousElementSibling !== target) target.after(sec); }
     $("#summary").hidden = showDetail; $("#detail").hidden = !showDetail;
     if (showDetail) {
       const byScore = globalRank;
