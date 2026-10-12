@@ -113,7 +113,7 @@ th .arr { font-family: var(--f-mono); font-size: 11px; width: 10px; display: inl
 .calib th:first-child, .calib td:first-child { text-align: left; }
 .eyebrow { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; color: var(--accent); }
 h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(30px, 5vw, 44px); line-height: 1; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
-.lede { margin: 0; color: var(--muted); max-width: 68ch; }
+.lede { margin: 0; color: var(--muted); max-width: none; }
 h2 { font-family: var(--f-display); font-weight: 600; font-size: 20px; margin: 0; letter-spacing: .01em; }
 .controls { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 14px; }
 .row { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: end; }
@@ -301,7 +301,16 @@ a.ext:hover { text-decoration: underline; }
 .verdict.tie .v-side, .verdict.tie .v-mid { background: color-mix(in srgb, var(--warn) 16%, var(--surface)); color: var(--ink); }
 .verdict.tie .v-badge { background: var(--warn); color: var(--surface); }
 @media (max-width: 640px) { .verdict .v-head { grid-template-columns: minmax(0, 1fr); } .verdict .v-mid { padding: 10px; } .v-share, .share-btn { width: 100%; } .share-btn { justify-content: center; } }
-.detail tr.grp td { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--accent); padding-top: 14px; border-bottom: 1px solid var(--line); }
+.detail tr.grp td { font-family: var(--f-display); font-weight: 700; text-transform: uppercase; letter-spacing: .07em; font-size: 12.5px; color: var(--ink); padding: 14px 14px 8px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 60%, var(--surface)); }
+.detail .grp-h { display: inline-flex; align-items: center; gap: 8px; }
+.detail .grp-ico { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; background: var(--surface); border: 1px solid var(--line); font: 13px/1 var(--f-body); text-transform: none; letter-spacing: 0; }
+.detail tbody tr:not(.grp) td.k { padding-left: 46px; }
+/* Bereiche als Karten mit Symbol-Überschrift */
+.panel { display: grid; gap: 10px; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px 16px; }
+.sec-h { display: flex; align-items: center; gap: 10px; margin: 0; }
+.sec-ico { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 7px; background: var(--bg); border: 1px solid var(--line); font: 16px/1 var(--f-body); }
+.verdict .panel { border: 0; border-radius: 0; padding: 0; background: none; }
+@media (max-width: 520px) { .panel { padding: 12px; } .detail tbody tr:not(.grp) td.k { padding-left: 14px; } }
 .memhead, .memrow { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr) minmax(190px, 250px); gap: 12px; align-items: center; }
 .memchart { display: grid; gap: 7px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; }
 .memhead { font-size: 11.5px; color: var(--muted); font-family: var(--f-mono); }
@@ -453,46 +462,49 @@ footer { font-size: 12.5px; color: var(--muted); }
     <span class="hint" id="share-status" role="status" aria-live="polite"></span>
     <label id="share-link-label" hidden><span data-i="shareLink"></span><input id="share-link" type="text" readonly></label>
   </div>
-  <div class="summary" id="summary" aria-live="polite"></div>
   <span id="mem-top" hidden></span>
   <div class="detail" id="detail" hidden></div>
-  <section class="cmp-extras" id="cmp-extras" hidden>
-    <h2 id="cmp-extras-title" data-i="cmpExtrasTitle"></h2>
+  <section class="cmp-extras panel" id="cmp-extras" hidden>
+    <h2 class="sec-h"><span class="sec-ico" id="cmp-extras-ico" aria-hidden="true">🧪</span><span id="cmp-extras-title"></span></h2>
     <div class="summary" id="compare-gains" hidden aria-live="polite"></div>
     <p class="hint" id="evidence-note"></p>
   </section>
 
-  <div class="tablebox">
-    <table id="rank">
-      <thead><tr id="rank-head"></tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
+  <section class="panel" id="rank-panel">
+    <h2 class="sec-h"><span class="sec-ico" aria-hidden="true">🏆</span><span data-i="rankTitle"></span></h2>
+    <div class="summary" id="summary" aria-live="polite"></div>
+    <div class="tablebox">
+      <table id="rank">
+        <thead><tr id="rank-head"></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
 
-  <div style="display:grid;gap:10px">
-    <h2 data-i="pxTitle"></h2>
+  <section class="panel">
+    <h2 class="sec-h"><span class="sec-ico" aria-hidden="true">🚀</span><span data-i="pxTitle"></span></h2>
     <p class="hint" data-i="pxHint"></p>
     <div class="row">
       <div class="field"><label class="lab" for="px-prompt" data-i="pxPrompt"></label><select id="px-prompt"></select></div>
       <div class="field"><label class="lab" for="px-img" data-i="pxImg"></label><select id="px-img"></select></div>
     </div>
     <div class="tablebox"><table class="matrix" id="praxis"><thead></thead><tbody></tbody></table></div>
-  </div>
+  </section>
 
   <span id="mem-anchor" hidden></span>
-  <div style="display:grid;gap:10px" id="mem-section">
-    <h2 data-i="memTitle"></h2>
+  <section class="panel" id="mem-section">
+    <h2 class="sec-h"><span class="sec-ico" aria-hidden="true">📊</span><span data-i="memTitle"></span></h2>
     <p class="hint" id="mem-hint"></p>
     <div class="memlegend" id="mem-legend"></div>
     <div class="memchart" id="memchart" role="img"></div>
-  </div>
+  </section>
   <div id="tip" hidden></div>
 
-  <div style="display:grid;gap:10px">
-    <h2 data-i="mTitle"></h2>
+  <section class="panel">
+    <h2 class="sec-h"><span class="sec-ico" aria-hidden="true">📈</span><span data-i="mTitle"></span></h2>
     <p class="hint" data-i="mHint"></p>
     <div class="tablebox"><table class="matrix" id="matrix"><thead></thead><tbody></tbody></table></div>
-  </div>
+  </section>
 
   <div class="method" id="method"></div>
 
@@ -932,8 +944,9 @@ Score = Perf / system price   (best device = 100)</div>
         hintPrices: "Preise sind editierbar und bleiben in deinem Browser gespeichert. US-Dollar: Apple- und Hersteller-Listenpreise USA ohne Sales Tax; alle anderen Preise aus Euro umgerechnet (ohne 19 % MwSt., EZB-Kurs vom 12.10.2026) und orange markiert." },
       elPrice: "Strompreis", showPower: "Stromverbrauch im Ranking", wattTip: (tdp, sys) => `TDP ${tdp} W, ganzes System unter LLM-Last ca. ${sys} W`,
       costTip: (h, p) => `Stromkosten pro Jahr bei ${h} h/Tag und ${p} €/kWh`,
-      dGroups: { energy: "Energie", intel: "Modell-Intelligenz", hw: "Hardware", basics: "Hardware & Preis", score: "Bewertung im Profil", px: "Praxiswerte", mem: "Speicher" },
-      dRows: { runs: "Modell lauffähig", power: "Leistungsaufnahme", cost8: "Stromkosten/Jahr (8 h/Tag)", cost24: "Stromkosten/Jahr (24/7)", eff: "Effizienz", tco: "Gesamtkosten 3 Jahre", eciSame: "Modell (beide gleich)", eciDev: "Modell je Gerät", sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
+      dGroups: { overview: "Übersicht", hw: "Speicher & Bandbreite", intel: "Modell-Intelligenz", score: "Bewertung im Profil", px: "Geschätzte Leistung", energy: "Energie & Effizienz", mem: "Speicherbelegung" },
+      rankTitle: "Ranking", noteTitle: "Hinweis",
+      dRows: { vtype: "Hersteller · Typ", backend: "Backend", runs: "Modell lauffähig", power: "Leistungsaufnahme", cost8: "Stromkosten/Jahr (8 h/Tag)", cost24: "Stromkosten/Jahr (24/7)", eff: "Effizienz", tco: "Gesamtkosten 3 Jahre", eciSame: "Modell (beide gleich)", eciDev: "Modell je Gerät", sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
       rankOf: (a, b) => `${a} von ${b}`,
       faster: (x) => `${x}× besser`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} Modelle zur Auswahl. Gerechnet wird mit <b>${m}</b> (${ex}): braucht ≈ <b>${need} GB</b> Speicher bei ${c} Kontext und ${q} und passt auf <b>${k} von ${total}</b> Geräten. Ein anderer Einsatzzweck oder ein anderes Modell ändert Speicherbedarf und Ranking.`,
@@ -1096,8 +1109,9 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
         hintPrices: "Prices are editable and stay saved in your browser. US dollars: Apple and vendor US list prices before sales tax; all other prices converted from euros (excluding 19% VAT, ECB rate of 12 Oct 2026) and marked in orange." },
       elPrice: "Electricity", showPower: "Power use in ranking", wattTip: (tdp, sys) => `TDP ${tdp} W, whole system under LLM load about ${sys} W`,
       costTip: (h, p) => `Electricity cost per year at ${h} h/day and €${p}/kWh`,
-      dGroups: { energy: "Energy", intel: "Model intelligence", hw: "Hardware", basics: "Hardware & price", score: "Rating in this use case", px: "Real-world numbers", mem: "Memory" },
-      dRows: { runs: "Model runs", power: "Power draw", cost8: "Electricity/year (8 h/day)", cost24: "Electricity/year (24/7)", eff: "Efficiency", tco: "Total cost, 3 years", eciSame: "Model (same for both)", eciDev: "Model per device", sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
+      dGroups: { overview: "Overview", hw: "Memory & bandwidth", intel: "Model intelligence", score: "Rating in this use case", px: "Estimated performance", energy: "Energy & efficiency", mem: "Memory usage" },
+      rankTitle: "Ranking", noteTitle: "Note",
+      dRows: { vtype: "Vendor · type", backend: "Backend", runs: "Model runs", power: "Power draw", cost8: "Electricity/year (8 h/day)", cost24: "Electricity/year (24/7)", eff: "Efficiency", tco: "Total cost, 3 years", eciSame: "Model (same for both)", eciDev: "Model per device", sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
       rankOf: (a, b) => `${a} of ${b}`,
       faster: (x) => `${x}× better`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} models to choose from. Calculated with <b>${m}</b> (${ex}): needs ≈ <b>${need} GB</b> of memory at ${c} context and ${q}, and fits on <b>${k} of ${total}</b> devices. A different use case or model changes the memory need and the ranking.`,
@@ -1644,7 +1658,8 @@ Score     = Perf / system price   (best device = 100)</div>
       if (sec.previousElementSibling !== target) target.after(sec); }
     $("#summary").hidden = showDetail; $("#detail").hidden = !showDetail;
     // Praxisszenarien (Erster Token, 100 Zeilen Code, Systemkosten, Hinweis) unter der Tabelle; Überschrift nur im Vergleich
-    $("#cmp-extras").hidden = !showDetail; $("#cmp-extras-title").hidden = !compareReady;
+    $("#cmp-extras").hidden = !showDetail;
+    $("#cmp-extras-title").textContent = compareReady ? t.cmpExtrasTitle : t.noteTitle; $("#cmp-extras-ico").textContent = compareReady ? "🧪" : "ℹ️";
     if (showDetail) {
       const byScore = globalRank;
       const durTxt = (sec) => sec == null ? "—" : sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
@@ -1659,9 +1674,12 @@ Score     = Perf / system price   (best device = 100)</div>
         if (mi.state === "wired") return `${g1(mi.need)} / ${g1(mi.cap)} GB*`;
         return t.memNo(g1(mi.need)); };
       // [Schlüssel, Wert-Funktion, Anzeige-Funktion, besser: 1 = höher, -1 = niedriger, 0 = kein Vergleich]
-      const ROWS = [
-        ["grp", state.showPrices ? "basics" : "hw"],
+      const single = vis.length === 1;
+      const ROWS_ALL = [
+        ["grp", "overview"],
+        ...(single ? [["vtype", () => null, null, 0, (r) => `${VENDOR[r.d.v]} · ${devKind(r.d)}`], ["backend", () => null, null, 0, (r) => backendOf(r.d)]] : []),
         ...(state.showPrices ? [["sys", (r) => r.sp, (v) => eur(v), -1]] : []),
+        ["grp", "hw"],
         ["mem", (r) => r.d.mem, (v) => `${v} GB`, 1],
         ["bw", (r) => r.d.bw, (v) => `${fmt(v)} GB/s`, 1],
         ["runs", (r) => r.px.tg != null ? 1 : 0, null, 1, (r) => {
@@ -1669,15 +1687,15 @@ Score     = Perf / system price   (best device = 100)</div>
           const mi = memInfo(r.d, modelFor(r.d), Math.max(ctx, pxP + CODE_TOKENS)), g1 = (n) => fmt(n, n < 10 ? 1 : 0);
           const why = mi.state === "wired" ? t.memWired : mi.state === "spill" ? t.memSpill(g1(mi.spill)) : t.memNo(g1(mi.need));
           return `<span class="runs-no">${t.runsNo}</span><small class="sub">${esc(mName(modelFor(r.d)))} · ${esc(why)}</small>`; }],
+        ["grp", "intel"],
+        ...(cmpPer
+          ? [["eciDev", (r) => r.px.tg != null ? eciOf(modelFor(r.d))?.adj ?? null : null, null, 1, (r) => { const m = modelFor(r.d); return `<span class="eci-name">${esc(mName(m))}</span>` + (r.px.tg != null ? eciBar(m, true) : `<span class="na">${t.fitsNo}</span>`); }]]
+          : [["eciSame", (r) => r.px.tg != null ? eciOf(pxM)?.adj ?? null : null, null, 0, (r) => `<span class="eci-name">${esc(mName(pxM))}</span>` + (r.px.tg != null ? eciBar(pxM, true) : `<span class="na">${t.fitsNo}</span>`)]]),
         ["grp", "score"],
         ...(state.showPrices ? [["score", (r) => r.sp > 0 ? r.score : null, (v) => fmt(v), 1]] : []),
         ["rank", (r) => state.showPrices && !(r.sp > 0) ? null : byScore.indexOf(r) + 1, (v) => t.rankOf(v, rows.length), -1],
         ["perf", (r) => r.perfN, (v) => fmt(v), 1],
         ["fits", (r) => r.fitCount, (v) => `${v} / ${usedModels.length}`, 1],
-        ["grp", "intel"],
-        ...(cmpPer
-          ? [["eciDev", (r) => r.px.tg != null ? eciOf(modelFor(r.d))?.adj ?? null : null, null, 1, (r) => { const m = modelFor(r.d); return `<span class="eci-name">${esc(mName(m))}</span>` + (r.px.tg != null ? eciBar(m, true) : `<span class="na">${t.fitsNo}</span>`); }]]
-          : [["eciSame", (r) => r.px.tg != null ? eciOf(pxM)?.adj ?? null : null, null, 0, (r) => `<span class="eci-name">${esc(mName(pxM))}</span>` + (r.px.tg != null ? eciBar(pxM, true) : `<span class="na">${t.fitsNo}</span>`)]]),
         ["grp", "px"],
         ["tg", (r) => r.px.tg, (v) => `${fmtTok(v)} tok/s`, 1],
         ["ttft", (r) => r.px.ttft, durTxt, -1],
@@ -1692,6 +1710,8 @@ Score     = Perf / system price   (best device = 100)</div>
         ["grp", "mem"],
         ["memuse", () => null, null, 0, memTxt]
       ];
+      const ROWS = ROWS_ALL.filter((r, i, a) => r[0] !== "grp" || (a[i + 1] && a[i + 1][0] !== "grp"));   // leere Gruppen weglassen
+      const GRP_ICO = { overview: "📋", hw: "💾", intel: "🧠", score: "🏅", px: "🚀", energy: "⚡", mem: "📊" };
       const cols = vis;
       // Speicher im Vergleich: passt das Modell (inkl. KV-Cache für den eingestellten Kontext) auf beide Geräte,
       // bringt zusätzlicher RAM nur etwas, wenn ein Gerät knapp ist (< 2 GB frei). Sonst kein Speicher-Punkt.
@@ -1707,7 +1727,7 @@ Score     = Perf / system price   (best device = 100)</div>
       }
       const head = `<tr><th></th>${cols.map((r) => `<th><span class="devrow"><span class="ico ${r.d.v}">${ICONS[r.d.kind]}</span><span>${esc(devLabel(r.d))}<br><span class="tag" style="margin:0">${VENDOR[r.d.v]} · ${devKind(r.d)}</span><br><small class="evidence-badge" title="${esc(t.unmeasured)}">${t.estimate} · ${backendOf(r.d)}<br>${t.assumed}</small>${cmpPer ? `<br><small class="col-model">${esc(t.cmpModelOf(mName(modelFor(r.d))))}</small>` : ""}</span></span></th>`).join("")}${cols.length === 2 ? `<th class="dhead">${t.deltaHead}</th>` : ""}</tr>`;
       const body = ROWS.map((row) => {
-        if (row[0] === "grp") return `<tr class="grp"><td colspan="${cols.length + (cols.length === 2 ? 2 : 1)}">${t.dGroups[row[1]]}</td></tr>`;
+        if (row[0] === "grp") return `<tr class="grp"><td colspan="${cols.length + (cols.length === 2 ? 2 : 1)}"><span class="grp-h"><span class="grp-ico" aria-hidden="true">${GRP_ICO[row[1]] || ""}</span>${t.dGroups[row[1]]}</span></td></tr>`;
         const [key, val, show, dir, raw] = row;
         const vals = cols.map((r) => val(r));
         let win = -1, delta = "";
@@ -1727,7 +1747,7 @@ Score     = Perf / system price   (best device = 100)</div>
           return `<td class="v ${i === win ? "win" : ""}">${txt}</td>`;
         }).join("");
         const deltaCell = key === "mem" && memRule ? `<span class="mem-why${memRule.win < 0 ? " same" : ""}">${esc(memRule.text)}</span>${memRule.win >= 0 && !memRule.named ? `<small>${esc(t.deltaFor(devLabel(cols[memRule.win].d)))}</small>` : ""}` : key === "eciSame" && cols.length === 2 ? `<span class="same">${t.eciSame}</span>` : delta ? `${delta}<small>${esc(t.deltaFor(devLabel(cols[win].d)))}</small>` : "";
-        const calcRow = !FACT_KEYS.includes(key) && key !== "eciSame";
+        const calcRow = !FACT_KEYS.includes(key) && !["eciSame", "vtype", "backend"].includes(key);
         const mark = ENERGY_KEYS.includes(key) ? ["⚡", t.energyMark] : ["≈", t.calcMark];
         return `<tr data-k="${key}"${calcRow ? ' class="calc"' : ""}><td class="k">${calcRow ? `<span class="approx" title="${esc(mark[1])}" aria-label="${esc(mark[1])}">${mark[0]}</span>` : ""}${t.dRows[key]}</td>${cells}${cols.length === 2 ? `<td class="d">${deltaCell}</td>` : ""}</tr>`;
       }).join("");
