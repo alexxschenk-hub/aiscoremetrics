@@ -705,6 +705,40 @@ footer { font-size: 12.5px; color: var(--muted); }
     { id: "dsv4pro",   name: "DeepSeek V4 Pro",     tp: 1600,ap: 49,   eff: 0.55, bpw: 4.25, gb: 850, agb: 26.0, kv: 0.008, use: ["large"] },
     { id: "kimik3",    name: "Kimi K3",             tp: 2800,ap: 104,  eff: 0.55, bpw: 4.31, gb: 1509, agb: 56.0, kv: 0.028, use: ["large"] }
   ];
+  // Bild- und Videomodelle (Einsatzzweck "media"): rechenleistungsgebunden, Zeit pro Bild bzw. Clip.
+  // gb = Spitzen-Speicherbedarf im typischen ComfyUI-Setup (Textencoder nach dem Encodieren ausgelagert),
+  // ref = Sekunden auf einer RTX 4090 (Messungen auf anderen Karten über den Rechenindex umgerechnet). Quellen: docs/media-research.md
+  const MEDIA = [
+    { id: "sdxl",     name: "SDXL",                 tp: 3.5, media: "img", prec: "FP16",     steps: 30, out: "1024²",          gb: 8,    ref: 4.5 },
+    { id: "flux2k4",  name: "FLUX.2 klein 4B",      tp: 4,   media: "img", prec: "BF16",     steps: 4,  out: "1024²",          gb: 10,   ref: 1, est: true },
+    { id: "flux2k9",  name: "FLUX.2 klein 9B",      tp: 9,   media: "img", prec: "FP8",      steps: 4,  out: "1024²",          gb: 11.5, ref: 2, est: true },
+    { id: "zimgt",    name: "Z-Image Turbo",        tp: 6,   media: "img", prec: "BF16",     steps: 8,  out: "1024²",          gb: 14.5, ref: 3, est: true },
+    { id: "fluxs",    name: "FLUX.1 schnell",       tp: 12,  media: "img", prec: "FP8",      steps: 4,  out: "1024²",          gb: 14,   ref: 2.2 },
+    { id: "fluxd",    name: "FLUX.1 dev",           tp: 12,  media: "img", prec: "FP8",      steps: 28, out: "1024²",          gb: 14,   ref: 14 },
+    { id: "hidreamd", name: "HiDream-I1 Dev",       tp: 17,  media: "img", prec: "FP8",      steps: 28, out: "1024²",          gb: 21,   ref: 20 },
+    { id: "hidreamf", name: "HiDream-I1 Full",      tp: 17,  media: "img", prec: "FP8",      steps: 50, out: "1024²",          gb: 21,   ref: 74 },
+    { id: "qwenimg",  name: "Qwen-Image",           tp: 20,  media: "img", prec: "FP8",      steps: 20, out: "1024²",          gb: 23,   ref: 25, est: true },
+    { id: "flux2d",   name: "FLUX.2 dev",           tp: 32,  media: "img", prec: "Q4 GGUF",  steps: 28, out: "1024²",          gb: 22.5, ref: 56, est: true },
+    { id: "ltxv2b",   name: "LTX-Video 2B",         tp: 2,   media: "vid", prec: "BF16",              out: "768×512 · 5 s",  gb: 10,   ref: 7 },
+    { id: "wan22_5",  name: "Wan 2.2 TI2V 5B",      tp: 5,   media: "vid", prec: "FP16",              out: "720p · 5 s",     gb: 12,   ref: 540, vendorTime: true },
+    { id: "cogvx5",   name: "CogVideoX 5B",         tp: 5,   media: "vid", prec: "FP8",               out: "720×480 · 6 s",  gb: 18,   ref: 190 },
+    { id: "hunyuan15",name: "HunyuanVideo 1.5",     tp: 8.3, media: "vid", prec: "FP8",               out: "720p · 5 s",     gb: 22,   ref: 230 },
+    { id: "wan22_14", name: "Wan 2.2 A14B",         tp: 27,  media: "vid", prec: "FP8",               out: "720p · 5 s",     gb: 16,   ref: 160, moe: 14 },
+    { id: "ltx25",    name: "LTX-2.5 22B (+Audio)", tp: 22,  media: "vid", prec: "INT8",     steps: 8,  out: "720p · 5 s",     gb: 22.7, ref: 39, est: true },
+    { id: "h3",       name: "MiniMax H3 (+Audio)",  tp: 33.1,media: "vid", prec: "INT8/NVFP4", steps: 10, out: "480p · 10 s",  gb: 28,   ref: 222 }
+  ];
+  const MEDIA_SRC = {
+    "https://localaimaster.com/tools/image-model-vram-calculator": ["flux2k4", "flux2k9", "zimgt", "qwenimg", "flux2d"],
+    "https://insiderllm.com/guides/flux-locally-complete-guide/": ["fluxs", "fluxd"],
+    "https://www.instasd.com/post/hidream-performance-benchmarks-in-comfyui": ["hidreamd", "hidreamf"],
+    "https://dev.to/thurmon_demich/rtx-5090-vs-4090-for-video-gen-in-2026-32gb-matters-k3i": ["ltxv2b", "cogvx5", "hunyuan15", "wan22_14"],
+    "https://localaimaster.com/blog/wan-vram-requirements-by-gpu": ["wan22_5"],
+    "https://runaihome.com/blog/ltx-2-5-local-ai-video-hardware-guide-2026/": ["ltx25"],
+    "https://ai-muninn.com/en/blog/minimax-h3-nvfp4-rtx5090": ["h3"]
+  };
+  MEDIA.forEach((m) => { m.use = ["media"]; m.ap = m.agb = 0; m.dense = true;
+    m.src = Object.keys(MEDIA_SRC).find((u) => MEDIA_SRC[u].includes(m.id)) || null; });
+  MODELS.push(...MEDIA);
   // Einsatzzweck filtert die Modellauswahl; alpha gewichtet Generierung gegen Prompt-Verarbeitung
   // Epoch Capabilities Index: epoch.ai/data/eci_scores.csv, Stand 11.10.2026 (Wert, 90-%-Intervall, Name bei Epoch).
   // Modelle ohne eigenen Epoch-Eintrag bekommen bewusst keinen Wert (benchmark: null).
@@ -734,7 +768,8 @@ footer { font-size: 12.5px; color: var(--muted); }
     { id: "all",    alpha: 0.6, def: "moe30" },
     { id: "coding", alpha: 0.5, def: "moe30" },
     { id: "chat",   alpha: 0.8, def: "qwen36_27" },
-    { id: "large",  alpha: 0.6, def: "moe120" }
+    { id: "large",  alpha: 0.6, def: "moe120" },
+    { id: "media",  alpha: 0.5, def: "fluxd" }
   ];
   const CTX = [4096, 8192, 16384, 32768, 65536, 131072];
   // Quantisierungen: Bits pro Gewicht inkl. Skalierungsfaktoren (GGUF-Richtwerte)
@@ -750,20 +785,18 @@ footer { font-size: 12.5px; color: var(--muted); }
   ];
   const QBASE = 4.85;   // Basis der Modellgrößen in MODELS (Q4_K_M), gpt-oss-120b: natives MXFP4
   function qm(m) {
+    if (m.media) return m;   // Bild/Video: feste Präzision je Modell
     const q = QUANTS.find((x) => x.id === state.quant) || QUANTS[2];
     const f = q.id === "q4_0" && m.qatGb ? m.qatGb / m.gb : m.bpw && q.id === "q4" ? 1 : q.bpw / (m.bpw || QBASE);   // gpt-oss: bei Q4 das native MXFP4
     return f === 1 ? m : Object.assign({}, m, { gb: m.gb * f, agb: m.agb * f });
   }
   const PROMPTS = [1024, 4096, 16384, 32768, 65536];
   const CODE_TOKENS = 1100;   // 100 Zeilen Code ≈ 11 Tokens pro Zeile
-  // Bildmodelle: Referenzzeit auf RTX 4090 bei 1024×1024, Speicherbedarf in GB
-  const IMG = [
-    { id: "sdxl",   name: "SDXL · 30 Schritte",           gb: 8,  ref: 4.5 },
-    { id: "fluxs",  name: "FLUX.1 schnell FP8 · 4 Schritte", gb: 14, ref: 2.2 },
-    { id: "fluxd",  name: "FLUX.1 dev FP8 · 28 Schritte",  gb: 14, ref: 14 }
-  ];
+  // Bildmodelle für die Spalte "1 Bild" in den Praxiswerten (gleiche Daten wie im Einsatzzweck Image & Video)
+  const IMG = MEDIA.filter((m) => m.media === "img").map((m) => ({ id: m.id, name: `${m.name} ${m.prec} · ${m.steps} Schritte`, gb: m.gb, ref: m.ref }));
   const IMG_REF_INDEX = 330 * 0.5;                     // Rechenindex RTX 4090
   const IMG_VENDOR = { nvidia: 1, amd: 1.7, apple: 2.1 }; // kalibriert an typischen SDXL-Zeiten je Plattform
+  const mediaSec = (d, m) => m.ref * IMG_REF_INDEX / (d.tf * d.etaC * d.pf * (IMG_VENDOR[d.v] || 1));
   const N = "nvidia", A = "apple", AM = "amd", IN = "intel";
   const VENDOR = { nvidia: "NVIDIA", amd: "AMD", intel: "Intel", apple: "Apple" };
   // tf: NVIDIA = FP16 tensor dense (Blackwell AI TOPS/8, Ada /4), Apple = GPU FP32. pf = prefill factor (M5 Neural Accelerators).
@@ -794,7 +827,16 @@ footer { font-size: 12.5px; color: var(--muted); }
       hint: "Klick auf eine Spaltenüberschrift sortiert, ein zweiter Klick dreht die Reihenfolge um.",
       hintPrices: "Preise sind editierbar und bleiben in deinem Browser gespeichert. Orange markierte Preise sind Schätzungen. Preise gelten für Deutschland in Euro. Leere Felder zählen nicht zur Preis-Leistung. Bei Notebook- und Server-GPUs bitte den kompletten Systempreis eingeben; der PC-Aufpreis gilt nur für Desktopkarten.",
       showPrices: "Preise und Preis-Leistung einblenden (Deutschland, EUR)",
-      uses: { all: "Alle Modelle", coding: "Agentic Coding", chat: "Chat & Assistenz", large: "Große Modelle" }, useLab: "Einsatzzweck", active: "aktiv",
+      uses: { all: "Alle Modelle", coding: "Agentic Coding", chat: "Chat & Assistenz", large: "Große Modelle", media: "Image & Video" },
+      steps: "Schritte", perOut: { img: "pro Bild", vid: "pro Clip" }, perH: { img: "Bilder/h", vid: "Clips/h" },
+      useModelMedia: (u, n, m, ex, need, k, total) => `${u} → ${n} Bild- und Videomodelle. Gerechnet wird mit <b>${m}</b> (${ex}): braucht ≈ <b>${need} GB</b> Speicher und passt auf <b>${k} von ${total}</b> Geräten. Bild- und Videogenerierung hängt vor allem an der Rechenleistung, kaum an der Speicherbandbreite.`,
+      noneFitsMedia: "Kein Gerät hat genug Speicher für dieses Modell",
+      memHintMedia: (m) => `${m}. Spitzenbedarf beim Generieren (Modell + Zwischenwerte; Textencoder nach dem Encodieren ausgelagert). 100 % ist der nutzbare Grafikspeicher, bei Macs und Mini-PCs der für die GPU freigegebene Teil. Grafikkarten können per Block-Swap in den PC-RAM auslagern, das kostet aber viel Tempo.`,
+      memSpillMedia: "Block-Swap in den PC-RAM möglich, deutlich langsamer", memLegMediaW: "Modell + Zwischenwerte",
+      gainOut: "Zeit pro Bild/Clip", pxThMedia: { out: "Zeit pro Bild/Clip", perh: "Pro Stunde" },
+      pxHintMedia: "Geschätzte Dauer für ein Bild bzw. einen Videoclip mit dem oben gewählten Modell (Auflösung, Länge und Schritte stehen beim Modell). Grundlage sind Messungen auf RTX 4090/5090 in ComfyUI, hochgerechnet über die Rechenleistung. Für Macs und AMD sind die Werte besonders unsicher.",
+      dHintMedia: (m) => `Geschätzte Werte für ${m}. Platz und Score beziehen sich auf alle Geräte für dieses Modell.`,
+      mediaSrc: "Quelle", mediaEst: "Zeit grob geschätzt (Herstellerangabe oder Rechner, keine Messung)", mediaVendor: "Zeit laut Hersteller mit dem Original-Skript, in ComfyUI meist deutlich schneller", mediaApi: "MiniMax Hailuo 02 und Image-01 gibt es nur per API, lokal läuft nur H3.", useLab: "Einsatzzweck", active: "aktiv",
       dense: "dicht", effective: "effektiv",
       th: { watt: "Watt", cost: "€/Jahr", rank: "#", name: "Gerät", price: "Systempreis €", fits: "Modelle passen", perf: "Leistung", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini-PC" },
@@ -815,7 +857,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       pxTitle: "Praxiswerte",
       pxHint: "Was du beim Arbeiten spürst: Geschwindigkeit beim Schreiben, Wartezeit bis zum ersten Wort, Dauer für 100 Zeilen Code (ca. 1.100 Tokens) und für ein Bild mit 1024 × 1024 Pixeln. Hochgerechnete Schätzwerte, Die Genauigkeit hängt von Backend, Modell und Hardware ab.",
       pxModel: "Textmodell", pxPrompt: "Prompt-Länge", pxImg: "Bildmodell",
-      sysram: "PC-RAM", ws: "Workstation", quant: "Quantisierung", pickLlm: "LLM-Modell",
+      sysram: "PC-RAM", ws: "Workstation", quant: "Quantisierung", pickLlm: "LLM-Modell", pickMedia: "Bild-/Videomodell", mHintMedia: "Obere Zahl: geschätzte Zeit pro Bild bzw. Clip. Untere Zahl: Bilder bzw. Clips pro Stunde. „—“ heißt: passt nicht in den Speicher. Spalten sind sortierbar.",
       view: "Ansicht", views: { all: "Alle Geräte", one: "Ein Gerät", cmp: "Vergleich" },
       pickDev: "Gerät", pickA: "Gerät A", pickB: "Gerät B", pickVendor: "Alle Hersteller", pickModel: "Gerät wählen …", ssSearch: "Suchen …", ssClear: "Suche leeren", ssNone: "Keine Treffer",
       pickHint: "Wähle zuerst den Hersteller, dann das Modell.",
@@ -832,7 +874,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       costTip: (h, p) => `Stromkosten pro Jahr bei ${h} h/Tag und ${p} €/kWh`,
       dGroups: { overview: "Übersicht", hw: "Speicher & Bandbreite", intel: "Modell-Intelligenz", score: "Bewertung im Profil", px: "Geschätzte Leistung", energy: "Energie & Effizienz", mem: "Speicherbelegung" },
       rankTitle: "Ranking", noteTitle: "Hinweis",
-      dRows: { eciOne: "Modell", vtype: "Hersteller · Typ", backend: "Backend", runs: "Modell lauffähig", power: "Leistungsaufnahme", cost8: "Stromkosten/Jahr (8 h/Tag)", cost24: "Stromkosten/Jahr (24/7)", eff: "Effizienz", tco: "Gesamtkosten 3 Jahre", eciSame: "Modell (beide gleich)", eciDev: "Modell je Gerät", sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
+      dRows: { eciOne: "Modell", vtype: "Hersteller · Typ", backend: "Backend", runs: "Modell lauffähig", power: "Leistungsaufnahme", cost8: "Stromkosten/Jahr (8 h/Tag)", cost24: "Stromkosten/Jahr (24/7)", eff: "Effizienz", tco: "Gesamtkosten 3 Jahre", eciSame: "Modell (beide gleich)", eciDev: "Modell je Gerät", sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", out: "Zeit pro Bild/Clip", perh: "Pro Stunde", memuse: "Belegung" },
       rankOf: (a, b) => `${a} von ${b}`,
       faster: (x) => `${x}× besser`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} Modelle zur Auswahl. Gerechnet wird mit <b>${m}</b> (${ex}): braucht ≈ <b>${need} GB</b> Speicher bei ${c} Kontext und ${q} und passt auf <b>${k} von ${total}</b> Geräten. Ein anderer Einsatzzweck oder ein anderes Modell ändert Speicherbedarf und Ranking.`,
@@ -863,7 +905,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       vWin: "Gewinner", vTie: "Gleichstand", vPts: (n) => `${n} ${n === 1 ? "Punkt" : "Punkte"}`, vAnd: "und",
       vWhy: (list) => `Gewinnt bei ${list}.`, vTieWhy: (a, la, b, lb) => `${a} vorne bei ${la}, ${b} vorne bei ${lb}.`, vAllLevel: (n) => `In allen ${n} Kategorien gleichauf.`,
       vRule: (n, e) => `1 Punkt je Kategorie (${n} verglichen), Unterschied unter 5 % zählt als Gleichstand${e ? ` (${e}× gleichauf)` : ""}. Platz, Leistungsaufnahme und 24/7-Kosten zählen nicht extra, weil sie aus Leistung/Score bzw. den Stromkosten folgen.`,
-      vCat: { power: "Leistungsaufnahme", runs: "Lauffähigkeit des Modells", cost8: "Stromkosten", tco: "Gesamtkosten", eff: "Effizienz", sys: "Preis", mem: "Speicher", bw: "Bandbreite", score: "Preis-Leistung", perf: "Leistung", fits: "Modellauswahl", eciDev: "Modell-Intelligenz", tg: "Tokens/s", ttft: "Wartezeit", code: "Code-Tempo", img: "Bildern" },
+      vCat: { power: "Leistungsaufnahme", runs: "Lauffähigkeit des Modells", cost8: "Stromkosten", tco: "Gesamtkosten", eff: "Effizienz", sys: "Preis", mem: "Speicher", bw: "Bandbreite", score: "Preis-Leistung", perf: "Leistung", fits: "Modellauswahl", eciDev: "Modell-Intelligenz", tg: "Tokens/s", ttft: "Wartezeit", code: "Code-Tempo", img: "Bildern", out: "Generierungszeit", perh: "Durchsatz" },
       dHint: (m, p) => `Geschätzte Praxiswerte und Belegung für ${m} mit ${p} Prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Platz und Score beziehen sich auf alle Geräte für dieses Modell.`,
       memTitle: "Speicherauslastung",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, mit ${c} Kontext. 100 % ist der nutzbare Grafikspeicher, bei Macs und Mini-PCs der für die GPU freigegebene Teil des Arbeitsspeichers. Was darüber hinausgeht, lagern PCs mit Grafikkarte in den normalen Arbeitsspeicher aus.`,
@@ -897,7 +939,16 @@ footer { font-size: 12.5px; color: var(--muted); }
       hint: "Click a column header to sort, click again to reverse.",
       hintPrices: "Prices are editable and stay saved in your browser. Prices marked in orange are estimates. Prices are for Germany in euros. Empty fields are excluded from value rankings. For laptop and server GPUs, enter the full system price; the PC surcharge applies only to desktop cards.",
       showPrices: "Show prices and value for money (Germany, EUR)",
-      uses: { all: "All models", coding: "Agentic coding", chat: "Chat & assistant", large: "Large models" }, useLab: "Use case", active: "active",
+      uses: { all: "All models", coding: "Agentic coding", chat: "Chat & assistant", large: "Large models", media: "Image & Video" },
+      steps: "steps", perOut: { img: "per image", vid: "per clip" }, perH: { img: "images/h", vid: "clips/h" },
+      useModelMedia: (u, n, m, ex, need, k, total) => `${u} → ${n} image and video models. Calculated with <b>${m}</b> (${ex}): needs ≈ <b>${need} GB</b> of memory and fits on <b>${k} of ${total}</b> devices. Image and video generation depends mostly on compute, hardly on memory bandwidth.`,
+      noneFitsMedia: "No device has enough memory for this model",
+      memHintMedia: (m) => `${m}. Peak memory while generating (model + activations; text encoder offloaded after encoding). 100% is the usable graphics memory; on Macs and mini PCs, the share of RAM released to the GPU. Graphics cards can block-swap into system RAM, but that costs a lot of speed.`,
+      memSpillMedia: "Block swap into system RAM possible, much slower", memLegMediaW: "Model + activations",
+      gainOut: "Time per image/clip", pxThMedia: { out: "Time per image/clip", perh: "Per hour" },
+      pxHintMedia: "Estimated time for one image or video clip with the model selected above (resolution, length and steps are listed with the model). Based on RTX 4090/5090 measurements in ComfyUI, scaled by compute. Values for Macs and AMD are especially uncertain.",
+      dHintMedia: (m) => `Estimated values for ${m}. Rank and score are relative to all devices for this model.`,
+      mediaSrc: "Source", mediaEst: "Time is a rough estimate (vendor claim or calculator, not a measurement)", mediaVendor: "Time per the vendor's reference script; usually much faster in ComfyUI", mediaApi: "MiniMax Hailuo 02 and Image-01 are API-only; only H3 runs locally.", useLab: "Use case", active: "active",
       dense: "dense", effective: "effective",
       th: { watt: "Watts", cost: "€/year", rank: "#", name: "Device", price: "System price €", fits: "Models that fit", perf: "Performance", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini PC" },
@@ -918,7 +969,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       pxTitle: "Real-world numbers",
       pxHint: "What you feel while working: writing speed, wait until the first word, time for 100 lines of code (about 1,100 tokens) and for one 1024 × 1024 image. Extrapolated estimates, Accuracy depends on backend, model and hardware.",
       pxModel: "Text model", pxPrompt: "Prompt length", pxImg: "Image model",
-      sysram: "PC RAM", ws: "Workstation", quant: "Quantization", pickLlm: "LLM model",
+      sysram: "PC RAM", ws: "Workstation", quant: "Quantization", pickLlm: "LLM model", pickMedia: "Image/video model", mHintMedia: "Top number: estimated time per image or clip. Bottom number: images or clips per hour. “—” means it does not fit in memory. Columns are sortable.",
       view: "View", views: { all: "All devices", one: "One device", cmp: "Compare" },
       pickDev: "Device", pickA: "Device A", pickB: "Device B", pickVendor: "All vendors", pickModel: "Choose device …", ssSearch: "Search …", ssClear: "Clear search", ssNone: "No matches",
       pickHint: "Choose the vendor first, then the model.",
@@ -935,7 +986,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       costTip: (h, p) => `Electricity cost per year at ${h} h/day and €${p}/kWh`,
       dGroups: { overview: "Overview", hw: "Memory & bandwidth", intel: "Model intelligence", score: "Rating in this use case", px: "Estimated performance", energy: "Energy & efficiency", mem: "Memory usage" },
       rankTitle: "Ranking", noteTitle: "Note",
-      dRows: { eciOne: "Model", vtype: "Vendor · type", backend: "Backend", runs: "Model runs", power: "Power draw", cost8: "Electricity/year (8 h/day)", cost24: "Electricity/year (24/7)", eff: "Efficiency", tco: "Total cost, 3 years", eciSame: "Model (same for both)", eciDev: "Model per device", sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
+      dRows: { eciOne: "Model", vtype: "Vendor · type", backend: "Backend", runs: "Model runs", power: "Power draw", cost8: "Electricity/year (8 h/day)", cost24: "Electricity/year (24/7)", eff: "Efficiency", tco: "Total cost, 3 years", eciSame: "Model (same for both)", eciDev: "Model per device", sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", out: "Time per image/clip", perh: "Per hour", memuse: "Usage" },
       rankOf: (a, b) => `${a} of ${b}`,
       faster: (x) => `${x}× better`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} models to choose from. Calculated with <b>${m}</b> (${ex}): needs ≈ <b>${need} GB</b> of memory at ${c} context and ${q}, and fits on <b>${k} of ${total}</b> devices. A different use case or model changes the memory need and the ranking.`,
@@ -966,7 +1017,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       vWin: "Winner", vTie: "Tie", vPts: (n) => `${n} ${n === 1 ? "point" : "points"}`, vAnd: "and",
       vWhy: (list) => `Wins on ${list}.`, vTieWhy: (a, la, b, lb) => `${a} leads on ${la}, ${b} leads on ${lb}.`, vAllLevel: (n) => `Level in all ${n} categories.`,
       vRule: (n, e) => `1 point per category (${n} compared); differences under 5% count as a tie${e ? ` (${e} tied)` : ""}. Rank, power draw and 24/7 cost are not counted separately because they follow from performance/score or the electricity cost.`,
-      vCat: { power: "power draw", runs: "running the model", cost8: "electricity cost", tco: "total cost", eff: "efficiency", sys: "price", mem: "memory", bw: "bandwidth", score: "value for money", perf: "performance", fits: "model coverage", eciDev: "model intelligence", tg: "tokens/s", ttft: "wait time", code: "coding speed", img: "images" },
+      vCat: { power: "power draw", runs: "running the model", cost8: "electricity cost", tco: "total cost", eff: "efficiency", sys: "price", mem: "memory", bw: "bandwidth", score: "value for money", perf: "performance", fits: "model coverage", eciDev: "model intelligence", tg: "tokens/s", ttft: "wait time", code: "coding speed", img: "images", out: "generation time", perh: "throughput" },
       dHint: (m, p) => `Estimated results and usage for ${m} with a ${p} prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Score and rank are relative to all devices for this model.`,
       memTitle: "Memory usage",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, with ${c} context. 100% is the usable graphics memory; on Macs and mini PCs, the share of RAM released to the GPU. Anything beyond that, PCs with a graphics card offload into regular system RAM.`,
@@ -1027,9 +1078,10 @@ footer { font-size: 12.5px; color: var(--muted); }
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const devLabel = (d) => /\bGB\b/.test(d.name) ? d.name : `${d.name} · ${d.mem} GB`;
   const mName = (m) => m.name;
-  const mEx = (m) => m.effective ? `${fmt(m.tp, 1)}B · ${fmt(m.ap, 1)}B ${L().effective}` : m.dense ? `${fmt(m.tp, 0)}B ${L().dense}` : `${fmt(m.tp, 0)}B MoE, ${fmt(m.ap, m.ap < 10 ? 1 : 0)}B ${L().active}`;
+  const mEx = (m) => m.media ? `${fmt(m.tp, m.tp < 10 && m.tp % 1 ? 1 : 0)}B${m.moe ? " MoE" : ""} · ${m.prec} · ${m.out}${m.steps ? ` · ${m.steps} ${L().steps}` : ""}` : m.effective ? `${fmt(m.tp, 1)}B · ${fmt(m.ap, 1)}B ${L().effective}` : m.dense ? `${fmt(m.tp, 0)}B ${L().dense}` : `${fmt(m.tp, 0)}B MoE, ${fmt(m.ap, m.ap < 10 ? 1 : 0)}B ${L().active}`;
   const useOf = () => USES.find((u) => u.id === state.use) || USES[0];
-  const shownModels = () => state.use === "all" ? MODELS : MODELS.filter((m) => m.use.includes(state.use));
+  const isMedia = () => state.use === "media";
+  const shownModels = () => state.use === "all" ? MODELS.filter((m) => !m.media) : MODELS.filter((m) => m.use.includes(state.use));
   const srcText = (d) => { if (isUsd() && (d.priceUsd != null || d.price != null)) return d.priceUsd != null ? L().src.usList : L().src.conv;
     const sx = L().src[d.src[0]]; return d.src[1] ? `${sx} ${d.src[1]}` : sx; };
   const priceOf = (d) => Object.prototype.hasOwnProperty.call(userPrices(), d.id) ? userPrices()[d.id] : listPrice(d);
@@ -1050,6 +1102,7 @@ footer { font-size: 12.5px; color: var(--muted); }
   const SYS_BW = 89.6 * 0.65;   // DDR5-5600 Dual-Channel, effektiv
   // FP16 K und V separat; nur nicht geteilte Layer. Lokaler Cache endet am Sliding Window.
   function kvCache(m, ctx) {
+    if (m.media) return 0;
     if (!m.cache) return m.kv * ctx / 1024;
     const c = m.cache;
     return 4 * (c.globalLayers * c.globalHeads * c.globalDim * ctx +
@@ -1057,7 +1110,7 @@ footer { font-size: 12.5px; color: var(--muted); }
   }
   function memInfo(d, m, ctx) {
     m = qm(m);
-    const kv = kvCache(m, ctx), ov = 1.0, need = m.gb + kv + ov, cap = usable(d);
+    const kv = kvCache(m, ctx), ov = m.media ? 0 : 1.0, need = m.gb + kv + ov, cap = usable(d);
     const unified = d.kind !== "gpu";
     const info = { kv, ov, w: m.gb, need, cap, unified, spill: Math.max(0, need - cap), state: "ok", tg: null };
     if (need <= cap) return info;
@@ -1069,6 +1122,7 @@ footer { font-size: 12.5px; color: var(--muted); }
     const sysFree = Math.max(0, state.sysRam - 8);           // 8 GB für Betriebssystem und Programme
     if (info.spill > sysFree) { info.state = "nosys"; return info; }
     info.state = "spill";
+    if (m.media) return info;   // Bild/Video: Block-Swap in den PC-RAM, Tempo nicht seriös schätzbar
     const wGpu = Math.max(0, cap - kv - ov), f = Math.min(1, wGpu / m.gb);
     const act = m.agb;
     const t = (act * f + kv / 2) / (d.eta * d.bw) + act * (1 - f) / SYS_BW;
@@ -1077,6 +1131,10 @@ footer { font-size: 12.5px; color: var(--muted); }
   }
 
   function calc(d, m, ctx) {
+    if (m.media) {   // Bild/Video: Leistung = Bilder bzw. Clips pro Stunde
+      const sec = mediaSec(d, m), fits = m.gb <= usable(d) && d.imageSupported !== false;
+      return { fits, need: m.gb, tg: 3600 / sec, pp: 3600 / sec, ttft: 0, sec };
+    }
     m = qm(m);
     const kvGB = kvCache(m, ctx);
     const need = m.gb + kvGB + 1.0;
@@ -1110,7 +1168,7 @@ footer { font-size: 12.5px; color: var(--muted); }
   }
 
   // Sorting: default direction per key (1 = ascending, -1 = descending)
-  const DEFAULT_DIR = { watt: 1, cost: 1, name: 1, price: 1, fits: -1, perf: -1, score: -1, "x:tg": -1, "x:ttft": 1, "x:code": 1, "x:img": 1 };
+  const DEFAULT_DIR = { watt: 1, cost: 1, name: 1, price: 1, fits: -1, perf: -1, score: -1, "x:tg": -1, "x:ttft": 1, "x:code": 1, "x:img": 1, "x:out": 1 };
   function sortValue(r, key) {
     if (key === "name") return r.d.name;
     if (key === "price") return r.sp;
@@ -1155,11 +1213,13 @@ footer { font-size: 12.5px; color: var(--muted); }
     $("#quant").innerHTML = QUANTS.map((q) => `<option value="${q.id}">${q.name} · ${q[state.lang]}</option>`).join("");
     $("#pick-prompt").innerHTML = PROMPTS.map((p, i) => `<option value="${i}">${ctxLabel(p)} ${L().tokens}</option>`).join("");
     $("#px-prompt").innerHTML = PROMPTS.map((p, i) => `<option value="${i}">${ctxLabel(p)} ${L().tokens}</option>`).join("");
-    $("#px-img").innerHTML = IMG.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join("");
+    $("#px-img").innerHTML = MEDIA.filter((m) => m.media === "img").map((m) => `<option value="${m.id}">${esc(`${m.name} ${m.prec} · ${m.steps} ${L().steps}`)}</option>`).join("");
   }
   // Hersteller/Organisation eines LLMs für die Suche
   const ORGS = [[/^qwen/i, "Alibaba Qwen"], [/^(llama)/i, "Meta"], [/^gemma/i, "Google"], [/^gpt-oss/i, "OpenAI"], [/^(mistral|ministral|devstral)/i, "Mistral AI"],
-    [/^deepseek/i, "DeepSeek"], [/^glm/i, "Zhipu Z.ai"], [/^kimi/i, "Moonshot"], [/^nemotron/i, "NVIDIA"]];
+    [/^deepseek/i, "DeepSeek"], [/^glm/i, "Zhipu Z.ai"], [/^kimi/i, "Moonshot"], [/^nemotron/i, "NVIDIA"],
+    [/^flux/i, "Black Forest Labs"], [/^sdxl/i, "Stability AI"], [/^z-image/i, "Alibaba Tongyi"], [/^hidream/i, "HiDream.ai"], [/^wan/i, "Alibaba Wan"],
+    [/^hunyuan/i, "Tencent"], [/^ltx/i, "Lightricks"], [/^cogvideo/i, "Zhipu"], [/^minimax/i, "MiniMax Hailuo"]];
   const modelOrg = (m) => (ORGS.find(([re]) => re.test(m.name)) || [0, ""])[1];
 
   // Suchbare Auswahlliste ohne Bibliothek: Button + Panel mit Suchfeld und Liste über einem versteckten <select>.
@@ -1268,9 +1328,14 @@ footer { font-size: 12.5px; color: var(--muted); }
       </div>${pickModel(slot)}`;
     };
     $("#cmp-mode-f").hidden = state.view !== "cmp";
-    $("#cmp-mode").innerHTML = ["same", "best", "manual"].map((id) => `<button type="button" data-id="${id}" aria-pressed="${id === state.cmpMode}">${L().cmpModes[id]}</button>`).join("");
+    if (isMedia() && state.cmpMode === "best") state.cmpMode = "same";   // "bestes Modell" nutzt den Intelligenz-Index, den es für Bild/Video nicht gibt
+    $("#cmp-mode").innerHTML = (isMedia() ? ["same", "manual"] : ["same", "best", "manual"]).map((id) => `<button type="button" data-id="${id}" aria-pressed="${id === state.cmpMode}">${L().cmpModes[id]}</button>`).join("");
     $("#picks").hidden = $("#pick-a").hidden = state.view === "all"; $("#pick-b").hidden = state.view !== "cmp";
-    $("#pick-prompt-f").hidden = state.view === "all";
+    $("#pick-prompt-f").hidden = state.view === "all" || isMedia();
+    document.querySelector('[data-i="pickLlm"]').textContent = isMedia() ? L().pickMedia : L().pickLlm;
+    document.querySelectorAll('[data-i="mHint"]').forEach((mh) => { mh.textContent = isMedia() ? L().mHintMedia : L().mHint; });
+    $("#ctx").closest(".field").hidden = $("#quant").closest(".field").hidden = isMedia();
+    $("#px-prompt").closest(".row").hidden = isMedia();
     $("#pick-prompt").value = state.pxPrompt; $("#quant").value = state.quant;
     if (state.view !== "all") $("#pick-a").innerHTML = picker("pickA", state.view === "cmp" ? L().pickA : L().pickDev);
     if (state.view === "cmp") $("#pick-b").innerHTML = picker("pickB", L().pickB);
@@ -1278,7 +1343,10 @@ footer { font-size: 12.5px; color: var(--muted); }
     $("#llm").value = state.pxModel;
     document.querySelectorAll("select[data-ss]").forEach(ssSync);
     const selectedModel = MODELS.find((m) => m.id === state.pxModel);
-    $("#model-note").hidden = !selectedModel?.cache;
+    $("#model-note").hidden = !selectedModel?.cache && !selectedModel?.media;
+    if (selectedModel?.media) { const t = L(), m = selectedModel;
+      $("#model-note").innerHTML = [m.est ? t.mediaEst : "", m.vendorTime ? t.mediaVendor : "", m.id === "h3" ? t.mediaApi : "",
+        m.src ? `<a href="${esc(m.src)}" target="_blank" rel="noopener">${t.mediaSrc}: ${esc(new URL(m.src).hostname.replace(/^www\./, ""))}</a>` : ""].filter(Boolean).join(" · "); }
     if (selectedModel?.cache) $("#model-note").innerHTML = state.lang === "de"
       ? `Gemma 4: ${ctxLabel(selectedModel.maxCtx)} Tokens maximal. Textgenerierung; Bild-/Audio-Zusatzgewichte und MTP-Draft-Modell sind nicht eingerechnet. Q4_0 nutzt die offizielle QAT-Dateigröße. <a href="https://ai.google.dev/gemma/docs/core" target="_blank" rel="noopener">Modellübersicht</a>`
       : `Gemma 4: ${ctxLabel(selectedModel.maxCtx)} tokens maximum. Text generation; image/audio add-on weights and the MTP draft model are excluded. Q4_0 uses the official QAT file size. <a href="https://ai.google.dev/gemma/docs/core" target="_blank" rel="noopener">Model overview</a>`;
@@ -1352,7 +1420,8 @@ footer { font-size: 12.5px; color: var(--muted); }
       const c = calc(r.d, modelFor(r.d), Math.max(ctx, pxP + CODE_TOKENS));
       const imgIdx = r.d.tf * r.d.etaC * r.d.pf * (IMG_VENDOR[r.d.v] || 1);
       const imgFits = usable(r.d) >= pxI.gb;
-      r.px = c.fits ? { tg: c.tg, ttft: pxP / c.pp, code: pxP / c.pp + CODE_TOKENS / c.tg } : { tg: null, ttft: null, code: null };
+      r.px = c.sec != null ? (c.fits ? { tg: c.tg, out: c.sec } : { tg: null, out: null })
+        : c.fits ? { tg: c.tg, ttft: pxP / c.pp, code: pxP / c.pp + CODE_TOKENS / c.tg } : { tg: null, ttft: null, code: null };
       r.px.img = imgFits && r.d.imageSupported !== false ? pxI.ref * IMG_REF_INDEX / imgIdx : null;
     });
     const picked = state.view === "all" ? [] : (state.view === "cmp" ? [state.pickA.id, state.pickB.id] : [state.pickA.id]).filter(Boolean);
@@ -1366,10 +1435,11 @@ footer { font-size: 12.5px; color: var(--muted); }
 
     // Welches Modell der Einsatzzweck ergibt und was es an Speicher braucht
     { const qn = (QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name;
-      const mq = qm(pxM), need = mq.gb + kvCache(mq, ctx) + 1.0;
+      const mq = qm(pxM), need = mq.media ? mq.gb : mq.gb + kvCache(mq, ctx) + 1.0;
       const k = DEVICES.filter((d) => calc(d, pxM, ctx).fits).length;
       const el = $("#use-model"), key = `${state.use}|${pxM.id}`;
-      el.innerHTML = t.useModel(esc(t.uses[state.use]), usedModels.length, esc(mName(pxM)), esc(mEx(pxM)), fmt(need, 1), ctxLabel(ctx), qn, k, DEVICES.length)
+      el.innerHTML = pxM.media ? t.useModelMedia(esc(t.uses[state.use]), usedModels.length, esc(mName(pxM)), esc(mEx(pxM)), fmt(need, 1), k, DEVICES.length)
+        : t.useModel(esc(t.uses[state.use]), usedModels.length, esc(mName(pxM)), esc(mEx(pxM)), fmt(need, 1), ctxLabel(ctx), qn, k, DEVICES.length)
         + `<span class="eci-line"><span class="lab">${t.eciLab}</span>${eciBar(pxM)}${pxM.benchmark ? `<a class="ext" href="${pxM.benchmark.sourceUrl}" target="_blank" rel="noopener">${t.eciSrc} ↗</a>` : ""}</span>`;
       if (el.dataset.key && el.dataset.key !== key) { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }
       el.dataset.key = key; }
@@ -1381,13 +1451,13 @@ footer { font-size: 12.5px; color: var(--muted); }
     $("#compare-gains").hidden = !compareReady;
     $("#evidence-note").textContent = [t.evidence, compareReady ? (perDevice() ? t.evidenceCmpPer : t.evidenceCmpSame) : "", t.unmeasured].filter(Boolean).join(" ");
     if (compareReady) {
-      const time = value => `${fmt(value, value < 10 ? 1 : 0)} s`;
+      const time = value => value < 60 ? `${fmt(value, value < 10 ? 1 : 0)} s` : `${Math.floor(value / 60)}:${String(Math.round(value % 60)).padStart(2, "0")} min`;
       const gain = (title, key, money = false) => {
         const diff = AIScenario.difference(money ? vis[0].sp : vis[0].px[key], money ? vis[1].sp : vis[1].px[key]);
         const text = !diff ? (money ? t.gainNoPrice : t.gainUnknown) : diff.winner == null ? t.gainEqual : (money ? t.gainCost : t.gainTime)(devLabel(vis[diff.winner].d), money ? eur(diff.amount) : time(diff.amount));
         return `<div class="sum"><span class="k">${title}</span><span class="v gain-value">${esc(text)}</span><span class="s">${money ? t.cur[state.currency] : t.estimate}</span></div>`;
       };
-      $("#compare-gains").innerHTML = gain(t.gainFirst, "ttft") + gain(t.gainCode, "code") + (state.showPrices ? gain(t.gainPrice, "sys", true) : "");
+      $("#compare-gains").innerHTML = (isMedia() ? gain(t.gainOut, "out") : gain(t.gainFirst, "ttft") + gain(t.gainCode, "code")) + (state.showPrices ? gain(t.gainPrice, "sys", true) : "");
     }
     // Summary
     const best = vis.filter((r) => r.sp > 0).sort((a, b) => b.score - a.score)[0];
@@ -1396,17 +1466,20 @@ footer { font-size: 12.5px; color: var(--muted); }
     const single = MODELS.find((m) => m.id === state.pxModel);
     const sumItem = (k, r, s) => `<div class="sum"><span class="k">${k}</span><span class="v">${r ? esc(devLabel(r.d)) : t.none}</span><span class="s">${s}</span></div>`;
     const okBest = best && best.perf > 0;
+    const durS = (sec) => sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
+    const speedTxt = (r) => single.media ? `${durS(r.per[single.id].sec)} ${t.perOut[single.media]}` : `${fmtTok(r.per[single.id].tg)} tok/s`;
+    const noFit = isMedia() ? t.noneFitsMedia : t.noneFits(ctxLabel(ctx));
     if (state.showPrices) {
       $("#summary").innerHTML =
-      sumItem(t.sBest, okBest ? best : null, okBest ? `${eur(best.sp)} System · Score ${fmt(best.score)}` : vis.some((r) => r.perf > 0 && !(r.sp > 0)) ? t.nonePrice : t.noneFits(ctxLabel(ctx))) +
-      sumItem(t.sFast, fastest?.perf > 0 ? fastest : null, fastest?.perf > 0 ? (single ? `${fmtTok(fastest.per[single.id].tg)} tok/s · Prompt ${fmt(fastest.per[single.id].pp)} tok/s` : `${t.th.perf} ${fmt(fastest.perfN)}`) : "") +
-      sumItem(single ? t.sCheapOne : t.sCheap, cheapFull, cheapFull ? `${eur(cheapFull.sp)} System` + (single ? ` · ${fmtTok(cheapFull.per[single.id].tg)} tok/s` : "") : vis.some((r) => r.fitCount === usedModels.length && !(r.sp > 0)) ? t.nonePrice : t.noneFits(ctxLabel(ctx)));
+      sumItem(t.sBest, okBest ? best : null, okBest ? `${eur(best.sp)} System · Score ${fmt(best.score)}` : vis.some((r) => r.perf > 0 && !(r.sp > 0)) ? t.nonePrice : noFit) +
+      sumItem(t.sFast, fastest?.perf > 0 ? fastest : null, fastest?.perf > 0 ? (single ? (single.media ? speedTxt(fastest) : `${fmtTok(fastest.per[single.id].tg)} tok/s · Prompt ${fmt(fastest.per[single.id].pp)} tok/s`) : `${t.th.perf} ${fmt(fastest.perfN)}`) : "") +
+      sumItem(single ? t.sCheapOne : t.sCheap, cheapFull, cheapFull ? `${eur(cheapFull.sp)} System` + (single ? ` · ${speedTxt(cheapFull)}` : "") : vis.some((r) => r.fitCount === usedModels.length && !(r.sp > 0)) ? t.nonePrice : noFit);
     } else {
       const top = (f) => [...vis].filter(f).sort((a, b) => b.perf - a.perf)[0];
       const tg = top((r) => r.d.kind === "gpu"), tu = top((r) => r.d.kind !== "gpu");
-      const line = (r) => r && r.perf > 0 ? `${t.th.perf} ${fmt(r.perfN)} · ${r.fitCount}/${usedModels.length} ${t.fitsShort}` : t.noneFits(ctxLabel(ctx));
+      const line = (r) => r && r.perf > 0 ? `${t.th.perf} ${fmt(r.perfN)} · ${r.fitCount}/${usedModels.length} ${t.fitsShort}` : noFit;
       $("#summary").innerHTML =
-        sumItem(t.sFast, fastest?.perf > 0 ? fastest : null, fastest?.perf > 0 ? line(fastest) : t.noneFits(ctxLabel(ctx))) +
+        sumItem(t.sFast, fastest?.perf > 0 ? fastest : null, fastest?.perf > 0 ? line(fastest) : noFit) +
         sumItem(t.sTopGpu, tg && tg.perf > 0 ? tg : null, line(tg)) +
         sumItem(t.sTopUni, tu && tu.perf > 0 ? tu : null, line(tu));
     }
@@ -1448,8 +1521,8 @@ footer { font-size: 12.5px; color: var(--muted); }
           const mi = memInfo(r.d, modelFor(r.d), Math.max(ctx, pxP + CODE_TOKENS)), g1 = (n) => fmt(n, n < 10 ? 1 : 0);
           const why = mi.state === "wired" ? t.memWired : mi.state === "spill" ? t.memSpill(g1(mi.spill)) : t.memNo(g1(mi.need));
           return `<span class="runs-no">${t.runsNo}</span><small class="sub">${esc(mName(modelFor(r.d)))} · ${esc(why)}</small>`; }],
-        ["grp", "intel"],
-        ...(cmpPer
+        ...(isMedia() ? [] : [["grp", "intel"]]),
+        ...(isMedia() ? [] : cmpPer
           ? [["eciDev", (r) => r.px.tg != null ? eciOf(modelFor(r.d))?.adj ?? null : null, null, 1, (r) => { const m = modelFor(r.d); return `<span class="eci-name">${esc(mName(m))}</span>` + (r.px.tg != null ? eciBar(m, true) : `<span class="na">${t.fitsNo}</span>`); }]]
           : [["eciSame", (r) => r.px.tg != null ? eciOf(pxM)?.adj ?? null : null, null, 0, (r) => `<span class="eci-name">${esc(mName(pxM))}</span>` + (r.px.tg != null ? eciBar(pxM, true) : `<span class="na">${t.fitsNo}</span>`)]]),
         ["grp", "score"],
@@ -1458,15 +1531,19 @@ footer { font-size: 12.5px; color: var(--muted); }
         ["perf", (r) => r.perfN, (v) => fmt(v), 1],
         ["fits", (r) => r.fitCount, (v) => `${v} / ${usedModels.length}`, 1],
         ["grp", "px"],
-        ["tg", (r) => r.px.tg, (v) => `${fmtTok(v)} tok/s`, 1],
-        ["ttft", (r) => r.px.ttft, durTxt, -1],
-        ["code", (r) => r.px.code, durTxt, -1],
-        ["img", (r) => r.px.img, durTxt, -1],
+        ...(isMedia() ? [
+          ["out", (r) => r.px.out, durTxt, -1],
+          ["perh", (r) => r.px.tg, (v) => `${fmt(v, v < 10 ? 1 : 0)} ${t.perH[pxM.media] || ""}`, 1]
+        ] : [
+          ["tg", (r) => r.px.tg, (v) => `${fmtTok(v)} tok/s`, 1],
+          ["ttft", (r) => r.px.ttft, durTxt, -1],
+          ["code", (r) => r.px.code, durTxt, -1],
+          ["img", (r) => r.px.img, durTxt, -1]]),
         ["grp", "energy"],
         ["power", (r) => sysWatts(r.d), (v) => `~${fmt(v)} W`, -1, (r) => sysWatts(r.d) == null ? "—" : `~${fmt(sysWatts(r.d))} W<small class="sub">TDP ${fmt(r.d.tdp)} W</small>`],
         ["cost8", (r) => yearCost(r.d, 8), (v) => `~${eur(v)}`, -1],
         ["cost24", (r) => yearCost(r.d, 24), (v) => `~${eur(v)}`, -1],
-        ["eff", (r) => r.px.tg != null && sysWatts(r.d) ? r.px.tg / sysWatts(r.d) : null, (v) => `${fmt(v, v < 1 ? 2 : 1)} tok/s/W`, 1],
+        ...(isMedia() ? [] : [["eff", (r) => r.px.tg != null && sysWatts(r.d) ? r.px.tg / sysWatts(r.d) : null, (v) => `${fmt(v, v < 1 ? 2 : 1)} tok/s/W`, 1]]),
         ...(state.showPrices ? [["tco", (r) => r.sp > 0 && yearCost(r.d, 8) != null ? r.sp + 3 * yearCost(r.d, 8) : null, (v) => eur(v), -1]] : []),
         ["grp", "mem"],
         ["memuse", () => null, null, 0, memTxt]
@@ -1495,7 +1572,7 @@ footer { font-size: 12.5px; color: var(--muted); }
         if (cols.length === 2 && dir && vals[0] != null && vals[1] != null && vals[0] !== vals[1]) {
           win = (vals[0] > vals[1]) === (dir > 0) ? 0 : 1;
           const hi = Math.max(vals[0], vals[1]), lo = Math.min(vals[0], vals[1]);
-          if (["ttft", "code", "img"].includes(key)) delta = `${durTxt(hi - lo)} ${state.lang === "de" ? "Unterschied" : "difference"}`;
+          if (["ttft", "code", "img", "out"].includes(key)) delta = `${durTxt(hi - lo)} ${state.lang === "de" ? "Unterschied" : "difference"}`;
           else if (["sys", "cost8", "cost24", "tco"].includes(key)) delta = eur(hi - lo);
           else if (key === "power") delta = `${fmt(hi - lo)} W`;
           else if (key === "runs") delta = t.runsDelta;
@@ -1517,8 +1594,8 @@ footer { font-size: 12.5px; color: var(--muted); }
       // "läuft nicht" (null) verliert bei Tempo/Intelligenz/Effizienz.
       let verdict = "";
       if (cols.length === 2) {
-        const NULL_LOSES = ["tg", "ttft", "code", "img", "eciDev", "eff"];
-        const PRIO = ["runs", "score", "perf", "eciDev", "tg", "tco", "cost8", "eff", "power", "mem", "bw", "sys", "fits", "ttft", "code", "img"];
+        const NULL_LOSES = ["tg", "ttft", "code", "img", "out", "perh", "eciDev", "eff"];
+        const PRIO = ["runs", "score", "perf", "eciDev", "tg", "tco", "cost8", "eff", "power", "mem", "bw", "sys", "fits", "out", "perh", "ttft", "code", "img"];
         const tally = () => ({ pts: [0, 0], won: [[], []], compared: 0, level: 0 });
         const facts = tally(), energy = tally(), est = tally();
         ROWS.forEach(([key, val, , dir]) => {
@@ -1590,7 +1667,7 @@ footer { font-size: 12.5px; color: var(--muted); }
           + cards + `</div>`;
       }
       // Ergebnis zuerst, dann die Details
-      $("#detail").innerHTML = `${verdict}<table><thead>${head}</thead><tbody>${body}</tbody></table><p class="hint" style="padding:0 14px 12px">${cmpPer ? esc(t.dHintPer(ctxLabel(pxP))) : esc(t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>`;
+      $("#detail").innerHTML = `${verdict}<table><thead>${head}</thead><tbody>${body}</tbody></table><p class="hint" style="padding:0 14px 12px">${cmpPer ? esc(t.dHintPer(ctxLabel(pxP))) : esc(pxM.media ? t.dHintMedia(`${mName(pxM)} (${mEx(pxM)})`) : t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>`;
       { const vbox = $("#detail .verdict");   // Speicherauslastung als letzter Bereich der Ergebnis-Box
         if (vbox) { const w = document.createElement("div"); w.className = "v-mem"; vbox.appendChild(w); w.appendChild($("#mem-section")); } }
     }
@@ -1623,12 +1700,20 @@ footer { font-size: 12.5px; color: var(--muted); }
 
     // Praxiswerte
     const dur = (sec) => sec == null ? "—" : sec < 1 ? `${fmt(sec, 1)} s` : sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
+    document.querySelector('[data-i="pxHint"]').textContent = isMedia() ? t.pxHintMedia : t.pxHint;
+    if (isMedia()) {
+      $("#praxis thead").innerHTML = `<tr>${sortHead("px", "name", t.th.name)}${sortHead("px", "x:out", `${t.pxThMedia.out}<small>${esc(mName(pxM))}</small>`)}${sortHead("px", "x:tg", t.pxThMedia.perh)}</tr>`;
+      $("#praxis tbody").innerHTML = visPx.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(devLabel(r.d))}</span></td>
+        <td class="mono ${r.px.out == null ? "na" : ""}">${dur(r.px.out)}</td>
+        <td class="mono ${r.px.tg == null ? "na" : ""}">${r.px.tg == null ? "—" : `${fmt(r.px.tg, r.px.tg < 10 ? 1 : 0)} ${t.perH[pxM.media]}`}</td></tr>`).join("");
+    } else {
     $("#praxis thead").innerHTML = `<tr>${sortHead("px", "name", t.th.name)}${sortHead("px", "x:tg", t.pxTh.tg)}${sortHead("px", "x:ttft", t.pxTh.ttft)}${sortHead("px", "x:code", t.pxTh.code)}${sortHead("px", "x:img", t.pxTh.img)}</tr>`;
     $("#praxis tbody").innerHTML = visPx.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(devLabel(r.d))}</span></td>
       <td class="mono ${r.px.tg == null ? "na" : ""}">${r.px.tg == null ? "—" : fmtTok(r.px.tg)}</td>
       <td class="mono ${r.px.ttft == null ? "na" : ""}">${dur(r.px.ttft)}</td>
       <td class="mono ${r.px.code == null ? "na" : ""}">${dur(r.px.code)}</td>
       <td class="mono ${r.px.img == null ? "na" : ""}">${dur(r.px.img)}</td></tr>`).join("");
+    }
 
     // Speicherauslastung
     {
@@ -1637,10 +1722,11 @@ footer { font-size: 12.5px; color: var(--muted); }
       const g1 = (n) => fmt(n, n < 10 ? 1 : 0);
       const pos = (frac) => `${(Math.min(frac, SCALE) / SCALE * 100).toFixed(2)}%`;
       const memModels = [...new Set(visRank.map((r) => modelFor(r.d)))];
-      $("#mem-hint").textContent = t.memHint(memModels.length > 1 ? memModels.map(mName).join(" / ") : `${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP) + " + 1,1k");
+      $("#mem-hint").textContent = isMedia() ? t.memHintMedia(memModels.length > 1 ? memModels.map(mName).join(" / ") : `${mName(pxM)} (${mEx(pxM)})`) : t.memHint(memModels.length > 1 ? memModels.map(mName).join(" / ") : `${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP) + " + 1,1k");
       $("#memchart").setAttribute("aria-label", t.memAria(mName(pxM)));
-      $("#mem-legend").innerHTML = [["w", "var(--m-weights)"], ["kv", "var(--m-kv)"], ["ov", "var(--m-ov)"], ["spill", ""], ["nofit", ""]].map(([k, c]) =>
-        `<span><i class="${c ? "" : "seg " + k}" style="${c ? "background:" + c : ""}"></i>${t.memLeg[k]}</span>`).join("");
+      const legW = (k) => k === "w" && isMedia() ? t.memLegMediaW : t.memLeg[k];
+      $("#mem-legend").innerHTML = (isMedia() ? [["w", "var(--m-weights)"], ["spill", ""], ["nofit", ""]] : [["w", "var(--m-weights)"], ["kv", "var(--m-kv)"], ["ov", "var(--m-ov)"], ["spill", ""], ["nofit", ""]]).map(([k, c]) =>
+        `<span><i class="${c ? "" : "seg " + k}" style="${c ? "background:" + c : ""}"></i>${legW(k)}</span>`).join("");
       const head = `<div class="memhead"><span></span><div class="memaxis">${[0, 0.5, 1, 1.5].map((f) => `<span class="${f === 1 ? "lim" : ""}" style="left:${pos(f)}">${f === 1 ? t.memLimit : Math.round(f * 100) + " %"}</span>`).join("")}</div><span></span></div>`;
       const rowsHtml = visRank.map((r) => {
         const d = r.d, mi = memInfo(d, modelFor(d), ctxM), cap = mi.cap;
@@ -1657,13 +1743,13 @@ footer { font-size: 12.5px; color: var(--muted); }
         const shown = Math.min(total, cap * SCALE);
         const segHtml = segs.map(([k, gb, over]) => {
           const cls = over ? (mi.state === "spill" ? "spill" : "nofit") : k;
-          const tip = `${t.memLeg[k]}${over ? " · " + t.memLeg[mi.state === "spill" ? "spill" : "nofit"] : ""}: ${g1(gb)} GB`;
+          const tip = `${legW(k)}${over ? " · " + t.memLeg[mi.state === "spill" ? "spill" : "nofit"] : ""}: ${g1(gb)} GB`;
           return `<span class="seg ${cls}" style="flex:${gb.toFixed(3)} 1 0" data-tip="${esc(tip)}"></span>`;
         }).join("");
         let st, sub;
         const pct = Math.round(total / cap * 100);
         if (mi.state === "ok") { st = `<span class="st ok">${t.memOk(g1(total), g1(cap), pct)}</span>`; sub = t.memFree(g1(cap - total)) + (mi.unified ? " · " + t.memUnified(d.mem, osReserve(d)) : ""); }
-        else if (mi.state === "spill") { st = `<span class="st warn">${t.memSpill(g1(mi.spill))}</span>`; sub = t.memSpillTok(fmtTok(mi.tg)); }
+        else if (mi.state === "spill") { st = `<span class="st warn">${t.memSpill(g1(mi.spill))}</span>`; sub = mi.tg == null ? t.memSpillMedia : t.memSpillTok(fmtTok(mi.tg)); }
         else if (mi.state === "nosys") { st = `<span class="st bad">${t.memSpill(g1(mi.spill))}</span>`; sub = t.memSpillNo(state.sysRam); }
         else if (mi.state === "wired") { st = `<span class="st warn">${t.memOk(g1(total), g1(cap), pct)}</span>`; sub = t.memWired; }
         else { st = `<span class="st bad">${t.memNo(g1(total))}</span>`; sub = `${g1(cap)} GB ${t.memLimit}` + (mi.unified ? " · " + t.memUnified(d.mem, osReserve(d)) : ""); }
@@ -1686,6 +1772,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       sortHead("mx", "m:" + m.id, `${esc(mName(m))}<small>${fmt(qm(m).gb, 0)} GB${w[m.id] ? " · " + t.inProfile : ""}</small>`)).join("")}</tr>`;
     $("#matrix tbody").innerHTML = visMx.map((r) => `<tr><td><span class="devrow"><span class="ico ${r.d.v}" style="width:26px;height:26px">${ICONS[r.d.kind]}</span>${esc(devLabel(r.d))}</span></td>${usedModels.map((m) => {
       const c = r.per[m.id];
+      if (m.media) return c.fits ? `<td class="mono">${dur(c.sec)}<br><span class="na">${fmt(c.tg, c.tg < 10 ? 1 : 0)} ${t.perH[m.media]}</span></td>` : `<td class="na">—</td>`;
       return c.fits ? `<td class="mono" title="${esc(t.ttft(fmt(c.pp), fmt(c.ttft, 1)))}">${fmtTok(c.tg)}<br><span class="na">${fmt(c.pp)}</span></td>` : `<td class="na">—</td>`;
     }).join("")}</tr>`).join("");
     if (location.hash.startsWith("#compare=") && !AIScenario.decode(location.hash, { devices: DEVICES, models: MODELS, quants: QUANTS, uses: USES, images: IMG, contexts: CTX, prompts: PROMPTS })) {
@@ -1694,7 +1781,11 @@ footer { font-size: 12.5px; color: var(--muted); }
   }
 
   $("#use").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.use = b.dataset.id;
-    if (!shownModels().some((m) => m.id === state.pxModel)) state.pxModel = useOf().def; persist(); render(); });
+    if (!shownModels().some((m) => m.id === state.pxModel)) state.pxModel = useOf().def;
+    const pk = state.sorts.px.k;   // Praxis-Sortierung passend zur Spaltenauswahl
+    if (isMedia() && !["name", "x:out", "x:tg"].includes(pk)) state.sorts.px = { k: "x:out", d: 1 };
+    if (!isMedia() && pk === "x:out") state.sorts.px = { k: "x:code", d: 1 };
+    persist(); render(); });
   $("#llm").addEventListener("change", (e) => { state.pxModel = e.target.value; persist(); render(); });
   $("#vendor").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.vendor = b.dataset.id; persist(); render(); });
   $("#showprices").addEventListener("change", (e) => { state.showPrices = e.target.checked; persist(); render(); });
