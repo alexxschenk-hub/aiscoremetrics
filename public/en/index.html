@@ -243,6 +243,10 @@ a.ext:hover { text-decoration: underline; }
 /* Gewinner im Vergleich */
 .verdict { margin: 14px 14px 18px; border-radius: 8px; border: 1px solid var(--line); overflow: hidden; text-align: center; background: var(--surface); }
 .verdict .v-head { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; }
+.verdict .v-mem { padding: 14px 16px 16px; border-top: 1px solid var(--line); text-align: left; background: var(--surface); }
+.verdict .v-mem h2 { font-size: 17px; }
+.cmp-extras { display: grid; gap: 10px; }
+.cmp-extras > h2 { margin: 0; }
 .v-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 12px; border-top: 1px solid var(--line); background: var(--bg); text-align: left; }
 .v-card { display: grid; align-content: start; gap: 6px; padding: 10px 12px 12px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); min-width: 0; }
 .v-card header { display: flex; align-items: center; gap: 8px; }
@@ -449,11 +453,14 @@ footer { font-size: 12.5px; color: var(--muted); }
     <span class="hint" id="share-status" role="status" aria-live="polite"></span>
     <label id="share-link-label" hidden><span data-i="shareLink"></span><input id="share-link" type="text" readonly></label>
   </div>
-  <div class="summary" id="compare-gains" hidden aria-live="polite"></div>
-  <p class="hint" id="evidence-note"></p>
   <div class="summary" id="summary" aria-live="polite"></div>
   <span id="mem-top" hidden></span>
   <div class="detail" id="detail" hidden></div>
+  <section class="cmp-extras" id="cmp-extras" hidden>
+    <h2 id="cmp-extras-title" data-i="cmpExtrasTitle"></h2>
+    <div class="summary" id="compare-gains" hidden aria-live="polite"></div>
+    <p class="hint" id="evidence-note"></p>
+  </section>
 
   <div class="tablebox">
     <table id="rank">
@@ -906,6 +913,7 @@ Score = Perf / system price   (best device = 100)</div>
       priceAria: (n) => `Preis ${n} in Euro`, prices: "Preise ↗",
       sBest: "Bester Wert", sTopGpu: "Schnellste Grafikkarte", fitsShort: "Modelle passen", sTopUni: "Schnellster Mac oder Mini-PC", sFast: "Schnellstes Gerät", sCheap: "Günstigstes, auf dem alle Modelle laufen", sCheapOne: "Günstigstes, auf dem es läuft",
       none: "keins", sys: "€ System", noneFits: (c) => `Kein Gerät hat bei ${c} Kontext genug Speicher`,
+      cmpExtrasTitle: "Praxisszenarien",
       pxTitle: "Praxiswerte",
       pxHint: "Was du beim Arbeiten spürst: Geschwindigkeit beim Schreiben, Wartezeit bis zum ersten Wort, Dauer für 100 Zeilen Code (ca. 1.100 Tokens) und für ein Bild mit 1024 × 1024 Pixeln. Hochgerechnete Schätzwerte, Die Genauigkeit hängt von Backend, Modell und Hardware ab.",
       pxModel: "Textmodell", pxPrompt: "Prompt-Länge", pxImg: "Bildmodell",
@@ -1069,6 +1077,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       priceAria: (n) => `Price of ${n} in euros`, prices: "Prices ↗",
       sBest: "Best value", sTopGpu: "Fastest graphics card", fitsShort: "models fit", sTopUni: "Fastest Mac or mini PC", sFast: "Fastest device", sCheap: "Cheapest that runs every model", sCheapOne: "Cheapest that runs it",
       none: "none", sys: "€ system", noneFits: (c) => `No device has enough memory at ${c} context`,
+      cmpExtrasTitle: "Practical scenarios",
       pxTitle: "Real-world numbers",
       pxHint: "What you feel while working: writing speed, wait until the first word, time for 100 lines of code (about 1,100 tokens) and for one 1024 × 1024 image. Extrapolated estimates, Accuracy depends on backend, model and hardware.",
       pxModel: "Text model", pxPrompt: "Prompt length", pxImg: "Image model",
@@ -1591,8 +1600,8 @@ Score     = Perf / system price   (best device = 100)</div>
       el.dataset.key = key; }
 
     const compareReady = state.view === "cmp" && vis.length === 2;
-    $("#share-tools").hidden = !compareReady;
-    $("#share-compare").hidden = !compareReady;
+    $("#share-tools").hidden = true;   // Teilen sitzt jetzt in der Ergebnis-Box
+    $("#share-compare").hidden = true;
     $("#share-link-label").hidden = true; $("#share-status").textContent = "";
     $("#compare-gains").hidden = !compareReady;
     $("#evidence-note").textContent = `${t.evidence} ${t.unmeasured}`;
@@ -1634,6 +1643,8 @@ Score     = Perf / system price   (best device = 100)</div>
     { const sec = $("#mem-section"), target = showDetail ? $("#mem-top") : $("#mem-anchor");
       if (sec.previousElementSibling !== target) target.after(sec); }
     $("#summary").hidden = showDetail; $("#detail").hidden = !showDetail;
+    // Praxisszenarien (Erster Token, 100 Zeilen Code, Systemkosten, Hinweis) unter der Tabelle; Überschrift nur im Vergleich
+    $("#cmp-extras").hidden = !showDetail; $("#cmp-extras-title").hidden = !compareReady;
     if (showDetail) {
       const byScore = globalRank;
       const durTxt = (sec) => sec == null ? "—" : sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
@@ -1799,6 +1810,8 @@ Score     = Perf / system price   (best device = 100)</div>
       }
       // Ergebnis zuerst, dann die Details
       $("#detail").innerHTML = `${verdict}<table><thead>${head}</thead><tbody>${body}</tbody></table><p class="hint" style="padding:0 14px 12px">${cmpPer ? esc(t.dHintPer(ctxLabel(pxP))) : esc(t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>`;
+      { const vbox = $("#detail .verdict");   // Speicherauslastung als letzter Bereich der Ergebnis-Box
+        if (vbox) { const w = document.createElement("div"); w.className = "v-mem"; vbox.appendChild(w); w.appendChild($("#mem-section")); } }
     }
 
     // Ranking table
