@@ -1,0 +1,17 @@
+    <section>
+      <h2>Häufige Fragen</h2>
+      <div class="faq">
+        <h3>Welche GPU ist die beste für lokale LLMs?</h3>
+        <p>Das hängt vor allem von der Modellgröße ab. Grafikkarten mit 16 GB VRAM wie die RTX 5060 Ti 16 GB oder RX 9070 reichen für Modelle bis etwa 12 Milliarden Parameter und für gpt-oss-20b. Mit 24–32 GB (RTX 4090, RTX 5090) laufen Modelle der 27–32B-Klasse schnell. Für 70B-Modelle und große MoE-Modelle wie gpt-oss-120b braucht es 48–96 GB: Workstation-Karten, Macs mit viel Unified Memory oder Mini-PCs mit Ryzen AI Max+ 395 und 128 GB.</p>
+        <h3>Wie viel VRAM brauche ich für ein LLM?</h3>
+        <p>Bei der üblichen Quantisierung Q4_K_M braucht ein Modell rund 0,6 GB pro Milliarde Parameter, dazu kommen der KV-Cache für den Kontext und etwa 1 GB Overhead. Ein 27B-Modell belegt so rund 17 GB plus Kontext, ein 70B-Modell gut 42 GB plus bis zu 10 GB KV-Cache bei 32k Tokens. Der Rechner zeigt die Belegung je Gerät in der Speicherauslastung.</p>
+        <h3>Was bedeutet Speicherbandbreite und warum ist sie so wichtig?</h3>
+        <p>Die Speicherbandbreite (GB/s) gibt an, wie schnell die GPU Daten aus ihrem Speicher lesen kann. Beim Erzeugen jedes Tokens müssen alle aktiven Modellgewichte einmal gelesen werden, deshalb bestimmt die Bandbreite fast direkt die Tokens pro Sekunde. Eine RTX 4090 mit 1.008 GB/s schafft so mit einem 8B-Modell rund 120 Tokens/s.</p>
+        <h3>Mac oder Grafikkarte für lokale KI?</h3>
+        <p>Macs mit M-Chips teilen sich den Arbeitsspeicher zwischen CPU und GPU und können dadurch sehr große Modelle laden, die auf keine einzelne Consumer-Grafikkarte passen. Grafikkarten haben dafür meist mehr Bandbreite und deutlich mehr Rechenleistung pro Euro, sie sind bei Modellen, die in den VRAM passen, oft schneller – vor allem bei der Verarbeitung langer Prompts.</p>
+        <h3>Was sind MoE-Modelle?</h3>
+        <p>Mixture-of-Experts-Modelle wie gpt-oss-120b oder Qwen3-Coder 30B-A3B nutzen pro Token nur einen kleinen Teil ihrer Parameter. Sie erzeugen Text dadurch viel schneller als gleich große dichte Modelle, müssen aber trotzdem vollständig in den Speicher passen.</p>
+        <h3>Wie genau sind die Werte?</h3>
+        <p>Die Werte sind eine Modellrechnung, keine Messung. Abweichungen von ±20 % zu echten Benchmarks sind je nach Backend (CUDA, MLX, llama.cpp), Treiber und Quantisierung normal. Der Abgleich mit der LocalScore-Datenbank zeigt bei der Generierung eine Abweichung von etwa ±3 %.</p>
+      </div>
+    </section>

@@ -64,6 +64,8 @@ Die Seite lädt ihre Daten per `fetch`. Direkt als Datei geöffnet (`file://`) f
 
 ## Pflege
 
+- **Info-Seiten** (/methodik/, /faq/, /ueber/ und /en/…): Texte in `content/de/` bzw. `content/en/` bearbeiten, danach `npm run seo`. Das Script erzeugt die Seiten, das FAQ-JSON-LD und die Sitemap.
+
 - **Mac-Preise** stehen von Hand in `public/data/devices.json` (Feld `price`, Schätzungen mit `"est": true`).
 - **Workstation-Karten:** Feld `"ws": true` blendet sie im Filter „Workstation“ ein.
 - **Neue GPU:** Eintrag in `devices.json` ergänzen und `"source": { "gpuprix": "<slug>", "metric": "low" }` setzen. Der Slug ist der letzte Teil der gpuprix-URL, z. B. `geforce-rtx-5080`.

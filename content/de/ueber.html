@@ -1,0 +1,13 @@
+    <section>
+      <h2>Was ist AI Score Metrics?</h2>
+      <p>AI Score Metrics ist ein kostenloser Rechner für Hardware, auf der große Sprachmodelle (LLMs) lokal laufen. Er vergleicht NVIDIA- und AMD-Grafikkarten, Apple-Macs mit M-Chips und Mini-PCs mit Ryzen AI Max danach, ob ein Modell in den Speicher passt, wie schnell es Text erzeugt, wie lange der erste Token dauert und wie viel Leistung es pro Euro gibt. GPU-Preise für Deutschland werden täglich automatisch aktualisiert und lassen sich optional einblenden.</p>
+    </section>
+    <section>
+      <h2>Wie wird der Score berechnet?</h2>
+      <p>Für das gewählte Modell prüft der Rechner zuerst, ob Modellgewichte, KV-Cache für den Kontext und rund 1 GB Laufzeit-Overhead in den nutzbaren Grafikspeicher passen. Passt das Modell, ergibt sich die Generierungsgeschwindigkeit aus der Speicherbandbreite, weil für jeden Token die aktiven Gewichte einmal gelesen werden. Die Prompt-Verarbeitung hängt von der Rechenleistung (TFLOPS) ab. Beides wird je nach Einsatzzweck gewichtet zur Leistung zusammengefasst und durch den Systempreis geteilt; das beste Gerät erhält 100 Punkte.</p>
+      <div class="formula">Leistung = passt · Generierung^α · Prompt^(1−α)
+Score    = Leistung / Systempreis   (bestes Gerät = 100)</div>
+      <p><strong>„passt“ ist ein Faktor mit dem Wert 1 oder 0:</strong> 1, wenn der gesamte berechnete Speicherbedarf kleiner oder gleich dem nutzbaren GPU-Speicher ist; andernfalls 0. Der Punkt „·“ bedeutet Multiplikation. Bei 1 bleibt die gewichtete Leistung erhalten, bei 0 werden Leistung und Preis-Leistungs-Score für dieses Modell auf 0 gesetzt. Das ist eine Regel für die Bewertung, keine Aussage, dass das Modell mit Auslagerung in den PC-RAM überhaupt nicht laufen könnte.</p>
+      <p>Generierung und Prompt sind Geschwindigkeiten in Tokens pro Sekunde: Generierung beschreibt das Erzeugen der Antwort, Prompt das Einlesen und Verarbeiten deiner Eingabe. „^“ bedeutet „hoch“, also eine Potenz. α gewichtet diese beiden Geschwindigkeiten; es ist kein Anteil an der tatsächlichen Laufzeit.</p>
+      <p>α ist 0,5 für Agentic Coding und 0,8 für Chat. Bei Grafikkarten zählt zum Systempreis ein einstellbarer Betrag für den restlichen PC.</p>
+    </section>

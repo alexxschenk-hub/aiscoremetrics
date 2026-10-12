@@ -1,0 +1,61 @@
+    <section>
+      <h2>How the score works</h2>
+      <div class="formula">Memory    = model_GB + KV_GB(context) + 1 GB
+fits      = memory ≤ usable memory
+Generate  = η · ε · bandwidth / (active_GB + KV_GB/2)
+Prompt    = η_c · TFLOPS · 1000 / (2 · active_params_B)
+
+Perf      = fits · Gen^α · Prompt^(1−α)   (selected model)
+Score     = Perf / system price   (best device = 100)</div>
+      <p><strong>What does “fits” mean?</strong> The second formula is a yes/no check: “≤” means “less than or equal to”. Its result is used as a number in the performance formula: <strong>fits = 1</strong> if weights, KV cache and about 1 GB of runtime overhead fit entirely in usable GPU memory; <strong>fits = 0</strong> if the requirement exceeds it. Usable memory already accounts for the device’s reserve or GPU memory limit.</p>
+      <p>Example: A graphics card with 16 GB of VRAM has 15.2 GB usable after the assumed 0.8 GB reserve. If the model requires 14 GB in total, “fits” equals 1. At 18 GB, “fits” equals 0. In the first case, calculated performance is retained; in the second, performance and the value score for this model are 0. Running with offloading to system RAM may still be possible; the memory view shows this slower mode separately, and it does not contribute to the score.</p>
+      <p><strong>How do you read the performance formula?</strong> “·” means multiplication, “/” division and “^” exponentiation. “Gen” means generation: how quickly the answer is produced. “Prompt” means how quickly the input is processed. Both speeds are in tokens per second. α (alpha) weights generation, and 1−α weights prompt processing. At α = 0.5, this is the geometric mean: with 100 tokens/s generation and 400 tokens/s prompt processing, “fits = 1” gives √(100 · 400) = 200. With “fits = 0”, it becomes 0. The weighting describes the score, not the fraction of time spent on a task.</p>
+      <p><strong>The remaining quantities:</strong> model_GB is the weight size at the selected quantization. KV_GB(context) is the cache for the selected context. active_GB and active_params_B describe active weights and billions of active parameters per token; MoE models activate only part of the model. Bandwidth is in GB/s. η (eta) is assumed bandwidth efficiency, ε (epsilon) a model-dependent factor, and η_c assumed compute efficiency. TFLOPS means trillions of operations per second. The factor 1000 converts the units in the prompt formula.</p>
+      <p><strong>From performance to score:</strong> Performance is first divided by the system price in euros. These value figures are then normalized against the best device with a known price: it receives 100 points; half its value receives 50 points. No value score is displayed without a price.</p>
+      <p>Performance applies to the selected LLM. α weighs generation against prompt processing: agentic coding 0.5 · chat 0.8 · otherwise 0.6. With long-context agents, prompt processing dominates, so compute counts for more there. The use case only filters the model list; “models that fit” counts the models in that list.</p>
+    </section>
+    <section>
+      <h2>Assumptions</h2>
+      <ul>
+        <li>Model figures (parameters, active parameters, KV cache per token) from the model cards. For Qwen3.5/3.6, KV cache and sizes are approximations. Sizes for the newer models (including Qwen3.8, Mistral 3/4, Llama 4, DeepSeek V4/V4.1, GLM-5.3, Kimi K3, Nemotron 3) are the actual Q4_K_M GGUF files; where no Q4_K_M exists (GLM-5.3-Flash, DeepSeek V4 Pro, Kimi K3), the equally sized Q4_K_XL file. For MoE models all parameters count towards memory, the active ones only towards speed. Hybrid models (linear attention, Mamba, compressed attention) only grow a context-dependent KV cache in their attention layers; their fixed state memory is part of the overhead. Gemma 4: FP16 KV cache derived from official attention configurations, with bounded sliding windows and shared layers; backend buffers can require additional memory.</li>
+        <li>Gemma 4 includes E2B, E4B, 12B, 26B-A4B and 31B. E2B/E4B have 5.1/8 billion total parameters but 2.3/4.5 billion effective parameters; 26B-A4B has 25.2 billion total and 3.8 billion active. Speeds are estimates for text generation without MTP. Base and instruction-tuned weights share one hardware entry. Weights: published Q4_K_M GGUF file sizes; Q4_0: official Google QAT files. Other precisions and active bytes read are scaled estimates. Image/audio add-on weights, mobile-specific formats and MTP are outside this calculation. <a href="https://ai.google.dev/gemma/docs/core/model_card_4" target="_blank" rel="noopener">Google model card</a> · <a href="https://huggingface.co/collections/google/gemma-4-qat-q4-0" target="_blank" rel="noopener">QAT models</a></li>
+        <li>Quantization selectable from Q2_K (≈ 2.9 bits per weight) to FP16 (16 bits). Default is Q4_K_M (≈ 4.85 bits), native MXFP4 for the 120B MoE class. Size and bytes read per token scale with the bits; the KV cache stays FP16.</li>
+        <li>Usable memory: GPU = VRAM − 0.8 GB. Mac: macOS default limit of 67% (≤ 36 GB) or 75% of RAM, but at most RAM minus 6 GB for macOS and background apps. With the raised limit, everything except those 6 GB. Ryzen AI Max: 96 GB, 110 GB raised, 4 GB Linux reserve.</li>
+        <li>Bandwidth efficiency η: NVIDIA 0.60, AMD graphics cards 0.50 (ROCm/Vulkan), Ryzen AI Max 0.72, Apple Pro/Max 0.62, Apple Ultra 0.50.</li>
+        <li>Ryzen AI Max+ 395: of 128 GB, about 96 GB is usable as graphics memory on Linux, about 110 GB with a raised limit.</li>
+        <li>NVIDIA GB10 (DGX Spark, Surface RTX Spark Dev Box): 273 GB/s LPDDR5X, shared memory. Usable by the GPU: DGX Spark 128 GB ≈ 119 GB (124 GB raised), DGX Spark 64 GB ≈ 56 GB (8 GB reserved for the system per NVIDIA), Surface 112 GB per Microsoft. Bandwidth efficiency η 0.72 as for Ryzen AI Max; compute 1,000 AI TOPS ÷ 8 = 125 TFLOPS, η_c 0.3. Microsoft has not published the Surface bandwidth; it is assumed to match the DGX Spark.</li>
+        <li>Compute: NVIDIA = FP16 tensor throughput (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0.5. AMD = datasheet FP16 peak, η_c 0.35 (Ryzen AI Max 0.3). Apple = GPU FP32, η_c 0.6. M5 chips with Neural Accelerators ×3.5 (Apple claims up to 3.9–4× over the previous generation).</li>
+        <li>MoE models reach about half their theoretical generation speed in practice (routing, attention, scattered reads), so ε = 0.55. Dense models ε = 1.</li>
+        <li>Power use: graphics cards use the manufacturer's board power plus 150 W for the rest of the PC (laptops plus 60 W), i.e. a full-load estimate. Macs use about 50% of Apple's maximum wall power (measured: M3 Ultra 138 W at a 270 W maximum), MacBook Pros the power adapter as the upper bound. Mini PCs use measured or vendor figures: Ryzen AI Max+ 395 about 128 W, DGX Spark 140 W, Surface RTX Spark Dev Box 100 W. Electricity cost = watts × hours × 365 × price ÷ 1,000; total cost over 3 years = system price + 3 × electricity at 8 h/day.</li>
+        <li>No partial offloading: a model that does not fit scores 0. Multi-GPU is not modelled.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Real-world numbers</h2>
+      <ul>
+        <li>First token = prompt length ÷ prompt processing speed. Very long prompts are somewhat slower in practice because attention grows too.</li>
+        <li>Memory usage: weights + KV cache for the context + about 1 GB runtime overhead. If that does not fit in graphics memory, the rest of the weights moves to PC RAM (DDR5 dual channel, about 58 GB/s effective). Every token then has to read that part through the much slower system memory. 8 GB of PC RAM are reserved for the OS and apps.</li>
+        <li>100 lines of code ≈ 1,100 tokens (about 11 tokens per line). Time = first token + 1,100 ÷ tokens/s.</li>
+        <li>Images are compute-bound. Reference RTX 4090 at 1024 × 1024: SDXL 30 steps ≈ 4.5 s, FLUX.1 schnell ≈ 2.2 s, FLUX.1 dev ≈ 14 s. Other devices are scaled by compute, with a platform factor for Apple (2.1) and AMD (1.7), calibrated against typical SDXL times.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Check against LocalScore</h2>
+      <p>Measurements from the public <a href="https://www.localscore.ai/">LocalScore database</a> (llamafile, Q4_K_M) against the estimate. Software version and measurement date are not documented in this reference comparison; these numbers are not measurements of the currently selected scenario:</p>
+      <div style="overflow-x:auto"><table class="calib"><thead><tr><th>RTX 4090</th><th>Gen. model</th><th>Gen. measured</th><th>Prompt model</th><th>Prompt measured</th></tr></thead>
+      <tbody><tr><td>Llama 3.1 8B</td><td class="mono">123</td><td class="mono">120</td><td class="mono">10,313</td><td class="mono">7,594</td></tr>
+      <tr><td>Qwen2.5 14B</td><td class="mono">67</td><td class="mono">69</td><td class="mono">5,574</td><td class="mono">4,208</td></tr></tbody></table></div>
+      <p>Generation lands within ±3%. Prompt numbers run about 35% above llamafile but match current llama.cpp builds. Blackwell cards show implausibly low results in LocalScore (RTX 5090 slower than RTX 4090), which points to older CUDA kernels in the benchmark, so they are left out of the calibration.</p>
+    </section>
+    <section>
+      <h2>Data as of</h2>
+      <ul>
+        <li>GPU prices: lowest new price in Germany per gpuprix.com (retailer data from Alternate), updated automatically every day, last on <span data-updated>–</span>. Shown is the cheapest card in stock, or the last lowest price if none is in stock. Individual prices can be set manually, currently the RTX 5090 per Geizhals.</li>
+        <li>Current Macs (Mac Studio M5 Max/Ultra, Mac mini M6/M5 Pro, MacBook Pro M5 Pro/Max): Apple list prices for Germany/Austria in euros and the US in dollars as of 12 Oct 2026, each the cheapest configuration with that chip and memory, e.g. Mac Studio M5 Ultra 64-GPU · 96 GB: €6,599 or $5,499, with the 80-GPU: €8,029 or $6,799. Mac Studio M5 Ultra 512 GB: estimated (orderable from late October). Older Macs: estimated used prices.</li>
+        <li>Currency: euro prices are for Germany/Austria including VAT. In dollar mode, US list prices before sales tax are used where known (Apple, NVIDIA DGX Spark, Microsoft Surface); all other prices are converted from euros: excluding 19% VAT, ECB rate €1 = $1.1181 (12 Oct 2026).</li>
+        <li>Ryzen AI Max+ 395 with 128 GB: mini PCs from Framework, GMKtec or Minisforum, estimated price.</li>
+        <li>DGX Spark: 128 GB estimated at €6,300 (NVIDIA list price since 2 Oct 2026: $6,950), 64 GB estimated at €5,000 ($4,999, from 23 Oct via OEM partners). Surface RTX Spark Dev Box: $5,999, US-only preorders so far, €6,000 estimated.</li>
+        <li>Specs: NVIDIA, AMD, Intel and Apple datasheets. Laptop/server cards without a verified euro price have empty price fields. New GPU speeds are roofline estimates with assumed efficiency factors; Intel has no benchmark calibration. Pascal uses an FP32 compute basis. SXM requires a compatible server platform; laptop speed depends on TGP and cooling. Compute for RTX PRO 2000/4000/4500 and the Ada workstation cards is derived from AI TOPS, so approximate. RTX PRO 6000 Max-Q: estimated price. RTX PRO 4500: Amazon price from 11 Oct.</li>
+        <li>Links go to the Geizhals price comparison (no affiliate).</li>
+      </ul>
+    </section>

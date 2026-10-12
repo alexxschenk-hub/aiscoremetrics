@@ -1,0 +1,17 @@
+    <section>
+      <h2>Frequently asked questions</h2>
+      <div class="faq">
+        <h3>Which GPU is best for local LLMs?</h3>
+        <p>Mostly it depends on model size. Graphics cards with 16 GB of VRAM such as the RTX 5060 Ti 16 GB or RX 9070 handle models up to about 12 billion parameters and gpt-oss-20b. With 24–32 GB (RTX 4090, RTX 5090), models in the 27–32B class run fast. 70B models and large MoE models such as gpt-oss-120b need 48–96 GB: workstation cards, Macs with plenty of unified memory, or Ryzen AI Max+ 395 mini PCs with 128 GB.</p>
+        <h3>How much VRAM do I need for an LLM?</h3>
+        <p>At the common Q4_K_M quantization, a model needs about 0.6 GB per billion parameters, plus the KV cache for the context and about 1 GB of overhead. A 27B model takes about 17 GB plus context; a 70B model a little over 42 GB plus up to 10 GB of KV cache at 32k tokens. The calculator shows per-device usage in the memory chart.</p>
+        <h3>What is memory bandwidth and why does it matter?</h3>
+        <p>Memory bandwidth (GB/s) is how fast the GPU can read data from its memory. Every generated token requires reading all active model weights once, so bandwidth almost directly sets tokens per second. An RTX 4090 with 1,008 GB/s reaches about 120 tokens/s with an 8B model.</p>
+        <h3>Mac or graphics card for local AI?</h3>
+        <p>Macs with M-series chips share RAM between CPU and GPU, so they can load very large models that do not fit on any single consumer graphics card. Graphics cards usually offer more bandwidth and far more compute per euro, so they are often faster for models that fit in VRAM – especially when processing long prompts.</p>
+        <h3>What are MoE models?</h3>
+        <p>Mixture-of-experts models such as gpt-oss-120b or Qwen3-Coder 30B-A3B use only a small share of their parameters per token. That makes them generate text much faster than dense models of the same size, but they still have to fit in memory completely.</p>
+        <h3>How accurate are the numbers?</h3>
+        <p>The numbers are a model estimate, not a measurement. Deviations of ±20% from real benchmarks are normal, depending on backend (CUDA, MLX, llama.cpp), drivers and quantization. A check against the LocalScore database shows generation within about ±3%.</p>
+      </div>
+    </section>

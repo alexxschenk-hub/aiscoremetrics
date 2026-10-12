@@ -16,4 +16,52 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/"/>
   </url>
+  <url>
+    <loc>https://aiscoremetrics.com/methodik/</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/methodik/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/methodology/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/methodology/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/en/methodology/</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/methodik/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/methodology/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/methodology/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/faq/</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/faq/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/faq/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/faq/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/en/faq/</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/faq/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/faq/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/faq/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/ueber/</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/ueber/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/about/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/about/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/en/about/</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/ueber/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/about/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/about/"/>
+  </url>
 </urlset>

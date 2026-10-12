@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0A6B75">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="/assets/theme.js"></script>
+<title>Methodology | AI Score Metrics</title>
+<meta name="description" content="How AI Score Metrics calculates memory needs, tokens/s, wait times, score and prices – with all assumptions, calibration and data sources.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://aiscoremetrics.com/en/methodology/">
+<link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/methodik/">
+<link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/methodology/">
+<link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/methodology/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://aiscoremetrics.com/en/methodology/">
+<meta property="og:site_name" content="AI Score Metrics">
+<meta property="og:title" content="Methodology | AI Score Metrics">
+<meta property="og:description" content="How AI Score Metrics calculates memory needs, tokens/s, wait times, score and prices – with all assumptions, calibration and data sources.">
+<meta property="og:image" content="https://aiscoremetrics.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: spec-sheet tool. Control strip on top, summary line, ranked table, model matrix, method notes. */
+:root {
+  --bg: #F1F3F4;
+  --surface: #FFFFFF;
+  --ink: #13181C;
+  --muted: #5A6670;
+  --line: #D6DCE0;
+  --accent: #0A6B75;
+  --accent-soft: #D4EAEC;
+  --bar: #0A6B75;
+  --bar-2: #8FA7AE;
+  --good: #2E7A33;
+  --bad: #B3261E;
+  --warn: #A0560B;
+  --amd: #8A4B2E;
+  --m-weights: #2a78d6;
+  --m-kv: #1baf7a;
+  --m-ov: #6250d6;
+  --f-display: "Barlow Semi Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A;
+    --accent: #52C3CD; --accent-soft: #123338; --bar: #52C3CD; --bar-2: #4B5D66;
+    --good: #6CC070; --bad: #F2867E; --warn: #E3A256; --amd: #E39A72; --m-weights: #3987e5; --m-kv: #199e70; --m-ov: #9085e9; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A;
+  --accent: #52C3CD; --accent-soft: #123338; --bar: #52C3CD; --bar-2: #4B5D66;
+  --good: #6CC070; --bad: #F2867E; --warn: #E3A256; --amd: #E39A72; --m-weights: #3987e5; --m-kv: #199e70; --m-ov: #9085e9; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 22px; }
+header { display: grid; gap: 6px; }
+.toprow { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.seg.small button, .seg.small a { font: 600 12.5px var(--f-display); letter-spacing: .02em; padding: 4px 9px; color: var(--ink); text-decoration: none; border-right: 1px solid var(--line); }
+.seg.small a:last-child { border-right: 0; }
+.seg.small a[aria-current="page"] { background: var(--accent); color: var(--surface); }
+.seg.small a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1 .h1sub { display: block; font-size: clamp(17px, 2.4vw, 22px); font-weight: 600; letter-spacing: 0; color: var(--muted); margin-top: 8px; }
+th button.sort { all: unset; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+th button.sort:hover { color: var(--ink); }
+th button.sort:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+th[aria-sort] button.sort { color: var(--accent); }
+th .arr { font-family: var(--f-mono); font-size: 11px; width: 10px; display: inline-block; }
+.calib { border-collapse: collapse; min-width: 0; width: 100%; font-size: 13px; }
+.calib th, .calib td { padding: 5px 8px; border-bottom: 1px solid var(--line); text-align: right; }
+.calib th:first-child, .calib td:first-child { text-align: left; }
+.eyebrow { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; color: var(--accent); }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(30px, 5vw, 44px); line-height: 1; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: none; }
+h2 { font-family: var(--f-display); font-weight: 600; font-size: 20px; margin: 0; letter-spacing: .01em; }
+.controls { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 14px; }
+.row { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: end; }
+.field { display: grid; gap: 6px; min-width: 0; }
+.lab { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--muted); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.seg button { font: 600 14px var(--f-display); letter-spacing: .02em; padding: 7px 12px; border: 0; background: transparent; color: var(--ink); cursor: pointer; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+.seg button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+select, input[type="number"] { font: 400 14px var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
+input[type="range"] { accent-color: var(--accent); width: 200px; max-width: 100%; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.check input { accent-color: var(--accent); }
+.hint { font-size: 13px; color: var(--muted); margin: 0; }
+.btn { font: 600 13px var(--f-display); letter-spacing: .04em; text-transform: uppercase; border: 1px solid var(--line); background: transparent; color: var(--muted); padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+.btn:hover { color: var(--ink); border-color: var(--muted); }
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+.sum { border-left: 3px solid var(--accent); padding: 4px 0 4px 12px; display: grid; gap: 2px; min-width: 0; }
+.sum .k { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--muted); }
+.sum .v { font-family: var(--f-display); font-weight: 700; font-size: 21px; line-height: 1.15; }
+.sum .s { font-size: 13px; color: var(--muted); }
+.tablebox { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; min-width: 860px; }
+th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: 0; }
+th { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--muted); white-space: nowrap; background: var(--surface); }
+td.num, th.num { text-align: right; }
+.rank { font-family: var(--f-mono); color: var(--muted); width: 36px; }
+.dev { display: grid; gap: 1px; }
+.dev b { font-weight: 600; }
+.dev span { font-size: 12.5px; color: var(--muted); }
+.devrow { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.ico { flex: none; width: 34px; height: 34px; border-radius: 6px; display: grid; place-items: center; background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.ico svg { width: 22px; height: 22px; }
+.ico.nvidia { color: var(--accent); }
+.ico.amd { color: var(--amd); }
+.ico.intel { color: #0071c5; }
+.seg .vi { width: 15px; height: 15px; vertical-align: -3px; margin-right: 5px; }
+.tag { font: 600 10.5px var(--f-display); letter-spacing: .08em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); margin-right: 6px; vertical-align: 1px; }
+.price { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.price input { width: 92px; text-align: right; font-family: var(--f-mono); font-size: 13px; padding: 4px 6px; }
+.price .edited { width: 7px; height: 7px; border-radius: 50%; background: var(--warn); }
+.src { display: block; font-size: 11.5px; color: var(--muted); text-align: right; white-space: nowrap; }
+.src.est { color: var(--warn); }
+.dots { display: flex; gap: 3px; }
+.dot { width: 11px; height: 11px; border-radius: 2px; border: 1px solid var(--muted); }
+.dot.on { background: var(--accent); border-color: var(--accent); }
+.dot.sel { outline: 2px solid var(--ink); outline-offset: 1px; }
+.barcell { display: grid; grid-template-columns: 1fr 44px; gap: 8px; align-items: center; min-width: 150px; }
+.track { height: 8px; background: var(--bg); border-radius: 2px; overflow: hidden; }
+.fill { height: 100%; background: var(--bar); }
+.fill.p { background: var(--bar-2); }
+.barcell .mono { text-align: right; font-size: 13px; }
+a.ext { color: var(--accent); font-size: 13px; text-decoration: none; white-space: nowrap; }
+a.ext:hover { text-decoration: underline; }
+.zero td { color: var(--muted); }
+.pickrow { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: end; }
+/* Gerät A/B: eigene Zeile, immer 50/50, auf dem Handy untereinander */
+.picks { flex: 1 1 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; align-items: start; }
+.pick { display: grid; gap: 6px; min-width: 0; }
+.pick-model { display: grid; gap: 6px; margin-top: 4px; }
+.pick-best { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-height: 36px; padding: 4px 10px; border: 1px dashed var(--line); border-radius: 4px; font-size: 14px; }
+.pick-best .na { color: var(--muted); }
+.detail .col-model { display: inline-block; margin-top: 4px; font: 600 12px var(--f-body); color: var(--accent); }
+.detail td.d .same { color: var(--muted); }
+.detail td.d .mem-why { display: block; white-space: normal; max-width: 250px; }
+.detail tr[data-k="runs"] td.v.win::after { content: none; }
+.runs-ok { font-family: var(--f-body); font-weight: 600; color: var(--good); }
+.runs-no { display: inline-block; padding: 1px 9px; border-radius: 99px; font: 600 12.5px var(--f-body); color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, transparent); border: 1px solid color-mix(in srgb, var(--bad) 45%, transparent); }
+.detail td.v small.sub { display: block; font: 400 11.5px var(--f-body); color: var(--muted); }
+#rank td.pw { white-space: nowrap; }
+.pick .pair { display: grid; grid-template-columns: minmax(118px, 34%) minmax(0, 1fr); gap: 6px; }
+.pick select, .pick .ss { width: 100%; min-width: 0; }
+@media (max-width: 640px) { .picks { grid-template-columns: minmax(0, 1fr); } }
+/* schmale Bildschirme: nichts darf breiter als die Steuerleiste werden */
+.controls { grid-template-columns: minmax(0, 1fr); }
+.pickrow, .picks { min-width: 0; }
+.row > .field { max-width: 100%; grid-template-columns: minmax(0, 1fr); }
+/* Steuerleiste: alle Bedienelemente gleich hoch, Labels gleich hoch → gleiche Grundlinie */
+.controls { --ctl-h: 36px; }
+.controls .lab { display: block; line-height: 18px; height: 18px; white-space: nowrap; }
+.controls .lab .mono { font-size: inherit; line-height: inherit; }
+.controls .seg { min-height: var(--ctl-h); }
+.controls .seg button { display: inline-flex; align-items: center; padding-block: 0; }
+.controls select, .controls input[type="number"], .controls .ss-btn, .controls .btn { height: var(--ctl-h); }
+.controls select { padding-block: 0; }
+.controls input[type="range"] { height: var(--ctl-h); margin: 0; }
+.controls .check { min-height: var(--ctl-h); }
+/* Suchbare Auswahlliste (ersetzt optisch ein <select>, das native Element bleibt für Wert und change-Event) */
+.ss { position: relative; min-width: 0; }
+#llm + .ss { width: 360px; max-width: 100%; }
+.ss-native { display: none; }
+.ss-btn { display: flex; align-items: center; gap: 8px; width: 100%; font: 400 14px var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; cursor: pointer; text-align: left; }
+.ss-btn:hover { border-color: var(--muted); }
+.ss-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ss-btn .ss-val { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ss-btn .ss-val.ph { color: var(--muted); }
+.ss-btn .ss-caret { flex: none; color: var(--muted); font-size: 11px; }
+.ss-panel { position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; width: max(100%, 300px); max-width: min(440px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px rgba(0, 0, 0, .18); padding: 6px; display: grid; gap: 6px; }
+.ss-search { position: relative; }
+.ss-search input { width: 100%; font: 400 14px var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 7px 30px 7px 9px; }
+.ss-search input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
+.ss-clear { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border: 0; border-radius: 3px; background: transparent; color: var(--muted); font-size: 17px; line-height: 1; cursor: pointer; }
+.ss-clear:hover { color: var(--ink); background: var(--accent-soft); }
+.ss-list { position: relative; list-style: none; margin: 0; padding: 0; max-height: 300px; overflow-y: auto; }
+.ss-list li { padding: 6px 8px; border-radius: 4px; font-size: 14px; cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
+.ss-list li small { color: var(--muted); font-size: 12px; margin-left: auto; white-space: nowrap; }
+.ss-list li[aria-selected="true"] { font-weight: 600; color: var(--accent); }
+.ss-list li.act { background: var(--accent-soft); }
+.ss-list li.grp { cursor: default; padding: 8px 8px 3px; font: 600 11px var(--f-display); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.ss-list li.empty { cursor: default; color: var(--muted); }
+.pick .lab b { color: var(--ink); }
+.detail { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; overflow-x: auto; }
+.detail table { min-width: 0; }
+.detail th, .detail td { padding: 9px 14px; }
+.detail thead th { vertical-align: bottom; }
+.detail thead .devrow { font-family: var(--f-body); text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--ink); font-weight: 600; }
+.detail td.k { color: var(--muted); font-size: 13.5px; white-space: nowrap; }
+.detail td.v { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: 14px; }
+.detail td.v.win { font-weight: 600; color: var(--ink); }
+.detail td.v.win::after { content: " ✓"; color: var(--good); }
+.detail td.d { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.detail td.d small { display: block; font-size: 11.5px; color: var(--good); white-space: normal; max-width: 220px; }
+.detail th.dhead { vertical-align: bottom; }
+/* Gewinner im Vergleich */
+.verdict { margin: 14px 14px 18px; border-radius: 8px; border: 1px solid var(--line); overflow: hidden; text-align: center; background: var(--surface); }
+.verdict .v-head { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; }
+.verdict .v-mem { padding: 14px 16px 16px; border-top: 1px solid var(--line); text-align: left; background: var(--surface); }
+.verdict .v-mem h2 { font-size: 17px; }
+.cmp-extras { display: grid; gap: 10px; }
+.cmp-extras > h2 { margin: 0; }
+.v-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 12px; border-top: 1px solid var(--line); background: var(--bg); text-align: left; }
+.v-card { display: grid; align-content: start; gap: 6px; padding: 10px 12px 12px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); min-width: 0; }
+.v-card header { display: flex; align-items: center; gap: 8px; }
+.v-card .v-ico { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; font: 700 15px/1 var(--f-body); background: var(--bg); }
+.v-card .v-ttl { font: 700 13px var(--f-display); letter-spacing: .05em; text-transform: uppercase; color: var(--ink); }
+.v-card .v-main { justify-self: start; margin-left: 34px; font: 600 10.5px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 99px; padding: 0 6px; }
+.v-card .v-cs { margin-left: auto; font: 700 18px var(--f-mono); color: var(--ink); white-space: nowrap; }
+.v-card .v-sum { margin: 0 0 0 34px; font-size: 13.5px; line-height: 1.45; color: var(--ink); }
+.v-card .v-sum small { display: block; margin-top: 4px; font-size: 11.5px; color: var(--muted); }
+.v-card.hw { border-left: 3px solid var(--accent); }
+.v-card.hw .v-ico { background: var(--accent-soft); }
+.v-card.energy { border-left: 3px solid var(--good); }
+.v-card.energy .v-ico { background: color-mix(in srgb, var(--good) 16%, var(--surface)); }
+.v-card.calc { border: 1px dashed var(--muted); border-left: 3px dashed var(--warn); background: color-mix(in srgb, var(--bg) 55%, var(--surface)); }
+.v-card.energy .v-main { color: var(--good); border-color: var(--good); }
+.v-card.calc .v-main { color: var(--warn); border-color: var(--warn); border-style: dashed; }
+.v-card.calc .v-ico { color: var(--warn); background: color-mix(in srgb, var(--warn) 14%, var(--surface)); }
+@media (max-width: 900px) { .v-cards { grid-template-columns: minmax(0, 1fr); } }
+.verdict .v-side { display: grid; gap: 6px; align-content: center; justify-items: center; padding: 18px 14px; min-width: 0; background: var(--bg); color: var(--muted); }
+.verdict .v-side.won { background: var(--accent); color: var(--surface); }
+.verdict .v-name { font: 700 clamp(18px, 2.4vw, 24px)/1.15 var(--f-display); overflow-wrap: anywhere; }
+.verdict .v-pts { font: 600 13px var(--f-display); letter-spacing: .06em; text-transform: uppercase; opacity: .85; }
+.verdict .v-badge { font: 700 12px var(--f-display); letter-spacing: .12em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; background: var(--surface); color: var(--accent); }
+.verdict .v-mid { display: grid; align-content: center; justify-items: center; gap: 4px; padding: 14px 22px; background: var(--surface); }
+.verdict .v-score { font: 700 clamp(30px, 4vw, 44px)/1 var(--f-mono); color: var(--ink); white-space: nowrap; }
+.verdict .v-why { grid-column: 1 / -1; margin: 0; padding: 12px 16px; font-size: 14px; color: var(--ink); background: var(--surface); border-top: 1px solid var(--line); }
+.verdict .v-why small { display: block; margin-top: 4px; font-size: 12px; color: var(--muted); }
+.verdict .v-basis { font: 600 12px var(--f-display); letter-spacing: .04em; color: var(--muted); max-width: 22ch; }
+.verdict .v-ko { display: grid; gap: 4px; justify-items: center; padding: 14px 16px; text-align: center; background: color-mix(in srgb, var(--bad) 12%, var(--surface)); border-bottom: 1px solid color-mix(in srgb, var(--bad) 40%, transparent); }
+.verdict .v-ko-warn { font: 700 clamp(15px, 1.8vw, 18px)/1.3 var(--f-display); color: var(--bad); }
+.verdict .v-ko-hint { font: 400 12.5px/1.45 var(--f-body); color: var(--muted); margin-top: 2px; }
+.verdict .v-ko-win { font: 600 14px var(--f-body); color: var(--ink); }
+.verdict .v-calc { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 12px; padding: 12px 16px; font-size: 14px; color: var(--ink); border-top: 1px dashed var(--muted); background: color-mix(in srgb, var(--bg) 70%, var(--surface)); }
+.verdict .v-calc-lab { font: 600 12px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.verdict .v-calc-score { font-family: var(--f-mono); font-weight: 600; }
+.verdict .v-calc-lead { color: var(--muted); }
+.v-info { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--muted); font: 700 10px/1 var(--f-body); text-transform: none; cursor: help; }
+.approx { display: inline-block; min-width: 1.1em; margin-right: 4px; color: var(--warn); font-weight: 700; }
+.detail tr.calc td.v { color: color-mix(in srgb, var(--ink) 82%, var(--muted)); }
+/* Teilen */
+.v-share { position: relative; display: grid; justify-items: center; gap: 4px; margin-top: 6px; }
+.share-btn { display: inline-flex; align-items: center; gap: 8px; font: 700 15px var(--f-display); letter-spacing: .05em; text-transform: uppercase; padding: 10px 20px; border-radius: 99px; border: 0; background: var(--accent); color: var(--surface); cursor: pointer; box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 35%, transparent); }
+.share-btn:hover { filter: brightness(1.08); }
+.share-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.verdict.tie .share-btn { background: var(--warn); box-shadow: 0 2px 8px color-mix(in srgb, var(--warn) 35%, transparent); }
+.share-menu { position: fixed; z-index: 30; min-width: 210px; display: grid; padding: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, .18); text-align: left; }
+.share-menu[hidden] { display: none; }
+.share-menu a, .share-menu button { display: block; padding: 8px 10px; border: 0; border-radius: 5px; background: transparent; color: var(--ink); font: 400 14px var(--f-body); text-decoration: none; text-align: left; cursor: pointer; }
+.share-menu a:hover, .share-menu button:hover, .share-menu a:focus-visible, .share-menu button:focus-visible { background: var(--accent-soft); outline: none; }
+.share-status { font-size: 12px; color: var(--muted); min-height: 1em; word-break: break-all; }
+.verdict.tie { border-color: var(--warn); }
+.verdict.tie .v-side, .verdict.tie .v-mid { background: color-mix(in srgb, var(--warn) 16%, var(--surface)); color: var(--ink); }
+.verdict.tie .v-badge { background: var(--warn); color: var(--surface); }
+@media (max-width: 640px) { .verdict .v-head { grid-template-columns: minmax(0, 1fr); } .verdict .v-mid { padding: 10px; } .v-share, .share-btn { width: 100%; } .share-btn { justify-content: center; } }
+.detail tr.grp td { font-family: var(--f-display); font-weight: 700; text-transform: uppercase; letter-spacing: .07em; font-size: 12.5px; color: var(--ink); padding: 14px 14px 8px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 60%, var(--surface)); }
+.detail .grp-h { display: inline-flex; align-items: center; gap: 8px; }
+.detail .grp-ico { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; background: var(--surface); border: 1px solid var(--line); font: 13px/1 var(--f-body); text-transform: none; letter-spacing: 0; }
+.detail tbody tr:not(.grp) td.k { padding-left: 46px; }
+/* Bereiche als Karten mit Symbol-Überschrift */
+.panel { display: grid; gap: 10px; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px 16px; }
+.sec-h { display: flex; align-items: center; gap: 10px; margin: 0; }
+.sec-ico { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 7px; background: var(--bg); border: 1px solid var(--line); font: 16px/1 var(--f-body); }
+.verdict .panel { border: 0; border-radius: 0; padding: 0; background: none; }
+@media (max-width: 520px) { .panel { padding: 12px; } .detail tbody tr:not(.grp) td.k { padding-left: 14px; } }
+.memhead, .memrow { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr) minmax(190px, 250px); gap: 12px; align-items: center; }
+.memchart { display: grid; gap: 7px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; }
+.memhead { font-size: 11.5px; color: var(--muted); font-family: var(--f-mono); }
+.memaxis { position: relative; height: 16px; }
+.memaxis span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.memaxis span.lim { color: var(--ink); font-weight: 600; }
+.memname { display: flex; gap: 8px; align-items: center; min-width: 0; font-size: 13.5px; }
+.memname b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.memtrack { position: relative; height: 18px; }
+.memcap { position: absolute; top: 0; bottom: 0; left: 0; background: var(--bg); border-radius: 4px; }
+.memcapline { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: .75; }
+.membar { position: absolute; top: 2px; bottom: 2px; left: 0; display: flex; gap: 2px; }
+.membar .seg { height: 100%; min-width: 2px; cursor: default; }
+.membar .seg:first-child { border-radius: 4px 0 0 4px; }
+.membar .seg:last-child { border-radius: 0 4px 4px 0; }
+.membar .seg:only-child { border-radius: 4px; }
+.seg.w { background: var(--m-weights); } .seg.kv { background: var(--m-kv); } .seg.ov { background: var(--m-ov); }
+.seg.spill { background: repeating-linear-gradient(135deg, var(--warn) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 1.5px var(--warn); }
+.seg.nofit { background: repeating-linear-gradient(135deg, var(--bad) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 1.5px var(--bad); }
+.memclip { position: absolute; right: -2px; top: -1px; font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.memval { font-size: 12.5px; font-variant-numeric: tabular-nums; line-height: 1.35; }
+.memval .st { font-weight: 600; }
+.memval .st.ok { color: var(--good); } .memval .st.warn { color: var(--warn); } .memval .st.bad { color: var(--bad); }
+.use-model { margin-top: -4px; border-radius: 4px; }
+.use-model b { color: var(--ink); font-weight: 600; }
+.eci-line { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 6px; }
+.eci-line .lab { margin-right: 2px; }
+.eci { display: inline-flex; align-items: center; gap: 8px; cursor: help; font-family: var(--f-mono); font-size: 12.5px; color: var(--ink); white-space: nowrap; }
+.eci-track { width: 220px; max-width: 40vw; height: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
+.eci.small .eci-track { width: 110px; height: 8px; }
+.eci-fill { display: block; height: 100%; background-image: linear-gradient(90deg, var(--bad), var(--warn) 50%, var(--good)); background-repeat: no-repeat; }
+.eci-max { color: var(--muted); }
+.eci-est { font: 600 10.5px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--warn); border: 1px solid var(--warn); border-radius: 3px; padding: 0 4px; }
+.detail .na { color: var(--muted); font-family: var(--f-body); font-size: 13px; }
+.eci.none { color: var(--muted); font-family: var(--f-body); cursor: default; }
+.eci-name { display: block; font-family: var(--f-body); font-size: 13px; margin-bottom: 3px; }
+@media (prefers-reduced-motion: no-preference) { .use-model.flash { animation: useflash 1.2s ease-out; } }
+@keyframes useflash { from { background: var(--accent-soft); } to { background: transparent; } }
+.memval small { display: block; color: var(--muted); font-size: 11.5px; }
+.memlegend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.memlegend span { display: inline-flex; align-items: center; gap: 6px; }
+.memlegend i { display: inline-block; width: 14px; height: 10px; border-radius: 2px; }
+#tip { position: fixed; z-index: 10; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 12.5px; padding: 6px 9px; border-radius: 5px; max-width: 260px; line-height: 1.35; }
+@media (max-width: 760px) { .memhead { display: none; } .memrow { grid-template-columns: 1fr; gap: 4px; padding-block: 4px; border-bottom: 1px solid var(--line); } .memrow:last-child { border-bottom: 0; } }
+.matrix td, .matrix th { text-align: right; font-size: 13px; padding: 7px 10px; }
+.matrix td:first-child, .matrix th:first-child { text-align: left; }
+.matrix .na { color: var(--muted); opacity: .6; }
+.matrix th small { display: block; font-family: var(--f-body); text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 11.5px; }
+.method { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px 28px; }
+.method section { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.method p, .method li { font-size: 14px; color: var(--ink); margin: 0; }
+.method ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.formula { font-family: var(--f-mono); font-size: 12.5px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; overflow-x: auto; white-space: pre; line-height: 1.6; }
+.method a { color: var(--accent); }
+/* Statischer Erklärtext + FAQ unter dem Tool (für Suchmaschinen und Leser ohne JS) */
+.seo { display: grid; gap: 22px; border-top: 1px solid var(--line); padding-top: 22px; }
+.seo section { display: grid; gap: 8px; align-content: start; }
+.seo p { font-size: 14px; margin: 0; }
+.seo h3 { font: 600 15.5px var(--f-body); margin: 8px 0 0; }
+.seo .formula { }
+.noscript-devs { display: grid; gap: 10px; }
+.noscript-devs table { min-width: 0; font-size: 13.5px; }
+footer { font-size: 12.5px; color: var(--muted); }
+.site-footer { display: grid; gap: 12px; padding-top: 18px; border-top: 1px solid var(--line); }
+.site-footer p { margin: 0; }
+.foot-nav { display: flex; flex-wrap: wrap; gap: 8px 10px; }
+.foot-nav a { font: 600 13.5px var(--f-display); letter-spacing: .03em; color: var(--ink); text-decoration: none; padding: 7px 14px; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); }
+.foot-nav a:hover { border-color: var(--accent); color: var(--accent); }
+.foot-nav a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+@media (max-width: 520px) { .foot-nav { gap: 6px; } .foot-nav a { padding: 6px 11px; font-size: 13px; } }
+@media (max-width: 520px) { .wrap { padding-inline: 16px; } .seg button { padding: 7px 9px; font-size: 13px; } }
+@media (prefers-reduced-motion: no-preference) { .fill { transition: width .25s ease; } }
+</style>
+<link rel="stylesheet" href="/assets/design.css">
+<style>
+/* Info-Unterseiten */
+.page-top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.back-btn { display: inline-flex; align-items: center; gap: 6px; font: 700 14px var(--f-display); letter-spacing: .03em; text-decoration: none; color: var(--surface); background: var(--accent); padding: 9px 16px; border-radius: 99px; }
+.back-btn:hover { filter: brightness(1.08); }
+.toc { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.toc .lab { margin-right: 4px; }
+.toc a { font: 600 13px var(--f-body); color: var(--ink); text-decoration: none; padding: 5px 12px; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); }
+.toc a:hover { border-color: var(--accent); color: var(--accent); }
+.page-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; border-top: 0; padding-top: 0; }
+.page-body section.panel { scroll-margin-top: 16px; }
+.page-body .faq { display: grid; gap: 6px; }
+.page-body .faq h3 { margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--line); }
+.page-body .faq h3:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="toprow">
+      <div class="eyebrow">AI Score Metrics</div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode">
+          <span class="theme-label">Dark Mode</span><span class="theme-track" aria-hidden="true"><span class="theme-thumb"></span></span>
+        </button>
+      <div class="seg small" id="lang" role="group" aria-label="Sprache / Language">
+        <a href="/methodik/" data-id="de" hreflang="de" lang="de">DE</a><a href="/en/methodology/" data-id="en" hreflang="en" lang="en" aria-current="page">EN</a>
+      </div>
+      </div>
+    </div>
+    <h1>Methodology</h1>
+    <div class="page-top"><a class="back-btn" href="/en/">← Back to the calculator</a><nav class="toc" aria-label="Contents"><span class="lab">Contents</span><a href="#how-the-score-works">How the score works</a><a href="#assumptions">Assumptions</a><a href="#real-world-numbers">Real-world numbers</a><a href="#check-against-localscore">Check against LocalScore</a><a href="#data-as-of">Data as of</a></nav></div>
+  </header>
+  <main class="page-body method">
+    <section class="panel" id="how-the-score-works"><h2 class="sec-h"><span class="sec-ico" aria-hidden="true">🧮</span><span>How the score works</span></h2>
+      <div class="formula">Memory    = model_GB + KV_GB(context) + 1 GB
+fits      = memory ≤ usable memory
+Generate  = η · ε · bandwidth / (active_GB + KV_GB/2)
+Prompt    = η_c · TFLOPS · 1000 / (2 · active_params_B)
+
+Perf      = fits · Gen^α · Prompt^(1−α)   (selected model)
+Score     = Perf / system price   (best device = 100)</div>
+      <p><strong>What does “fits” mean?</strong> The second formula is a yes/no check: “≤” means “less than or equal to”. Its result is used as a number in the performance formula: <strong>fits = 1</strong> if weights, KV cache and about 1 GB of runtime overhead fit entirely in usable GPU memory; <strong>fits = 0</strong> if the requirement exceeds it. Usable memory already accounts for the device’s reserve or GPU memory limit.</p>
+      <p>Example: A graphics card with 16 GB of VRAM has 15.2 GB usable after the assumed 0.8 GB reserve. If the model requires 14 GB in total, “fits” equals 1. At 18 GB, “fits” equals 0. In the first case, calculated performance is retained; in the second, performance and the value score for this model are 0. Running with offloading to system RAM may still be possible; the memory view shows this slower mode separately, and it does not contribute to the score.</p>
+      <p><strong>How do you read the performance formula?</strong> “·” means multiplication, “/” division and “^” exponentiation. “Gen” means generation: how quickly the answer is produced. “Prompt” means how quickly the input is processed. Both speeds are in tokens per second. α (alpha) weights generation, and 1−α weights prompt processing. At α = 0.5, this is the geometric mean: with 100 tokens/s generation and 400 tokens/s prompt processing, “fits = 1” gives √(100 · 400) = 200. With “fits = 0”, it becomes 0. The weighting describes the score, not the fraction of time spent on a task.</p>
+      <p><strong>The remaining quantities:</strong> model_GB is the weight size at the selected quantization. KV_GB(context) is the cache for the selected context. active_GB and active_params_B describe active weights and billions of active parameters per token; MoE models activate only part of the model. Bandwidth is in GB/s. η (eta) is assumed bandwidth efficiency, ε (epsilon) a model-dependent factor, and η_c assumed compute efficiency. TFLOPS means trillions of operations per second. The factor 1000 converts the units in the prompt formula.</p>
+      <p><strong>From performance to score:</strong> Performance is first divided by the system price in euros. These value figures are then normalized against the best device with a known price: it receives 100 points; half its value receives 50 points. No value score is displayed without a price.</p>
+      <p>Performance applies to the selected LLM. α weighs generation against prompt processing: agentic coding 0.5 · chat 0.8 · otherwise 0.6. With long-context agents, prompt processing dominates, so compute counts for more there. The use case only filters the model list; “models that fit” counts the models in that list.</p>
+    </section>
+    <section class="panel" id="assumptions"><h2 class="sec-h"><span class="sec-ico" aria-hidden="true">📐</span><span>Assumptions</span></h2>
+      <ul>
+        <li>Model figures (parameters, active parameters, KV cache per token) from the model cards. For Qwen3.5/3.6, KV cache and sizes are approximations. Sizes for the newer models (including Qwen3.8, Mistral 3/4, Llama 4, DeepSeek V4/V4.1, GLM-5.3, Kimi K3, Nemotron 3) are the actual Q4_K_M GGUF files; where no Q4_K_M exists (GLM-5.3-Flash, DeepSeek V4 Pro, Kimi K3), the equally sized Q4_K_XL file. For MoE models all parameters count towards memory, the active ones only towards speed. Hybrid models (linear attention, Mamba, compressed attention) only grow a context-dependent KV cache in their attention layers; their fixed state memory is part of the overhead. Gemma 4: FP16 KV cache derived from official attention configurations, with bounded sliding windows and shared layers; backend buffers can require additional memory.</li>
+        <li>Gemma 4 includes E2B, E4B, 12B, 26B-A4B and 31B. E2B/E4B have 5.1/8 billion total parameters but 2.3/4.5 billion effective parameters; 26B-A4B has 25.2 billion total and 3.8 billion active. Speeds are estimates for text generation without MTP. Base and instruction-tuned weights share one hardware entry. Weights: published Q4_K_M GGUF file sizes; Q4_0: official Google QAT files. Other precisions and active bytes read are scaled estimates. Image/audio add-on weights, mobile-specific formats and MTP are outside this calculation. <a href="https://ai.google.dev/gemma/docs/core/model_card_4" target="_blank" rel="noopener">Google model card</a> · <a href="https://huggingface.co/collections/google/gemma-4-qat-q4-0" target="_blank" rel="noopener">QAT models</a></li>
+        <li>Quantization selectable from Q2_K (≈ 2.9 bits per weight) to FP16 (16 bits). Default is Q4_K_M (≈ 4.85 bits), native MXFP4 for the 120B MoE class. Size and bytes read per token scale with the bits; the KV cache stays FP16.</li>
+        <li>Usable memory: GPU = VRAM − 0.8 GB. Mac: macOS default limit of 67% (≤ 36 GB) or 75% of RAM, but at most RAM minus 6 GB for macOS and background apps. With the raised limit, everything except those 6 GB. Ryzen AI Max: 96 GB, 110 GB raised, 4 GB Linux reserve.</li>
+        <li>Bandwidth efficiency η: NVIDIA 0.60, AMD graphics cards 0.50 (ROCm/Vulkan), Ryzen AI Max 0.72, Apple Pro/Max 0.62, Apple Ultra 0.50.</li>
+        <li>Ryzen AI Max+ 395: of 128 GB, about 96 GB is usable as graphics memory on Linux, about 110 GB with a raised limit.</li>
+        <li>NVIDIA GB10 (DGX Spark, Surface RTX Spark Dev Box): 273 GB/s LPDDR5X, shared memory. Usable by the GPU: DGX Spark 128 GB ≈ 119 GB (124 GB raised), DGX Spark 64 GB ≈ 56 GB (8 GB reserved for the system per NVIDIA), Surface 112 GB per Microsoft. Bandwidth efficiency η 0.72 as for Ryzen AI Max; compute 1,000 AI TOPS ÷ 8 = 125 TFLOPS, η_c 0.3. Microsoft has not published the Surface bandwidth; it is assumed to match the DGX Spark.</li>
+        <li>Compute: NVIDIA = FP16 tensor throughput (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0.5. AMD = datasheet FP16 peak, η_c 0.35 (Ryzen AI Max 0.3). Apple = GPU FP32, η_c 0.6. M5 chips with Neural Accelerators ×3.5 (Apple claims up to 3.9–4× over the previous generation).</li>
+        <li>MoE models reach about half their theoretical generation speed in practice (routing, attention, scattered reads), so ε = 0.55. Dense models ε = 1.</li>
+        <li>Power use: graphics cards use the manufacturer's board power plus 150 W for the rest of the PC (laptops plus 60 W), i.e. a full-load estimate. Macs use about 50% of Apple's maximum wall power (measured: M3 Ultra 138 W at a 270 W maximum), MacBook Pros the power adapter as the upper bound. Mini PCs use measured or vendor figures: Ryzen AI Max+ 395 about 128 W, DGX Spark 140 W, Surface RTX Spark Dev Box 100 W. Electricity cost = watts × hours × 365 × price ÷ 1,000; total cost over 3 years = system price + 3 × electricity at 8 h/day.</li>
+        <li>No partial offloading: a model that does not fit scores 0. Multi-GPU is not modelled.</li>
+      </ul>
+    </section>
+    <section class="panel" id="real-world-numbers"><h2 class="sec-h"><span class="sec-ico" aria-hidden="true">🚀</span><span>Real-world numbers</span></h2>
+      <ul>
+        <li>First token = prompt length ÷ prompt processing speed. Very long prompts are somewhat slower in practice because attention grows too.</li>
+        <li>Memory usage: weights + KV cache for the context + about 1 GB runtime overhead. If that does not fit in graphics memory, the rest of the weights moves to PC RAM (DDR5 dual channel, about 58 GB/s effective). Every token then has to read that part through the much slower system memory. 8 GB of PC RAM are reserved for the OS and apps.</li>
+        <li>100 lines of code ≈ 1,100 tokens (about 11 tokens per line). Time = first token + 1,100 ÷ tokens/s.</li>
+        <li>Images are compute-bound. Reference RTX 4090 at 1024 × 1024: SDXL 30 steps ≈ 4.5 s, FLUX.1 schnell ≈ 2.2 s, FLUX.1 dev ≈ 14 s. Other devices are scaled by compute, with a platform factor for Apple (2.1) and AMD (1.7), calibrated against typical SDXL times.</li>
+      </ul>
+    </section>
+    <section class="panel" id="check-against-localscore"><h2 class="sec-h"><span class="sec-ico" aria-hidden="true">🔬</span><span>Check against LocalScore</span></h2>
+      <p>Measurements from the public <a href="https://www.localscore.ai/">LocalScore database</a> (llamafile, Q4_K_M) against the estimate. Software version and measurement date are not documented in this reference comparison; these numbers are not measurements of the currently selected scenario:</p>
+      <div style="overflow-x:auto"><table class="calib"><thead><tr><th>RTX 4090</th><th>Gen. model</th><th>Gen. measured</th><th>Prompt model</th><th>Prompt measured</th></tr></thead>
+      <tbody><tr><td>Llama 3.1 8B</td><td class="mono">123</td><td class="mono">120</td><td class="mono">10,313</td><td class="mono">7,594</td></tr>
+      <tr><td>Qwen2.5 14B</td><td class="mono">67</td><td class="mono">69</td><td class="mono">5,574</td><td class="mono">4,208</td></tr></tbody></table></div>
+      <p>Generation lands within ±3%. Prompt numbers run about 35% above llamafile but match current llama.cpp builds. Blackwell cards show implausibly low results in LocalScore (RTX 5090 slower than RTX 4090), which points to older CUDA kernels in the benchmark, so they are left out of the calibration.</p>
+    </section>
+    <section class="panel" id="data-as-of"><h2 class="sec-h"><span class="sec-ico" aria-hidden="true">📅</span><span>Data as of</span></h2>
+      <ul>
+        <li>GPU prices: lowest new price in Germany per gpuprix.com (retailer data from Alternate), updated automatically every day, last on <span data-updated>–</span>. Shown is the cheapest card in stock, or the last lowest price if none is in stock. Individual prices can be set manually, currently the RTX 5090 per Geizhals.</li>
+        <li>Current Macs (Mac Studio M5 Max/Ultra, Mac mini M6/M5 Pro, MacBook Pro M5 Pro/Max): Apple list prices for Germany/Austria in euros and the US in dollars as of 12 Oct 2026, each the cheapest configuration with that chip and memory, e.g. Mac Studio M5 Ultra 64-GPU · 96 GB: €6,599 or $5,499, with the 80-GPU: €8,029 or $6,799. Mac Studio M5 Ultra 512 GB: estimated (orderable from late October). Older Macs: estimated used prices.</li>
+        <li>Currency: euro prices are for Germany/Austria including VAT. In dollar mode, US list prices before sales tax are used where known (Apple, NVIDIA DGX Spark, Microsoft Surface); all other prices are converted from euros: excluding 19% VAT, ECB rate €1 = $1.1181 (12 Oct 2026).</li>
+        <li>Ryzen AI Max+ 395 with 128 GB: mini PCs from Framework, GMKtec or Minisforum, estimated price.</li>
+        <li>DGX Spark: 128 GB estimated at €6,300 (NVIDIA list price since 2 Oct 2026: $6,950), 64 GB estimated at €5,000 ($4,999, from 23 Oct via OEM partners). Surface RTX Spark Dev Box: $5,999, US-only preorders so far, €6,000 estimated.</li>
+        <li>Specs: NVIDIA, AMD, Intel and Apple datasheets. Laptop/server cards without a verified euro price have empty price fields. New GPU speeds are roofline estimates with assumed efficiency factors; Intel has no benchmark calibration. Pascal uses an FP32 compute basis. SXM requires a compatible server platform; laptop speed depends on TGP and cooling. Compute for RTX PRO 2000/4000/4500 and the Ada workstation cards is derived from AI TOPS, so approximate. RTX PRO 6000 Max-Q: estimated price. RTX PRO 4500: Amazon price from 11 Oct.</li>
+        <li>Links go to the Geizhals price comparison (no affiliate).</li>
+      </ul>
+    </section>
+
+  </main>
+  <footer class="site-footer">
+    <nav class="foot-nav" aria-label="Info pages">
+      <a href="/en/">Calculator</a><a href="/en/methodology/" aria-current="page">Methodology</a><a href="/en/faq/">FAQ</a><a href="/en/about/">About</a><a href="/en/methodology/#data-as-of">Data sources</a>
+    </nav>
+  </footer>
+</div>
+<script>
+// Datum der letzten Preisaktualisierung (Methodik → Datenstand)
+(() => { const el = document.querySelectorAll("[data-updated]"); if (!el.length) return;
+  fetch("/data/prices.json", { cache: "no-cache" }).then((r) => r.json()).then((p) => { if (!p.updatedAt) return;
+    const t = new Date(p.updatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+    el.forEach((e) => { e.textContent = t; }); }).catch(() => {}); })();
+</script>
+</body>
+</html>

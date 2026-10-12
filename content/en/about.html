@@ -1,0 +1,13 @@
+    <section>
+      <h2>What is AI Score Metrics?</h2>
+      <p>AI Score Metrics is a free calculator for hardware that runs large language models (LLMs) locally. It compares NVIDIA and AMD graphics cards, Apple Macs with M-series chips and Ryzen AI Max mini PCs by whether a model fits in memory, how fast it generates text, how long the first token takes and how much performance you get per euro. GPU prices for Germany are updated automatically every day and can be shown optionally.</p>
+    </section>
+    <section>
+      <h2>How is the score calculated?</h2>
+      <p>For the selected model, the calculator first checks whether the model weights, the KV cache for the context and about 1 GB of runtime overhead fit in usable graphics memory. If the model fits, generation speed follows from memory bandwidth, because the active weights are read once for every token. Prompt processing depends on compute (TFLOPS). Both are weighted by use case into a performance figure and divided by the system price; the best device gets 100 points.</p>
+      <div class="formula">Perf  = fits · Generation^α · Prompt^(1−α)
+Score = Perf / system price   (best device = 100)</div>
+      <p><strong>“fits” is a factor equal to 1 or 0:</strong> 1 if the total calculated memory requirement is less than or equal to usable GPU memory; otherwise 0. The dot “·” means multiplication. With 1, weighted performance is retained; with 0, performance and the value score for this model are set to 0. This is a scoring rule, not a claim that the model could never run by offloading to system RAM.</p>
+      <p>Generation and Prompt are speeds in tokens per second: Generation describes producing the answer, while Prompt describes reading and processing your input. “^” means exponentiation, or “raised to the power of”. α weights these two speeds; it is not a fraction of actual elapsed time.</p>
+      <p>α is 0.5 for agentic coding and 0.8 for chat. For graphics cards, the system price includes an adjustable amount for the rest of the PC.</p>
+    </section>

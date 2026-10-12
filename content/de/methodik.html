@@ -1,0 +1,61 @@
+    <section>
+      <h2>Wie der Score rechnet</h2>
+      <div class="formula">Speicher  = Modell_GB + KV_GB(Kontext) + 1 GB
+passt     = Speicher ≤ nutzbarer Speicher
+Generier. = η · ε · Bandbreite / (aktive_GB + KV_GB/2)
+Prompt    = η_c · TFLOPS · 1000 / (2 · aktive_Param_Mrd)
+
+Leistung  = passt · Gen^α · Prompt^(1−α)   (gewähltes Modell)
+Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
+      <p><strong>Was bedeutet „passt“?</strong> Die zweite Formel ist eine Ja/Nein-Prüfung: „≤“ bedeutet „kleiner oder gleich“. Das Ergebnis wird für die Leistungsformel als Zahl verwendet: <strong>passt = 1</strong>, wenn Gewichte, KV-Cache und rund 1 GB Laufzeit-Overhead vollständig in den nutzbaren GPU-Speicher passen; <strong>passt = 0</strong>, wenn der Bedarf darüber liegt. Nutzbarer Speicher berücksichtigt bereits die Reserve beziehungsweise das GPU-Speicherlimit des Geräts.</p>
+      <p>Beispiel: Eine Grafikkarte mit 16 GB VRAM hat nach der hier angesetzten Reserve von 0,8 GB noch 15,2 GB nutzbaren Speicher. Benötigt das Modell insgesamt 14 GB, ist „passt“ gleich 1. Bei 18 GB ist „passt“ gleich 0. Deshalb bleibt im ersten Fall die berechnete Leistung erhalten, während im zweiten Fall Leistung und Preis-Leistungs-Score für dieses Modell 0 sind. Ein Betrieb mit Auslagerung in den PC-RAM kann trotzdem möglich sein; diese langsamere Betriebsart zeigt die Speicheransicht separat und sie fließt nicht in den Score ein.</p>
+      <p><strong>Wie liest man die Leistungsformel?</strong> „·“ bedeutet Multiplikation, „/“ Division und „^“ eine Potenz. „Gen“ steht für Generierung: die Geschwindigkeit, mit der die Antwort entsteht. „Prompt“ steht für die Geschwindigkeit, mit der die Eingabe verarbeitet wird. Beide Werte sind in Tokens pro Sekunde angegeben. α (Alpha) gewichtet die Generierung, 1−α die Prompt-Verarbeitung. Bei α = 0,5 entsteht das geometrische Mittel: Für 100 Tokens/s Generierung und 400 Tokens/s Prompt-Verarbeitung ergibt sich bei „passt = 1“ eine Leistung von √(100 · 400) = 200. Bei „passt = 0“ wird daraus 0. Die Gewichtung beschreibt die Bewertung, nicht den Zeitanteil einer Aufgabe.</p>
+      <p><strong>Die übrigen Größen:</strong> Modell_GB sind die Modellgewichte bei der gewählten Quantisierung. KV_GB(Kontext) ist der Cache für den gewählten Kontext. aktive_GB und aktive_Param_Mrd beschreiben die pro Token aktiven Gewichte beziehungsweise Milliarden Parameter; bei MoE-Modellen ist nur ein Teil des Modells aktiv. Bandbreite wird in GB/s angegeben. η (Eta) ist die angenommene Bandbreiten-Effizienz, ε (Epsilon) ein modellabhängiger Faktor und η_c die angenommene Rechen-Effizienz. TFLOPS bezeichnet Billionen Rechenoperationen pro Sekunde. Der Faktor 1000 setzt die Einheiten der Prompt-Formel um.</p>
+      <p><strong>Vom Leistungswert zum Score:</strong> Zuerst wird die Leistung durch den Systempreis in Euro geteilt. Anschließend werden diese Preis-Leistungs-Werte auf das beste Gerät mit bekanntem Preis normiert: Es erhält 100 Punkte; ein halb so guter Wert erhält 50 Punkte. Ohne Preis wird kein Preis-Leistungs-Score angezeigt.</p>
+      <p>Die Leistung gilt für das gewählte LLM-Modell. α gewichtet Generierung gegen Prompt-Verarbeitung: Agentic Coding 0,5 · Chat 0,8 · sonst 0,6. Bei Agents mit langem Kontext dominiert die Prompt-Verarbeitung, deshalb fällt dort Rechenleistung stärker ins Gewicht. Der Einsatzzweck filtert nur die Modellauswahl; „Modelle passen“ zählt die Modelle dieser Auswahl.</p>
+    </section>
+    <section>
+      <h2>Annahmen</h2>
+      <ul>
+        <li>Modellwerte (Parameter, aktive Parameter, KV-Cache je Token) aus den Modellkarten. Bei Qwen3.5/3.6 sind KV-Cache und Größen Näherungen. Größen der neueren Modelle (u. a. Qwen3.8, Mistral 3/4, Llama 4, DeepSeek V4/V4.1, GLM-5.3, Kimi K3, Nemotron 3) = tatsächliche Q4_K_M-GGUF-Dateien; wo es kein Q4_K_M gibt (GLM-5.3-Flash, DeepSeek V4 Pro, Kimi K3), die gleich große Q4_K_XL-Datei. Bei MoE-Modellen zählen alle Parameter für den Speicher, die aktiven nur für die Geschwindigkeit. Hybride Modelle (lineare Attention, Mamba, komprimierte Attention) haben nur in den Attention-Layern einen mit dem Kontext wachsenden KV-Cache; ihr fester Zustandsspeicher steckt im Overhead. Gemma 4: FP16-KV-Cache aus den offiziellen Attention-Konfigurationen, mit begrenztem Sliding Window und gemeinsam genutzten Layern; Backend-Puffer können zusätzlichen Speicher benötigen.</li>
+        <li>Gemma 4 umfasst E2B, E4B, 12B, 26B-A4B und 31B. E2B/E4B haben 5,1/8 Mrd. Gesamtparameter, aber 2,3/4,5 Mrd. effektive Parameter; 26B-A4B hat 25,2 Mrd. gesamt und 3,8 Mrd. aktiv. Die Geschwindigkeiten sind Schätzungen für Textgenerierung ohne MTP. Base und Instruction-Tuned teilen sich einen Hardware-Eintrag. Gewichte: veröffentlichte Q4_K_M-GGUF-Dateigrößen, Q4_0: offizielle Google-QAT-Dateien. Andere Präzisionen und aktive Lesemengen werden skaliert geschätzt. Bild-/Audio-Zusatzgewichte, Mobile-Spezialformate und MTP sind nicht Teil dieser Berechnung. <a href="https://ai.google.dev/gemma/docs/core/model_card_4" target="_blank" rel="noopener">Google-Modellkarte</a> · <a href="https://huggingface.co/collections/google/gemma-4-qat-q4-0" target="_blank" rel="noopener">QAT-Modelle</a></li>
+        <li>Quantisierung wählbar von Q2_K (≈ 2,9 Bit pro Gewicht) bis FP16 (16 Bit). Standard ist Q4_K_M (≈ 4,85 Bit), bei der 120B-MoE-Klasse das native MXFP4. Größe und Lesemenge pro Token skalieren mit den Bits, der KV-Cache bleibt in FP16.</li>
+        <li>Nutzbarer Speicher: GPU = VRAM − 0,8 GB. Mac: macOS-Standardlimit 67 % (≤ 36 GB) bzw. 75 % des Arbeitsspeichers, höchstens aber Arbeitsspeicher minus 6 GB für macOS und Hintergrundprogramme. Mit angehobenem Limit alles außer diesen 6 GB. Ryzen AI Max: 96 GB, angehoben 110 GB, Linux-Reserve 4 GB.</li>
+        <li>Bandbreiten-Effizienz η: NVIDIA 0,60, AMD-Grafikkarten 0,50 (ROCm/Vulkan), Ryzen AI Max 0,72, Apple Pro/Max 0,62, Apple Ultra 0,50.</li>
+        <li>Ryzen AI Max+ 395: von 128 GB sind unter Linux rund 96 GB als Grafikspeicher nutzbar, mit angepasstem Limit etwa 110 GB.</li>
+        <li>NVIDIA GB10 (DGX Spark, Surface RTX Spark Dev Box): 273 GB/s LPDDR5X, gemeinsamer Speicher. Nutzbar für die GPU: DGX Spark 128 GB ≈ 119 GB (angehoben 124 GB), DGX Spark 64 GB ≈ 56 GB (8 GB fürs System laut NVIDIA), Surface 112 GB laut Microsoft. Bandbreiten-Effizienz η 0,72 wie Ryzen AI Max; Rechenleistung 1.000 AI TOPS ÷ 8 = 125 TFLOPS, η_c 0,3. Die Surface-Bandbreite hat Microsoft nicht veröffentlicht; angenommen ist derselbe Wert wie beim DGX Spark.</li>
+        <li>Rechenleistung: NVIDIA = FP16-Tensor-Leistung (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0,5. AMD = FP16-Spitzenleistung laut Datenblatt, η_c 0,35 (Ryzen AI Max 0,3). Apple = GPU-FP32, η_c 0,6. M5-Chips mit Neural Accelerators ×3,5 (Apple nennt bis 3,9–4× gegenüber der Vorgängergeneration).</li>
+        <li>MoE-Modelle erreichen in der Praxis rund die Hälfte der rechnerischen Generierung (Routing, Attention, verteilte Zugriffe), daher ε = 0,55. Dichte Modelle ε = 1.</li>
+        <li>Stromverbrauch: Grafikkarten mit Board Power laut Hersteller plus 150 W für den restlichen PC (Laptops plus 60 W), also eine Volllast-Schätzung. Macs mit rund 50 % von Apples Maximalwert an der Steckdose (gemessen: M3 Ultra 138 W bei 270 W Maximum), MacBook Pro mit dem Netzteil als Obergrenze. Mini-PCs mit Messwerten bzw. Herstellerangabe: Ryzen AI Max+ 395 ca. 128 W, DGX Spark 140 W, Surface RTX Spark Dev Box 100 W. Stromkosten = Watt × Stunden × 365 × Strompreis ÷ 1.000; Gesamtkosten 3 Jahre = Systempreis + 3 × Stromkosten bei 8 h/Tag.</li>
+        <li>Kein Teil-Offloading: Wenn ein Modell nicht passt, zählt es mit 0. Multi-GPU ist nicht abgebildet.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Praxiswerte</h2>
+      <ul>
+        <li>Erster Token = Prompt-Länge ÷ Prompt-Verarbeitung. Bei sehr langen Prompts wird es in der Praxis etwas langsamer, weil die Attention mitwächst.</li>
+        <li>Speicherauslastung: Gewichte + KV-Cache für den Kontext + rund 1 GB Laufzeit-Overhead. Passt das nicht in den Grafikspeicher, wandert der Rest der Gewichte in den PC-RAM (DDR5 Dual-Channel, effektiv ca. 58 GB/s). Jeder Token muss diesen Teil dann über den viel langsameren Arbeitsspeicher lesen. 8 GB PC-RAM sind für System und Programme reserviert.</li>
+        <li>100 Zeilen Code ≈ 1.100 Tokens (rund 11 Tokens pro Zeile). Dauer = erster Token + 1.100 ÷ Tokens/s.</li>
+        <li>Bilder sind rechenleistungsgebunden. Referenz RTX 4090 bei 1024 × 1024: SDXL 30 Schritte ≈ 4,5 s, FLUX.1 schnell ≈ 2,2 s, FLUX.1 dev ≈ 14 s. Andere Geräte werden über ihre Rechenleistung hochgerechnet, mit Plattformfaktor für Apple (2,1) und AMD (1,7), kalibriert an typischen SDXL-Zeiten.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Abgleich mit LocalScore</h2>
+      <p>Messungen aus der öffentlichen <a href="https://www.localscore.ai/">LocalScore-Datenbank</a> (llamafile, Q4_K_M) gegen die Schätzung. Softwareversion und Messdatum sind in diesem übernommenen Referenzabgleich nicht dokumentiert; diese Zahlen sind keine Messung des aktuell gewählten Szenarios:</p>
+      <div style="overflow-x:auto"><table class="calib"><thead><tr><th>RTX 4090</th><th>Gen. Modell</th><th>Gen. gemessen</th><th>Prompt Modell</th><th>Prompt gemessen</th></tr></thead>
+      <tbody><tr><td>Llama 3.1 8B</td><td class="mono">123</td><td class="mono">120</td><td class="mono">10.313</td><td class="mono">7.594</td></tr>
+      <tr><td>Qwen2.5 14B</td><td class="mono">67</td><td class="mono">69</td><td class="mono">5.574</td><td class="mono">4.208</td></tr></tbody></table></div>
+      <p>Die Generierung trifft auf ±3 %. Die Prompt-Werte liegen rund 35 % über llamafile, aber im Bereich aktueller llama.cpp-Builds. Blackwell-Karten liefern in LocalScore unplausibel niedrige Werte (RTX 5090 langsamer als RTX 4090). Das deutet auf ältere CUDA-Kernel im Benchmark hin, deshalb fließen sie nicht in die Kalibrierung ein.</p>
+    </section>
+    <section>
+      <h2>Datenstand</h2>
+      <ul>
+        <li>GPU-Preise: niedrigster Neupreis Deutschland laut gpuprix.com (Händlerdaten von Alternate), täglich automatisch aktualisiert, zuletzt <span data-updated>–</span>. Gezeigt wird die günstigste lieferbare Karte. Ist keine lieferbar, der letzte Tiefstpreis. Einzelne Preise können manuell gesetzt werden, aktuell die RTX 5090 nach Geizhals.</li>
+        <li>Aktuelle Macs (Mac Studio M5 Max/Ultra, Mac mini M6/M5 Pro, MacBook Pro M5 Pro/Max): Apple-Listenpreise Deutschland/Österreich in Euro und USA in Dollar vom 12.10.2026, jeweils günstigste Konfiguration mit diesem Chip und Speicher, z. B. Mac Studio M5 Ultra 64-GPU · 96 GB: 6.599 € bzw. 5.499 $, mit 80-GPU: 8.029 € bzw. 6.799 $. Mac Studio M5 Ultra 512 GB: geschätzt (erst ab Ende Oktober bestellbar). Ältere Macs: Gebrauchtpreise geschätzt.</li>
+        <li>Währung: Euro-Preise gelten für Deutschland/Österreich inkl. MwSt. Im Dollar-Modus gelten US-Listenpreise ohne Sales Tax, wo bekannt (Apple, NVIDIA DGX Spark, Microsoft Surface); alle anderen Preise werden aus Euro umgerechnet: ohne 19 % MwSt., EZB-Kurs 1 € = 1,1181 $ (12.10.2026).</li>
+        <li>Ryzen AI Max+ 395 mit 128 GB: Mini-PCs von Framework, GMKtec oder Minisforum, Preis geschätzt.</li>
+        <li>DGX Spark: 128 GB geschätzt 6.300 € (NVIDIA-Listenpreis seit 2.10.2026: 6.950 $), 64 GB geschätzt 5.000 € (4.999 $, ab 23.10. über OEM-Partner). Surface RTX Spark Dev Box: 5.999 $, bisher nur in den USA bestellbar, 6.000 € geschätzt.</li>
+        <li>Specs: NVIDIA-, AMD-, Intel- und Apple-Datenblätter. Notebook-/Serverkarten ohne bestätigten Europreis haben offene Preisfelder. Tempo neuer Karten ist eine Roofline-Schätzung mit angenommenen Effizienzfaktoren; Intel ist nicht benchmark-kalibriert. Pascal nutzt FP32 als Rechenbasis. SXM benötigt eine passende Serverplattform; Notebooktempo hängt von TGP und Kühlung ab. Rechenleistung bei RTX PRO 2000/4000/4500 und den Ada-Workstation-Karten aus AI TOPS abgeleitet, daher Näherungen. RTX PRO 6000 Max-Q: Preis geschätzt. RTX PRO 4500: Amazon-Preis vom 11.10.</li>
+        <li>Die Links führen zum Geizhals-Preisvergleich (ohne Affiliate).</li>
+      </ul>
+    </section>
