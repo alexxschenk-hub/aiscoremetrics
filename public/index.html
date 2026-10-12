@@ -915,10 +915,10 @@ Score = Perf / system price   (best device = 100)</div>
       src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", usList: "US-Listenpreis", conv: "aus Euro umgerechnet", man: "manuell:", own: "eigener Preis", unknown: "Preis offen" },
       nonePrice: "Preis eingeben, um die Kosten zu vergleichen.",
       shareCompare: "Vergleich teilen", shareLink: "Vergleichslink", shared: "Link kopiert – inklusive der Preise beider Geräte.", shareFallback: "Link auswählen und kopieren.", shareInvalid: "Der Vergleichslink ist ungültig oder enthält nicht mehr verfügbare Geräte/Modelle.",
-      estimate: "Schätzung", evidence: "Geschwindigkeit und Wartezeiten sind berechnet, keine Messung dieses Szenarios. Modell, Quantisierung und Kontext gelten für beide Geräte gleich. Eigene Preise werden im Link gespeichert.",
+      estimate: "Schätzung", evidence: "Geschwindigkeit und Wartezeiten sind berechnet, keine Messung dieses Szenarios.", evidenceCmpSame: "Modell, Quantisierung und Kontext gelten für beide Geräte gleich. Eigene Preise werden im geteilten Link mitgespeichert.", evidenceCmpPer: "Quantisierung und Kontext gelten für beide Geräte gleich; welches Modell je Gerät gerechnet wird, steht in der Tabelle. Eigene Preise werden im geteilten Link mitgespeichert.",
       gainFirst: "Erster Token", gainCode: "100 Zeilen Code", gainPrice: "Systemkosten", gainEqual: "Gleichstand", gainUnavailable: "Kein direkter Vergleich möglich", gainNoPrice: "Preise für beide Geräte eingeben", gainUnknown: "Das Modell passt nicht in beide Geräte.",
       gainTime: (name, value) => `${name}: geschätzt ${value} früher`, gainCost: (name, value) => `${name}: ${value} günstiger`,
-      assumed: "Backend angenommen", unmeasured: "Keine Messung für dieses Szenario; Softwareversion und Messdatum liegen nicht vor.",
+      assumed: "Backend angenommen", unmeasured: "Softwareversion und Messdatum liegen nicht vor.",
       inclPc: (c) => `inkl. ${c} € PC`, edited: "Von dir geändert",
       fitsYes: "passt", fitsNo: "passt nicht", need: "GB nötig", usable: "GB nutzbar", notInProfile: "nicht ausgewählt",
       fitsAria: (a, b) => `${a} von ${b} Profil-Modellen passen`,
@@ -946,7 +946,7 @@ Score = Perf / system price   (best device = 100)</div>
       costTip: (h, p) => `Stromkosten pro Jahr bei ${h} h/Tag und ${p} €/kWh`,
       dGroups: { overview: "Übersicht", hw: "Speicher & Bandbreite", intel: "Modell-Intelligenz", score: "Bewertung im Profil", px: "Geschätzte Leistung", energy: "Energie & Effizienz", mem: "Speicherbelegung" },
       rankTitle: "Ranking", noteTitle: "Hinweis",
-      dRows: { vtype: "Hersteller · Typ", backend: "Backend", runs: "Modell lauffähig", power: "Leistungsaufnahme", cost8: "Stromkosten/Jahr (8 h/Tag)", cost24: "Stromkosten/Jahr (24/7)", eff: "Effizienz", tco: "Gesamtkosten 3 Jahre", eciSame: "Modell (beide gleich)", eciDev: "Modell je Gerät", sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
+      dRows: { eciOne: "Modell", vtype: "Hersteller · Typ", backend: "Backend", runs: "Modell lauffähig", power: "Leistungsaufnahme", cost8: "Stromkosten/Jahr (8 h/Tag)", cost24: "Stromkosten/Jahr (24/7)", eff: "Effizienz", tco: "Gesamtkosten 3 Jahre", eciSame: "Modell (beide gleich)", eciDev: "Modell je Gerät", sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
       rankOf: (a, b) => `${a} von ${b}`,
       faster: (x) => `${x}× besser`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} Modelle zur Auswahl. Gerechnet wird mit <b>${m}</b> (${ex}): braucht ≈ <b>${need} GB</b> Speicher bei ${c} Kontext und ${q} und passt auf <b>${k} von ${total}</b> Geräten. Ein anderer Einsatzzweck oder ein anderes Modell ändert Speicherbedarf und Ranking.`,
@@ -1080,10 +1080,10 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", usList: "US list price", conv: "converted from euros", man: "manual:", own: "your price", unknown: "price unavailable" },
       nonePrice: "Enter a price to compare costs.",
       shareCompare: "Share comparison", shareLink: "Comparison link", shared: "Link copied – including both devices’ prices.", shareFallback: "Select and copy the link.", shareInvalid: "The comparison link is invalid or contains devices/models that are no longer available.",
-      estimate: "Estimate", evidence: "Speed and wait times are calculated, not measured for this scenario. Both devices use the same model, quantization and context. Custom prices are included in the link.",
+      estimate: "Estimate", evidence: "Speed and wait times are calculated, not measured for this scenario.", evidenceCmpSame: "Both devices use the same model, quantization and context. Custom prices are included in the shared link.", evidenceCmpPer: "Both devices use the same quantization and context; the model used for each device is shown in the table. Custom prices are included in the shared link.",
       gainFirst: "First token", gainCode: "100 lines of code", gainPrice: "System cost", gainEqual: "Equal", gainUnavailable: "No direct comparison available", gainNoPrice: "Enter prices for both devices", gainUnknown: "The model does not fit on both devices.",
       gainTime: (name, value) => `${name}: an estimated ${value} sooner`, gainCost: (name, value) => `${name}: ${value} less expensive`,
-      assumed: "Assumed backend", unmeasured: "No measurement for this scenario; software version and measurement date are unavailable.",
+      assumed: "Assumed backend", unmeasured: "Software version and measurement date are unavailable.",
       inclPc: (c) => `incl. €${c} PC`, edited: "Changed by you",
       fitsYes: "fits", fitsNo: "does not fit", need: "GB needed", usable: "GB usable", notInProfile: "not selected",
       fitsAria: (a, b) => `${a} of ${b} models in this use case fit`,
@@ -1111,7 +1111,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       costTip: (h, p) => `Electricity cost per year at ${h} h/day and €${p}/kWh`,
       dGroups: { overview: "Overview", hw: "Memory & bandwidth", intel: "Model intelligence", score: "Rating in this use case", px: "Estimated performance", energy: "Energy & efficiency", mem: "Memory usage" },
       rankTitle: "Ranking", noteTitle: "Note",
-      dRows: { vtype: "Vendor · type", backend: "Backend", runs: "Model runs", power: "Power draw", cost8: "Electricity/year (8 h/day)", cost24: "Electricity/year (24/7)", eff: "Efficiency", tco: "Total cost, 3 years", eciSame: "Model (same for both)", eciDev: "Model per device", sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
+      dRows: { eciOne: "Model", vtype: "Vendor · type", backend: "Backend", runs: "Model runs", power: "Power draw", cost8: "Electricity/year (8 h/day)", cost24: "Electricity/year (24/7)", eff: "Efficiency", tco: "Total cost, 3 years", eciSame: "Model (same for both)", eciDev: "Model per device", sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
       rankOf: (a, b) => `${a} of ${b}`,
       faster: (x) => `${x}× better`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} models to choose from. Calculated with <b>${m}</b> (${ex}): needs ≈ <b>${need} GB</b> of memory at ${c} context and ${q}, and fits on <b>${k} of ${total}</b> devices. A different use case or model changes the memory need and the ranking.`,
@@ -1143,7 +1143,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       vWhy: (list) => `Wins on ${list}.`, vTieWhy: (a, la, b, lb) => `${a} leads on ${la}, ${b} leads on ${lb}.`, vAllLevel: (n) => `Level in all ${n} categories.`,
       vRule: (n, e) => `1 point per category (${n} compared); differences under 5% count as a tie${e ? ` (${e} tied)` : ""}. Rank, power draw and 24/7 cost are not counted separately because they follow from performance/score or the electricity cost.`,
       vCat: { power: "power draw", runs: "running the model", cost8: "electricity cost", tco: "total cost", eff: "efficiency", sys: "price", mem: "memory", bw: "bandwidth", score: "value for money", perf: "performance", fits: "model coverage", eciDev: "model intelligence", tg: "tokens/s", ttft: "wait time", code: "coding speed", img: "images" },
-      dHint: (m, p) => `Estimated results and usage for ${m} with a ${p} prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Score and rank compare against all devices for this model.`,
+      dHint: (m, p) => `Estimated results and usage for ${m} with a ${p} prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Score and rank are relative to all devices for this model.`,
       memTitle: "Memory usage",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, with ${c} context. 100% is the usable graphics memory; on Macs and mini PCs, the share of RAM released to the GPU. Anything beyond that, PCs with a graphics card offload into regular system RAM.`,
       memLeg: { w: "Model weights", kv: "KV cache (context)", ov: "Runtime overhead", spill: "Offloaded to PC RAM", nofit: "Does not fit" },
@@ -1618,7 +1618,7 @@ Score     = Perf / system price   (best device = 100)</div>
     $("#share-compare").hidden = true;
     $("#share-link-label").hidden = true; $("#share-status").textContent = "";
     $("#compare-gains").hidden = !compareReady;
-    $("#evidence-note").textContent = `${t.evidence} ${t.unmeasured}`;
+    $("#evidence-note").textContent = [t.evidence, compareReady ? (perDevice() ? t.evidenceCmpPer : t.evidenceCmpSame) : "", t.unmeasured].filter(Boolean).join(" ");
     if (compareReady) {
       const time = value => `${fmt(value, value < 10 ? 1 : 0)} s`;
       const gain = (title, key, money = false) => {
@@ -1749,7 +1749,7 @@ Score     = Perf / system price   (best device = 100)</div>
         const deltaCell = key === "mem" && memRule ? `<span class="mem-why${memRule.win < 0 ? " same" : ""}">${esc(memRule.text)}</span>${memRule.win >= 0 && !memRule.named ? `<small>${esc(t.deltaFor(devLabel(cols[memRule.win].d)))}</small>` : ""}` : key === "eciSame" && cols.length === 2 ? `<span class="same">${t.eciSame}</span>` : delta ? `${delta}<small>${esc(t.deltaFor(devLabel(cols[win].d)))}</small>` : "";
         const calcRow = !FACT_KEYS.includes(key) && !["eciSame", "vtype", "backend"].includes(key);
         const mark = ENERGY_KEYS.includes(key) ? ["⚡", t.energyMark] : ["≈", t.calcMark];
-        return `<tr data-k="${key}"${calcRow ? ' class="calc"' : ""}><td class="k">${calcRow ? `<span class="approx" title="${esc(mark[1])}" aria-label="${esc(mark[1])}">${mark[0]}</span>` : ""}${t.dRows[key]}</td>${cells}${cols.length === 2 ? `<td class="d">${deltaCell}</td>` : ""}</tr>`;
+        return `<tr data-k="${key}"${calcRow ? ' class="calc"' : ""}><td class="k">${calcRow ? `<span class="approx" title="${esc(mark[1])}" aria-label="${esc(mark[1])}">${mark[0]}</span>` : ""}${key === "eciSame" && cols.length === 1 ? t.dRows.eciOne : t.dRows[key]}</td>${cells}${cols.length === 2 ? `<td class="d">${deltaCell}</td>` : ""}</tr>`;
       }).join("");
       // Punktewertung in drei getrennten Blöcken: Hardware-Fakten (bestimmen den Gewinner), Energie & Effizienz,
       // berechnete Leistung. 1 Punkt je Kategorie, < 5 % Unterschied = Gleichstand (ECI: < 1 Punkt);
