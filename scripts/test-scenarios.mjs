@@ -17,6 +17,7 @@ for (const hash of ['#compare=%ZZ','#compare=null','#compare='+encodeURIComponen
   assert.equal(per.cmpMode,'manual'); assert.equal(JSON.stringify(per.models),JSON.stringify([m,m])); assert.equal(per.elPrice,0.31);
   assert.equal(JSON.stringify(decode(encode(per),catalog)),JSON.stringify(per));
   assert.equal(validate({...scenario}, catalog).cmpMode,'same');
+  assert.equal(validate({...scenario}, catalog).currency,'EUR'); assert.equal(validate({...scenario, currency:'USD'}, catalog).currency,'USD'); assert.equal(validate({...scenario, currency:'GBP'}, catalog), null);
   for (const bad of [{cmpMode:'x'},{cmpMode:'manual'},{cmpMode:'manual',models:['missing',m]},{elPrice:-1},{elPrice:'0.3'},{elPrice:9}]) assert.equal(validate({...scenario,...bad},catalog),null); }
 assert.equal(difference(null,10),null);assert.equal(difference(Infinity,10),null);
 assert.equal(difference(3,10).winner,0);assert.equal(difference(10,3).winner,1);assert.equal(difference(3,3).winner,null);assert.equal(difference(3,10).amount,7);

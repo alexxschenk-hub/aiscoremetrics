@@ -402,10 +402,14 @@ footer { font-size: 12.5px; color: var(--muted); }
         <span class="lab" id="lab-vendor" data-i="vendor"></span>
         <div class="seg" id="vendor" role="group" aria-labelledby="lab-vendor"></div>
       </div>
+      <div class="field" id="currency-field">
+        <span class="lab" id="lab-cur" data-i="currencyLab"></span>
+        <div class="seg small" id="currency" role="group" aria-labelledby="lab-cur"><button type="button" data-id="EUR">€</button><button type="button" data-id="USD">$</button></div>
+      </div>
       <label class="check"><input type="checkbox" id="showprices"> <span data-i="showPrices"></span></label>
-      <label class="check" id="base-field"><input type="checkbox" id="base" checked> <span data-i="base"></span> <input type="number" id="basecost" value="1300" min="0" step="50" style="width:84px"> €</label>
+      <label class="check" id="base-field"><input type="checkbox" id="base" checked> <span data-i="base"></span> <input type="number" id="basecost" value="1300" min="0" step="50" style="width:84px"> <span class="cur-sym">€</span></label>
       <label class="check"><span data-i="sysram"></span> <input type="number" id="sysram" value="64" min="0" step="16" style="width:70px"> GB</label>
-      <label class="check"><span data-i="elPrice"></span> <input type="number" id="elprice" value="0.25" min="0" max="5" step="0.01" style="width:76px"> €/kWh</label>
+      <label class="check"><span data-i="elPrice"></span> <input type="number" id="elprice" value="0.25" min="0" max="5" step="0.01" style="width:76px"> <span><span class="cur-sym">€</span>/kWh</span></label>
       <label class="check"><input type="checkbox" id="showpower"> <span data-i="showPower"></span></label>
       <label class="check"><input type="checkbox" id="wired"> <span data-i="wired"></span></label>
       <button class="btn" id="reset" type="button" data-i="reset"></button>
@@ -862,7 +866,7 @@ Score = Perf / system price   (best device = 100)</div>
       dense: "dicht", effective: "effektiv",
       th: { watt: "Watt", cost: "€/Jahr", rank: "#", name: "Gerät", price: "Systempreis €", fits: "Modelle passen", perf: "Leistung", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini-PC" },
-      src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", man: "manuell:", own: "eigener Preis", unknown: "Preis offen" },
+      src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", usList: "US-Listenpreis", conv: "aus Euro umgerechnet", man: "manuell:", own: "eigener Preis", unknown: "Preis offen" },
       nonePrice: "Preis eingeben, um die Kosten zu vergleichen.",
       shareCompare: "Vergleich teilen", shareLink: "Vergleichslink", shared: "Link kopiert – inklusive der Preise beider Geräte.", shareFallback: "Link auswählen und kopieren.", shareInvalid: "Der Vergleichslink ist ungültig oder enthält nicht mehr verfügbare Geräte/Modelle.",
       estimate: "Schätzung", evidence: "Geschwindigkeit und Wartezeiten sind berechnet, keine Messung dieses Szenarios. Modell, Quantisierung und Kontext gelten für beide Geräte gleich. Eigene Preise werden im Link gespeichert.",
@@ -888,6 +892,9 @@ Score = Perf / system price   (best device = 100)</div>
       eciLab: "Modell-Intelligenz", eciSrc: "Quelle: Epoch AI", eciNone: "kein ECI-Wert bei Epoch AI", eciNoFit: "kein Modell passt", eciEstShort: "geschätzt",
       eciTip: (top, m) => `Der Epoch Capabilities Index (ECI) misst die allgemeine Leistungsfähigkeit von KI-Modellen auf einer Skala. Höher = intelligenter. Das beste Modell (${m}) hat ${top}.`,
       eciEst: (q, raw) => `bei ${q} geschätzt (Quantisierungsverlust), Epoch-Wert ${raw}`,
+      currencyLab: "Währung", cur: { EUR: "EUR", USD: "USD" },
+      usd: { showPrices: "Preise und Preis-Leistung einblenden (USA, USD)", baseAria: "Kosten PC-Basis in US-Dollar", priceAria: (n) => `Preis ${n} in US-Dollar`,
+        hintPrices: "Preise sind editierbar und bleiben in deinem Browser gespeichert. US-Dollar: Apple- und Hersteller-Listenpreise USA ohne Sales Tax; alle anderen Preise aus Euro umgerechnet (ohne 19 % MwSt., EZB-Kurs vom 12.10.2026) und orange markiert." },
       elPrice: "Strompreis", showPower: "Stromverbrauch im Ranking", wattTip: (tdp, sys) => `TDP ${tdp} W, ganzes System unter LLM-Last ca. ${sys} W`,
       costTip: (h, p) => `Stromkosten pro Jahr bei ${h} h/Tag und ${p} €/kWh`,
       dGroups: { energy: "Energie", intel: "Modell-Intelligenz", hw: "Hardware", basics: "Hardware & Preis", score: "Bewertung im Profil", px: "Praxiswerte", mem: "Speicher" },
@@ -983,7 +990,8 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       <h2>Datenstand</h2>
       <ul>
         <li>GPU-Preise: niedrigster Neupreis Deutschland laut gpuprix.com (Händlerdaten von Alternate), täglich automatisch aktualisiert, zuletzt {{updated}}. Gezeigt wird die günstigste lieferbare Karte. Ist keine lieferbar, der letzte Tiefstpreis. Einzelne Preise können manuell gesetzt werden, aktuell die RTX 5090 nach Geizhals.</li>
-        <li>Mac Studio M5 Ultra 96 GB: Apple-Listenpreis 6.599 €. Mac Studio M5 Max 36 GB: 2.999 €. Mac mini M6 16 GB: 1.049 €, M5 Pro 24 GB: 1.999 €. Andere Speicherausbauten und ältere Macs: geschätzt.</li>
+        <li>Aktuelle Macs (Mac Studio M5 Max/Ultra, Mac mini M6/M5 Pro, MacBook Pro M5 Pro/Max): Apple-Listenpreise Deutschland/Österreich in Euro und USA in Dollar vom 12.10.2026, jeweils günstigste Konfiguration mit diesem Chip und Speicher, z. B. Mac Studio M5 Ultra 80-GPU · 96 GB: 8.029 € bzw. 6.799 $. Mac Studio M5 Ultra 512 GB: geschätzt (erst ab Ende Oktober bestellbar). Ältere Macs: Gebrauchtpreise geschätzt.</li>
+        <li>Währung: Euro-Preise gelten für Deutschland/Österreich inkl. MwSt. Im Dollar-Modus gelten US-Listenpreise ohne Sales Tax, wo bekannt (Apple, NVIDIA DGX Spark, Microsoft Surface); alle anderen Preise werden aus Euro umgerechnet: ohne 19 % MwSt., EZB-Kurs 1 € = 1,1181 $ (12.10.2026).</li>
         <li>Ryzen AI Max+ 395 mit 128 GB: Mini-PCs von Framework, GMKtec oder Minisforum, Preis geschätzt.</li>
         <li>DGX Spark: 128 GB geschätzt 6.300 € (NVIDIA-Listenpreis seit 2.10.2026: 6.950 $), 64 GB geschätzt 5.000 € (4.999 $, ab 23.10. über OEM-Partner). Surface RTX Spark Dev Box: 5.999 $, bisher nur in den USA bestellbar, 6.000 € geschätzt.</li>
         <li>Specs: NVIDIA-, AMD-, Intel- und Apple-Datenblätter. Notebook-/Serverkarten ohne bestätigten Europreis haben offene Preisfelder. Tempo neuer Karten ist eine Roofline-Schätzung mit angenommenen Effizienzfaktoren; Intel ist nicht benchmark-kalibriert. Pascal nutzt FP32 als Rechenbasis. SXM benötigt eine passende Serverplattform; Notebooktempo hängt von TGP und Kühlung ab. Rechenleistung bei RTX PRO 2000/4000/4500 und den Ada-Workstation-Karten aus AI TOPS abgeleitet, daher Näherungen. RTX PRO 6000 Max-Q: Preis geschätzt. RTX PRO 4500: Amazon-Preis vom 11.10.</li>
@@ -1006,7 +1014,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       dense: "dense", effective: "effective",
       th: { watt: "Watts", cost: "€/year", rank: "#", name: "Device", price: "System price €", fits: "Models that fit", perf: "Performance", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini PC" },
-      src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", man: "manual:", own: "your price", unknown: "price unavailable" },
+      src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", usList: "US list price", conv: "converted from euros", man: "manual:", own: "your price", unknown: "price unavailable" },
       nonePrice: "Enter a price to compare costs.",
       shareCompare: "Share comparison", shareLink: "Comparison link", shared: "Link copied – including both devices’ prices.", shareFallback: "Select and copy the link.", shareInvalid: "The comparison link is invalid or contains devices/models that are no longer available.",
       estimate: "Estimate", evidence: "Speed and wait times are calculated, not measured for this scenario. Both devices use the same model, quantization and context. Custom prices are included in the link.",
@@ -1032,6 +1040,9 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       eciLab: "Model intelligence", eciSrc: "Source: Epoch AI", eciNone: "no ECI score from Epoch AI", eciNoFit: "no model fits", eciEstShort: "estimated",
       eciTip: (top, m) => `The Epoch Capabilities Index (ECI) measures the general capability of AI models on a single scale. Higher = more capable. The best model (${m}) scores ${top}.`,
       eciEst: (q, raw) => `estimated for ${q} (quantization loss), Epoch score ${raw}`,
+      currencyLab: "Currency", cur: { EUR: "EUR", USD: "USD" },
+      usd: { showPrices: "Show prices and value for money (US, USD)", baseAria: "Base PC cost in US dollars", priceAria: (n) => `Price of ${n} in US dollars`,
+        hintPrices: "Prices are editable and stay saved in your browser. US dollars: Apple and vendor US list prices before sales tax; all other prices converted from euros (excluding 19% VAT, ECB rate of 12 Oct 2026) and marked in orange." },
       elPrice: "Electricity", showPower: "Power use in ranking", wattTip: (tdp, sys) => `TDP ${tdp} W, whole system under LLM load about ${sys} W`,
       costTip: (h, p) => `Electricity cost per year at ${h} h/day and €${p}/kWh`,
       dGroups: { energy: "Energy", intel: "Model intelligence", hw: "Hardware", basics: "Hardware & price", score: "Rating in this use case", px: "Real-world numbers", mem: "Memory" },
@@ -1127,7 +1138,8 @@ Score     = Perf / system price   (best device = 100)</div>
       <h2>Data as of</h2>
       <ul>
         <li>GPU prices: lowest new price in Germany per gpuprix.com (retailer data from Alternate), updated automatically every day, last on {{updated}}. Shown is the cheapest card in stock, or the last lowest price if none is in stock. Individual prices can be set manually, currently the RTX 5090 per Geizhals.</li>
-        <li>Mac Studio M5 Ultra 96 GB: Apple list price €6,599. Mac Studio M5 Max 36 GB: €2,999. Mac mini M6 16 GB: €1,049, M5 Pro 24 GB: €1,999. Other memory configurations and older Macs: estimated.</li>
+        <li>Current Macs (Mac Studio M5 Max/Ultra, Mac mini M6/M5 Pro, MacBook Pro M5 Pro/Max): Apple list prices for Germany/Austria in euros and the US in dollars as of 12 Oct 2026, each the cheapest configuration with that chip and memory, e.g. Mac Studio M5 Ultra 80-GPU · 96 GB: €8,029 or $6,799. Mac Studio M5 Ultra 512 GB: estimated (orderable from late October). Older Macs: estimated used prices.</li>
+        <li>Currency: euro prices are for Germany/Austria including VAT. In dollar mode, US list prices before sales tax are used where known (Apple, NVIDIA DGX Spark, Microsoft Surface); all other prices are converted from euros: excluding 19% VAT, ECB rate €1 = $1.1181 (12 Oct 2026).</li>
         <li>Ryzen AI Max+ 395 with 128 GB: mini PCs from Framework, GMKtec or Minisforum, estimated price.</li>
         <li>DGX Spark: 128 GB estimated at €6,300 (NVIDIA list price since 2 Oct 2026: $6,950), 64 GB estimated at €5,000 ($4,999, from 23 Oct via OEM partners). Surface RTX Spark Dev Box: $5,999, US-only preorders so far, €6,000 estimated.</li>
         <li>Specs: NVIDIA, AMD, Intel and Apple datasheets. Laptop/server cards without a verified euro price have empty price fields. New GPU speeds are roofline estimates with assumed efficiency factors; Intel has no benchmark calibration. Pascal uses an FP32 compute basis. SXM requires a compatible server platform; laptop speed depends on TGP and cooling. Compute for RTX PRO 2000/4000/4500 and the Ada workstation cards is derived from AI TOPS, so approximate. RTX PRO 6000 Max-Q: estimated price. RTX PRO 4500: Amazon price from 11 Oct.</li>
@@ -1142,7 +1154,7 @@ Score     = Perf / system price   (best device = 100)</div>
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   // Sprache kommt aus der URL: / = Deutsch, /en/ = Englisch (eigene Seiten für Suchmaschinen)
   const navLang = document.documentElement.lang === "en" ? "en" : "de";
-  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, showPower: false, elPrice: 0.25, quant: "q4", view: "one", cmpMode: "same", cmpModelA: "", cmpModelB: "", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, use: "coding", pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
+  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, showPower: false, currency: "EUR", elPrice: 0.25, elPriceUsd: 0.18, baseCostUsd: 1200, pricesUsd: {}, quant: "q4", view: "one", cmpMode: "same", cmpModelA: "", cmpModelB: "", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, use: "coding", pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
   delete state.sort;
   state.lang = navLang;
   delete state.sortKey; delete state.sortDir; delete state.profile; delete state.model;
@@ -1152,10 +1164,23 @@ Score     = Perf / system price   (best device = 100)</div>
   function persist() { try { const { lang, ...rest } = state; localStorage.setItem(KEY, JSON.stringify(rest)); } catch (e) {} }
 
   const $ = (s) => document.querySelector(s);
-  const L = () => T[state.lang];
+  // Texte der aktiven Sprache; im Dollar-Modus wird „€“ in UI-Texten durch „$“ ersetzt (Methodik-Text bleibt, er nennt echte Euro-Preise)
+  const Lcache = {};
+  const swapCur = (v, key) => key === "method" ? v : typeof v === "string" ? v.replace(/€/g, "$") : typeof v === "function" ? (...a) => swapCur(v(...a)) :
+    v && typeof v === "object" && !Array.isArray(v) ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, swapCur(x, k)])) : v;
+  const L = () => { const k = state.lang + state.currency; if (Lcache[k]) return Lcache[k];
+    const base = T[state.lang]; return (Lcache[k] = state.currency === "USD" ? Object.assign(swapCur(base), base.usd) : base); };
   const fmt = (n, d = 0) => n.toLocaleString(L().locale, { minimumFractionDigits: d, maximumFractionDigits: d });
   const fmtTok = (n) => n >= 10 ? fmt(n) : fmt(n, 1);
-  const eur = (n) => state.lang === "de" ? `${fmt(n)} €` : `€${fmt(n)}`;
+  const isUsd = () => state.currency === "USD";
+  const eur = (n) => isUsd() ? `$${fmt(n)}` : state.lang === "de" ? `${fmt(n)} €` : `€${fmt(n)}`;   // Geldbetrag in der gewählten Währung
+  // Umrechnung: EZB-Referenzkurs; deutsche Preise enthalten 19 % MwSt., US-Listenpreise keine Steuer
+  const FX = { usdPerEur: 1.1181, vat: 1.19, date: "2026-10-12" };
+  const eurToUsd = (e) => e / FX.vat * FX.usdPerEur;
+  const listPrice = (d) => isUsd() ? (d.priceUsd ?? (d.price == null ? null : Math.round(eurToUsd(d.price)))) : d.price;
+  const userPrices = () => state[isUsd() ? "pricesUsd" : "prices"];
+  const baseCost = () => isUsd() ? state.baseCostUsd : state.baseCost;
+  const elPrice = () => isUsd() ? state.elPriceUsd : state.elPrice;
   const ctxLabel = (c) => (c / 1024) + "k";
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const devLabel = (d) => /\bGB\b/.test(d.name) ? d.name : `${d.name} · ${d.mem} GB`;
@@ -1163,10 +1188,11 @@ Score     = Perf / system price   (best device = 100)</div>
   const mEx = (m) => m.effective ? `${fmt(m.tp, 1)}B · ${fmt(m.ap, 1)}B ${L().effective}` : m.dense ? `${fmt(m.tp, 0)}B ${L().dense}` : `${fmt(m.tp, 0)}B MoE, ${fmt(m.ap, m.ap < 10 ? 1 : 0)}B ${L().active}`;
   const useOf = () => USES.find((u) => u.id === state.use) || USES[0];
   const shownModels = () => state.use === "all" ? MODELS : MODELS.filter((m) => m.use.includes(state.use));
-  const srcText = (d) => { const s = L().src[d.src[0]]; return d.src[1] ? `${s} ${d.src[1]}` : s; };
-  const priceOf = (d) => Object.prototype.hasOwnProperty.call(state.prices, d.id) ? state.prices[d.id] : d.price;
+  const srcText = (d) => { if (isUsd() && (d.priceUsd != null || d.price != null)) return d.priceUsd != null ? L().src.usList : L().src.conv;
+    const sx = L().src[d.src[0]]; return d.src[1] ? `${sx} ${d.src[1]}` : sx; };
+  const priceOf = (d) => Object.prototype.hasOwnProperty.call(userPrices(), d.id) ? userPrices()[d.id] : listPrice(d);
   const desktopCard = (d) => d.kind === "gpu" && (!d.formFactor || d.formFactor === "desktop");
-  const sysPrice = (d) => priceOf(d) > 0 ? priceOf(d) + (desktopCard(d) && state.base ? state.baseCost : 0) : null;
+  const sysPrice = (d) => priceOf(d) > 0 ? priceOf(d) + (desktopCard(d) && state.base ? baseCost() : 0) : null;
   const devKind = (d) => d.formFactor === "laptop" ? (state.lang === "de" ? "Notebook-GPU" : "Laptop GPU") : ["server", "sxm"].includes(d.formFactor) ? (d.formFactor === "sxm" ? "Server · SXM" : "Server · PCIe") : d.ws ? L().ws : L().kinds[d.kind];
   const specNote = (d) => (state.lang === "de" ? "Tempo geschätzt" : "Speed estimated") + (d.formFactor === "laptop" ? (state.lang === "de" ? " · abhängig von TGP/Kühlung" : " · depends on TGP/cooling") : "") + (d.computeBasis === "fp32-fallback" ? " · FP32" : "");
   // Reserve für Betriebssystem und Hintergrundprogramme bei geteiltem Arbeitsspeicher
@@ -1417,16 +1443,18 @@ Score     = Perf / system price   (best device = 100)</div>
       : `Gemma 4: ${ctxLabel(selectedModel.maxCtx)} tokens maximum. Text generation; image/audio add-on weights and the MTP draft model are excluded. Q4_0 uses the official QAT file size. <a href="https://ai.google.dev/gemma/docs/core" target="_blank" rel="noopener">Model overview</a>`;
     $("#ctx").value = state.ctx; $("#ctx-val").textContent = ctxLabel(CTX[state.ctx]);
     $("#showprices").checked = state.showPrices; $("#base-field").hidden = $("#reset").hidden = $("#hint-prices").hidden = !state.showPrices;
-    $("#base").checked = state.base; $("#basecost").value = state.baseCost; $("#sysram").value = state.sysRam; $("#elprice").value = state.elPrice; $("#showpower").checked = state.showPower; $("#wired").checked = state.wired;
+    $("#base").checked = state.base; $("#basecost").value = baseCost(); $("#sysram").value = state.sysRam; $("#elprice").value = elPrice();
+    document.querySelectorAll("#currency button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.id === state.currency)));
+    document.querySelectorAll(".cur-sym").forEach((x) => { x.textContent = isUsd() ? "$" : "€"; }); $("#showpower").checked = state.showPower; $("#wired").checked = state.wired;
     $("#px-prompt").value = state.pxPrompt; $("#px-img").value = state.pxImg;
   }
 
   const backendOf = (d) => d.v === "apple" ? "Metal" : d.v === "intel" ? "SYCL / Vulkan" : d.v === "nvidia" ? "CUDA" : "ROCm / Vulkan";
   function comparisonScenario() {
     const ids = [state.pickA.id, state.pickB.id];
-    return { v: 1, devices: ids, model: state.pxModel, use: state.use, image: state.pxImg, quant: state.quant, ctx: state.ctx, prompt: state.pxPrompt, ram: state.sysRam, baseCost: state.baseCost, base: state.base, wired: state.wired, showPrices: state.showPrices,
+    return { v: 1, devices: ids, model: state.pxModel, use: state.use, image: state.pxImg, quant: state.quant, ctx: state.ctx, prompt: state.pxPrompt, ram: state.sysRam, baseCost: baseCost(), currency: state.currency, base: state.base, wired: state.wired, showPrices: state.showPrices,
       prices: Object.fromEntries(ids.map(id => [id, priceOf(DEVICES.find(d => d.id === id)) ?? null])),
-      cmpMode: state.cmpMode, elPrice: state.elPrice,
+      cmpMode: state.cmpMode, elPrice: elPrice(),
       ...(state.cmpMode === "manual" ? { models: [state.cmpModelA || state.pxModel, state.cmpModelB || state.pxModel] } : {}) };
   }
   function applySharedScenario(hash) {
@@ -1434,16 +1462,17 @@ Score     = Perf / system price   (best device = 100)</div>
     const shared = AIScenario.decode(hash, { devices: DEVICES, models: MODELS, quants: QUANTS, uses: USES, images: IMG, contexts: CTX, prompts: PROMPTS });
     if (!shared) { $("#share-tools").hidden = false; $("#share-compare").hidden = true; $("#share-status").textContent = L().shareInvalid; return; }
     state.view = "cmp"; state.cmpMode = shared.cmpMode || "same"; if (shared.models) [state.cmpModelA, state.cmpModelB] = shared.models;
-    if (shared.elPrice != null) state.elPrice = shared.elPrice;
+    state.currency = shared.currency || "EUR";
+    if (shared.elPrice != null) state[isUsd() ? "elPriceUsd" : "elPrice"] = shared.elPrice;
     state.use = shared.use; state.pxImg = shared.image; state.pxModel = shared.model; state.quant = shared.quant; state.ctx = shared.ctx; state.pxPrompt = shared.prompt;
-    state.sysRam = shared.ram; state.baseCost = shared.baseCost; state.base = shared.base; state.wired = shared.wired; state.showPrices = shared.showPrices;
-    state.prices = { ...state.prices, ...shared.prices };
+    state.sysRam = shared.ram; state[isUsd() ? "baseCostUsd" : "baseCost"] = shared.baseCost; state.base = shared.base; state.wired = shared.wired; state.showPrices = shared.showPrices;
+    if (isUsd()) state.pricesUsd = { ...state.pricesUsd, ...shared.prices }; else state.prices = { ...state.prices, ...shared.prices };
     ["pickA", "pickB"].forEach((key, i) => { const d = DEVICES.find(d => d.id === shared.devices[i]); state[key] = { v: d.v, id: d.id }; });
   }
   // Leistungsaufnahme unter LLM-Last: GPUs = Board Power + restlicher PC (Desktop/Server +150 W, Laptop +60 W),
   // Macs und Mini-PCs = Systemwert sysW aus devices.json
   const sysWatts = (d) => d.sysW ?? (d.tdp == null ? null : d.tdp + (d.formFactor === "laptop" ? 60 : 150));
-  const yearCost = (d, h) => { const w = sysWatts(d); return w == null ? null : w * h * 365 * state.elPrice / 1000; };
+  const yearCost = (d, h) => { const w = sysWatts(d); return w == null ? null : w * h * 365 * elPrice() / 1000; };
   // Vergleich mit unterschiedlichen Modellen: Kontext wie in der Detailtabelle (Prompt + 100 Zeilen Code)
   const ctxDetail = () => Math.max(CTX[state.ctx], (PROMPTS[state.pxPrompt] || 16384) + CODE_TOKENS);
   const mainModel = () => MODELS.find((m) => m.id === state.pxModel) || MODELS.find((m) => m.id === "moe30");
@@ -1515,7 +1544,7 @@ Score     = Perf / system price   (best device = 100)</div>
       const gain = (title, key, money = false) => {
         const diff = AIScenario.difference(money ? vis[0].sp : vis[0].px[key], money ? vis[1].sp : vis[1].px[key]);
         const text = !diff ? (money ? t.gainNoPrice : t.gainUnknown) : diff.winner == null ? t.gainEqual : (money ? t.gainCost : t.gainTime)(devLabel(vis[diff.winner].d), money ? eur(diff.amount) : time(diff.amount));
-        return `<div class="sum"><span class="k">${title}</span><span class="v gain-value">${esc(text)}</span><span class="s">${money ? "EUR" : t.estimate}</span></div>`;
+        return `<div class="sum"><span class="k">${title}</span><span class="v gain-value">${esc(text)}</span><span class="s">${money ? t.cur[state.currency] : t.estimate}</span></div>`;
       };
       $("#compare-gains").innerHTML = gain(t.gainFirst, "ttft") + gain(t.gainCode, "code") + (state.showPrices ? gain(t.gainPrice, "sys", true) : "");
     }
@@ -1678,16 +1707,16 @@ Score     = Perf / system price   (best device = 100)</div>
         const tip = `${mName(m)}: ${f ? t.fitsYes : t.fitsNo} (${fmt(r.per[m.id].need, 1)} ${t.need}, ${fmt(usable(d), 1)} ${t.usable})${inP ? "" : " · " + t.notInProfile}`;
         return `<span class="dot ${f ? "on" : ""} ${inP ? "sel" : ""}" title="${esc(tip)}"></span>`;
       }).join("");
-      const edited = state.prices[d.id] != null;
-      const frozenUnknown = Object.prototype.hasOwnProperty.call(state.prices, d.id) && state.prices[d.id] == null;
-      const sub = `${d.mem} GB · ${fmt(d.bw)} GB/s` + (state.showPrices && desktopCard(d) && state.base ? ` · ${t.inclPc(fmt(state.baseCost))}` : "");
+      const edited = userPrices()[d.id] != null;
+      const frozenUnknown = Object.prototype.hasOwnProperty.call(userPrices(), d.id) && userPrices()[d.id] == null;
+      const sub = `${d.mem} GB · ${fmt(d.bw)} GB/s` + (state.showPrices && desktopCard(d) && state.base ? ` · ${t.inclPc(fmt(baseCost()))}` : "");
       return `<tr class="${r.perf === 0 ? "zero" : ""}">
         <td class="rank">${picked.length ? globalRank.indexOf(r) + 1 : i + 1}</td>
         <td><div class="devrow"><span class="ico ${d.v}" title="${t.kinds[d.kind]}">${ICONS[d.kind]}</span><div class="dev"><b><span class="tag">${VENDOR[d.v]} · ${devKind(d)}</span>${esc(devLabel(d))}</b><span>${sub}${specNote(d) ? " · " + esc(specNote(d)) : ""}${d.specSources ? ` · <a href="${esc(d.specSources[0])}" target="_blank" rel="noopener">Specs</a>` : ""}</span></div></div></td>
-        ${state.showPrices ? `<td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d) ?? ""}" placeholder="—" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${d.est && !edited ? "est" : ""}">${edited ? t.src.own : frozenUnknown ? t.src.unknown : srcText(d)}</span></td>` : ""}
+        ${state.showPrices ? `<td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d) ?? ""}" placeholder="—" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${(d.est || (isUsd() && d.priceUsd == null)) && !edited ? "est" : ""}">${edited ? t.src.own : frozenUnknown ? t.src.unknown : srcText(d)}</span></td>` : ""}
         <td><div class="dots" aria-label="${esc(t.fitsAria(r.fitCount, usedModels.length))}">${dots}</div></td>
         <td><div class="barcell"><div class="track"><div class="fill ${state.showPrices ? "p" : ""}" style="width:${r.perfN.toFixed(1)}%"></div></div><span class="mono">${fmt(r.perfN)}</span></div></td>
-        ${state.showPower ? `<td class="num mono pw" title="${esc(t.wattTip(fmt(d.tdp), fmt(sysWatts(d))))}">~${fmt(sysWatts(d))} W</td><td class="num mono pw" title="${esc(t.costTip(8, fmt(state.elPrice, 2)))}">~${eur(yearCost(d, 8))}</td>` : ""}
+        ${state.showPower ? `<td class="num mono pw" title="${esc(t.wattTip(fmt(d.tdp), fmt(sysWatts(d))))}">~${fmt(sysWatts(d))} W</td><td class="num mono pw" title="${esc(t.costTip(8, fmt(elPrice(), 2)))}">~${eur(yearCost(d, 8))}</td>` : ""}
         ${state.showPrices ? `<td><div class="barcell"><div class="track"><div class="fill" style="width:${r.score.toFixed(1)}%"></div></div><span class="mono">${r.sp > 0 ? fmt(r.score) : "—"}</span></div></td>
         <td><a class="ext" href="https://geizhals.at/?fs=${encodeURIComponent(d.q)}" target="_blank" rel="noopener">${t.prices}</a></td>` : ""}
       </tr>`;
@@ -1785,7 +1814,9 @@ Score     = Perf / system price   (best device = 100)</div>
     else { pk.id = sel.value; const d = DEVICES.find((x) => x.id === pk.id); if (d) pk.v = d.v; }
     persist(); render();
   });
-  $("#elprice").addEventListener("change", (e) => { const v = parseFloat(String(e.target.value).replace(",", ".")); state.elPrice = v >= 0 && v <= 5 ? v : 0.25; persist(); render(); });
+  $("#elprice").addEventListener("change", (e) => { const v = parseFloat(String(e.target.value).replace(",", ".")); const k = isUsd() ? "elPriceUsd" : "elPrice";
+    state[k] = v >= 0 && v <= 5 ? v : (isUsd() ? 0.18 : 0.25); persist(); render(); });
+  $("#currency").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.currency = b.dataset.id === "USD" ? "USD" : "EUR"; persist(); renderStatic(); render(); });
   $("#showpower").addEventListener("change", (e) => { state.showPower = e.target.checked; persist(); render(); });
   $("#sysram").addEventListener("change", (e) => { state.sysRam = Math.max(0, +e.target.value || 0); persist(); render(); });
   const tipEl = $("#tip");
@@ -1795,14 +1826,14 @@ Score     = Perf / system price   (best device = 100)</div>
   $("#px-img").addEventListener("change", (e) => { state.pxImg = e.target.value; persist(); render(); });
   $("#ctx").addEventListener("input", (e) => { state.ctx = +e.target.value; persist(); render(); });
   $("#base").addEventListener("change", (e) => { state.base = e.target.checked; persist(); render(); });
-  $("#basecost").addEventListener("change", (e) => { state.baseCost = Math.max(0, +e.target.value || 0); persist(); render(); });
+  $("#basecost").addEventListener("change", (e) => { state[isUsd() ? "baseCostUsd" : "baseCost"] = Math.max(0, +e.target.value || 0); persist(); render(); });
   $("#wired").addEventListener("change", (e) => { state.wired = e.target.checked; persist(); render(); });
-  $("#reset").addEventListener("click", () => { state.prices = {}; persist(); render(); });
+  $("#reset").addEventListener("click", () => { state[isUsd() ? "pricesUsd" : "prices"] = {}; persist(); render(); });
   document.addEventListener("click", (e) => { const b = e.target.closest("button.sort"); if (b) setSort(b.dataset.table, b.dataset.sort); });
   $("#rank").addEventListener("change", (e) => {
     const inp = e.target.closest("input[data-id]"); if (!inp) return;
     const v = +inp.value; const d = DEVICES.find((x) => x.id === inp.dataset.id);
-    if (!(v > 0) || v === d.price) delete state.prices[d.id]; else state.prices[d.id] = v;
+    const up = userPrices(); if (!(v > 0) || v === listPrice(d)) delete up[d.id]; else up[d.id] = v;
     persist(); render();
   });
 

@@ -1,5 +1,5 @@
 {
-  "note": "Specs und Fallback-Preise. GPU-Preise mit source werden täglich von scripts/update-prices.mjs in prices.json geschrieben (metric: instock = günstigste lieferbare Karte, low = Tiefstpreis inkl. nicht lieferbarer, median3m = 3-Monats-Median). Ein Feld override {price, note, date} setzt einen manuellen Preis, der Vorrang hat.",
+  "note": "Specs und Fallback-Preise. price = Euro (Deutschland/Österreich, inkl. MwSt.), priceUsd = US-Dollar-Listenpreis (ohne Sales Tax, falls bekannt; sonst wird aus Euro umgerechnet). GPU-Preise mit source werden täglich von scripts/update-prices.mjs in prices.json geschrieben (metric: instock = günstigste lieferbare Karte, low = Tiefstpreis inkl. nicht lieferbarer, median3m = 3-Monats-Median). Ein Feld override {price, note, date} setzt einen manuellen Preis, der Vorrang hat.",
   "devices": [
     {
       "id": "5060ti",
@@ -636,6 +636,7 @@
       "etaC": 0.3,
       "pf": 1,
       "price": 6300,
+      "priceUsd": 6950,
       "est": true,
       "src": [
         "est"
@@ -667,6 +668,7 @@
       "etaC": 0.3,
       "pf": 1,
       "price": 5000,
+      "priceUsd": 4999,
       "est": true,
       "src": [
         "est"
@@ -698,6 +700,7 @@
       "etaC": 0.3,
       "pf": 1,
       "price": 6000,
+      "priceUsd": 5999,
       "est": true,
       "src": [
         "est"
@@ -914,10 +917,10 @@
       "eta": 0.62,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 3800,
-      "est": true,
+      "price": 4249,
+      "priceUsd": 3699,
       "src": [
-        "cfg"
+        "apple"
       ],
       "q": "MacBook Pro M5 Pro 64GB"
     },
@@ -935,10 +938,10 @@
       "eta": 0.62,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 5200,
-      "est": true,
+      "price": 5419,
+      "priceUsd": 4699,
       "src": [
-        "cfg"
+        "apple"
       ],
       "q": "Mac Studio M5 Max 128GB"
     },
@@ -957,6 +960,7 @@
       "etaC": 0.6,
       "pf": 3.5,
       "price": 6599,
+      "priceUsd": 5499,
       "src": [
         "apple"
       ],
@@ -976,10 +980,10 @@
       "eta": 0.5,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 10900,
-      "est": true,
+      "price": 12429,
+      "priceUsd": 10799,
       "src": [
-        "cfg"
+        "apple"
       ],
       "q": "Mac Studio M5 Ultra 256GB"
     },
@@ -998,6 +1002,7 @@
       "etaC": 0.6,
       "pf": 3.5,
       "price": 1049,
+      "priceUsd": 899,
       "src": [
         "apple"
       ],
@@ -1017,10 +1022,10 @@
       "eta": 0.62,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 1499,
-      "est": true,
+      "price": 1489,
+      "priceUsd": 1299,
       "src": [
-        "cfg"
+        "apple"
       ],
       "q": "Mac mini M6 32GB"
     },
@@ -1038,10 +1043,10 @@
       "eta": 0.62,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 2899,
-      "est": true,
+      "price": 3649,
+      "priceUsd": 3199,
       "src": [
-        "cfg"
+        "apple"
       ],
       "q": "Mac mini M5 Pro 64GB"
     },
@@ -1060,6 +1065,7 @@
       "etaC": 0.6,
       "pf": 3.5,
       "price": 2999,
+      "priceUsd": 2499,
       "src": [
         "apple"
       ],
@@ -1079,12 +1085,12 @@
       "eta": 0.62,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 3599,
+      "price": 3219,
+      "priceUsd": 2699,
       "src": [
-        "cfg"
+        "apple"
       ],
-      "q": "Mac Studio M5 Max 48GB",
-      "est": true
+      "q": "Mac Studio M5 Max 48GB"
     },
     {
       "id": "m5max64",
@@ -1100,12 +1106,12 @@
       "eta": 0.62,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 3849,
+      "price": 3659,
+      "priceUsd": 3099,
       "src": [
-        "cfg"
+        "apple"
       ],
-      "q": "Mac Studio M5 Max 64GB",
-      "est": true
+      "q": "Mac Studio M5 Max 64GB"
     },
     {
       "id": "m5u80x96",
@@ -1121,12 +1127,12 @@
       "eta": 0.5,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 8099,
+      "price": 8029,
+      "priceUsd": 6799,
       "src": [
-        "cfg"
+        "apple"
       ],
-      "q": "Mac Studio M5 Ultra 80-Core 96GB",
-      "est": true
+      "q": "Mac Studio M5 Ultra 80-Core 96GB"
     },
     {
       "id": "m5u512",
@@ -1163,12 +1169,12 @@
       "eta": 0.62,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 2499,
+      "price": 3149,
+      "priceUsd": 2699,
       "src": [
-        "cfg"
+        "apple"
       ],
-      "q": "MacBook Pro M5 Pro 24GB",
-      "est": true
+      "q": "MacBook Pro M5 Pro 24GB"
     },
     {
       "id": "m5pro48",
@@ -1184,12 +1190,12 @@
       "eta": 0.62,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 3199,
+      "price": 3809,
+      "priceUsd": 3299,
       "src": [
-        "cfg"
+        "apple"
       ],
-      "q": "MacBook Pro M5 Pro 48GB",
-      "est": true
+      "q": "MacBook Pro M5 Pro 48GB"
     },
     {
       "id": "m5maxmbp36",
@@ -1205,12 +1211,12 @@
       "eta": 0.62,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 4099,
+      "price": 4799,
+      "priceUsd": 4099,
       "src": [
-        "cfg"
+        "apple"
       ],
-      "q": "MacBook Pro M5 Max 36GB",
-      "est": true
+      "q": "MacBook Pro M5 Max 36GB"
     },
     {
       "id": "m5maxmbp128",
@@ -1226,12 +1232,12 @@
       "eta": 0.62,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 6299,
+      "price": 7899,
+      "priceUsd": 6999,
       "src": [
-        "cfg"
+        "apple"
       ],
-      "q": "MacBook Pro M5 Max 128GB",
-      "est": true
+      "q": "MacBook Pro M5 Max 128GB"
     },
     {
       "id": "m6mini24",
@@ -1247,12 +1253,12 @@
       "eta": 0.62,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 1299,
+      "price": 1269,
+      "priceUsd": 1099,
       "src": [
-        "cfg"
+        "apple"
       ],
-      "q": "Mac mini M6 24GB",
-      "est": true
+      "q": "Mac mini M6 24GB"
     },
     {
       "id": "m5promini24",
@@ -1269,6 +1275,7 @@
       "etaC": 0.6,
       "pf": 3.5,
       "price": 1999,
+      "priceUsd": 1699,
       "src": [
         "apple"
       ],
@@ -1288,12 +1295,12 @@
       "eta": 0.62,
       "etaC": 0.6,
       "pf": 3.5,
-      "price": 2499,
+      "price": 3209,
+      "priceUsd": 2799,
       "src": [
-        "cfg"
+        "apple"
       ],
-      "q": "Mac mini M5 Pro 48GB",
-      "est": true
+      "q": "Mac mini M5 Pro 48GB"
     },
     {
       "id": "m4max36",

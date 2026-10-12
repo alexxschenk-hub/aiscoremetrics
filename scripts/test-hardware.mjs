@@ -13,8 +13,15 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
  const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].at(-1)[1];
  const node = { addEventListener() {} };
  const sandbox = { devices, document: { documentElement: { lang: file.includes('/en/') ? 'en' : 'de' }, querySelector: () => node, addEventListener() {} }, window: { addEventListener() {} }, localStorage: { getItem: () => null } };
- vm.runInNewContext(script.replace('  load();', '  DEVICES = globalThis.devices; globalThis.hardwareTest = { state, MODELS, QUANTS, sysPrice, evaluate, calc, sysWatts, yearCost };'), sandbox);
- const { state, MODELS, QUANTS, sysPrice, evaluate, calc, sysWatts, yearCost } = sandbox.hardwareTest;
+ vm.runInNewContext(script.replace('  load();', '  DEVICES = globalThis.devices; globalThis.hardwareTest = { state, MODELS, QUANTS, sysPrice, evaluate, calc, sysWatts, yearCost, listPrice };'), sandbox);
+ const { state, MODELS, QUANTS, sysPrice, evaluate, calc, sysWatts, yearCost, listPrice } = sandbox.hardwareTest;
+ // Währung: Euro = price; Dollar = priceUsd (Listenpreis) oder Euro ohne 19 % MwSt. zum EZB-Kurs umgerechnet
+ { const mac = devices.find(d => d.id === 'm5u80x96'), gpu = devices.find(d => d.id === '4090');
+   assert.equal(mac.price, 8029); assert.equal(mac.priceUsd, 6799);
+   state.currency = 'USD'; state.base = true; state.baseCostUsd = 1200;
+   assert.equal(listPrice(mac), 6799); assert.equal(sysPrice(mac), 6799);
+   assert.equal(listPrice(gpu), Math.round(gpu.price / 1.19 * 1.1181)); assert.equal(sysPrice(gpu), listPrice(gpu) + 1200);
+   state.currency = 'EUR'; assert.equal(listPrice(mac), 8029); }
  // Leistungsaufnahme: jedes Gerät hat TDP; GPUs = TDP + 150 W (Laptop + 60 W), Macs/Mini-PCs eigener Systemwert
  for (const d of devices) {
    assert.ok(d.tdp >= 50 && d.tdp <= 1000, `${d.id}: tdp`);

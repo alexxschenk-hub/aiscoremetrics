@@ -27,7 +27,10 @@
       models = [...input.models];
     }
     if (input.elPrice !== undefined && !numeric(input.elPrice, 5)) return null;
-    const out = { v: 1, devices: [...ids], model: input.model, use: input.use, image: input.image, quant: input.quant, ctx: input.ctx, prompt: input.prompt, ram: input.ram, baseCost: input.baseCost, base: input.base, wired: input.wired, showPrices: input.showPrices, prices, cmpMode };
+    // Preise, PC-Basis und Strompreis sind in der Währung des Teilenden angegeben
+    const currency = input.currency ?? 'EUR';
+    if (!['EUR', 'USD'].includes(currency)) return null;
+    const out = { v: 1, devices: [...ids], model: input.model, use: input.use, image: input.image, quant: input.quant, ctx: input.ctx, prompt: input.prompt, ram: input.ram, baseCost: input.baseCost, base: input.base, wired: input.wired, showPrices: input.showPrices, prices, cmpMode, currency };
     if (models) out.models = models;
     if (input.elPrice !== undefined) out.elPrice = input.elPrice;
     return out;
