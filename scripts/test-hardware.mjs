@@ -18,6 +18,9 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
  // Währung: Euro = price; Dollar = priceUsd (Listenpreis) oder Euro ohne 19 % MwSt. zum EZB-Kurs umgerechnet
  { const mac = devices.find(d => d.id === 'm5u80x96'), gpu = devices.find(d => d.id === '4090');
    assert.equal(mac.price, 8029); assert.equal(mac.priceUsd, 6799);
+   // Stichproben Apple AT/US (Konfigurationsseiten, 12.10.2026)
+   for (const [id, eur, usd] of [['m5u96', 6599, 5499], ['m5max36', 2999, 2499], ['m5max48', 3989, 3399], ['m5max64', 4429, 3799], ['m5max', 6189, 5399], ['m5u256', 12429, 10799]]) {
+     const x = devices.find(d => d.id === id); assert.equal(x.price, eur, id); assert.equal(x.priceUsd, usd, id); }
    state.currency = 'USD'; state.base = true; state.baseCostUsd = 1200;
    assert.equal(listPrice(mac), 6799); assert.equal(sysPrice(mac), 6799);
    assert.equal(listPrice(gpu), Math.round(gpu.price / 1.19 * 1.1181)); assert.equal(sysPrice(gpu), listPrice(gpu) + 1200);
