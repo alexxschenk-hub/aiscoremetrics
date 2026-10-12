@@ -241,7 +241,26 @@ a.ext:hover { text-decoration: underline; }
 .detail td.d small { display: block; font-size: 11.5px; color: var(--good); white-space: normal; max-width: 220px; }
 .detail th.dhead { vertical-align: bottom; }
 /* Gewinner im Vergleich */
-.verdict { margin: 16px 14px 6px; border-radius: 8px; border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; overflow: hidden; text-align: center; }
+.verdict { margin: 14px 14px 18px; border-radius: 8px; border: 1px solid var(--line); overflow: hidden; text-align: center; background: var(--surface); }
+.verdict .v-head { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; }
+.v-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 12px; border-top: 1px solid var(--line); background: var(--bg); text-align: left; }
+.v-card { display: grid; align-content: start; gap: 6px; padding: 10px 12px 12px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); min-width: 0; }
+.v-card header { display: flex; align-items: center; gap: 8px; }
+.v-card .v-ico { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; font: 700 15px/1 var(--f-body); background: var(--bg); }
+.v-card .v-ttl { font: 700 13px var(--f-display); letter-spacing: .05em; text-transform: uppercase; color: var(--ink); }
+.v-card .v-main { justify-self: start; margin-left: 34px; font: 600 10.5px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 99px; padding: 0 6px; }
+.v-card .v-cs { margin-left: auto; font: 700 18px var(--f-mono); color: var(--ink); white-space: nowrap; }
+.v-card .v-sum { margin: 0 0 0 34px; font-size: 13.5px; line-height: 1.45; color: var(--ink); }
+.v-card .v-sum small { display: block; margin-top: 4px; font-size: 11.5px; color: var(--muted); }
+.v-card.hw { border-left: 3px solid var(--accent); }
+.v-card.hw .v-ico { background: var(--accent-soft); }
+.v-card.energy { border-left: 3px solid var(--good); }
+.v-card.energy .v-ico { background: color-mix(in srgb, var(--good) 16%, var(--surface)); }
+.v-card.calc { border: 1px dashed var(--muted); border-left: 3px dashed var(--warn); background: color-mix(in srgb, var(--bg) 55%, var(--surface)); }
+.v-card.energy .v-main { color: var(--good); border-color: var(--good); }
+.v-card.calc .v-main { color: var(--warn); border-color: var(--warn); border-style: dashed; }
+.v-card.calc .v-ico { color: var(--warn); background: color-mix(in srgb, var(--warn) 14%, var(--surface)); }
+@media (max-width: 900px) { .v-cards { grid-template-columns: minmax(0, 1fr); } }
 .verdict .v-side { display: grid; gap: 6px; align-content: center; justify-items: center; padding: 18px 14px; min-width: 0; background: var(--bg); color: var(--muted); }
 .verdict .v-side.won { background: var(--accent); color: var(--surface); }
 .verdict .v-name { font: 700 clamp(18px, 2.4vw, 24px)/1.15 var(--f-display); overflow-wrap: anywhere; }
@@ -252,7 +271,7 @@ a.ext:hover { text-decoration: underline; }
 .verdict .v-why { grid-column: 1 / -1; margin: 0; padding: 12px 16px; font-size: 14px; color: var(--ink); background: var(--surface); border-top: 1px solid var(--line); }
 .verdict .v-why small { display: block; margin-top: 4px; font-size: 12px; color: var(--muted); }
 .verdict .v-basis { font: 600 12px var(--f-display); letter-spacing: .04em; color: var(--muted); max-width: 22ch; }
-.verdict .v-ko { grid-column: 1 / -1; display: grid; gap: 4px; justify-items: center; padding: 14px 16px; text-align: center; background: color-mix(in srgb, var(--bad) 12%, var(--surface)); border-bottom: 1px solid color-mix(in srgb, var(--bad) 40%, transparent); }
+.verdict .v-ko { display: grid; gap: 4px; justify-items: center; padding: 14px 16px; text-align: center; background: color-mix(in srgb, var(--bad) 12%, var(--surface)); border-bottom: 1px solid color-mix(in srgb, var(--bad) 40%, transparent); }
 .verdict .v-ko-warn { font: 700 clamp(15px, 1.8vw, 18px)/1.3 var(--f-display); color: var(--bad); }
 .verdict .v-ko-hint { max-width: 70ch; font: 400 12.5px/1.45 var(--f-body); color: var(--muted); margin-top: 2px; }
 .verdict .v-ko-win { font: 600 14px var(--f-body); color: var(--ink); }
@@ -277,7 +296,7 @@ a.ext:hover { text-decoration: underline; }
 .verdict.tie { border-color: var(--warn); }
 .verdict.tie .v-side, .verdict.tie .v-mid { background: color-mix(in srgb, var(--warn) 16%, var(--surface)); color: var(--ink); }
 .verdict.tie .v-badge { background: var(--warn); color: var(--surface); }
-@media (max-width: 640px) { .verdict { grid-template-columns: minmax(0, 1fr); } .verdict .v-mid { padding: 10px; } .v-share, .share-btn { width: 100%; } .share-btn { justify-content: center; } }
+@media (max-width: 640px) { .verdict .v-head { grid-template-columns: minmax(0, 1fr); } .verdict .v-mid { padding: 10px; } .v-share, .share-btn { width: 100%; } .share-btn { justify-content: center; } }
 .detail tr.grp td { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--accent); padding-top: 14px; border-bottom: 1px solid var(--line); }
 .memhead, .memrow { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr) minmax(190px, 250px); gap: 12px; align-items: center; }
 .memchart { display: grid; gap: 7px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; }
@@ -923,7 +942,12 @@ Score = Perf / system price   (best device = 100)</div>
       koWired: "Hinweis: Mit angehobenem GPU-Speicherlimit (Schalter oben) passt das Modell auf diesen Mac.",
       vFactsRule: "Hardware-Fakten: Modell lauffähig (Punkt nur, wenn es auf genau einem Gerät passt), Preis (bei eingeblendeten Preisen), Speicher, Bandbreite und ECI bei unterschiedlichen Modellen. 1 Punkt je Kategorie; unter 5 % Unterschied (ECI: unter 1 Punkt) zählt als Gleichstand. Passt das Modell auf beide Geräte, zählt Speicher nur, wenn eines knapp ist (unter 2 GB frei nach Modell und KV-Cache).",
       memBothOk: (a, b) => `Beide haben genug Speicher für das Modell (${a} GB vs. ${b} GB frei) – kein Punkt`, memMoreRoom: (n, a, b) => `${n} hat mehr Spielraum (${a} GB frei vs. ${b} GB frei)`, memBothTight: (a, b) => `Beide knapp (${a} GB vs. ${b} GB frei)`,
-      vCalcLab: "Berechnete Werte (geschätzt)", vCalcTip: "Diese Werte basieren auf Schätzungen und Formeln, nicht auf echten Messungen: Tokens/s, Wartezeit, Code-Tempo, Bildzeit, Leistung, Score, passende Modelle, Effizienz, Stromkosten und Gesamtkosten.",
+      blkHw: "Hardware-Fakten", blkMain: "bestimmt den Gewinner", blkSide: "eigene Wertung", blkEst: "geschätzt", blkEnergy: "Energie & Effizienz", blkCalc: "Berechnete Leistung",
+      calcWin: (n) => `≈ Leistungsvorteil: ${n}`, calcTie: "Ausgeglichen – kein Leistungsvorteil.",
+      energyWin: (n) => `⚡ Energiegewinner: ${n}`, energyTie: "Ausgeglichen – kein Energiegewinner.", energyNone: "Keine Energiewerte vergleichbar.", energyMark: "Energie (geschätzt)",
+      energyTip: "Leistungsaufnahme, Stromkosten pro Jahr, Effizienz (tok/s pro Watt) und Gesamtkosten über 3 Jahre (nur bei eingeblendeten Preisen) – geschätzt aus TDP bzw. Messwerten. Eigene Wertung, zählt nicht zum Gesamtgewinner.",
+      energyRule: "Eigene Wertung, zählt nicht zum Gewinner. Gesamtkosten nur bei eingeblendeten Preisen.",
+      vCalcLab: "Berechnete Werte (geschätzt)", vCalcTip: "Diese Werte basieren auf Schätzungen und Formeln, nicht auf echten Messungen: Tokens/s, Wartezeit, Code-Tempo, Bildzeit, Leistung, Score und passende Modelle.",
       vCalcFor: (a, b, n) => `${a} : ${b} zugunsten ${n}`, vCalcTie: (a) => `${a} : ${a} – ausgeglichen`, vCalcLead: (l) => `Vorne bei ${l}.`, vCalcNone: "Keine berechneten Werte vergleichbar.",
       calcMark: "berechnet (geschätzt)",
       share: "Teilen", shareVia: "Teilen über …", shareX: "𝕏 / Twitter", shareLinkedIn: "LinkedIn", shareReddit: "Reddit", shareCopy: "Link kopieren", shareCopied: "Link kopiert",
@@ -932,7 +956,7 @@ Score = Perf / system price   (best device = 100)</div>
       vWin: "Gewinner", vTie: "Gleichstand", vPts: (n) => `${n} ${n === 1 ? "Punkt" : "Punkte"}`, vAnd: "und",
       vWhy: (list) => `Gewinnt bei ${list}.`, vTieWhy: (a, la, b, lb) => `${a} vorne bei ${la}, ${b} vorne bei ${lb}.`, vAllLevel: (n) => `In allen ${n} Kategorien gleichauf.`,
       vRule: (n, e) => `1 Punkt je Kategorie (${n} verglichen), Unterschied unter 5 % zählt als Gleichstand${e ? ` (${e}× gleichauf)` : ""}. Platz, Leistungsaufnahme und 24/7-Kosten zählen nicht extra, weil sie aus Leistung/Score bzw. den Stromkosten folgen.`,
-      vCat: { runs: "Lauffähigkeit des Modells", cost8: "Stromkosten", tco: "Gesamtkosten", eff: "Effizienz", sys: "Preis", mem: "Speicher", bw: "Bandbreite", score: "Preis-Leistung", perf: "Leistung", fits: "Modellauswahl", eciDev: "Modell-Intelligenz", tg: "Tokens/s", ttft: "Wartezeit", code: "Code-Tempo", img: "Bildern" },
+      vCat: { power: "Leistungsaufnahme", runs: "Lauffähigkeit des Modells", cost8: "Stromkosten", tco: "Gesamtkosten", eff: "Effizienz", sys: "Preis", mem: "Speicher", bw: "Bandbreite", score: "Preis-Leistung", perf: "Leistung", fits: "Modellauswahl", eciDev: "Modell-Intelligenz", tg: "Tokens/s", ttft: "Wartezeit", code: "Code-Tempo", img: "Bildern" },
       dHint: (m, p) => `Geschätzte Praxiswerte und Belegung für ${m} mit ${p} Prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Platz und Score beziehen sich auf alle Geräte für dieses Modell.`,
       memTitle: "Speicherauslastung",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, mit ${c} Kontext. 100 % ist der nutzbare Grafikspeicher, bei Macs und Mini-PCs der für die GPU freigegebene Teil des Arbeitsspeichers. Was darüber hinausgeht, lagern PCs mit Grafikkarte in den normalen Arbeitsspeicher aus.`,
@@ -1081,7 +1105,12 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       koWired: "Note: With the GPU memory limit raised (switch above), the model fits on this Mac.",
       vFactsRule: "Hardware facts: model runs (a point only when it fits on exactly one device), price (when prices are shown), memory, bandwidth and ECI when the models differ. 1 point per category; differences under 5% (ECI: under 1 point) count as a tie. If the model fits on both devices, memory only counts when one of them is tight (under 2 GB free after model and KV cache).",
       memBothOk: (a, b) => `Both have enough memory for the model (${a} GB vs. ${b} GB free) – no point`, memMoreRoom: (n, a, b) => `${n} has more headroom (${a} GB free vs. ${b} GB free)`, memBothTight: (a, b) => `Both are tight (${a} GB vs. ${b} GB free)`,
-      vCalcLab: "Calculated values (estimated)", vCalcTip: "These values are based on estimates and formulas, not real measurements: tokens/s, wait time, coding speed, image time, performance, score, models that fit, efficiency, electricity and total cost.",
+      blkHw: "Hardware facts", blkMain: "decides the winner", blkSide: "separate rating", blkEst: "estimated", blkEnergy: "Energy & efficiency", blkCalc: "Calculated performance",
+      calcWin: (n) => `≈ Performance edge: ${n}`, calcTie: "Even – no performance edge.",
+      energyWin: (n) => `⚡ Energy winner: ${n}`, energyTie: "Even – no energy winner.", energyNone: "No energy values to compare.", energyMark: "energy (estimated)",
+      energyTip: "Power draw, electricity cost per year, efficiency (tok/s per watt) and total cost over 3 years (only when prices are shown) – estimated from TDP or measurements. Separate rating, not counted towards the overall winner.",
+      energyRule: "Separate rating, not counted towards the winner. Total cost only when prices are shown.",
+      vCalcLab: "Calculated values (estimated)", vCalcTip: "These values are based on estimates and formulas, not real measurements: tokens/s, wait time, coding speed, image time, performance, score and models that fit.",
       vCalcFor: (a, b, n) => `${a} : ${b} in favour of ${n}`, vCalcTie: (a) => `${a} : ${a} – even`, vCalcLead: (l) => `Ahead on ${l}.`, vCalcNone: "No calculated values to compare.",
       calcMark: "calculated (estimated)",
       share: "Share", shareVia: "Share via …", shareX: "𝕏 / Twitter", shareLinkedIn: "LinkedIn", shareReddit: "Reddit", shareCopy: "Copy link", shareCopied: "Link copied",
@@ -1090,7 +1119,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       vWin: "Winner", vTie: "Tie", vPts: (n) => `${n} ${n === 1 ? "point" : "points"}`, vAnd: "and",
       vWhy: (list) => `Wins on ${list}.`, vTieWhy: (a, la, b, lb) => `${a} leads on ${la}, ${b} leads on ${lb}.`, vAllLevel: (n) => `Level in all ${n} categories.`,
       vRule: (n, e) => `1 point per category (${n} compared); differences under 5% count as a tie${e ? ` (${e} tied)` : ""}. Rank, power draw and 24/7 cost are not counted separately because they follow from performance/score or the electricity cost.`,
-      vCat: { runs: "running the model", cost8: "electricity cost", tco: "total cost", eff: "efficiency", sys: "price", mem: "memory", bw: "bandwidth", score: "value for money", perf: "performance", fits: "model coverage", eciDev: "model intelligence", tg: "tokens/s", ttft: "wait time", code: "coding speed", img: "images" },
+      vCat: { power: "power draw", runs: "running the model", cost8: "electricity cost", tco: "total cost", eff: "efficiency", sys: "price", mem: "memory", bw: "bandwidth", score: "value for money", perf: "performance", fits: "model coverage", eciDev: "model intelligence", tg: "tokens/s", ttft: "wait time", code: "coding speed", img: "images" },
       dHint: (m, p) => `Estimated results and usage for ${m} with a ${p} prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Score and rank compare against all devices for this model.`,
       memTitle: "Memory usage",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, with ${c} context. 100% is the usable graphics memory; on Macs and mini PCs, the share of RAM released to the GPU. Anything beyond that, PCs with a graphics card offload into regular system RAM.`,
@@ -1612,6 +1641,7 @@ Score     = Perf / system price   (best device = 100)</div>
       const cmpPer = perDevice() && vis.length === 2;
       // Hardware-Fakten bestimmen den Gewinner; alles andere ist berechnet (Formeln, keine Messung)
       const FACT_KEYS = ["runs", "sys", "mem", "bw", "eciDev"];
+      const ENERGY_KEYS = ["power", "cost8", "cost24", "eff", "tco"];
       const memTxt = (r) => { const mi = memInfo(r.d, modelFor(r.d), Math.max(ctx, pxP + CODE_TOKENS));
         if (mi.state === "ok") return `${g1(mi.need)} / ${g1(mi.cap)} GB`;
         if (mi.state === "spill") return `+${g1(mi.spill)} GB PC-RAM`;
@@ -1687,19 +1717,21 @@ Score     = Perf / system price   (best device = 100)</div>
         }).join("");
         const deltaCell = key === "mem" && memRule ? `<span class="mem-why${memRule.win < 0 ? " same" : ""}">${esc(memRule.text)}</span>${memRule.win >= 0 && !memRule.named ? `<small>${esc(t.deltaFor(devLabel(cols[memRule.win].d)))}</small>` : ""}` : key === "eciSame" && cols.length === 2 ? `<span class="same">${t.eciSame}</span>` : delta ? `${delta}<small>${esc(t.deltaFor(devLabel(cols[win].d)))}</small>` : "";
         const calcRow = !FACT_KEYS.includes(key) && key !== "eciSame";
-        return `<tr data-k="${key}"${calcRow ? ' class="calc"' : ""}><td class="k">${calcRow ? `<span class="approx" title="${esc(t.calcMark)}" aria-label="${esc(t.calcMark)}">≈</span>` : ""}${t.dRows[key]}</td>${cells}${cols.length === 2 ? `<td class="d">${deltaCell}</td>` : ""}</tr>`;
+        const mark = ENERGY_KEYS.includes(key) ? ["⚡", t.energyMark] : ["≈", t.calcMark];
+        return `<tr data-k="${key}"${calcRow ? ' class="calc"' : ""}><td class="k">${calcRow ? `<span class="approx" title="${esc(mark[1])}" aria-label="${esc(mark[1])}">${mark[0]}</span>` : ""}${t.dRows[key]}</td>${cells}${cols.length === 2 ? `<td class="d">${deltaCell}</td>` : ""}</tr>`;
       }).join("");
-      // Punktewertung: 1 Punkt je Kategorie, < 5 % Unterschied = Gleichstand (ECI: < 1 Punkt); "läuft nicht" (null) verliert
-      // bei Tempo/Intelligenz/Effizienz. Gewinner nur nach Hardware-Fakten, berechnete Werte als eigener Block.
+      // Punktewertung in drei getrennten Blöcken: Hardware-Fakten (bestimmen den Gewinner), Energie & Effizienz,
+      // berechnete Leistung. 1 Punkt je Kategorie, < 5 % Unterschied = Gleichstand (ECI: < 1 Punkt);
+      // "läuft nicht" (null) verliert bei Tempo/Intelligenz/Effizienz.
       let verdict = "";
       if (cols.length === 2) {
         const NULL_LOSES = ["tg", "ttft", "code", "img", "eciDev", "eff"];
-        const PRIO = ["runs", "score", "perf", "eciDev", "tg", "tco", "cost8", "eff", "mem", "bw", "sys", "fits", "ttft", "code", "img"];
+        const PRIO = ["runs", "score", "perf", "eciDev", "tg", "tco", "cost8", "eff", "power", "mem", "bw", "sys", "fits", "ttft", "code", "img"];
         const tally = () => ({ pts: [0, 0], won: [[], []], compared: 0, level: 0 });
-        const facts = tally(), est = tally();
+        const facts = tally(), energy = tally(), est = tally();
         ROWS.forEach(([key, val, , dir]) => {
-          if (key === "grp" || key === "rank" || key === "power" || key === "cost24" || !dir) return;
-          const v = cols.map((r) => val(r)), T = FACT_KEYS.includes(key) ? facts : est;
+          if (key === "grp" || key === "rank" || key === "cost24" || !dir) return;   // 24/7-Kosten folgen 1:1 aus den 8-h-Kosten
+          const v = cols.map((r) => val(r)), T = FACT_KEYS.includes(key) ? facts : ENERGY_KEYS.includes(key) ? energy : est;
           if (key === "runs" && v[0] === v[1]) return;
           if (key === "mem" && memRule) { T.compared++; if (memRule.win >= 0) { T.pts[memRule.win]++; T.won[memRule.win].push(key); } else T.level++; return; }
           let w = -1;
@@ -1722,7 +1754,7 @@ Score     = Perf / system price   (best device = 100)</div>
         let koNote = "";
         if (ko >= 0) {
           const lo = 1 - ko, lm = modelFor(cols[lo].d), mi = memInfo(cols[lo].d, lm, Math.max(ctx, pxP + CODE_TOKENS)), g1 = (n) => fmt(n, n < 10 ? 1 : 0);
-          for (const T of [facts, est]) { const n = Math.max(T.compared, 1); T.pts = ko === 0 ? [n, 0] : [0, n]; }
+          for (const T of [facts, energy, est]) { const n = Math.max(T.compared, 1); T.pts = ko === 0 ? [n, 0] : [0, n]; }
           // Nur zur Info (ändert keine Punkte): Grafikkarte → Offloading in den PC-RAM möglich, Mac → GPU-Speicherlimit anheben
           const koHint = mi.state === "spill" ? t.koOffload + (mi.tg ? " " + t.koOffloadTok(fmtTok(mi.tg)) : "")
             : mi.state === "nosys" ? `${t.koOffload} ${t.koOffloadRam(state.sysRam)}` : mi.state === "wired" ? t.koWired : "";
@@ -1730,11 +1762,22 @@ Score     = Perf / system price   (best device = 100)</div>
         }
         const { pts } = facts, tie = pts[0] === pts[1], wi = pts[0] > pts[1] ? 0 : 1;
         const side = (i) => `<div class="v-side${!tie && i === wi ? " won" : ""}">${!tie && i === wi ? `<span class="v-badge">${t.vWin}</span>` : ""}<b class="v-name">${esc(names[i])}</b><span class="v-pts">${t.vPts(pts[i])}</span></div>`;
-        const why = ko >= 0 ? t.koWhy : noneRuns ? t.noneRunsWhy + " " + (tie && !pts[0] ? t.vAllLevel(facts.compared) : tie ? t.vTieWhy(esc(names[0]), list(facts.won[0]), esc(names[1]), list(facts.won[1])) : t.vWhy(list(facts.won[wi]))) : tie && !pts[0] ? t.vAllLevel(facts.compared) : tie ? t.vTieWhy(esc(names[0]), list(facts.won[0]), esc(names[1]), list(facts.won[1])) : t.vWhy(list(facts.won[wi]));
-        // Berechnete Werte
+        const factsWhy = ko >= 0 ? t.koWhy : (noneRuns ? t.noneRunsWhy + " " : "") + (tie && !pts[0] ? t.vAllLevel(facts.compared) : tie ? t.vTieWhy(esc(names[0]), list(facts.won[0]), esc(names[1]), list(facts.won[1])) : t.vWhy(list(facts.won[wi])));
+        // Energie & Effizienz
+        const ep = energy.pts, etie = ep[0] === ep[1], ewi = ep[0] > ep[1] ? 0 : 1;
+        const energyWhy = !energy.compared ? t.energyNone : ko >= 0 ? `${t.energyWin(esc(names[ewi]))} ${t.koCalc}` : etie ? t.energyTie
+          : `${t.energyWin(esc(names[ewi]))}${energy.won[ewi].length ? ` – ${t.vCalcLead(list(energy.won[ewi])).replace(/\.$/, "")}.` : ""}`;
+        // Berechnete Leistung
         const cp = est.pts, ctie = cp[0] === cp[1], cwi = cp[0] > cp[1] ? 0 : 1;
-        const calcLine = !est.compared ? t.vCalcNone : ctie ? t.vCalcTie(cp[0]) : t.vCalcFor(cp[0], cp[1], esc(names[cwi]));
-        const calcLead = ko >= 0 ? ` ${t.koCalc}` : !ctie && est.won[cwi].length ? ` ${t.vCalcLead(list(est.won[cwi]))}` : "";
+        const calcWhy = !est.compared ? t.vCalcNone : ko >= 0 ? `${t.calcWin(esc(names[cwi]))}. ${t.koCalc}` : ctie ? t.calcTie
+          : `${t.calcWin(esc(names[cwi]))}${est.won[cwi].length ? ` – ${t.vCalcLead(list(est.won[cwi])).replace(/\.$/, "")}.` : "."}`;
+        const info = (tip) => `<span class="v-info" tabindex="0" role="img" aria-label="${esc(tip)}" data-tip="${esc(tip)}">i</span>`;
+        const card = (cls, ico, title, sc, why, tip, sub) => `<section class="v-card ${cls}"><header><span class="v-ico" aria-hidden="true">${ico}</span><span class="v-ttl">${title}</span>${tip ? info(tip) : ""}<span class="v-cs">${sc[0]} : ${sc[1]}</span></header>${sub ? `<span class="v-main">${sub}</span>` : ""}<p class="v-sum">${why}</p></section>`;
+        const cards = `<div class="v-cards">`
+          + card("hw", "🔧", t.blkHw, pts, factsWhy, ko >= 0 ? t.koRule : t.vFactsRule, t.blkMain)
+          + card("energy", "⚡", t.blkEnergy, ep, energyWhy, t.energyTip, t.blkSide)
+          + card("calc", "≈", t.blkCalc, cp, calcWhy, t.vCalcTip, t.blkEst)
+          + `</div>`;
         // Teilen
         const shareText = t.shareText(names[0], names[1], pts[0], pts[1], tie ? "" : names[wi]);
         const shareTitle = t.shareTitle(names[0], names[1], pts[0], pts[1]);
@@ -1750,11 +1793,12 @@ Score     = Perf / system price   (best device = 100)</div>
           </div>
           <span class="share-status" role="status" aria-live="polite"></span>
         </div>`;
-        verdict = `<div class="verdict${tie ? " tie" : ""}${ko >= 0 ? " ko" : ""}" role="status">${koNote}${side(0)}<div class="v-mid">${tie ? `<span class="v-badge">${t.vTie}</span>` : ""}<span class="v-score">${pts[0]} : ${pts[1]}</span><span class="v-basis">${tie ? t.vFactsTie(pts[0]) : t.vFactsBasis(pts[0], pts[1])}</span>${share}</div>${side(1)}`
-          + `<p class="v-why">${why}<small>${esc(ko >= 0 ? t.koRule : t.vFactsRule)}</small></p>`
-          + `<div class="v-calc"><span class="v-calc-lab"><span class="approx" aria-hidden="true">≈</span>${t.vCalcLab}<span class="v-info" tabindex="0" role="img" aria-label="${esc(t.vCalcTip)}" data-tip="${esc(t.vCalcTip)}">i</span></span><span class="v-calc-score">${calcLine}</span><span class="v-calc-lead">${calcLead}</span></div></div>`;
+        verdict = `<div class="verdict${tie ? " tie" : ""}${ko >= 0 ? " ko" : ""}" role="status">${koNote}`
+          + `<div class="v-head">${side(0)}<div class="v-mid">${tie ? `<span class="v-badge">${t.vTie}</span>` : ""}<span class="v-score">${pts[0]} : ${pts[1]}</span><span class="v-basis">${tie ? t.vFactsTie(pts[0]) : t.vFactsBasis(pts[0], pts[1])}</span>${share}</div>${side(1)}</div>`
+          + cards + `</div>`;
       }
-      $("#detail").innerHTML = `<table><thead>${head}</thead><tbody>${body}</tbody></table>${verdict}<p class="hint" style="padding:0 14px 12px">${cmpPer ? esc(t.dHintPer(ctxLabel(pxP))) : esc(t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>`;
+      // Ergebnis zuerst, dann die Details
+      $("#detail").innerHTML = `${verdict}<table><thead>${head}</thead><tbody>${body}</tbody></table><p class="hint" style="padding:0 14px 12px">${cmpPer ? esc(t.dHintPer(ctxLabel(pxP))) : esc(t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>`;
     }
 
     // Ranking table
