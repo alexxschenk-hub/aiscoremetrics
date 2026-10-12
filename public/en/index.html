@@ -181,6 +181,8 @@ a.ext:hover { text-decoration: underline; }
 .pick-best .na { color: var(--muted); }
 .detail .col-model { display: inline-block; margin-top: 4px; font: 600 12px var(--f-body); color: var(--accent); }
 .detail td.d .same { color: var(--muted); }
+.detail td.v small.sub { display: block; font: 400 11.5px var(--f-body); color: var(--muted); }
+#rank td.pw { white-space: nowrap; }
 .pick .pair { display: grid; grid-template-columns: minmax(118px, 34%) minmax(0, 1fr); gap: 6px; }
 .pick select, .pick .ss { width: 100%; min-width: 0; }
 @media (max-width: 640px) { .picks { grid-template-columns: minmax(0, 1fr); } }
@@ -384,6 +386,8 @@ footer { font-size: 12.5px; color: var(--muted); }
       <label class="check"><input type="checkbox" id="showprices"> <span data-i="showPrices"></span></label>
       <label class="check" id="base-field"><input type="checkbox" id="base" checked> <span data-i="base"></span> <input type="number" id="basecost" value="1300" min="0" step="50" style="width:84px"> €</label>
       <label class="check"><span data-i="sysram"></span> <input type="number" id="sysram" value="64" min="0" step="16" style="width:70px"> GB</label>
+      <label class="check"><span data-i="elPrice"></span> <input type="number" id="elprice" value="0.25" min="0" max="5" step="0.01" style="width:76px"> €/kWh</label>
+      <label class="check"><input type="checkbox" id="showpower"> <span data-i="showPower"></span></label>
       <label class="check"><input type="checkbox" id="wired"> <span data-i="wired"></span></label>
       <button class="btn" id="reset" type="button" data-i="reset"></button>
     </div>
@@ -837,7 +841,7 @@ Score = Perf / system price   (best device = 100)</div>
       showPrices: "Preise und Preis-Leistung einblenden (Deutschland, EUR)",
       uses: { all: "Alle Modelle", coding: "Agentic Coding", chat: "Chat & Assistenz", large: "Große Modelle" }, useLab: "Einsatzzweck", active: "aktiv",
       dense: "dicht", effective: "effektiv",
-      th: { rank: "#", name: "Gerät", price: "Systempreis €", fits: "Modelle passen", perf: "Leistung", score: "Score" },
+      th: { watt: "Watt", cost: "€/Jahr", rank: "#", name: "Gerät", price: "Systempreis €", fits: "Modelle passen", perf: "Leistung", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini-PC" },
       src: { gp: "gpuprix", med: "3-Monats-Median", used: "gebraucht, Schätzung", est: "Schätzung", cfg: "Konfig., Schätzung", apple: "Apple DE Listenpreis", man: "manuell:", own: "eigener Preis", unknown: "Preis offen" },
       nonePrice: "Preis eingeben, um die Kosten zu vergleichen.",
@@ -865,16 +869,18 @@ Score = Perf / system price   (best device = 100)</div>
       eciLab: "Modell-Intelligenz", eciSrc: "Quelle: Epoch AI", eciNone: "kein ECI-Wert bei Epoch AI", eciNoFit: "kein Modell passt", eciEstShort: "geschätzt",
       eciTip: (top, m) => `Der Epoch Capabilities Index (ECI) misst die allgemeine Leistungsfähigkeit von KI-Modellen auf einer Skala. Höher = intelligenter. Das beste Modell (${m}) hat ${top}.`,
       eciEst: (q, raw) => `bei ${q} geschätzt (Quantisierungsverlust), Epoch-Wert ${raw}`,
-      dGroups: { intel: "Modell-Intelligenz", hw: "Hardware", basics: "Hardware & Preis", score: "Bewertung im Profil", px: "Praxiswerte", mem: "Speicher" },
-      dRows: { eciSame: "Modell (beide gleich)", eciDev: "Modell je Gerät", sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
+      elPrice: "Strompreis", showPower: "Stromverbrauch im Ranking", wattTip: (tdp, sys) => `TDP ${tdp} W, ganzes System unter LLM-Last ca. ${sys} W`,
+      costTip: (h, p) => `Stromkosten pro Jahr bei ${h} h/Tag und ${p} €/kWh`,
+      dGroups: { energy: "Energie", intel: "Modell-Intelligenz", hw: "Hardware", basics: "Hardware & Preis", score: "Bewertung im Profil", px: "Praxiswerte", mem: "Speicher" },
+      dRows: { power: "Leistungsaufnahme", cost8: "Stromkosten/Jahr (8 h/Tag)", cost24: "Stromkosten/Jahr (24/7)", eff: "Effizienz", tco: "Gesamtkosten 3 Jahre", eciSame: "Modell (beide gleich)", eciDev: "Modell je Gerät", sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
       rankOf: (a, b) => `${a} von ${b}`,
       faster: (x) => `${x}× besser`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} Modelle zur Auswahl. Gerechnet wird mit <b>${m}</b> (${ex}): braucht ≈ <b>${need} GB</b> Speicher bei ${c} Kontext und ${q} und passt auf <b>${k} von ${total}</b> Geräten. Ein anderer Einsatzzweck oder ein anderes Modell ändert Speicherbedarf und Ranking.`,
       deltaHead: "Unterschied", deltaFor: (x) => `zugunsten ${x}`,
       vWin: "Gewinner", vTie: "Gleichstand", vPts: (n) => `${n} ${n === 1 ? "Punkt" : "Punkte"}`, vAnd: "und",
       vWhy: (list) => `Gewinnt bei ${list}.`, vTieWhy: (a, la, b, lb) => `${a} vorne bei ${la}, ${b} vorne bei ${lb}.`, vAllLevel: (n) => `In allen ${n} Kategorien gleichauf.`,
-      vRule: (n, e) => `1 Punkt je Kategorie (${n} verglichen), Unterschied unter 5 % zählt als Gleichstand${e ? ` (${e}× gleichauf)` : ""}. Platz wird nicht gezählt, weil er aus Leistung bzw. Score folgt.`,
-      vCat: { sys: "Preis", mem: "Speicher", bw: "Bandbreite", score: "Preis-Leistung", perf: "Leistung", fits: "Modellauswahl", eciDev: "Modell-Intelligenz", tg: "Tokens/s", ttft: "Wartezeit", code: "Code-Tempo", img: "Bildern" },
+      vRule: (n, e) => `1 Punkt je Kategorie (${n} verglichen), Unterschied unter 5 % zählt als Gleichstand${e ? ` (${e}× gleichauf)` : ""}. Platz, Leistungsaufnahme und 24/7-Kosten zählen nicht extra, weil sie aus Leistung/Score bzw. den Stromkosten folgen.`,
+      vCat: { cost8: "Stromkosten", tco: "Gesamtkosten", eff: "Effizienz", sys: "Preis", mem: "Speicher", bw: "Bandbreite", score: "Preis-Leistung", perf: "Leistung", fits: "Modellauswahl", eciDev: "Modell-Intelligenz", tg: "Tokens/s", ttft: "Wartezeit", code: "Code-Tempo", img: "Bildern" },
       dHint: (m, p) => `Geschätzte Praxiswerte und Belegung für ${m} mit ${p} Prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Platz und Score beziehen sich auf alle Geräte für dieses Modell.`,
       memTitle: "Speicherauslastung",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, mit ${c} Kontext. 100 % ist der nutzbare Grafikspeicher, bei Macs und Mini-PCs der für die GPU freigegebene Teil des Arbeitsspeichers. Was darüber hinausgeht, lagern PCs mit Grafikkarte in den normalen Arbeitsspeicher aus.`,
@@ -925,6 +931,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
         <li>NVIDIA GB10 (DGX Spark, Surface RTX Spark Dev Box): 273 GB/s LPDDR5X, gemeinsamer Speicher. Nutzbar für die GPU: DGX Spark 128 GB ≈ 119 GB (angehoben 124 GB), DGX Spark 64 GB ≈ 56 GB (8 GB fürs System laut NVIDIA), Surface 112 GB laut Microsoft. Bandbreiten-Effizienz η 0,72 wie Ryzen AI Max; Rechenleistung 1.000 AI TOPS ÷ 8 = 125 TFLOPS, η_c 0,3. Die Surface-Bandbreite hat Microsoft nicht veröffentlicht; angenommen ist derselbe Wert wie beim DGX Spark.</li>
         <li>Rechenleistung: NVIDIA = FP16-Tensor-Leistung (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0,5. AMD = FP16-Spitzenleistung laut Datenblatt, η_c 0,35 (Ryzen AI Max 0,3). Apple = GPU-FP32, η_c 0,6. M5-Chips mit Neural Accelerators ×3,5 (Apple nennt bis 3,9–4× gegenüber der Vorgängergeneration).</li>
         <li>MoE-Modelle erreichen in der Praxis rund die Hälfte der rechnerischen Generierung (Routing, Attention, verteilte Zugriffe), daher ε = 0,55. Dichte Modelle ε = 1.</li>
+        <li>Stromverbrauch: Grafikkarten mit Board Power laut Hersteller plus 150 W für den restlichen PC (Laptops plus 60 W), also eine Volllast-Schätzung. Macs mit rund 50 % von Apples Maximalwert an der Steckdose (gemessen: M3 Ultra 138 W bei 270 W Maximum), MacBook Pro mit dem Netzteil als Obergrenze. Mini-PCs mit Messwerten bzw. Herstellerangabe: Ryzen AI Max+ 395 ca. 128 W, DGX Spark 140 W, Surface RTX Spark Dev Box 100 W. Stromkosten = Watt × Stunden × 365 × Strompreis ÷ 1.000; Gesamtkosten 3 Jahre = Systempreis + 3 × Stromkosten bei 8 h/Tag.</li>
         <li>Kein Teil-Offloading: Wenn ein Modell nicht passt, zählt es mit 0. Multi-GPU ist nicht abgebildet.</li>
       </ul>
     </section>
@@ -970,7 +977,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       showPrices: "Show prices and value for money (Germany, EUR)",
       uses: { all: "All models", coding: "Agentic coding", chat: "Chat & assistant", large: "Large models" }, useLab: "Use case", active: "active",
       dense: "dense", effective: "effective",
-      th: { rank: "#", name: "Device", price: "System price €", fits: "Models that fit", perf: "Performance", score: "Score" },
+      th: { watt: "Watts", cost: "€/year", rank: "#", name: "Device", price: "System price €", fits: "Models that fit", perf: "Performance", score: "Score" },
       kinds: { gpu: "GPU", mbp: "MacBook Pro", studio: "Mac Studio", mini: "Mac mini", minipc: "Mini PC" },
       src: { gp: "gpuprix", med: "3-month median", used: "used, estimate", est: "estimate", cfg: "config, estimate", apple: "Apple DE list price", man: "manual:", own: "your price", unknown: "price unavailable" },
       nonePrice: "Enter a price to compare costs.",
@@ -998,16 +1005,18 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       eciLab: "Model intelligence", eciSrc: "Source: Epoch AI", eciNone: "no ECI score from Epoch AI", eciNoFit: "no model fits", eciEstShort: "estimated",
       eciTip: (top, m) => `The Epoch Capabilities Index (ECI) measures the general capability of AI models on a single scale. Higher = more capable. The best model (${m}) scores ${top}.`,
       eciEst: (q, raw) => `estimated for ${q} (quantization loss), Epoch score ${raw}`,
-      dGroups: { intel: "Model intelligence", hw: "Hardware", basics: "Hardware & price", score: "Rating in this use case", px: "Real-world numbers", mem: "Memory" },
-      dRows: { eciSame: "Model (same for both)", eciDev: "Model per device", sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
+      elPrice: "Electricity", showPower: "Power use in ranking", wattTip: (tdp, sys) => `TDP ${tdp} W, whole system under LLM load about ${sys} W`,
+      costTip: (h, p) => `Electricity cost per year at ${h} h/day and €${p}/kWh`,
+      dGroups: { energy: "Energy", intel: "Model intelligence", hw: "Hardware", basics: "Hardware & price", score: "Rating in this use case", px: "Real-world numbers", mem: "Memory" },
+      dRows: { power: "Power draw", cost8: "Electricity/year (8 h/day)", cost24: "Electricity/year (24/7)", eff: "Efficiency", tco: "Total cost, 3 years", eciSame: "Model (same for both)", eciDev: "Model per device", sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
       rankOf: (a, b) => `${a} of ${b}`,
       faster: (x) => `${x}× better`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} models to choose from. Calculated with <b>${m}</b> (${ex}): needs ≈ <b>${need} GB</b> of memory at ${c} context and ${q}, and fits on <b>${k} of ${total}</b> devices. A different use case or model changes the memory need and the ranking.`,
       deltaHead: "Difference", deltaFor: (x) => `in favour of ${x}`,
       vWin: "Winner", vTie: "Tie", vPts: (n) => `${n} ${n === 1 ? "point" : "points"}`, vAnd: "and",
       vWhy: (list) => `Wins on ${list}.`, vTieWhy: (a, la, b, lb) => `${a} leads on ${la}, ${b} leads on ${lb}.`, vAllLevel: (n) => `Level in all ${n} categories.`,
-      vRule: (n, e) => `1 point per category (${n} compared); differences under 5% count as a tie${e ? ` (${e} tied)` : ""}. Rank is not counted because it follows from performance or score.`,
-      vCat: { sys: "price", mem: "memory", bw: "bandwidth", score: "value for money", perf: "performance", fits: "model coverage", eciDev: "model intelligence", tg: "tokens/s", ttft: "wait time", code: "coding speed", img: "images" },
+      vRule: (n, e) => `1 point per category (${n} compared); differences under 5% count as a tie${e ? ` (${e} tied)` : ""}. Rank, power draw and 24/7 cost are not counted separately because they follow from performance/score or the electricity cost.`,
+      vCat: { cost8: "electricity cost", tco: "total cost", eff: "efficiency", sys: "price", mem: "memory", bw: "bandwidth", score: "value for money", perf: "performance", fits: "model coverage", eciDev: "model intelligence", tg: "tokens/s", ttft: "wait time", code: "coding speed", img: "images" },
       dHint: (m, p) => `Estimated results and usage for ${m} with a ${p} prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Score and rank compare against all devices for this model.`,
       memTitle: "Memory usage",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, with ${c} context. 100% is the usable graphics memory; on Macs and mini PCs, the share of RAM released to the GPU. Anything beyond that, PCs with a graphics card offload into regular system RAM.`,
@@ -1058,6 +1067,7 @@ Score     = Perf / system price   (best device = 100)</div>
         <li>NVIDIA GB10 (DGX Spark, Surface RTX Spark Dev Box): 273 GB/s LPDDR5X, shared memory. Usable by the GPU: DGX Spark 128 GB ≈ 119 GB (124 GB raised), DGX Spark 64 GB ≈ 56 GB (8 GB reserved for the system per NVIDIA), Surface 112 GB per Microsoft. Bandwidth efficiency η 0.72 as for Ryzen AI Max; compute 1,000 AI TOPS ÷ 8 = 125 TFLOPS, η_c 0.3. Microsoft has not published the Surface bandwidth; it is assumed to match the DGX Spark.</li>
         <li>Compute: NVIDIA = FP16 tensor throughput (Blackwell: AI TOPS ÷ 8, Ada: ÷ 4), η_c 0.5. AMD = datasheet FP16 peak, η_c 0.35 (Ryzen AI Max 0.3). Apple = GPU FP32, η_c 0.6. M5 chips with Neural Accelerators ×3.5 (Apple claims up to 3.9–4× over the previous generation).</li>
         <li>MoE models reach about half their theoretical generation speed in practice (routing, attention, scattered reads), so ε = 0.55. Dense models ε = 1.</li>
+        <li>Power use: graphics cards use the manufacturer's board power plus 150 W for the rest of the PC (laptops plus 60 W), i.e. a full-load estimate. Macs use about 50% of Apple's maximum wall power (measured: M3 Ultra 138 W at a 270 W maximum), MacBook Pros the power adapter as the upper bound. Mini PCs use measured or vendor figures: Ryzen AI Max+ 395 about 128 W, DGX Spark 140 W, Surface RTX Spark Dev Box 100 W. Electricity cost = watts × hours × 365 × price ÷ 1,000; total cost over 3 years = system price + 3 × electricity at 8 h/day.</li>
         <li>No partial offloading: a model that does not fit scores 0. Multi-GPU is not modelled.</li>
       </ul>
     </section>
@@ -1097,7 +1107,7 @@ Score     = Perf / system price   (best device = 100)</div>
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   // Sprache kommt aus der URL: / = Deutsch, /en/ = Englisch (eigene Seiten für Suchmaschinen)
   const navLang = document.documentElement.lang === "en" ? "en" : "de";
-  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, quant: "q4", view: "one", cmpMode: "same", cmpModelA: "", cmpModelB: "", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, use: "coding", pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
+  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, showPower: false, elPrice: 0.25, quant: "q4", view: "one", cmpMode: "same", cmpModelA: "", cmpModelB: "", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, use: "coding", pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
   delete state.sort;
   state.lang = navLang;
   delete state.sortKey; delete state.sortDir; delete state.profile; delete state.model;
@@ -1197,19 +1207,21 @@ Score     = Perf / system price   (best device = 100)</div>
   }
 
   // Sorting: default direction per key (1 = ascending, -1 = descending)
-  const DEFAULT_DIR = { name: 1, price: 1, fits: -1, perf: -1, score: -1, "x:tg": -1, "x:ttft": 1, "x:code": 1, "x:img": 1 };
+  const DEFAULT_DIR = { watt: 1, cost: 1, name: 1, price: 1, fits: -1, perf: -1, score: -1, "x:tg": -1, "x:ttft": 1, "x:code": 1, "x:img": 1 };
   function sortValue(r, key) {
     if (key === "name") return r.d.name;
     if (key === "price") return r.sp;
     if (key === "fits") return r.fitCount;
     if (key === "perf") return r.perf;
+    if (key === "watt") return sysWatts(r.d);
+    if (key === "cost") return yearCost(r.d, 8);
     if (key === "score") return r.sp > 0 ? r.score : null;
     if (key.startsWith("m:")) { const c = r.per[key.slice(2)]; return c.fits ? c.tg : -1; }
     if (key.startsWith("x:")) return r.px[key.slice(2)];
     return 0;
   }
   // Jede Tabelle hat ihre eigene Sortierung (rank, px, mx)
-  const effKey = (k) => !state.showPrices && (k === "price" || k === "score") ? "perf" : k;
+  const effKey = (k) => (!state.showPrices && (k === "price" || k === "score")) || (!state.showPower && (k === "watt" || k === "cost")) ? "perf" : k;
   function setSort(table, key) {
     const st = state.sorts[table];
     if (effKey(st.k) === key) st.d = key === st.k ? -st.d : 1;
@@ -1370,7 +1382,7 @@ Score     = Perf / system price   (best device = 100)</div>
       : `Gemma 4: ${ctxLabel(selectedModel.maxCtx)} tokens maximum. Text generation; image/audio add-on weights and the MTP draft model are excluded. Q4_0 uses the official QAT file size. <a href="https://ai.google.dev/gemma/docs/core" target="_blank" rel="noopener">Model overview</a>`;
     $("#ctx").value = state.ctx; $("#ctx-val").textContent = ctxLabel(CTX[state.ctx]);
     $("#showprices").checked = state.showPrices; $("#base-field").hidden = $("#reset").hidden = $("#hint-prices").hidden = !state.showPrices;
-    $("#base").checked = state.base; $("#basecost").value = state.baseCost; $("#sysram").value = state.sysRam; $("#wired").checked = state.wired;
+    $("#base").checked = state.base; $("#basecost").value = state.baseCost; $("#sysram").value = state.sysRam; $("#elprice").value = state.elPrice; $("#showpower").checked = state.showPower; $("#wired").checked = state.wired;
     $("#px-prompt").value = state.pxPrompt; $("#px-img").value = state.pxImg;
   }
 
@@ -1389,6 +1401,10 @@ Score     = Perf / system price   (best device = 100)</div>
     state.prices = { ...state.prices, ...shared.prices };
     ["pickA", "pickB"].forEach((key, i) => { const d = DEVICES.find(d => d.id === shared.devices[i]); state[key] = { v: d.v, id: d.id }; });
   }
+  // Leistungsaufnahme unter LLM-Last: GPUs = Board Power + restlicher PC (Desktop/Server +150 W, Laptop +60 W),
+  // Macs und Mini-PCs = Systemwert sysW aus devices.json
+  const sysWatts = (d) => d.sysW ?? (d.tdp == null ? null : d.tdp + (d.formFactor === "laptop" ? 60 : 150));
+  const yearCost = (d, h) => { const w = sysWatts(d); return w == null ? null : w * h * 365 * state.elPrice / 1000; };
   // Vergleich mit unterschiedlichen Modellen: Kontext wie in der Detailtabelle (Prompt + 100 Zeilen Code)
   const ctxDetail = () => Math.max(CTX[state.ctx], (PROMPTS[state.pxPrompt] || 16384) + CODE_TOKENS);
   const mainModel = () => MODELS.find((m) => m.id === state.pxModel) || MODELS.find((m) => m.id === "moe30");
@@ -1523,6 +1539,12 @@ Score     = Perf / system price   (best device = 100)</div>
         ["ttft", (r) => r.px.ttft, durTxt, -1],
         ["code", (r) => r.px.code, durTxt, -1],
         ["img", (r) => r.px.img, durTxt, -1],
+        ["grp", "energy"],
+        ["power", (r) => sysWatts(r.d), (v) => `~${fmt(v)} W`, -1, (r) => sysWatts(r.d) == null ? "—" : `~${fmt(sysWatts(r.d))} W<small class="sub">TDP ${fmt(r.d.tdp)} W</small>`],
+        ["cost8", (r) => yearCost(r.d, 8), (v) => `~${eur(v)}`, -1],
+        ["cost24", (r) => yearCost(r.d, 24), (v) => `~${eur(v)}`, -1],
+        ["eff", (r) => r.px.tg != null && sysWatts(r.d) ? r.px.tg / sysWatts(r.d) : null, (v) => `${fmt(v, v < 1 ? 2 : 1)} tok/s/W`, 1],
+        ...(state.showPrices ? [["tco", (r) => r.sp > 0 && yearCost(r.d, 8) != null ? r.sp + 3 * yearCost(r.d, 8) : null, (v) => eur(v), -1]] : []),
         ["grp", "mem"],
         ["memuse", () => null, null, 0, memTxt]
       ];
@@ -1537,7 +1559,8 @@ Score     = Perf / system price   (best device = 100)</div>
           win = (vals[0] > vals[1]) === (dir > 0) ? 0 : 1;
           const hi = Math.max(vals[0], vals[1]), lo = Math.min(vals[0], vals[1]);
           if (["ttft", "code", "img"].includes(key)) delta = `${durTxt(hi - lo)} ${state.lang === "de" ? "Unterschied" : "difference"}`;
-          else if (key === "sys") delta = eur(hi - lo);
+          else if (["sys", "cost8", "cost24", "tco"].includes(key)) delta = eur(hi - lo);
+          else if (key === "power") delta = `${fmt(hi - lo)} W`;
           else if (key.startsWith("eci")) delta = `+${fmt(hi - lo, 1)} ECI`;
           else if (lo > 0 && key !== "rank") delta = t.faster(fmt(hi / lo, hi / lo < 10 ? 1 : 0));
         }
@@ -1551,11 +1574,11 @@ Score     = Perf / system price   (best device = 100)</div>
       // Punktewertung: 1 Punkt je Kategorie, < 5 % Unterschied = Gleichstand; "läuft nicht" (null) verliert bei Tempo/Intelligenz
       let verdict = "";
       if (cols.length === 2) {
-        const NULL_LOSES = ["tg", "ttft", "code", "img", "eciDev"];
-        const PRIO = ["score", "perf", "eciDev", "tg", "mem", "bw", "sys", "fits", "ttft", "code", "img"];
+        const NULL_LOSES = ["tg", "ttft", "code", "img", "eciDev", "eff"];
+        const PRIO = ["score", "perf", "eciDev", "tg", "tco", "cost8", "eff", "mem", "bw", "sys", "fits", "ttft", "code", "img"];
         const pts = [0, 0], won = [[], []]; let compared = 0, level = 0;
         ROWS.forEach(([key, val, , dir]) => {
-          if (key === "grp" || key === "rank" || !dir) return;
+          if (key === "grp" || key === "rank" || key === "power" || key === "cost24" || !dir) return;
           const v = cols.map((r) => val(r));
           let w = -1;
           if (v[0] != null && v[1] != null) {
@@ -1581,7 +1604,7 @@ Score     = Perf / system price   (best device = 100)</div>
     // Ranking table
     $("#rank-head").innerHTML = `<th>${t.th.rank}</th>` +
       sortHead("rank", "name", t.th.name) + (state.showPrices ? sortHead("rank", "price", t.th.price, "num") : "") + sortHead("rank", "fits", t.th.fits) +
-      sortHead("rank", "perf", t.th.perf) + (state.showPrices ? sortHead("rank", "score", t.th.score) + "<th></th>" : "");
+      sortHead("rank", "perf", t.th.perf) + (state.showPower ? sortHead("rank", "watt", t.th.watt, "num") + sortHead("rank", "cost", t.th.cost, "num") : "") + (state.showPrices ? sortHead("rank", "score", t.th.score) + "<th></th>" : "");
     $("#rank tbody").innerHTML = visRank.map((r, i) => {
       const d = r.d;
       const dots = usedModels.map((m) => {
@@ -1598,6 +1621,7 @@ Score     = Perf / system price   (best device = 100)</div>
         ${state.showPrices ? `<td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d) ?? ""}" placeholder="—" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${d.est && !edited ? "est" : ""}">${edited ? t.src.own : frozenUnknown ? t.src.unknown : srcText(d)}</span></td>` : ""}
         <td><div class="dots" aria-label="${esc(t.fitsAria(r.fitCount, usedModels.length))}">${dots}</div></td>
         <td><div class="barcell"><div class="track"><div class="fill ${state.showPrices ? "p" : ""}" style="width:${r.perfN.toFixed(1)}%"></div></div><span class="mono">${fmt(r.perfN)}</span></div></td>
+        ${state.showPower ? `<td class="num mono pw" title="${esc(t.wattTip(fmt(d.tdp), fmt(sysWatts(d))))}">~${fmt(sysWatts(d))} W</td><td class="num mono pw" title="${esc(t.costTip(8, fmt(state.elPrice, 2)))}">~${eur(yearCost(d, 8))}</td>` : ""}
         ${state.showPrices ? `<td><div class="barcell"><div class="track"><div class="fill" style="width:${r.score.toFixed(1)}%"></div></div><span class="mono">${r.sp > 0 ? fmt(r.score) : "—"}</span></div></td>
         <td><a class="ext" href="https://geizhals.at/?fs=${encodeURIComponent(d.q)}" target="_blank" rel="noopener">${t.prices}</a></td>` : ""}
       </tr>`;
@@ -1695,6 +1719,8 @@ Score     = Perf / system price   (best device = 100)</div>
     else { pk.id = sel.value; const d = DEVICES.find((x) => x.id === pk.id); if (d) pk.v = d.v; }
     persist(); render();
   });
+  $("#elprice").addEventListener("change", (e) => { const v = parseFloat(String(e.target.value).replace(",", ".")); state.elPrice = v >= 0 && v <= 5 ? v : 0.25; persist(); render(); });
+  $("#showpower").addEventListener("change", (e) => { state.showPower = e.target.checked; persist(); render(); });
   $("#sysram").addEventListener("change", (e) => { state.sysRam = Math.max(0, +e.target.value || 0); persist(); render(); });
   const tipEl = $("#tip");
   document.addEventListener("mouseover", (e) => { const el = e.target.closest("[data-tip]"); if (!el) { tipEl.hidden = true; return; } tipEl.textContent = el.dataset.tip; tipEl.hidden = false; });

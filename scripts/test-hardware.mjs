@@ -13,8 +13,16 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
  const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].at(-1)[1];
  const node = { addEventListener() {} };
  const sandbox = { devices, document: { documentElement: { lang: file.includes('/en/') ? 'en' : 'de' }, querySelector: () => node, addEventListener() {} }, window: { addEventListener() {} }, localStorage: { getItem: () => null } };
- vm.runInNewContext(script.replace('  load();', '  DEVICES = globalThis.devices; globalThis.hardwareTest = { state, MODELS, QUANTS, sysPrice, evaluate, calc };'), sandbox);
- const { state, MODELS, QUANTS, sysPrice, evaluate, calc } = sandbox.hardwareTest;
+ vm.runInNewContext(script.replace('  load();', '  DEVICES = globalThis.devices; globalThis.hardwareTest = { state, MODELS, QUANTS, sysPrice, evaluate, calc, sysWatts, yearCost };'), sandbox);
+ const { state, MODELS, QUANTS, sysPrice, evaluate, calc, sysWatts, yearCost } = sandbox.hardwareTest;
+ // Leistungsaufnahme: jedes Gerät hat TDP; GPUs = TDP + 150 W (Laptop + 60 W), Macs/Mini-PCs eigener Systemwert
+ for (const d of devices) {
+   assert.ok(d.tdp >= 50 && d.tdp <= 1000, `${d.id}: tdp`);
+   if (d.kind === 'gpu') { assert.equal(d.sysW, undefined, `${d.id}: GPU ohne sysW`); assert.equal(sysWatts(d), d.tdp + (d.formFactor === 'laptop' ? 60 : 150)); }
+   else { assert.ok(d.sysW > 0 && d.sysW <= d.tdp, `${d.id}: sysW`); assert.equal(sysWatts(d), d.sysW); }
+ }
+ state.elPrice = 0.25;
+ { const g = devices.find(d => d.id === '4090'); assert.equal(sysWatts(g), 600); assert.ok(Math.abs(yearCost(g, 8) - 600 * 8 * 365 * 0.25 / 1000) < 1e-9); }
  state.base = true; state.baseCost = 1300;
  // GB10-Geräte (DGX Spark, Surface): gemeinsamer Speicher, kein PC-Basispreis, gpt-oss-120b passt nur mit 128 GB
  { const big = devices.find(d => d.id === 'dgx-spark-128'), small = devices.find(d => d.id === 'dgx-spark-64'), surf = devices.find(d => d.id === 'surface-rtx-spark');
