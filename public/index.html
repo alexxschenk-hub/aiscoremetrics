@@ -176,6 +176,11 @@ a.ext:hover { text-decoration: underline; }
 /* Gerät A/B: eigene Zeile, immer 50/50, auf dem Handy untereinander */
 .picks { flex: 1 1 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; align-items: start; }
 .pick { display: grid; gap: 6px; min-width: 0; }
+.pick-model { display: grid; gap: 6px; margin-top: 4px; }
+.pick-best { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-height: 36px; padding: 4px 10px; border: 1px dashed var(--line); border-radius: 4px; font-size: 14px; }
+.pick-best .na { color: var(--muted); }
+.detail .col-model { display: inline-block; margin-top: 4px; font: 600 12px var(--f-body); color: var(--accent); }
+.detail td.d .same { color: var(--muted); }
 .pick .pair { display: grid; grid-template-columns: minmax(118px, 34%) minmax(0, 1fr); gap: 6px; }
 .pick select, .pick .ss { width: 100%; min-width: 0; }
 @media (max-width: 640px) { .picks { grid-template-columns: minmax(0, 1fr); } }
@@ -341,6 +346,10 @@ footer { font-size: 12.5px; color: var(--muted); }
       <div class="field" id="pick-prompt-f" hidden>
         <label class="lab" for="pick-prompt" data-i="pxPrompt"></label>
         <select id="pick-prompt"></select>
+      </div>
+      <div class="field" id="cmp-mode-f" hidden>
+        <span class="lab" id="lab-cmpm" data-i="cmpModeLab"></span>
+        <div class="seg" id="cmp-mode" role="group" aria-labelledby="lab-cmpm"></div>
       </div>
       <div class="picks" id="picks" hidden>
         <div class="pick" id="pick-a" hidden></div>
@@ -850,11 +859,14 @@ Score = Perf / system price   (best device = 100)</div>
       view: "Ansicht", views: { all: "Alle Geräte", one: "Ein Gerät", cmp: "Vergleich" },
       pickDev: "Gerät", pickA: "Gerät A", pickB: "Gerät B", pickVendor: "Alle Hersteller", pickModel: "Gerät wählen …", ssSearch: "Suchen …", ssClear: "Suche leeren", ssNone: "Keine Treffer",
       pickHint: "Wähle zuerst den Hersteller, dann das Modell.",
+      cmpModeLab: "Modelle im Vergleich", cmpModes: { same: "Gleiches Modell", best: "Bestes je Gerät", manual: "Selbst wählen" },
+      cmpModelLab: "Modell", cmpBestLab: "Bestes passendes Modell", cmpModelOf: (m) => `Modell: ${m}`, eciSame: "gleiches Modell, kein Punkt",
+      dHintPer: (p) => `Praxiswerte und Belegung je Gerät mit dem darüber genannten Modell, ${p} Prompt. Platz, Leistung und Score beziehen sich auf das Modell der Einstellungen oben.`,
       eciLab: "Modell-Intelligenz", eciSrc: "Quelle: Epoch AI", eciNone: "kein ECI-Wert bei Epoch AI", eciNoFit: "kein Modell passt", eciEstShort: "geschätzt",
       eciTip: (top, m) => `Der Epoch Capabilities Index (ECI) misst die allgemeine Leistungsfähigkeit von KI-Modellen auf einer Skala. Höher = intelligenter. Das beste Modell (${m}) hat ${top}.`,
       eciEst: (q, raw) => `bei ${q} geschätzt (Quantisierungsverlust), Epoch-Wert ${raw}`,
       dGroups: { intel: "Modell-Intelligenz", hw: "Hardware", basics: "Hardware & Preis", score: "Bewertung im Profil", px: "Praxiswerte", mem: "Speicher" },
-      dRows: { eciSel: "Gewähltes Modell", eciBest: "Bestes passendes Modell", sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
+      dRows: { eciSame: "Modell (beide gleich)", eciDev: "Modell je Gerät", sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", memuse: "Belegung" },
       rankOf: (a, b) => `${a} von ${b}`,
       faster: (x) => `${x}× besser`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} Modelle zur Auswahl. Gerechnet wird mit <b>${m}</b> (${ex}): braucht ≈ <b>${need} GB</b> Speicher bei ${c} Kontext und ${q} und passt auf <b>${k} von ${total}</b> Geräten. Ein anderer Einsatzzweck oder ein anderes Modell ändert Speicherbedarf und Ranking.`,
@@ -862,7 +874,7 @@ Score = Perf / system price   (best device = 100)</div>
       vWin: "Gewinner", vTie: "Gleichstand", vPts: (n) => `${n} ${n === 1 ? "Punkt" : "Punkte"}`, vAnd: "und",
       vWhy: (list) => `Gewinnt bei ${list}.`, vTieWhy: (a, la, b, lb) => `${a} vorne bei ${la}, ${b} vorne bei ${lb}.`, vAllLevel: (n) => `In allen ${n} Kategorien gleichauf.`,
       vRule: (n, e) => `1 Punkt je Kategorie (${n} verglichen), Unterschied unter 5 % zählt als Gleichstand${e ? ` (${e}× gleichauf)` : ""}. Platz wird nicht gezählt, weil er aus Leistung bzw. Score folgt.`,
-      vCat: { sys: "Preis", mem: "Speicher", bw: "Bandbreite", score: "Preis-Leistung", perf: "Leistung", fits: "Modellauswahl", eciSel: "gewähltem Modell", eciBest: "Modell-Intelligenz", tg: "Tokens/s", ttft: "Wartezeit", code: "Code-Tempo", img: "Bildern" },
+      vCat: { sys: "Preis", mem: "Speicher", bw: "Bandbreite", score: "Preis-Leistung", perf: "Leistung", fits: "Modellauswahl", eciDev: "Modell-Intelligenz", tg: "Tokens/s", ttft: "Wartezeit", code: "Code-Tempo", img: "Bildern" },
       dHint: (m, p) => `Geschätzte Praxiswerte und Belegung für ${m} mit ${p} Prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Platz und Score beziehen sich auf alle Geräte für dieses Modell.`,
       memTitle: "Speicherauslastung",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, mit ${c} Kontext. 100 % ist der nutzbare Grafikspeicher, bei Macs und Mini-PCs der für die GPU freigegebene Teil des Arbeitsspeichers. Was darüber hinausgeht, lagern PCs mit Grafikkarte in den normalen Arbeitsspeicher aus.`,
@@ -980,11 +992,14 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       view: "View", views: { all: "All devices", one: "One device", cmp: "Compare" },
       pickDev: "Device", pickA: "Device A", pickB: "Device B", pickVendor: "All vendors", pickModel: "Choose device …", ssSearch: "Search …", ssClear: "Clear search", ssNone: "No matches",
       pickHint: "Choose the vendor first, then the model.",
+      cmpModeLab: "Models in comparison", cmpModes: { same: "Same model", best: "Best per device", manual: "Choose" },
+      cmpModelLab: "Model", cmpBestLab: "Best model that fits", cmpModelOf: (m) => `Model: ${m}`, eciSame: "same model, no point",
+      dHintPer: (p) => `Real-world numbers and usage per device with the model named above, ${p} prompt. Rank, performance and score refer to the model chosen in the settings above.`,
       eciLab: "Model intelligence", eciSrc: "Source: Epoch AI", eciNone: "no ECI score from Epoch AI", eciNoFit: "no model fits", eciEstShort: "estimated",
       eciTip: (top, m) => `The Epoch Capabilities Index (ECI) measures the general capability of AI models on a single scale. Higher = more capable. The best model (${m}) scores ${top}.`,
       eciEst: (q, raw) => `estimated for ${q} (quantization loss), Epoch score ${raw}`,
       dGroups: { intel: "Model intelligence", hw: "Hardware", basics: "Hardware & price", score: "Rating in this use case", px: "Real-world numbers", mem: "Memory" },
-      dRows: { eciSel: "Selected model", eciBest: "Best model that fits", sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
+      dRows: { eciSame: "Model (same for both)", eciDev: "Model per device", sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", memuse: "Usage" },
       rankOf: (a, b) => `${a} of ${b}`,
       faster: (x) => `${x}× better`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} models to choose from. Calculated with <b>${m}</b> (${ex}): needs ≈ <b>${need} GB</b> of memory at ${c} context and ${q}, and fits on <b>${k} of ${total}</b> devices. A different use case or model changes the memory need and the ranking.`,
@@ -992,7 +1007,7 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       vWin: "Winner", vTie: "Tie", vPts: (n) => `${n} ${n === 1 ? "point" : "points"}`, vAnd: "and",
       vWhy: (list) => `Wins on ${list}.`, vTieWhy: (a, la, b, lb) => `${a} leads on ${la}, ${b} leads on ${lb}.`, vAllLevel: (n) => `Level in all ${n} categories.`,
       vRule: (n, e) => `1 point per category (${n} compared); differences under 5% count as a tie${e ? ` (${e} tied)` : ""}. Rank is not counted because it follows from performance or score.`,
-      vCat: { sys: "price", mem: "memory", bw: "bandwidth", score: "value for money", perf: "performance", fits: "model coverage", eciSel: "selected model", eciBest: "model intelligence", tg: "tokens/s", ttft: "wait time", code: "coding speed", img: "images" },
+      vCat: { sys: "price", mem: "memory", bw: "bandwidth", score: "value for money", perf: "performance", fits: "model coverage", eciDev: "model intelligence", tg: "tokens/s", ttft: "wait time", code: "coding speed", img: "images" },
       dHint: (m, p) => `Estimated results and usage for ${m} with a ${p} prompt, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}. Score and rank compare against all devices for this model.`,
       memTitle: "Memory usage",
       memHint: (m, c) => `${m}, ${(QUANTS.find((q) => q.id === state.quant) || QUANTS[2]).name}, with ${c} context. 100% is the usable graphics memory; on Macs and mini PCs, the share of RAM released to the GPU. Anything beyond that, PCs with a graphics card offload into regular system RAM.`,
@@ -1082,7 +1097,7 @@ Score     = Perf / system price   (best device = 100)</div>
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   // Sprache kommt aus der URL: / = Deutsch, /en/ = Englisch (eigene Seiten für Suchmaschinen)
   const navLang = document.documentElement.lang === "en" ? "en" : "de";
-  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, quant: "q4", view: "one", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, use: "coding", pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
+  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, quant: "q4", view: "one", cmpMode: "same", cmpModelA: "", cmpModelB: "", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, use: "coding", pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
   delete state.sort;
   state.lang = navLang;
   delete state.sortKey; delete state.sortDir; delete state.profile; delete state.model;
@@ -1318,6 +1333,17 @@ Score     = Perf / system price   (best device = 100)</div>
     $("#vendor").innerHTML = [["all", L().all, ""], [N, "NVIDIA", ICONS.gpu], [AM, "AMD", ICONS.gpu], [IN, "Intel", ICONS.gpu], [A, "Apple", ICONS.mac], ["ws", L().ws, ICONS.gpu]].map(([id, n, ic]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${ic.replace("<svg ", '<svg class="vi" ')}${n}</button>`).join("");
     $("#view").innerHTML = ["all", "one", "cmp"].map((id) => `<button type="button" data-id="${id}" aria-pressed="${id === state.view}">${L().views[id]}</button>`).join("");
     $("#vendor-field").hidden = state.view !== "all";
+    // Modell je Gerät im Vergleich: Auswahlliste (selbst wählen) oder Hinweis (bestes je Gerät)
+    const pickModel = (slot) => {
+      if (state.view !== "cmp" || state.cmpMode === "same") return "";
+      const d = DEVICES.find((x) => x.id === state[slot].id), key = slot === "pickA" ? "cmpModelA" : "cmpModelB";
+      if (state.cmpMode === "manual") {
+        const cur = state[key] || state.pxModel;
+        return `<div class="pick-model"><span class="lab">${L().cmpModelLab}</span><select data-slot="${slot}" data-part="model" data-ss="model" aria-label="${L().cmpModelLab}">${shownModels().map((m) => `<option value="${m.id}" data-k="${esc(modelOrg(m))}" ${m.id === cur ? "selected" : ""}>${esc(mName(m))} · ${esc(mEx(m))} · ${fmt(qm(m).gb, 0)} GB</option>`).join("")}</select></div>`;
+      }
+      const b = d && bestModelFor(d);
+      return `<div class="pick-model"><span class="lab">${L().cmpBestLab}</span><div class="pick-best">${d ? (b ? `<b>${esc(mName(b.m))}</b>${eciBar(b.m, true)}` : `<span class="na">${L().eciNoFit}</span>`) : "–"}</div></div>`;
+    };
     const picker = (slot, label) => {
       const pk = state[slot];
       const byName = (a, b) => a.name.localeCompare(b.name, L().locale, { numeric: true });
@@ -1325,8 +1351,10 @@ Score     = Perf / system price   (best device = 100)</div>
       return `<span class="lab">${label}</span><div class="pair">
         <select data-slot="${slot}" data-part="v" aria-label="${label}: ${L().vendor}"><option value="">${L().pickVendor}</option>${[N, AM, IN, A].map((v) => `<option value="${v}" ${v === pk.v ? "selected" : ""}>${VENDOR[v]}</option>`).join("")}</select>
         <select data-slot="${slot}" data-part="id" data-ss="device" data-vendor="${pk.v}" aria-label="${label}: ${L().pickDev}"><option value="">${L().pickModel}</option>${[N, AM, IN, A].map((v) => `<optgroup label="${VENDOR[v]}">${DEVICES.filter((d) => d.v === v).sort(byName).map(devOpt).join("")}</optgroup>`).join("")}</select>
-      </div>`;
+      </div>${pickModel(slot)}`;
     };
+    $("#cmp-mode-f").hidden = state.view !== "cmp";
+    $("#cmp-mode").innerHTML = ["same", "best", "manual"].map((id) => `<button type="button" data-id="${id}" aria-pressed="${id === state.cmpMode}">${L().cmpModes[id]}</button>`).join("");
     $("#picks").hidden = $("#pick-a").hidden = state.view === "all"; $("#pick-b").hidden = state.view !== "cmp";
     $("#pick-prompt-f").hidden = state.view === "all";
     $("#pick-prompt").value = state.pxPrompt; $("#quant").value = state.quant;
@@ -1356,10 +1384,26 @@ Score     = Perf / system price   (best device = 100)</div>
     if (!hash.startsWith("#compare=")) return;
     const shared = AIScenario.decode(hash, { devices: DEVICES, models: MODELS, quants: QUANTS, uses: USES, images: IMG, contexts: CTX, prompts: PROMPTS });
     if (!shared) { $("#share-tools").hidden = false; $("#share-compare").hidden = true; $("#share-status").textContent = L().shareInvalid; return; }
-    state.view = "cmp"; state.use = shared.use; state.pxImg = shared.image; state.pxModel = shared.model; state.quant = shared.quant; state.ctx = shared.ctx; state.pxPrompt = shared.prompt;
+    state.view = "cmp"; state.cmpMode = "same"; state.use = shared.use; state.pxImg = shared.image; state.pxModel = shared.model; state.quant = shared.quant; state.ctx = shared.ctx; state.pxPrompt = shared.prompt;
     state.sysRam = shared.ram; state.baseCost = shared.baseCost; state.base = shared.base; state.wired = shared.wired; state.showPrices = shared.showPrices;
     state.prices = { ...state.prices, ...shared.prices };
     ["pickA", "pickB"].forEach((key, i) => { const d = DEVICES.find(d => d.id === shared.devices[i]); state[key] = { v: d.v, id: d.id }; });
+  }
+  // Vergleich mit unterschiedlichen Modellen: Kontext wie in der Detailtabelle (Prompt + 100 Zeilen Code)
+  const ctxDetail = () => Math.max(CTX[state.ctx], (PROMPTS[state.pxPrompt] || 16384) + CODE_TOKENS);
+  const mainModel = () => MODELS.find((m) => m.id === state.pxModel) || MODELS.find((m) => m.id === "moe30");
+  // Intelligentestes Modell der aktuellen Auswahl (Einsatzzweck), das auf das Gerät passt
+  function bestModelFor(d) {
+    const c = ctxDetail();
+    return shownModels().map((m) => ({ m, e: eciOf(m) })).filter((x) => x.e && calc(d, x.m, c).fits).sort((a, b) => b.e.adj - a.e.adj)[0] || null;
+  }
+  const perDevice = () => state.view === "cmp" && state.cmpMode !== "same";
+  function modelFor(d) {
+    if (!perDevice() || !d) return mainModel();
+    const slot = d.id === state.pickA.id ? "A" : d.id === state.pickB.id ? "B" : null;
+    if (!slot) return mainModel();
+    if (state.cmpMode === "best") return bestModelFor(d)?.m || mainModel();
+    return MODELS.find((m) => m.id === state["cmpModel" + slot]) || mainModel();
   }
   // Intelligenz-Balken 0 … bestes Modell; Farbverlauf rot → gelb → grün über die volle Skala
   function eciBar(m, small) {
@@ -1380,7 +1424,7 @@ Score     = Perf / system price   (best device = 100)</div>
     const pxP = PROMPTS[state.pxPrompt] || 16384;
     const pxI = IMG.find((x) => x.id === state.pxImg) || IMG[0];
     rows.forEach((r) => {
-      const c = calc(r.d, pxM, Math.max(ctx, pxP + CODE_TOKENS));
+      const c = calc(r.d, modelFor(r.d), Math.max(ctx, pxP + CODE_TOKENS));
       const imgIdx = r.d.tf * r.d.etaC * r.d.pf * (IMG_VENDOR[r.d.v] || 1);
       const imgFits = usable(r.d) >= pxI.gb;
       r.px = c.fits ? { tg: c.tg, ttft: pxP / c.pp, code: pxP / c.pp + CODE_TOKENS / c.tg } : { tg: null, ttft: null, code: null };
@@ -1453,7 +1497,8 @@ Score     = Perf / system price   (best device = 100)</div>
       const byScore = globalRank;
       const durTxt = (sec) => sec == null ? "—" : sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
       const g1 = (n) => fmt(n, n < 10 ? 1 : 0);
-      const memTxt = (r) => { const mi = memInfo(r.d, pxM, Math.max(ctx, pxP + CODE_TOKENS));
+      const cmpPer = perDevice() && vis.length === 2;
+      const memTxt = (r) => { const mi = memInfo(r.d, modelFor(r.d), Math.max(ctx, pxP + CODE_TOKENS));
         if (mi.state === "ok") return `${g1(mi.need)} / ${g1(mi.cap)} GB`;
         if (mi.state === "spill") return `+${g1(mi.spill)} GB PC-RAM`;
         if (mi.state === "wired") return `${g1(mi.need)} / ${g1(mi.cap)} GB*`;
@@ -1470,8 +1515,9 @@ Score     = Perf / system price   (best device = 100)</div>
         ["perf", (r) => r.perfN, (v) => fmt(v), 1],
         ["fits", (r) => r.fitCount, (v) => `${v} / ${usedModels.length}`, 1],
         ["grp", "intel"],
-        ["eciSel", (r) => r.px.tg != null ? eciOf(pxM)?.adj ?? null : null, null, 1, (r) => r.px.tg != null ? eciBar(pxM, true) : `<span class="na">${mName(pxM)}: ${t.fitsNo}</span>`],
-        ["eciBest", (r) => bestFit(r.d)?.e.adj ?? null, null, 1, (r) => { const b = bestFit(r.d); return b ? `<span class="eci-name">${esc(mName(b.m))}</span>${eciBar(b.m, true)}` : `<span class="na">${t.eciNoFit}</span>`; }],
+        ...(cmpPer
+          ? [["eciDev", (r) => r.px.tg != null ? eciOf(modelFor(r.d))?.adj ?? null : null, null, 1, (r) => { const m = modelFor(r.d); return `<span class="eci-name">${esc(mName(m))}</span>` + (r.px.tg != null ? eciBar(m, true) : `<span class="na">${t.fitsNo}</span>`); }]]
+          : [["eciSame", (r) => r.px.tg != null ? eciOf(pxM)?.adj ?? null : null, null, 0, (r) => `<span class="eci-name">${esc(mName(pxM))}</span>` + (r.px.tg != null ? eciBar(pxM, true) : `<span class="na">${t.fitsNo}</span>`)]]),
         ["grp", "px"],
         ["tg", (r) => r.px.tg, (v) => `${fmtTok(v)} tok/s`, 1],
         ["ttft", (r) => r.px.ttft, durTxt, -1],
@@ -1481,10 +1527,7 @@ Score     = Perf / system price   (best device = 100)</div>
         ["memuse", () => null, null, 0, memTxt]
       ];
       const cols = vis;
-      // Intelligentestes Modell der aktuellen Auswahl, das bei diesem Kontext und dieser Quantisierung passt
-      const ctxD = Math.max(ctx, pxP + CODE_TOKENS);
-      const bestFit = (d) => usedModels.map((m) => ({ m, e: eciOf(m) })).filter((x) => x.e && calc(d, x.m, ctxD).fits).sort((a, b) => b.e.adj - a.e.adj)[0] || null;
-      const head = `<tr><th></th>${cols.map((r) => `<th><span class="devrow"><span class="ico ${r.d.v}">${ICONS[r.d.kind]}</span><span>${esc(devLabel(r.d))}<br><span class="tag" style="margin:0">${VENDOR[r.d.v]} · ${devKind(r.d)}</span><br><small class="evidence-badge" title="${esc(t.unmeasured)}">${t.estimate} · ${backendOf(r.d)}<br>${t.assumed}</small></span></span></th>`).join("")}${cols.length === 2 ? `<th class="dhead">${t.deltaHead}</th>` : ""}</tr>`;
+      const head = `<tr><th></th>${cols.map((r) => `<th><span class="devrow"><span class="ico ${r.d.v}">${ICONS[r.d.kind]}</span><span>${esc(devLabel(r.d))}<br><span class="tag" style="margin:0">${VENDOR[r.d.v]} · ${devKind(r.d)}</span><br><small class="evidence-badge" title="${esc(t.unmeasured)}">${t.estimate} · ${backendOf(r.d)}<br>${t.assumed}</small>${cmpPer ? `<br><small class="col-model">${esc(t.cmpModelOf(mName(modelFor(r.d))))}</small>` : ""}</span></span></th>`).join("")}${cols.length === 2 ? `<th class="dhead">${t.deltaHead}</th>` : ""}</tr>`;
       const body = ROWS.map((row) => {
         if (row[0] === "grp") return `<tr class="grp"><td colspan="${cols.length + (cols.length === 2 ? 2 : 1)}">${t.dGroups[row[1]]}</td></tr>`;
         const [key, val, show, dir, raw] = row;
@@ -1502,14 +1545,14 @@ Score     = Perf / system price   (best device = 100)</div>
           const txt = raw ? raw(r) : vals[i] == null ? "—" : show(vals[i]);
           return `<td class="v ${i === win ? "win" : ""}">${txt}</td>`;
         }).join("");
-        const deltaCell = delta ? `${delta}<small>${esc(t.deltaFor(devLabel(cols[win].d)))}</small>` : "";
+        const deltaCell = key === "eciSame" && cols.length === 2 ? `<span class="same">${t.eciSame}</span>` : delta ? `${delta}<small>${esc(t.deltaFor(devLabel(cols[win].d)))}</small>` : "";
         return `<tr><td class="k">${t.dRows[key]}</td>${cells}${cols.length === 2 ? `<td class="d">${deltaCell}</td>` : ""}</tr>`;
       }).join("");
       // Punktewertung: 1 Punkt je Kategorie, < 5 % Unterschied = Gleichstand; "läuft nicht" (null) verliert bei Tempo/Intelligenz
       let verdict = "";
       if (cols.length === 2) {
-        const NULL_LOSES = ["tg", "ttft", "code", "img", "eciSel", "eciBest"];
-        const PRIO = ["score", "perf", "tg", "eciBest", "mem", "bw", "sys", "fits", "ttft", "code", "img", "eciSel"];
+        const NULL_LOSES = ["tg", "ttft", "code", "img", "eciDev"];
+        const PRIO = ["score", "perf", "eciDev", "tg", "mem", "bw", "sys", "fits", "ttft", "code", "img"];
         const pts = [0, 0], won = [[], []]; let compared = 0, level = 0;
         ROWS.forEach(([key, val, , dir]) => {
           if (key === "grp" || key === "rank" || !dir) return;
@@ -1517,7 +1560,8 @@ Score     = Perf / system price   (best device = 100)</div>
           let w = -1;
           if (v[0] != null && v[1] != null) {
             const hi = Math.max(Math.abs(v[0]), Math.abs(v[1]));
-            if (hi > 0 && Math.abs(v[0] - v[1]) / hi >= 0.05) w = (v[0] > v[1]) === (dir > 0) ? 0 : 1;
+            const clear = key === "eciDev" ? Math.abs(v[0] - v[1]) >= 1 : hi > 0 && Math.abs(v[0] - v[1]) / hi >= 0.05;
+            if (clear) w = (v[0] > v[1]) === (dir > 0) ? 0 : 1;
             else level++;
           } else if (NULL_LOSES.includes(key) && (v[0] != null) !== (v[1] != null)) w = v[0] != null ? 0 : 1;
           else return;
@@ -1531,7 +1575,7 @@ Score     = Perf / system price   (best device = 100)</div>
         const why = tie && !pts[0] ? t.vAllLevel(compared) : tie ? t.vTieWhy(esc(devLabel(cols[0].d)), list(won[0]), esc(devLabel(cols[1].d)), list(won[1])) : t.vWhy(list(won[wi]));
         verdict = `<div class="verdict${tie ? " tie" : ""}" role="status">${side(0)}<div class="v-mid">${tie ? `<span class="v-badge">${t.vTie}</span>` : ""}<span class="v-score">${pts[0]} : ${pts[1]}</span></div>${side(1)}<p class="v-why">${why}<small>${esc(t.vRule(compared, level))}</small></p></div>`;
       }
-      $("#detail").innerHTML = `<table><thead>${head}</thead><tbody>${body}</tbody></table>${verdict}<p class="hint" style="padding:0 14px 12px">${esc(t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>`;
+      $("#detail").innerHTML = `<table><thead>${head}</thead><tbody>${body}</tbody></table>${verdict}<p class="hint" style="padding:0 14px 12px">${cmpPer ? esc(t.dHintPer(ctxLabel(pxP))) : esc(t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>`;
     }
 
     // Ranking table
@@ -1574,13 +1618,14 @@ Score     = Perf / system price   (best device = 100)</div>
       const SCALE = 1.5;   // Achse bis 150 % des nutzbaren Speichers
       const g1 = (n) => fmt(n, n < 10 ? 1 : 0);
       const pos = (frac) => `${(Math.min(frac, SCALE) / SCALE * 100).toFixed(2)}%`;
-      $("#mem-hint").textContent = t.memHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP) + " + 1,1k");
+      const memModels = [...new Set(visRank.map((r) => modelFor(r.d)))];
+      $("#mem-hint").textContent = t.memHint(memModels.length > 1 ? memModels.map(mName).join(" / ") : `${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP) + " + 1,1k");
       $("#memchart").setAttribute("aria-label", t.memAria(mName(pxM)));
       $("#mem-legend").innerHTML = [["w", "var(--m-weights)"], ["kv", "var(--m-kv)"], ["ov", "var(--m-ov)"], ["spill", ""], ["nofit", ""]].map(([k, c]) =>
         `<span><i class="${c ? "" : "seg " + k}" style="${c ? "background:" + c : ""}"></i>${t.memLeg[k]}</span>`).join("");
       const head = `<div class="memhead"><span></span><div class="memaxis">${[0, 0.5, 1, 1.5].map((f) => `<span class="${f === 1 ? "lim" : ""}" style="left:${pos(f)}">${f === 1 ? t.memLimit : Math.round(f * 100) + " %"}</span>`).join("")}</div><span></span></div>`;
       const rowsHtml = visRank.map((r) => {
-        const d = r.d, mi = memInfo(d, pxM, ctxM), cap = mi.cap;
+        const d = r.d, mi = memInfo(d, modelFor(d), ctxM), cap = mi.cap;
         // Segmente: Overhead, KV-Cache, Gewichte – an der Kapazitätsgrenze aufgeteilt
         const parts = [["ov", mi.ov], ["kv", mi.kv], ["w", mi.w]];
         let acc = 0; const segs = [];
@@ -1637,10 +1682,15 @@ Score     = Perf / system price   (best device = 100)</div>
   $("#showprices").addEventListener("change", (e) => { state.showPrices = e.target.checked; persist(); render(); });
   $("#quant").addEventListener("change", (e) => { state.quant = e.target.value; persist(); render(); });
   $("#pick-prompt").addEventListener("change", (e) => { state.pxPrompt = +e.target.value; persist(); render(); });
+  $("#cmp-mode").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return;
+    state.cmpMode = b.dataset.id;
+    if (state.cmpMode === "manual") { if (!state.cmpModelA) state.cmpModelA = state.pxModel; if (!state.cmpModelB) state.cmpModelB = state.pxModel; }
+    persist(); render(); });
   $("#view").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.view = b.dataset.id; persist(); render(); });
   document.querySelector(".pickrow").addEventListener("change", (e) => {
     const sel = e.target.closest("select[data-slot]"); if (!sel) return;
     const pk = state[sel.dataset.slot];
+    if (sel.dataset.part === "model") { state[sel.dataset.slot === "pickA" ? "cmpModelA" : "cmpModelB"] = sel.value; persist(); render(); return; }
     if (sel.dataset.part === "v") { pk.v = sel.value; const cur = DEVICES.find((d) => d.id === pk.id); if (pk.v && cur && cur.v !== pk.v) pk.id = ""; }
     else { pk.id = sel.value; const d = DEVICES.find((x) => x.id === pk.id); if (d) pk.v = d.v; }
     persist(); render();
