@@ -21,7 +21,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aiscoremetrics.com/en/">
 <meta property="og:site_name" content="AI Score Metrics">
-<meta property="og:title" content="AI Score Metrics – Which GPU or Mac for local LLMs?">
+<meta property="og:title" content="GPU comparison on AI Score Metrics – which hardware for local LLMs?">
 <meta property="og:description" content="124 devices, 29 LLMs: tokens/s, VRAM needs, memory usage and value for money for local AI, side by side.">
 <meta property="og:image" content="https://aiscoremetrics.com/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -30,7 +30,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:locale:alternate" content="de_DE">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AI Score Metrics – Which GPU or Mac for local LLMs?">
+<meta name="twitter:title" content="GPU comparison on AI Score Metrics – which hardware for local LLMs?">
 <meta name="twitter:description" content="124 devices, 29 LLMs: tokens/s, VRAM needs, memory usage and value for money for local AI, side by side.">
 <meta name="twitter:image" content="https://aiscoremetrics.com/og-image.png">
 <script type="application/ld+json">
@@ -247,10 +247,29 @@ a.ext:hover { text-decoration: underline; }
 .verdict .v-score { font: 700 clamp(30px, 4vw, 44px)/1 var(--f-mono); color: var(--ink); white-space: nowrap; }
 .verdict .v-why { grid-column: 1 / -1; margin: 0; padding: 12px 16px; font-size: 14px; color: var(--ink); background: var(--surface); border-top: 1px solid var(--line); }
 .verdict .v-why small { display: block; margin-top: 4px; font-size: 12px; color: var(--muted); }
+.verdict .v-basis { font: 600 12px var(--f-display); letter-spacing: .04em; color: var(--muted); max-width: 22ch; }
+.verdict .v-calc { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 12px; padding: 12px 16px; font-size: 14px; color: var(--ink); border-top: 1px dashed var(--muted); background: color-mix(in srgb, var(--bg) 70%, var(--surface)); }
+.verdict .v-calc-lab { font: 600 12px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.verdict .v-calc-score { font-family: var(--f-mono); font-weight: 600; }
+.verdict .v-calc-lead { color: var(--muted); }
+.v-info { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--muted); font: 700 10px/1 var(--f-body); text-transform: none; cursor: help; }
+.approx { display: inline-block; min-width: 1.1em; margin-right: 4px; color: var(--warn); font-weight: 700; }
+.detail tr.calc td.v { color: color-mix(in srgb, var(--ink) 82%, var(--muted)); }
+/* Teilen */
+.v-share { position: relative; display: grid; justify-items: center; gap: 4px; margin-top: 6px; }
+.share-btn { display: inline-flex; align-items: center; gap: 8px; font: 700 15px var(--f-display); letter-spacing: .05em; text-transform: uppercase; padding: 10px 20px; border-radius: 99px; border: 0; background: var(--accent); color: var(--surface); cursor: pointer; box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 35%, transparent); }
+.share-btn:hover { filter: brightness(1.08); }
+.share-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.verdict.tie .share-btn { background: var(--warn); box-shadow: 0 2px 8px color-mix(in srgb, var(--warn) 35%, transparent); }
+.share-menu { position: fixed; z-index: 30; min-width: 210px; display: grid; padding: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, .18); text-align: left; }
+.share-menu[hidden] { display: none; }
+.share-menu a, .share-menu button { display: block; padding: 8px 10px; border: 0; border-radius: 5px; background: transparent; color: var(--ink); font: 400 14px var(--f-body); text-decoration: none; text-align: left; cursor: pointer; }
+.share-menu a:hover, .share-menu button:hover, .share-menu a:focus-visible, .share-menu button:focus-visible { background: var(--accent-soft); outline: none; }
+.share-status { font-size: 12px; color: var(--muted); min-height: 1em; word-break: break-all; }
 .verdict.tie { border-color: var(--warn); }
 .verdict.tie .v-side, .verdict.tie .v-mid { background: color-mix(in srgb, var(--warn) 16%, var(--surface)); color: var(--ink); }
 .verdict.tie .v-badge { background: var(--warn); color: var(--surface); }
-@media (max-width: 640px) { .verdict { grid-template-columns: minmax(0, 1fr); } .verdict .v-mid { padding: 10px; } }
+@media (max-width: 640px) { .verdict { grid-template-columns: minmax(0, 1fr); } .verdict .v-mid { padding: 10px; } .v-share, .share-btn { width: 100%; } .share-btn { justify-content: center; } }
 .detail tr.grp td { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--accent); padding-top: 14px; border-bottom: 1px solid var(--line); }
 .memhead, .memrow { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr) minmax(190px, 250px); gap: 12px; align-items: center; }
 .memchart { display: grid; gap: 7px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; }
@@ -877,6 +896,14 @@ Score = Perf / system price   (best device = 100)</div>
       faster: (x) => `${x}× besser`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} Modelle zur Auswahl. Gerechnet wird mit <b>${m}</b> (${ex}): braucht ≈ <b>${need} GB</b> Speicher bei ${c} Kontext und ${q} und passt auf <b>${k} von ${total}</b> Geräten. Ein anderer Einsatzzweck oder ein anderes Modell ändert Speicherbedarf und Ranking.`,
       deltaHead: "Unterschied", deltaFor: (x) => `zugunsten ${x}`,
+      vFactsBasis: (a, b) => `Gewinner basierend auf Hardware-Fakten (${a}:${b})`, vFactsTie: (a) => `Gleichstand bei den Hardware-Fakten (${a}:${a})`,
+      vFactsRule: "Hardware-Fakten: Preis (bei eingeblendeten Preisen), Speicher, Bandbreite und ECI bei unterschiedlichen Modellen. 1 Punkt je Kategorie; unter 5 % Unterschied (ECI: unter 1 Punkt) zählt als Gleichstand.",
+      vCalcLab: "Berechnete Werte (geschätzt)", vCalcTip: "Diese Werte basieren auf Schätzungen und Formeln, nicht auf echten Messungen: Tokens/s, Wartezeit, Code-Tempo, Bildzeit, Leistung, Score, passende Modelle, Effizienz, Stromkosten und Gesamtkosten.",
+      vCalcFor: (a, b, n) => `${a} : ${b} zugunsten ${n}`, vCalcTie: (a) => `${a} : ${a} – ausgeglichen`, vCalcLead: (l) => `Vorne bei ${l}.`, vCalcNone: "Keine berechneten Werte vergleichbar.",
+      calcMark: "berechnet (geschätzt)",
+      share: "Teilen", shareVia: "Teilen über …", shareX: "𝕏 / Twitter", shareLinkedIn: "LinkedIn", shareReddit: "Reddit", shareCopy: "Link kopieren", shareCopied: "Link kopiert",
+      shareText: (a, b, pa, pb, w) => w ? `${a} vs ${b}: ${pa}:${pb} für ${w}! 🏆 Verglichen auf aiscoremetrics.com #AIScore #GPU #LLM` : `${a} vs ${b}: Gleichstand ${pa}:${pb}! Verglichen auf aiscoremetrics.com #AIScore #GPU #LLM`,
+      shareTitle: (a, b, pa, pb) => `${a} vs ${b}: ${pa}:${pb} – Hardware-Vergleich für lokale LLMs`,
       vWin: "Gewinner", vTie: "Gleichstand", vPts: (n) => `${n} ${n === 1 ? "Punkt" : "Punkte"}`, vAnd: "und",
       vWhy: (list) => `Gewinnt bei ${list}.`, vTieWhy: (a, la, b, lb) => `${a} vorne bei ${la}, ${b} vorne bei ${lb}.`, vAllLevel: (n) => `In allen ${n} Kategorien gleichauf.`,
       vRule: (n, e) => `1 Punkt je Kategorie (${n} verglichen), Unterschied unter 5 % zählt als Gleichstand${e ? ` (${e}× gleichauf)` : ""}. Platz, Leistungsaufnahme und 24/7-Kosten zählen nicht extra, weil sie aus Leistung/Score bzw. den Stromkosten folgen.`,
@@ -1013,6 +1040,14 @@ Score     = Leistung / Systempreis   (bestes Gerät = 100)</div>
       faster: (x) => `${x}× better`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} models to choose from. Calculated with <b>${m}</b> (${ex}): needs ≈ <b>${need} GB</b> of memory at ${c} context and ${q}, and fits on <b>${k} of ${total}</b> devices. A different use case or model changes the memory need and the ranking.`,
       deltaHead: "Difference", deltaFor: (x) => `in favour of ${x}`,
+      vFactsBasis: (a, b) => `Winner based on hardware facts (${a}:${b})`, vFactsTie: (a) => `Tie on hardware facts (${a}:${a})`,
+      vFactsRule: "Hardware facts: price (when prices are shown), memory, bandwidth and ECI when the models differ. 1 point per category; differences under 5% (ECI: under 1 point) count as a tie.",
+      vCalcLab: "Calculated values (estimated)", vCalcTip: "These values are based on estimates and formulas, not real measurements: tokens/s, wait time, coding speed, image time, performance, score, models that fit, efficiency, electricity and total cost.",
+      vCalcFor: (a, b, n) => `${a} : ${b} in favour of ${n}`, vCalcTie: (a) => `${a} : ${a} – even`, vCalcLead: (l) => `Ahead on ${l}.`, vCalcNone: "No calculated values to compare.",
+      calcMark: "calculated (estimated)",
+      share: "Share", shareVia: "Share via …", shareX: "𝕏 / Twitter", shareLinkedIn: "LinkedIn", shareReddit: "Reddit", shareCopy: "Copy link", shareCopied: "Link copied",
+      shareText: (a, b, pa, pb, w) => w ? `${a} vs ${b}: ${pa}:${pb} for the ${w}! 🏆 Compared on aiscoremetrics.com #AIScore #GPU #LLM` : `${a} vs ${b}: a ${pa}:${pb} tie! Compared on aiscoremetrics.com #AIScore #GPU #LLM`,
+      shareTitle: (a, b, pa, pb) => `${a} vs ${b}: ${pa}:${pb} – hardware comparison for local LLMs`,
       vWin: "Winner", vTie: "Tie", vPts: (n) => `${n} ${n === 1 ? "point" : "points"}`, vAnd: "and",
       vWhy: (list) => `Wins on ${list}.`, vTieWhy: (a, la, b, lb) => `${a} leads on ${la}, ${b} leads on ${lb}.`, vAllLevel: (n) => `Level in all ${n} categories.`,
       vRule: (n, e) => `1 point per category (${n} compared); differences under 5% count as a tie${e ? ` (${e} tied)` : ""}. Rank, power draw and 24/7 cost are not counted separately because they follow from performance/score or the electricity cost.`,
@@ -1390,13 +1425,17 @@ Score     = Perf / system price   (best device = 100)</div>
   function comparisonScenario() {
     const ids = [state.pickA.id, state.pickB.id];
     return { v: 1, devices: ids, model: state.pxModel, use: state.use, image: state.pxImg, quant: state.quant, ctx: state.ctx, prompt: state.pxPrompt, ram: state.sysRam, baseCost: state.baseCost, base: state.base, wired: state.wired, showPrices: state.showPrices,
-      prices: Object.fromEntries(ids.map(id => [id, priceOf(DEVICES.find(d => d.id === id)) ?? null])) };
+      prices: Object.fromEntries(ids.map(id => [id, priceOf(DEVICES.find(d => d.id === id)) ?? null])),
+      cmpMode: state.cmpMode, elPrice: state.elPrice,
+      ...(state.cmpMode === "manual" ? { models: [state.cmpModelA || state.pxModel, state.cmpModelB || state.pxModel] } : {}) };
   }
   function applySharedScenario(hash) {
     if (!hash.startsWith("#compare=")) return;
     const shared = AIScenario.decode(hash, { devices: DEVICES, models: MODELS, quants: QUANTS, uses: USES, images: IMG, contexts: CTX, prompts: PROMPTS });
     if (!shared) { $("#share-tools").hidden = false; $("#share-compare").hidden = true; $("#share-status").textContent = L().shareInvalid; return; }
-    state.view = "cmp"; state.cmpMode = "same"; state.use = shared.use; state.pxImg = shared.image; state.pxModel = shared.model; state.quant = shared.quant; state.ctx = shared.ctx; state.pxPrompt = shared.prompt;
+    state.view = "cmp"; state.cmpMode = shared.cmpMode || "same"; if (shared.models) [state.cmpModelA, state.cmpModelB] = shared.models;
+    if (shared.elPrice != null) state.elPrice = shared.elPrice;
+    state.use = shared.use; state.pxImg = shared.image; state.pxModel = shared.model; state.quant = shared.quant; state.ctx = shared.ctx; state.pxPrompt = shared.prompt;
     state.sysRam = shared.ram; state.baseCost = shared.baseCost; state.base = shared.base; state.wired = shared.wired; state.showPrices = shared.showPrices;
     state.prices = { ...state.prices, ...shared.prices };
     ["pickA", "pickB"].forEach((key, i) => { const d = DEVICES.find(d => d.id === shared.devices[i]); state[key] = { v: d.v, id: d.id }; });
@@ -1514,6 +1553,8 @@ Score     = Perf / system price   (best device = 100)</div>
       const durTxt = (sec) => sec == null ? "—" : sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
       const g1 = (n) => fmt(n, n < 10 ? 1 : 0);
       const cmpPer = perDevice() && vis.length === 2;
+      // Hardware-Fakten bestimmen den Gewinner; alles andere ist berechnet (Formeln, keine Messung)
+      const FACT_KEYS = ["sys", "mem", "bw", "eciDev"];
       const memTxt = (r) => { const mi = memInfo(r.d, modelFor(r.d), Math.max(ctx, pxP + CODE_TOKENS));
         if (mi.state === "ok") return `${g1(mi.need)} / ${g1(mi.cap)} GB`;
         if (mi.state === "spill") return `+${g1(mi.spill)} GB PC-RAM`;
@@ -1569,34 +1610,59 @@ Score     = Perf / system price   (best device = 100)</div>
           return `<td class="v ${i === win ? "win" : ""}">${txt}</td>`;
         }).join("");
         const deltaCell = key === "eciSame" && cols.length === 2 ? `<span class="same">${t.eciSame}</span>` : delta ? `${delta}<small>${esc(t.deltaFor(devLabel(cols[win].d)))}</small>` : "";
-        return `<tr><td class="k">${t.dRows[key]}</td>${cells}${cols.length === 2 ? `<td class="d">${deltaCell}</td>` : ""}</tr>`;
+        const calcRow = !FACT_KEYS.includes(key) && key !== "eciSame";
+        return `<tr${calcRow ? ' class="calc"' : ""}><td class="k">${calcRow ? `<span class="approx" title="${esc(t.calcMark)}" aria-label="${esc(t.calcMark)}">≈</span>` : ""}${t.dRows[key]}</td>${cells}${cols.length === 2 ? `<td class="d">${deltaCell}</td>` : ""}</tr>`;
       }).join("");
-      // Punktewertung: 1 Punkt je Kategorie, < 5 % Unterschied = Gleichstand; "läuft nicht" (null) verliert bei Tempo/Intelligenz
+      // Punktewertung: 1 Punkt je Kategorie, < 5 % Unterschied = Gleichstand (ECI: < 1 Punkt); "läuft nicht" (null) verliert
+      // bei Tempo/Intelligenz/Effizienz. Gewinner nur nach Hardware-Fakten, berechnete Werte als eigener Block.
       let verdict = "";
       if (cols.length === 2) {
         const NULL_LOSES = ["tg", "ttft", "code", "img", "eciDev", "eff"];
         const PRIO = ["score", "perf", "eciDev", "tg", "tco", "cost8", "eff", "mem", "bw", "sys", "fits", "ttft", "code", "img"];
-        const pts = [0, 0], won = [[], []]; let compared = 0, level = 0;
+        const tally = () => ({ pts: [0, 0], won: [[], []], compared: 0, level: 0 });
+        const facts = tally(), est = tally();
         ROWS.forEach(([key, val, , dir]) => {
           if (key === "grp" || key === "rank" || key === "power" || key === "cost24" || !dir) return;
-          const v = cols.map((r) => val(r));
+          const v = cols.map((r) => val(r)), T = FACT_KEYS.includes(key) ? facts : est;
           let w = -1;
           if (v[0] != null && v[1] != null) {
             const hi = Math.max(Math.abs(v[0]), Math.abs(v[1]));
             const clear = key === "eciDev" ? Math.abs(v[0] - v[1]) >= 1 : hi > 0 && Math.abs(v[0] - v[1]) / hi >= 0.05;
             if (clear) w = (v[0] > v[1]) === (dir > 0) ? 0 : 1;
-            else level++;
+            else T.level++;
           } else if (NULL_LOSES.includes(key) && (v[0] != null) !== (v[1] != null)) w = v[0] != null ? 0 : 1;
           else return;
-          compared++;
-          if (w >= 0) { pts[w]++; won[w].push(key); }
+          T.compared++;
+          if (w >= 0) { T.pts[w]++; T.won[w].push(key); }
         });
         const list = (keys) => { const k = [...keys].sort((a, b) => PRIO.indexOf(a) - PRIO.indexOf(b)).slice(0, 3).map((x) => t.vCat[x]);
           return k.length > 1 ? `${k.slice(0, -1).join(", ")} ${t.vAnd} ${k.at(-1)}` : (k[0] || ""); };
-        const tie = pts[0] === pts[1], wi = pts[0] > pts[1] ? 0 : 1;
-        const side = (i) => `<div class="v-side${!tie && i === wi ? " won" : ""}">${!tie && i === wi ? `<span class="v-badge">${t.vWin}</span>` : ""}<b class="v-name">${esc(devLabel(cols[i].d))}</b><span class="v-pts">${t.vPts(pts[i])}</span></div>`;
-        const why = tie && !pts[0] ? t.vAllLevel(compared) : tie ? t.vTieWhy(esc(devLabel(cols[0].d)), list(won[0]), esc(devLabel(cols[1].d)), list(won[1])) : t.vWhy(list(won[wi]));
-        verdict = `<div class="verdict${tie ? " tie" : ""}" role="status">${side(0)}<div class="v-mid">${tie ? `<span class="v-badge">${t.vTie}</span>` : ""}<span class="v-score">${pts[0]} : ${pts[1]}</span></div>${side(1)}<p class="v-why">${why}<small>${esc(t.vRule(compared, level))}</small></p></div>`;
+        const names = cols.map((r) => devLabel(r.d));
+        const { pts } = facts, tie = pts[0] === pts[1], wi = pts[0] > pts[1] ? 0 : 1;
+        const side = (i) => `<div class="v-side${!tie && i === wi ? " won" : ""}">${!tie && i === wi ? `<span class="v-badge">${t.vWin}</span>` : ""}<b class="v-name">${esc(names[i])}</b><span class="v-pts">${t.vPts(pts[i])}</span></div>`;
+        const why = tie && !pts[0] ? t.vAllLevel(facts.compared) : tie ? t.vTieWhy(esc(names[0]), list(facts.won[0]), esc(names[1]), list(facts.won[1])) : t.vWhy(list(facts.won[wi]));
+        // Berechnete Werte
+        const cp = est.pts, ctie = cp[0] === cp[1], cwi = cp[0] > cp[1] ? 0 : 1;
+        const calcLine = !est.compared ? t.vCalcNone : ctie ? t.vCalcTie(cp[0]) : t.vCalcFor(cp[0], cp[1], esc(names[cwi]));
+        const calcLead = !ctie && est.won[cwi].length ? ` ${t.vCalcLead(list(est.won[cwi]))}` : "";
+        // Teilen
+        const shareText = t.shareText(names[0], names[1], pts[0], pts[1], tie ? "" : names[wi]);
+        const shareTitle = t.shareTitle(names[0], names[1], pts[0], pts[1]);
+        const shareIcon = `<svg viewBox="0 0 16 16" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10.5V1.8M5 4.6 8 1.6l3 3M5.5 7H4a1.5 1.5 0 0 0-1.5 1.5v5A1.5 1.5 0 0 0 4 15h8a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 12 7h-1.5"/></svg>`;
+        const share = `<div class="v-share" data-text="${esc(shareText)}" data-title="${esc(shareTitle)}">
+          <button type="button" class="share-btn" aria-haspopup="menu" aria-expanded="false">${shareIcon}<span>${t.share}</span></button>
+          <div class="share-menu" role="menu" hidden>
+            <button type="button" role="menuitem" data-share="native" hidden>${t.shareVia}</button>
+            <a role="menuitem" data-share="x" href="#" target="_blank" rel="noopener">${t.shareX}</a>
+            <a role="menuitem" data-share="linkedin" href="#" target="_blank" rel="noopener">${t.shareLinkedIn}</a>
+            <a role="menuitem" data-share="reddit" href="#" target="_blank" rel="noopener">${t.shareReddit}</a>
+            <button type="button" role="menuitem" data-share="copy">${t.shareCopy}</button>
+          </div>
+          <span class="share-status" role="status" aria-live="polite"></span>
+        </div>`;
+        verdict = `<div class="verdict${tie ? " tie" : ""}" role="status">${side(0)}<div class="v-mid">${tie ? `<span class="v-badge">${t.vTie}</span>` : ""}<span class="v-score">${pts[0]} : ${pts[1]}</span><span class="v-basis">${tie ? t.vFactsTie(pts[0]) : t.vFactsBasis(pts[0], pts[1])}</span>${share}</div>${side(1)}`
+          + `<p class="v-why">${why}<small>${esc(t.vFactsRule)}</small></p>`
+          + `<div class="v-calc"><span class="v-calc-lab"><span class="approx" aria-hidden="true">≈</span>${t.vCalcLab}<span class="v-info" tabindex="0" role="img" aria-label="${esc(t.vCalcTip)}" data-tip="${esc(t.vCalcTip)}">i</span></span><span class="v-calc-score">${calcLine}</span><span class="v-calc-lead">${calcLead}</span></div></div>`;
       }
       $("#detail").innerHTML = `<table><thead>${head}</thead><tbody>${body}</tbody></table>${verdict}<p class="hint" style="padding:0 14px 12px">${cmpPer ? esc(t.dHintPer(ctxLabel(pxP))) : esc(t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>`;
     }
@@ -1741,6 +1807,45 @@ Score     = Perf / system price   (best device = 100)</div>
   });
 
   function ddmm(iso) { const d = new Date(iso); return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.`; }
+  const shareUrl = () => { const url = new URL(location.href); url.search = ""; url.hash = AIScenario.encode(comparisonScenario()); return url.href; };
+  // Teilen aus der Gewinner-Box: Handy → native Teilen-Funktion, sonst Menü mit X, LinkedIn, Reddit, Link kopieren
+  $("#detail").addEventListener("click", async (e) => {
+    const box = e.target.closest(".v-share"); if (!box) return;
+    const btn = e.target.closest(".share-btn"), menu = box.querySelector(".share-menu"), status = box.querySelector(".share-status");
+    const { text, title } = box.dataset;
+    if (btn) {
+      if (navigator.share && matchMedia("(pointer: coarse)").matches) {
+        try { await navigator.share({ title, text, url: shareUrl() }); return; } catch (err) { if (err && err.name === "AbortError") return; }
+      }
+      const open = menu.hidden;
+      if (open) {
+        const u = encodeURIComponent(shareUrl());
+        menu.querySelector('[data-share="x"]').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${u}`;
+        menu.querySelector('[data-share="linkedin"]').href = `https://www.linkedin.com/sharing/share-offsite/?url=${u}`;
+        menu.querySelector('[data-share="reddit"]').href = `https://www.reddit.com/submit?url=${u}&title=${encodeURIComponent(title)}`;
+        menu.querySelector('[data-share="native"]').hidden = !navigator.share;
+      }
+      menu.hidden = !open; btn.setAttribute("aria-expanded", String(open));
+      // fest positioniert, damit die Gewinner-Box (overflow: hidden) das Menü nicht abschneidet
+      if (open) { const r = btn.getBoundingClientRect(), w = menu.offsetWidth, h = menu.offsetHeight;
+        menu.style.left = `${Math.max(8, Math.min(r.left + r.width / 2 - w / 2, innerWidth - w - 8))}px`;
+        menu.style.top = `${r.bottom + 6 + h > innerHeight - 8 ? Math.max(8, r.top - h - 6) : r.bottom + 6}px`; }
+      if (open) menu.querySelector("a, button:not([hidden])").focus({ preventScroll: true });
+      return;
+    }
+    const item = e.target.closest("[data-share]"); if (!item) return;
+    if (item.dataset.share === "copy") {
+      const link = shareUrl();
+      try { await navigator.clipboard.writeText(link); status.textContent = L().shareCopied; }
+      catch { status.textContent = link; }
+    } else if (item.dataset.share === "native") {
+      try { await navigator.share({ title, text, url: shareUrl() }); } catch (err) {}
+    }
+    menu.hidden = true; box.querySelector(".share-btn").setAttribute("aria-expanded", "false");
+  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") document.querySelectorAll(".share-menu:not([hidden])").forEach((m) => { m.hidden = true; m.closest(".v-share").querySelector(".share-btn").focus(); }); });
+  document.addEventListener("click", (e) => { if (!e.target.closest(".v-share")) document.querySelectorAll(".share-menu:not([hidden])").forEach((m) => { m.hidden = true; }); });
+  window.addEventListener("scroll", () => document.querySelectorAll(".share-menu:not([hidden])").forEach((m) => { m.hidden = true; m.closest(".v-share").querySelector(".share-btn").setAttribute("aria-expanded", "false"); }), { passive: true });
   $("#share-compare").addEventListener("click", async () => {
     const button = $("#share-compare"); button.disabled = true;
     try {

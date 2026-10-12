@@ -17,7 +17,20 @@
       if (price !== null && !numeric(price, 100000000)) return null;
       prices[id] = price;
     }
-    return { v: 1, devices: [...ids], model: input.model, use: input.use, image: input.image, quant: input.quant, ctx: input.ctx, prompt: input.prompt, ram: input.ram, baseCost: input.baseCost, base: input.base, wired: input.wired, showPrices: input.showPrices, prices };
+    // Optional (abwärtskompatibel): Modell je Gerät und Strompreis
+    const cmpMode = input.cmpMode ?? 'same';
+    if (!['same', 'best', 'manual'].includes(cmpMode)) return null;
+    let models;
+    if (cmpMode === 'manual') {
+      if (!Array.isArray(input.models) || input.models.length !== 2) return null;
+      for (const id of input.models) { const m = catalog.models.find(x => x.id === id); if (!m || (input.use !== 'all' && !m.use.includes(input.use))) return null; }
+      models = [...input.models];
+    }
+    if (input.elPrice !== undefined && !numeric(input.elPrice, 5)) return null;
+    const out = { v: 1, devices: [...ids], model: input.model, use: input.use, image: input.image, quant: input.quant, ctx: input.ctx, prompt: input.prompt, ram: input.ram, baseCost: input.baseCost, base: input.base, wired: input.wired, showPrices: input.showPrices, prices, cmpMode };
+    if (models) out.models = models;
+    if (input.elPrice !== undefined) out.elPrice = input.elPrice;
+    return out;
   }
   function decode(hash, catalog) {
     if (!hash.startsWith('#compare=')) return null;
