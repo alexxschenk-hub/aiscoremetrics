@@ -214,6 +214,16 @@ a.ext:hover { text-decoration: underline; }
 .ss-btn .ss-val { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ss-btn .ss-val.ph { color: var(--muted); }
 .ss-btn .ss-caret { flex: none; color: var(--muted); font-size: 11px; }
+#rank td.xc, #rank th.num { white-space: nowrap; }
+.colpick { position: relative; display: flex; justify-content: flex-end; margin: 0 0 8px; }
+.colpick-btn { font: 600 13px var(--f-display); padding: 6px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); cursor: pointer; }
+.colpick-btn[aria-expanded="true"] { border-color: var(--accent); }
+.colpick-menu { position: absolute; z-index: 20; top: calc(100% + 4px); right: 0; width: min(560px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px rgba(0, 0, 0, .18); padding: 12px 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px 18px; }
+.colpick-menu fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 5px; align-content: start; }
+.colpick-menu legend { font: 700 11px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; padding: 0; }
+.colpick-menu label { display: flex; gap: 7px; align-items: center; font-size: 13.5px; cursor: pointer; }
+.colpick-menu .cp-foot { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid var(--line); padding-top: 8px; font-size: 12px; color: var(--muted); }
+.colpick-menu .cp-foot button { font: inherit; color: var(--accent); background: none; border: 0; cursor: pointer; padding: 0; text-decoration: underline; }
 .ss-panel { position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; width: max(100%, 300px); max-width: min(440px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px rgba(0, 0, 0, .18); padding: 6px; display: grid; gap: 6px; }
 .ss-search { position: relative; }
 .ss-search input { width: 100%; font: 400 14px var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 7px 30px 7px 9px; }
@@ -480,6 +490,7 @@ footer { font-size: 12.5px; color: var(--muted); }
   <section class="panel" id="rank-panel">
     <h2 class="sec-h"><span class="sec-ico" aria-hidden="true">🏆</span><span data-i="rankTitle"></span></h2>
     <div class="summary" id="summary" aria-live="polite"></div>
+    <div class="colpick" id="colpick"><button type="button" class="colpick-btn" id="cols-btn" aria-haspopup="true" aria-expanded="false" aria-controls="cols-menu"></button><div class="colpick-menu" id="cols-menu" hidden></div></div>
     <div class="tablebox">
       <table id="rank">
         <thead><tr id="rank-head"></tr></thead>
@@ -1047,7 +1058,8 @@ footer { font-size: 12.5px; color: var(--muted); }
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   // Sprache kommt aus der URL: / = Deutsch, /en/ = Englisch (eigene Seiten für Suchmaschinen)
   const navLang = document.documentElement.lang === "en" ? "en" : "de";
-  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, showPower: false, currency: "EUR", elPrice: 0.25, elPriceUsd: 0.18, baseCostUsd: 1200, pricesUsd: {}, quant: "q4", view: "one", cmpMode: "same", cmpModelA: "", cmpModelB: "", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, use: "coding", pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, lang: navLang }, saved);
+  const state = Object.assign({ sorts: { rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, showPrices: false, showPower: false, currency: "EUR", elPrice: 0.25, elPriceUsd: 0.18, baseCostUsd: 1200, pricesUsd: {}, quant: "q4", view: "one", cmpMode: "same", cmpModelA: "", cmpModelB: "", pickA: { v: "", id: "" }, pickB: { v: "", id: "" }, sysRam: 64, use: "coding", pxModel: "moe30", pxPrompt: 2, pxImg: "sdxl", profile: "agent", model: "moe120", ctx: 3, vendor: "all", base: true, baseCost: 1300, wired: false, prices: {}, cols: [], lang: navLang }, saved);
+  if (!Array.isArray(state.cols)) state.cols = [];
   delete state.sort;
   state.lang = navLang;
   delete state.sortKey; delete state.sortDir; delete state.profile; delete state.model;
@@ -1178,19 +1190,22 @@ footer { font-size: 12.5px; color: var(--muted); }
     if (key === "cost") return yearCost(r.d, 8);
     if (key === "score") return r.sp > 0 ? r.score : null;
     if (key.startsWith("m:")) { const c = r.per[key.slice(2)]; return c.fits ? c.tg : -1; }
+    if (key === "x:perh") return r.px.tg;
     if (key.startsWith("x:")) return r.px[key.slice(2)];
+    if (key.startsWith("c:")) { const c = XCOLS.find((x) => x.k === key); return c ? c.v(r) : null; }
     return 0;
   }
   // Jede Tabelle hat ihre eigene Sortierung (rank, px, mx)
-  const effKey = (k) => (!state.showPrices && (k === "price" || k === "score")) || (!state.showPower && (k === "watt" || k === "cost")) ? "perf" : k;
+  const effKey = (k, table) => (!state.showPrices && (k === "price" || k === "score")) || (!state.showPower && (k === "watt" || k === "cost"))
+    || (table === "rank" && (k.startsWith("c:") || k.startsWith("x:")) && !xcolsOn().some((c) => c.k === k)) ? "perf" : k;
   function setSort(table, key) {
     const st = state.sorts[table];
-    if (effKey(st.k) === key) st.d = key === st.k ? -st.d : 1;
-    else { st.k = key; st.d = key.startsWith("m:") ? -1 : DEFAULT_DIR[key]; }
+    if (effKey(st.k, table) === key) st.d = key === st.k ? -st.d : 1;
+    else { const xc = XCOLS.find((c) => c.k === key); st.k = key; st.d = key.startsWith("m:") ? -1 : table === "rank" && xc ? xc.dir : DEFAULT_DIR[key] ?? -1; }
     persist(); render();
   }
   function sortList(list, table) {
-    const st = state.sorts[table], key = effKey(st.k), dir = key === st.k ? st.d : -1;
+    const st = state.sorts[table], key = effKey(st.k, table), dir = key === st.k ? st.d : -1;
     return [...list].sort((a, b) => {
       const x = sortValue(a, key), y = sortValue(b, key);
       if (x == null || y == null) return x == null && y == null ? b.perf - a.perf : x == null ? 1 : -1;  // ohne Wert immer ans Ende
@@ -1199,10 +1214,43 @@ footer { font-size: 12.5px; color: var(--muted); }
     });
   }
   function sortHead(table, key, label, cls) {
-    const st = state.sorts[table], active = effKey(st.k) === key, d = key === st.k ? st.d : -1;
+    const st = state.sorts[table], active = effKey(st.k, table) === key, d = key === st.k ? st.d : -1;
     const arr = active ? (d > 0 ? "↑" : "↓") : "";
     const aria = active ? ` aria-sort="${d > 0 ? "ascending" : "descending"}"` : "";
     return `<th${cls ? ` class="${cls}"` : ""}${aria}><button type="button" class="sort" data-table="${table}" data-sort="${key}" title="${esc(L().sortBy(label.replace(/<[^>]+>/g, "")))}">${label}<span class="arr">${arr}</span></button></th>`;
+  }
+
+  // Optionale Zusatzspalten im Ranking (Spaltenauswahl). Preis/Score und Watt/Stromkosten hängen an den bestehenden Schaltern.
+  const XCOLS = [
+    { k: "c:mem",    g: "hw",  de: "Speicher", en: "Memory", v: (r) => r.d.mem, f: (v) => `${fmt(v)} GB`, dir: -1 },
+    { k: "c:usable", g: "hw",  de: "Nutzbar für Modelle", en: "Usable for models", v: (r) => usable(r.d), f: (v) => `${fmt(v, 1)} GB`, dir: -1,
+      tip: { de: "Grafikspeicher minus Reserve bzw. bei Macs/Mini-PCs der für die GPU freigegebene Teil", en: "Graphics memory minus reserve; on Macs/mini PCs, the share released to the GPU" } },
+    { k: "c:bw",     g: "hw",  de: "Bandbreite", en: "Bandwidth", v: (r) => r.d.bw, f: (v) => `${fmt(v)} GB/s`, dir: -1 },
+    { k: "c:tf",     g: "hw",  de: "Rechenleistung", en: "Compute", v: (r) => r.d.tf, f: (v) => `${fmt(v, v < 100 ? 1 : 0)} TFLOPS`, dir: -1,
+      tip: { de: "Herstellerangabe: NVIDIA/AMD/Intel FP16-Tensor (dicht), Apple GPU-FP32 – zwischen Herstellern nicht direkt vergleichbar", en: "Vendor figure: NVIDIA/AMD/Intel dense FP16 tensor, Apple GPU FP32 – not directly comparable across vendors" } },
+    { k: "c:tdp",    g: "hw",  de: "TDP", en: "TDP", v: (r) => r.d.tdp, f: (v) => `${fmt(v)} W`, dir: 1 },
+    { k: "c:vendor", g: "hw",  de: "Hersteller", en: "Vendor", v: (r) => VENDOR[r.d.v], f: (v) => esc(v), dir: 1 },
+    { k: "c:type",   g: "hw",  de: "Bauform", en: "Form factor", v: (r) => devKind(r.d), f: (v) => esc(v), dir: 1 },
+    { k: "c:need",   g: "run", de: "Speicherbelegung", en: "Memory usage", v: (r) => { const mi = memInfo(r.d, mainModel(), Math.max(CTX[state.ctx], (PROMPTS[state.pxPrompt] || 16384) + CODE_TOKENS)); return mi.need / mi.cap * 100; },
+      f: (v) => `${fmt(v)} %`, dir: 1, tip: { de: "Bedarf des gewählten Modells in Prozent des nutzbaren Speichers; über 100 % passt es nicht", en: "Need of the selected model as a share of usable memory; above 100% it does not fit" } },
+    { k: "x:tg",     g: "run", llm: true, de: "Tokens/s", en: "Tokens/s", v: (r) => r.px.tg, f: (v) => fmtTok(v), dir: -1 },
+    { k: "x:ttft",   g: "run", llm: true, de: "Erster Token", en: "First token", v: (r) => r.px.ttft, f: (v) => durFmt(v), dir: 1 },
+    { k: "x:code",   g: "run", llm: true, de: "100 Zeilen Code", en: "100 lines of code", v: (r) => r.px.code, f: (v) => durFmt(v), dir: 1 },
+    { k: "x:img",    g: "run", llm: true, de: "1 Bild", en: "1 image", v: (r) => r.px.img, f: (v) => durFmt(v), dir: 1 },
+    { k: "x:out",    g: "run", media: true, de: "Zeit pro Bild/Clip", en: "Time per image/clip", v: (r) => r.px.out, f: (v) => durFmt(v), dir: 1 },
+    { k: "x:perh",   g: "run", media: true, de: "Pro Stunde", en: "Per hour", v: (r) => r.px.tg, f: (v) => `${fmt(v, v < 10 ? 1 : 0)} ${L().perH[mainModel().media] || ""}`, dir: -1 }
+  ];
+  const durFmt = (sec) => sec < 1 ? `${fmt(sec, 1)} s` : sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
+  const xcolsAvail = () => XCOLS.filter((c) => isMedia() ? !c.llm : !c.media);
+  const xcolsOn = () => xcolsAvail().filter((c) => state.cols.includes(c.k));
+  function renderColPick() {
+    const t = L(), de = state.lang === "de", on = xcolsOn().length + (state.showPrices ? 2 : 0) + (state.showPower ? 2 : 0);
+    $("#cols-btn").textContent = `${de ? "Spalten" : "Columns"}${on ? ` (${on})` : ""} ▾`;
+    const box = (k, label, checked, tip) => `<label${tip ? ` title="${esc(tip)}"` : ""}><input type="checkbox" data-col="${k}" ${checked ? "checked" : ""}>${label}</label>`;
+    const grp = (g, title) => `<fieldset><legend>${title}</legend>${xcolsAvail().filter((c) => c.g === g).map((c) => box(c.k, c[state.lang], state.cols.includes(c.k), c.tip && c.tip[state.lang])).join("")}</fieldset>`;
+    $("#cols-menu").innerHTML = grp("hw", de ? "Hardware" : "Hardware") + grp("run", de ? "Gewähltes Modell" : "Selected model")
+      + `<fieldset><legend>${de ? "Kosten" : "Cost"}</legend>${box("prices", de ? "Preis & Score" : "Price & score", state.showPrices)}${box("power", de ? "Watt & Stromkosten" : "Watts & electricity", state.showPower)}</fieldset>`
+      + `<div class="cp-foot"><span>${de ? "Klick auf eine Spaltenüberschrift sortiert." : "Click a column header to sort."}</span><span><button type="button" data-cp="all">${de ? "Alle" : "All"}</button> · <button type="button" data-cp="none">${de ? "Keine" : "None"}</button></span></div>`;
   }
 
   function renderStatic() {
@@ -1411,6 +1459,7 @@ footer { font-size: 12.5px; color: var(--muted); }
   }
   function render() {
     renderControls();
+    renderColPick();
     const t = L();
     const { rows, ctx, w } = evaluate();
     const pxM = MODELS.find((m) => m.id === state.pxModel) || MODELS.find((m) => m.id === "moe30");
@@ -1675,7 +1724,7 @@ footer { font-size: 12.5px; color: var(--muted); }
     // Ranking table
     $("#rank-head").innerHTML = `<th>${t.th.rank}</th>` +
       sortHead("rank", "name", t.th.name) + (state.showPrices ? sortHead("rank", "price", t.th.price, "num") : "") + sortHead("rank", "fits", t.th.fits) +
-      sortHead("rank", "perf", t.th.perf) + (state.showPower ? sortHead("rank", "watt", t.th.watt, "num") + sortHead("rank", "cost", t.th.cost, "num") : "") + (state.showPrices ? sortHead("rank", "score", t.th.score) + "<th></th>" : "");
+      sortHead("rank", "perf", t.th.perf) + xcolsOn().map((c) => sortHead("rank", c.k, c.tip ? `<span title="${esc(c.tip[state.lang])}">${c[state.lang]}</span>` : c[state.lang], "num")).join("") + (state.showPower ? sortHead("rank", "watt", t.th.watt, "num") + sortHead("rank", "cost", t.th.cost, "num") : "") + (state.showPrices ? sortHead("rank", "score", t.th.score) + "<th></th>" : "");
     $("#rank tbody").innerHTML = visRank.map((r, i) => {
       const d = r.d;
       const dots = usedModels.map((m) => {
@@ -1692,6 +1741,7 @@ footer { font-size: 12.5px; color: var(--muted); }
         ${state.showPrices ? `<td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d) ?? ""}" placeholder="—" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${(d.est || (isUsd() && d.priceUsd == null)) && !edited ? "est" : ""}">${edited ? t.src.own : frozenUnknown ? t.src.unknown : srcText(d)}</span></td>` : ""}
         <td><div class="dots" aria-label="${esc(t.fitsAria(r.fitCount, usedModels.length))}">${dots}</div></td>
         <td><div class="barcell"><div class="track"><div class="fill ${state.showPrices ? "p" : ""}" style="width:${r.perfN.toFixed(1)}%"></div></div><span class="mono">${fmt(r.perfN)}</span></div></td>
+        ${xcolsOn().map((c) => { const v = c.v(r); return `<td class="num mono xc${v == null ? " na" : ""}">${v == null ? "—" : c.f(v)}</td>`; }).join("")}
         ${state.showPower ? `<td class="num mono pw" title="${esc(t.wattTip(fmt(d.tdp), fmt(sysWatts(d))))}">~${fmt(sysWatts(d))} W</td><td class="num mono pw" title="${esc(t.costTip(8, fmt(elPrice(), 2)))}">~${eur(yearCost(d, 8))}</td>` : ""}
         ${state.showPrices ? `<td><div class="barcell"><div class="track"><div class="fill" style="width:${r.score.toFixed(1)}%"></div></div><span class="mono">${r.sp > 0 ? fmt(r.score) : "—"}</span></div></td>
         <td><a class="ext" href="https://geizhals.at/?fs=${encodeURIComponent(d.q)}" target="_blank" rel="noopener">${t.prices}</a></td>` : ""}
@@ -1808,6 +1858,18 @@ footer { font-size: 12.5px; color: var(--muted); }
     state[k] = v >= 0 && v <= 5 ? v : (isUsd() ? 0.18 : 0.25); persist(); render(); });
   $("#currency").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.currency = b.dataset.id === "USD" ? "USD" : "EUR"; persist(); renderStatic(); render(); });
   $("#showpower").addEventListener("change", (e) => { state.showPower = e.target.checked; persist(); render(); });
+  $("#cols-btn").addEventListener("click", () => { const m = $("#cols-menu"); m.hidden = !m.hidden; $("#cols-btn").setAttribute("aria-expanded", String(!m.hidden)); });
+  $("#cols-menu").addEventListener("change", (e) => { const k = e.target.dataset.col; if (!k) return;
+    if (k === "prices") state.showPrices = e.target.checked; else if (k === "power") state.showPower = e.target.checked;
+    else state.cols = e.target.checked ? [...new Set([...state.cols, k])] : state.cols.filter((x) => x !== k);
+    persist(); render(); });
+  $("#cols-menu").addEventListener("click", (e) => { const a = e.target.dataset.cp; if (!a) return;
+    const avail = xcolsAvail().map((c) => c.k);
+    state.cols = a === "all" ? [...new Set([...state.cols, ...avail])] : state.cols.filter((k) => !avail.includes(k));
+    if (a === "none") { state.showPrices = false; state.showPower = false; }
+    persist(); render(); });
+  document.addEventListener("mousedown", (e) => { if (!e.target.closest("#colpick") && !$("#cols-menu").hidden) { $("#cols-menu").hidden = true; $("#cols-btn").setAttribute("aria-expanded", "false"); } });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#cols-menu").hidden) { $("#cols-menu").hidden = true; $("#cols-btn").setAttribute("aria-expanded", "false"); $("#cols-btn").focus(); } });
   $("#sysram").addEventListener("change", (e) => { state.sysRam = Math.max(0, +e.target.value || 0); persist(); render(); });
   const tipEl = $("#tip");
   document.addEventListener("mouseover", (e) => { const el = e.target.closest("[data-tip]"); if (!el) { tipEl.hidden = true; return; } tipEl.textContent = el.dataset.tip; tipEl.hidden = false; });
