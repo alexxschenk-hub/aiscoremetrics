@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-20T09:31:06.774Z",
+  "updatedAt": "2026-10-21T09:31:14.865Z",
   "region": "germany",
   "prices": {
     "4090": {
@@ -7,7 +7,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-19T19:40:21.352Z",
+      "asOf": "2026-10-21T06:41:36.432Z",
       "url": "https://gpuprix.com/germany/gpus/geforce-rtx-4090"
     },
     "5070": {
@@ -89,11 +89,11 @@
       "url": "https://gpuprix.com/germany/gpus/radeon-rx-9060-xt-16gb"
     },
     "rx9070": {
-      "price": 609,
+      "price": 618,
       "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-20T04:56:58.713Z",
+      "asOf": "2026-10-21T06:17:06.931Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-rx-9070"
     },
     "rx9070xt": {
@@ -101,7 +101,7 @@
       "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-20T04:56:58.456Z",
+      "asOf": "2026-10-21T06:17:07.743Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-rx-9070-xt"
     },
     "rx7900xtx": {
@@ -109,7 +109,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-19T22:05:36.172Z",
+      "asOf": "2026-10-21T05:56:07.142Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-rx-7900-xtx"
     },
     "r9700": {
@@ -117,7 +117,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-20T04:56:24.407Z",
+      "asOf": "2026-10-21T06:16:54.109Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-ai-pro-r9700"
     },
     "p2000": {
@@ -165,7 +165,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-20T04:56:35.574Z",
+      "asOf": "2026-10-21T03:56:55.044Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-pro-w7800"
     },
     "w7800x48": {
@@ -173,7 +173,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-19T17:53:52.915Z",
+      "asOf": "2026-10-21T05:55:56.774Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-pro-w7800-48gb"
     },
     "w7900": {
@@ -181,7 +181,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-20T02:42:13.487Z",
+      "asOf": "2026-10-21T05:55:53.616Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-pro-w7900"
     }
   }
