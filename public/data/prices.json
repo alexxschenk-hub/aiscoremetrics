@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-22T09:29:01.686Z",
+  "updatedAt": "2026-10-23T09:25:09.551Z",
   "region": "germany",
   "prices": {
     "4090": {
@@ -113,7 +113,7 @@
       "url": "https://gpuprix.com/germany/gpus/radeon-rx-7900-xtx"
     },
     "r9700": {
-      "price": 1569,
+      "price": 2507,
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
