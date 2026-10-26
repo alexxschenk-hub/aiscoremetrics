@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-25T09:13:20.280Z",
+  "updatedAt": "2026-10-26T10:15:30.356Z",
   "region": "germany",
   "prices": {
     "4090": {
@@ -7,23 +7,23 @@
       "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T01:06:17.259Z",
+      "asOf": "2026-10-26T03:48:47.024Z",
       "url": "https://gpuprix.com/germany/gpus/geforce-rtx-4090"
     },
     "5070": {
-      "price": 697,
+      "price": 706,
       "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:26:24.015Z",
+      "asOf": "2026-10-26T08:19:45.438Z",
       "url": "https://gpuprix.com/germany/gpus/geforce-rtx-5070"
     },
     "5080": {
-      "price": 1543,
+      "price": 1487,
       "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:26:15.997Z",
+      "asOf": "2026-10-26T08:19:35.445Z",
       "url": "https://gpuprix.com/germany/gpus/geforce-rtx-5080"
     },
     "5090": {
@@ -38,7 +38,7 @@
       "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:26:14.561Z",
+      "asOf": "2026-10-26T08:19:12.010Z",
       "url": "https://gpuprix.com/germany/gpus/geforce-rtx-5060-ti-16gb"
     },
     "5070ti": {
@@ -46,15 +46,15 @@
       "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:26:19.337Z",
+      "asOf": "2026-10-26T08:19:29.770Z",
       "url": "https://gpuprix.com/germany/gpus/geforce-rtx-5070-ti"
     },
     "p4000": {
-      "price": 3109,
+      "price": 2479,
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:26:24.704Z",
+      "asOf": "2026-10-26T08:20:08.281Z",
       "url": "https://gpuprix.com/germany/gpus/rtx-pro-4000-blackwell"
     },
     "p4500": {
@@ -65,11 +65,11 @@
       "asOf": "2026-10-11T00:00:00Z"
     },
     "p5000": {
-      "price": 8357,
+      "price": 7126,
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:26:24.411Z",
+      "asOf": "2026-10-26T08:20:09.909Z",
       "url": "https://gpuprix.com/germany/gpus/rtx-pro-5000-blackwell"
     },
     "p6000": {
@@ -77,7 +77,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:26:25.793Z",
+      "asOf": "2026-10-26T08:20:10.759Z",
       "url": "https://gpuprix.com/germany/gpus/rtx-pro-6000-blackwell"
     },
     "rx9060xt": {
@@ -85,7 +85,7 @@
       "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:26:33.763Z",
+      "asOf": "2026-10-26T08:20:39.661Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-rx-9060-xt-16gb"
     },
     "rx9070": {
@@ -93,15 +93,15 @@
       "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:26:34.731Z",
+      "asOf": "2026-10-26T08:20:49.209Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-rx-9070"
     },
     "rx9070xt": {
-      "price": 739,
+      "price": 675,
       "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:26:34.479Z",
+      "asOf": "2026-10-26T08:20:47.974Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-rx-9070-xt"
     },
     "rx7900xtx": {
@@ -109,23 +109,23 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T01:04:23.936Z",
+      "asOf": "2026-10-25T20:14:08.689Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-rx-7900-xtx"
     },
     "r9700": {
-      "price": 2507,
+      "price": 1807,
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T06:17:14.020Z",
+      "asOf": "2026-10-26T08:20:16.372Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-ai-pro-r9700"
     },
     "p2000": {
-      "price": 1482,
+      "price": 1370,
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:26:19.670Z",
+      "asOf": "2026-10-26T08:20:07.166Z",
       "url": "https://gpuprix.com/germany/gpus/rtx-pro-2000-blackwell"
     },
     "p5000x72": {
@@ -133,23 +133,23 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:26:25.411Z",
+      "asOf": "2026-10-26T08:17:48.891Z",
       "url": "https://gpuprix.com/germany/gpus/rtx-pro-5000-blackwell-72gb"
     },
     "a4000ada": {
-      "price": 3061,
+      "price": 3280,
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T06:16:36.949Z",
+      "asOf": "2026-10-26T08:19:46.225Z",
       "url": "https://gpuprix.com/germany/gpus/rtx-4000-ada-generation"
     },
     "a5000ada": {
-      "price": 4099,
+      "price": 3844,
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T01:06:48.256Z",
+      "asOf": "2026-10-26T03:49:12.930Z",
       "url": "https://gpuprix.com/germany/gpus/rtx-5000-ada-generation"
     },
     "a6000ada": {
@@ -157,7 +157,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-23T20:07:38.958Z",
+      "asOf": "2026-10-25T19:47:11.041Z",
       "url": "https://gpuprix.com/germany/gpus/rtx-6000-ada-generation"
     },
     "w7800": {
@@ -165,7 +165,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:25:45.147Z",
+      "asOf": "2026-10-26T08:20:24.715Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-pro-w7800"
     },
     "w7800x48": {
@@ -173,7 +173,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-23T19:51:57.869Z",
+      "asOf": "2026-10-25T20:13:19.058Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-pro-w7800-48gb"
     },
     "w7900": {
@@ -181,7 +181,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-24T07:26:26.463Z",
+      "asOf": "2026-10-26T02:04:08.880Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-pro-w7900"
     }
   }
