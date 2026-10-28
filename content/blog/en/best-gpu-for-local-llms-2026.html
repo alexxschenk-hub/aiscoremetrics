@@ -1,0 +1,75 @@
+<!-- { "key": "best-gpu", "order": 1, "slug": "best-gpu-for-local-llms-2026", "icon": "🎮", "date": "2026-10-28",
+  "title": "Best GPU for Local LLMs in 2026 – Buying Guide",
+  "desc": "Which graphics card for local AI? GPU picks by budget from €570 to €6,000, plus RTX 4090 vs RTX 3090 vs RX 7900 XTX with tokens/s, VRAM and image times.",
+  "icons": ["🎯", "💶", "⚔️", "🧪", "✅"] } -->
+    <section class="panel">
+      <p class="lead">For local language models, exactly two things matter on a graphics card: <strong>how much VRAM</strong> it has (does the model fit at all?) and <strong>how much memory bandwidth</strong> it offers (how fast does it write?). Compute comes second – it mostly decides how long you wait for the first word. This guide sorts current cards by budget and compares the three most popular 24 GB cards head to head.</p>
+    </section>
+
+    <section>
+      <h2>What matters when buying</h2>
+      <ul>
+        <li><strong>VRAM decides which models run.</strong> 16 GB is enough for models up to about 14 billion parameters, 24 GB for 27B models and the popular 30B MoE models, 32 GB leaves room for longer context. How to work out your needs is covered in <a href="blog:vram">How much VRAM do I need?</a></li>
+        <li><strong>Bandwidth decides speed.</strong> For every generated token the GPU reads the active weights once from memory. Twice the bandwidth means roughly twice the tokens per second.</li>
+        <li><strong>Compute decides the wait.</strong> Long prompts – a whole document or a code repository – are processed with tensor throughput. NVIDIA cards lead clearly here.</li>
+        <li><strong>Software:</strong> NVIDIA (CUDA) works with every tool out of the box. AMD runs well under ROCm or Vulkan with llama.cpp, LM Studio and Ollama; image and training tools need more tinkering.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Picks by budget</h2>
+      <p>Prices: cheapest in-stock card in Germany, late October 2026 (updated daily in the calculator). Speed: estimated generation with Q4_K_M and 32k context.</p>
+      <div class="tablebox"><table>
+        <thead><tr><th>Budget</th><th>Card</th><th class="num">VRAM</th><th class="num">Bandwidth</th><th>Largest sensible model</th><th class="num">Speed</th></tr></thead>
+        <tbody>
+          <tr><td>up to €750</td><td>RTX 5060 Ti 16 GB (≈ €570)</td><td class="num">16 GB</td><td class="num">448 GB/s</td><td>Gemma 4 12B</td><td class="num">34 tok/s</td></tr>
+          <tr><td>up to €750</td><td>RX 9070 XT (≈ €750)</td><td class="num">16 GB</td><td class="num">640 GB/s</td><td>Gemma 4 12B</td><td class="num">41 tok/s</td></tr>
+          <tr><td>≈ €1,100</td><td>RTX 5070 Ti (≈ €1,080)</td><td class="num">16 GB</td><td class="num">896 GB/s</td><td>Gemma 4 12B</td><td class="num">69 tok/s</td></tr>
+          <tr><td>≈ €1,500</td><td>RX 7900 XTX (≈ €1,510)</td><td class="num">24 GB</td><td class="num">960 GB/s</td><td>Qwen3.6 27B</td><td class="num">28 tok/s</td></tr>
+          <tr><td>used</td><td>RTX 3090</td><td class="num">24 GB</td><td class="num">936 GB/s</td><td>Qwen3.6 27B</td><td class="num">32 tok/s</td></tr>
+          <tr><td>≈ €5,000</td><td>RTX 4090</td><td class="num">24 GB</td><td class="num">1,008 GB/s</td><td>Qwen3.6 27B</td><td class="num">35 tok/s</td></tr>
+          <tr><td>≈ €6,000</td><td>RTX 5090</td><td class="num">32 GB</td><td class="num">1,792 GB/s</td><td>Qwen3.6 27B, more context</td><td class="num">62 tok/s</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Entry level up to €750</h3>
+      <p>The <strong>RTX 5060 Ti 16 GB</strong> is the cheapest sensible CUDA entry. Its weak spot is the low 448 GB/s bandwidth. The <strong>RX 9070 XT</strong> costs a little more but writes about 20% faster. Both have 16 GB: gpt-oss-20b just fits with short context, at 32k it gets too tight.</p>
+      <h3>Mid-range around €1,100 to €1,500</h3>
+      <p>The <strong>RTX 5070 Ti</strong> has the same 16 GB but twice the bandwidth of the 5060 Ti – small models run twice as fast. If you want bigger models, go for <strong>24 GB</strong> instead: the <strong>RX 7900 XTX</strong> is currently the cheapest new card with 24 GB.</p>
+      <h3>High end</h3>
+      <p>The <strong>RTX 4090</strong> is being phased out: new, at around €5,000, it costs almost as much as an RTX 5090. The <strong>RTX 5090</strong> is the fastest consumer card at 1,792 GB/s and the only one with 32 GB – at a price where a Mac Studio becomes an option too. That comparison is in <a href="blog:5090-vs-m5-ultra">RTX 5090 vs Mac Studio M5 Ultra</a>.</p>
+    </section>
+
+    <section>
+      <h2>RTX 4090 vs RTX 3090 vs RX 7900 XTX</h2>
+      <p>All three have 24 GB of VRAM and about 1 TB/s of bandwidth, so they fit the same models – the differences are speed, wait time and price.</p>
+      <div class="tablebox"><table>
+        <thead><tr><th></th><th class="num">RTX 4090</th><th class="num">RTX 3090</th><th class="num">RX 7900 XTX</th></tr></thead>
+        <tbody>
+          <tr><td>VRAM</td><td class="num">24 GB</td><td class="num">24 GB</td><td class="num">24 GB</td></tr>
+          <tr><td>Bandwidth</td><td class="num">1,008 GB/s</td><td class="num">936 GB/s</td><td class="num">960 GB/s</td></tr>
+          <tr><td>Qwen3.6 27B – writing</td><td class="num">35 tok/s</td><td class="num">32 tok/s</td><td class="num">28 tok/s</td></tr>
+          <tr><td>Qwen3.6 27B – prompt</td><td class="num">3,060 tok/s</td><td class="num">1,320 tok/s</td><td class="num">800 tok/s</td></tr>
+          <tr><td>Qwen3-Coder 30B-A3B – writing</td><td class="num">93 tok/s</td><td class="num">87 tok/s</td><td class="num">74 tok/s</td></tr>
+          <tr><td>FLUX.1 dev, 1 image 1024²</td><td class="num">≈ 14 s</td><td class="num">≈ 33 s</td><td class="num">≈ 32 s</td></tr>
+          <tr><td>Power draw (card)</td><td class="num">450 W</td><td class="num">350 W</td><td class="num">355 W</td></tr>
+          <tr><td>Price</td><td class="num">≈ €4,990 new</td><td class="num">used only</td><td class="num">≈ €1,510 new</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>For writing, all three are close.</strong> The 3090 reaches over 90% of the 4090's speed because the bandwidth is almost the same. <strong>With long prompts the 4090 pulls ahead:</strong> it reads a 16k-token document in about 5 seconds, the 3090 needs about 12, the 7900 XTX about 20 seconds. For image generation the 4090 is more than twice as fast.</p>
+      <p><a href="vs:4090,rx7900xtx,qwen36_27">Compare RTX 4090 vs RX 7900 XTX in the calculator →</a></p>
+    </section>
+
+    <section>
+      <h2>Which card for whom?</h2>
+      <ul>
+        <li><strong>RTX 3090 (used):</strong> the best value for text-only AI if you find a good card. Check warranty, fans and memory temperatures.</li>
+        <li><strong>RX 7900 XTX:</strong> 24 GB new with warranty for about a third of the 4090's price. Ideal for chat and coding with llama.cpp or LM Studio. Less suited if you do a lot of images, video or training.</li>
+        <li><strong>RTX 4090:</strong> only worth it if you get it cheap (used, for example). For agents with long prompts and for image generation it's noticeably better than the other two.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Verdict</h2>
+      <div class="verdict-box"><p><strong>Under €1,000:</strong> RX 9070 XT or RTX 5060 Ti 16 GB. <strong>Best value with 24 GB:</strong> a used RTX 3090 or a new RX 7900 XTX. <strong>No compromises:</strong> RTX 5090 – or, if models above 30 GB should run, a Mac Studio with lots of unified memory.</p></div>
+      <p>Not sure what fits your use case? The <a href="advisor:">buying advisor</a> asks four questions and suggests three matching devices.</p>
+    </section>

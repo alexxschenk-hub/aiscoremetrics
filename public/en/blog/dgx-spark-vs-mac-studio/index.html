@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0A6B75">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="/assets/theme.js"></script>
+<title>DGX Spark vs Mac Studio – NVIDIA's New Mini PC Compared | AI Score Metrics</title>
+<meta name="description" content="Is the NVIDIA DGX Spark with 128 GB worth it for local LLMs? Compared with Mac Studio M5 Max, M5 Ultra and Ryzen AI Max+ 395 on tokens/s, memory, price and software.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://aiscoremetrics.com/en/blog/dgx-spark-vs-mac-studio/">
+<link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/blog/dgx-spark-vs-mac-studio/">
+<link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/blog/dgx-spark-vs-mac-studio/">
+<link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/blog/dgx-spark-vs-mac-studio/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://aiscoremetrics.com/en/blog/dgx-spark-vs-mac-studio/">
+<meta property="og:site_name" content="AI Score Metrics">
+<meta property="og:title" content="DGX Spark vs Mac Studio – NVIDIA's New Mini PC Compared | AI Score Metrics">
+<meta property="og:description" content="Is the NVIDIA DGX Spark with 128 GB worth it for local LLMs? Compared with Mac Studio M5 Max, M5 Ultra and Ryzen AI Max+ 395 on tokens/s, memory, price and software.">
+<meta property="og:image" content="https://aiscoremetrics.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-10-28">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DGX Spark vs Mac Studio – NVIDIA's New Mini PC Compared",
+  "description": "Is the NVIDIA DGX Spark with 128 GB worth it for local LLMs? Compared with Mac Studio M5 Max, M5 Ultra and Ryzen AI Max+ 395 on tokens/s, memory, price and software.",
+  "inLanguage": "en",
+  "datePublished": "2026-10-28",
+  "dateModified": "2026-10-28",
+  "image": "https://aiscoremetrics.com/og-image.png",
+  "url": "https://aiscoremetrics.com/en/blog/dgx-spark-vs-mac-studio/",
+  "mainEntityOfPage": "https://aiscoremetrics.com/en/blog/dgx-spark-vs-mac-studio/",
+  "author": {
+    "@type": "Organization",
+    "name": "AI Score Metrics",
+    "url": "https://aiscoremetrics.com/en/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AI Score Metrics",
+    "url": "https://aiscoremetrics.com/en/"
+  }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: spec-sheet tool. Control strip on top, summary line, ranked table, model matrix, method notes. */
+:root {
+  --bg: #F1F3F4;
+  --surface: #FFFFFF;
+  --ink: #13181C;
+  --muted: #5A6670;
+  --line: #D6DCE0;
+  --accent: #0A6B75;
+  --accent-soft: #D4EAEC;
+  --bar: #0A6B75;
+  --bar-2: #8FA7AE;
+  --good: #2E7A33;
+  --bad: #B3261E;
+  --warn: #A0560B;
+  --amd: #8A4B2E;
+  --m-weights: #2a78d6;
+  --m-kv: #1baf7a;
+  --m-ov: #6250d6;
+  --f-display: "Barlow Semi Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A;
+    --accent: #52C3CD; --accent-soft: #123338; --bar: #52C3CD; --bar-2: #4B5D66;
+    --good: #6CC070; --bad: #F2867E; --warn: #E3A256; --amd: #E39A72; --m-weights: #3987e5; --m-kv: #199e70; --m-ov: #9085e9; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A;
+  --accent: #52C3CD; --accent-soft: #123338; --bar: #52C3CD; --bar-2: #4B5D66;
+  --good: #6CC070; --bad: #F2867E; --warn: #E3A256; --amd: #E39A72; --m-weights: #3987e5; --m-kv: #199e70; --m-ov: #9085e9; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 22px; }
+header { display: grid; gap: 6px; }
+.toprow { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.seg.small button, .seg.small a { font: 600 12.5px var(--f-display); letter-spacing: .02em; padding: 4px 9px; color: var(--ink); text-decoration: none; border-right: 1px solid var(--line); }
+.seg.small a:last-child { border-right: 0; }
+.seg.small a[aria-current="page"] { background: var(--accent); color: var(--surface); }
+.seg.small a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1 .h1sub { display: block; font-size: clamp(17px, 2.4vw, 22px); font-weight: 600; letter-spacing: 0; color: var(--muted); margin-top: 8px; }
+th button.sort { all: unset; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+th button.sort:hover { color: var(--ink); }
+th button.sort:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+th[aria-sort] button.sort { color: var(--accent); }
+th .arr { font-family: var(--f-mono); font-size: 11px; width: 10px; display: inline-block; }
+.calib { border-collapse: collapse; min-width: 0; width: 100%; font-size: 13px; }
+.calib th, .calib td { padding: 5px 8px; border-bottom: 1px solid var(--line); text-align: right; }
+.calib th:first-child, .calib td:first-child { text-align: left; }
+.eyebrow { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; color: var(--accent); }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(30px, 5vw, 44px); line-height: 1; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: none; }
+h2 { font-family: var(--f-display); font-weight: 600; font-size: 20px; margin: 0; letter-spacing: .01em; }
+.controls { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 14px; }
+.row { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: end; }
+.field { display: grid; gap: 6px; min-width: 0; }
+.lab { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--muted); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.seg button { font: 600 14px var(--f-display); letter-spacing: .02em; padding: 7px 12px; border: 0; background: transparent; color: var(--ink); cursor: pointer; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+.seg button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+select, input[type="number"] { font: 400 14px var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
+input[type="range"] { accent-color: var(--accent); width: 200px; max-width: 100%; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.check input { accent-color: var(--accent); }
+.hint { font-size: 13px; color: var(--muted); margin: 0; }
+.btn { font: 600 13px var(--f-display); letter-spacing: .04em; text-transform: uppercase; border: 1px solid var(--line); background: transparent; color: var(--muted); padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+.btn:hover { color: var(--ink); border-color: var(--muted); }
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+.sum { border-left: 3px solid var(--accent); padding: 4px 0 4px 12px; display: grid; gap: 2px; min-width: 0; }
+.sum .k { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--muted); }
+.sum .v { font-family: var(--f-display); font-weight: 700; font-size: 21px; line-height: 1.15; }
+.sum .s { font-size: 13px; color: var(--muted); }
+.tablebox { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; min-width: 860px; }
+th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: 0; }
+th { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; font-size: 11.5px; color: var(--muted); white-space: nowrap; background: var(--surface); }
+td.num, th.num { text-align: right; }
+.rank { font-family: var(--f-mono); color: var(--muted); width: 36px; }
+.dev { display: grid; gap: 1px; }
+.dev b { font-weight: 600; }
+.dev span { font-size: 12.5px; color: var(--muted); }
+.devrow { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.ico { flex: none; width: 34px; height: 34px; border-radius: 6px; display: grid; place-items: center; background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.ico svg { width: 22px; height: 22px; }
+.ico.nvidia { color: var(--accent); }
+.ico.amd { color: var(--amd); }
+.ico.intel { color: #0071c5; }
+.seg .vi { width: 15px; height: 15px; vertical-align: -3px; margin-right: 5px; }
+.tag { font: 600 10.5px var(--f-display); letter-spacing: .08em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); margin-right: 6px; vertical-align: 1px; }
+.price { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.price input { width: 92px; text-align: right; font-family: var(--f-mono); font-size: 13px; padding: 4px 6px; }
+.price .edited { width: 7px; height: 7px; border-radius: 50%; background: var(--warn); }
+.src { display: block; font-size: 11.5px; color: var(--muted); text-align: right; white-space: nowrap; }
+.src.est { color: var(--warn); }
+.dots { display: flex; gap: 3px; }
+.dot { width: 11px; height: 11px; border-radius: 2px; border: 1px solid var(--muted); }
+.dot.on { background: var(--accent); border-color: var(--accent); }
+.dot.sel { outline: 2px solid var(--ink); outline-offset: 1px; }
+.barcell { display: grid; grid-template-columns: 1fr 44px; gap: 8px; align-items: center; min-width: 150px; }
+.track { height: 8px; background: var(--bg); border-radius: 2px; overflow: hidden; }
+.fill { height: 100%; background: var(--bar); }
+.fill.p { background: var(--bar-2); }
+.barcell .mono { text-align: right; font-size: 13px; }
+a.ext { color: var(--accent); font-size: 13px; text-decoration: none; white-space: nowrap; }
+a.ext:hover { text-decoration: underline; }
+.zero td { color: var(--muted); }
+.pickrow { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: end; }
+/* Gerät A/B: eigene Zeile, immer 50/50, auf dem Handy untereinander */
+.picks { flex: 1 1 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; align-items: start; }
+.pick { display: grid; gap: 6px; min-width: 0; }
+.pick-model { display: grid; gap: 6px; margin-top: 4px; }
+.pick-best { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-height: 36px; padding: 4px 10px; border: 1px dashed var(--line); border-radius: 4px; font-size: 14px; }
+.pick-best .na { color: var(--muted); }
+.detail .col-model { display: inline-block; margin-top: 4px; font: 600 12px var(--f-body); color: var(--accent); }
+.detail td.d .same { color: var(--muted); }
+.detail td.d .mem-why { display: block; white-space: normal; max-width: 250px; }
+.detail tr[data-k="runs"] td.v.win::after { content: none; }
+.runs-ok { font-family: var(--f-body); font-weight: 600; color: var(--good); }
+.runs-no { display: inline-block; padding: 1px 9px; border-radius: 99px; font: 600 12.5px var(--f-body); color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, transparent); border: 1px solid color-mix(in srgb, var(--bad) 45%, transparent); }
+.detail td.v small.sub { display: block; font: 400 11.5px var(--f-body); color: var(--muted); }
+#rank td.pw { white-space: nowrap; }
+.pick .pair { display: grid; grid-template-columns: minmax(118px, 34%) minmax(0, 1fr); gap: 6px; }
+.pick select, .pick .ss { width: 100%; min-width: 0; }
+@media (max-width: 640px) { .picks { grid-template-columns: minmax(0, 1fr); } }
+/* schmale Bildschirme: nichts darf breiter als die Steuerleiste werden */
+.controls { grid-template-columns: minmax(0, 1fr); }
+.pickrow, .picks { min-width: 0; }
+.row > .field { max-width: 100%; grid-template-columns: minmax(0, 1fr); }
+/* Steuerleiste: alle Bedienelemente gleich hoch, Labels gleich hoch → gleiche Grundlinie */
+.controls { --ctl-h: 36px; }
+.controls .lab { display: block; line-height: 18px; height: 18px; white-space: nowrap; }
+.controls .lab .mono { font-size: inherit; line-height: inherit; }
+.controls .seg { min-height: var(--ctl-h); }
+.controls .seg button { display: inline-flex; align-items: center; padding-block: 0; }
+.controls select, .controls input[type="number"], .controls .ss-btn, .controls .btn { height: var(--ctl-h); }
+.controls select { padding-block: 0; }
+.controls input[type="range"] { height: var(--ctl-h); margin: 0; }
+.controls .check { min-height: var(--ctl-h); }
+/* Suchbare Auswahlliste (ersetzt optisch ein <select>, das native Element bleibt für Wert und change-Event) */
+.ss { position: relative; min-width: 0; }
+#llm + .ss { width: 360px; max-width: 100%; }
+.ss-native { display: none; }
+.ss-btn { display: flex; align-items: center; gap: 8px; width: 100%; font: 400 14px var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; cursor: pointer; text-align: left; }
+.ss-btn:hover { border-color: var(--muted); }
+.ss-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ss-btn .ss-val { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ss-btn .ss-val.ph { color: var(--muted); }
+.ss-btn .ss-caret { flex: none; color: var(--muted); font-size: 11px; }
+#rank td.xc, #rank th.num { white-space: nowrap; }
+.colpick { position: relative; display: flex; justify-content: flex-end; margin: 0 0 8px; }
+.colpick-btn { font: 600 13px var(--f-display); padding: 6px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); cursor: pointer; }
+.colpick-btn[aria-expanded="true"] { border-color: var(--accent); }
+.colpick-menu { position: absolute; z-index: 20; top: calc(100% + 4px); right: 0; width: min(560px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px rgba(0, 0, 0, .18); padding: 12px 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px 18px; }
+.colpick-menu fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 5px; align-content: start; }
+.colpick-menu legend { font: 700 11px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; padding: 0; }
+.colpick-menu label { display: flex; gap: 7px; align-items: center; font-size: 13.5px; cursor: pointer; }
+.colpick-menu .cp-foot { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid var(--line); padding-top: 8px; font-size: 12px; color: var(--muted); }
+.colpick-menu .cp-foot button { font: inherit; color: var(--accent); background: none; border: 0; cursor: pointer; padding: 0; text-decoration: underline; }
+.ss-panel { position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; width: max(100%, 300px); max-width: min(440px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px rgba(0, 0, 0, .18); padding: 6px; display: grid; gap: 6px; }
+.ss-search { position: relative; }
+.ss-search input { width: 100%; font: 400 14px var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 7px 30px 7px 9px; }
+.ss-search input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
+.ss-clear { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border: 0; border-radius: 3px; background: transparent; color: var(--muted); font-size: 17px; line-height: 1; cursor: pointer; }
+.ss-clear:hover { color: var(--ink); background: var(--accent-soft); }
+.ss-list { position: relative; list-style: none; margin: 0; padding: 0; max-height: 300px; overflow-y: auto; }
+.ss-list li { padding: 6px 8px; border-radius: 4px; font-size: 14px; cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
+.ss-list li small { color: var(--muted); font-size: 12px; margin-left: auto; white-space: nowrap; }
+.ss-list li[aria-selected="true"] { font-weight: 600; color: var(--accent); }
+.ss-list li.act { background: var(--accent-soft); }
+.ss-list li.grp { cursor: default; padding: 8px 8px 3px; font: 600 11px var(--f-display); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.ss-list li.empty { cursor: default; color: var(--muted); }
+.pick .lab b { color: var(--ink); }
+.detail { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; overflow-x: auto; }
+.detail table { min-width: 0; }
+.detail th, .detail td { padding: 9px 14px; }
+.detail thead th { vertical-align: bottom; }
+.detail thead .devrow { font-family: var(--f-body); text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--ink); font-weight: 600; }
+.detail td.k { color: var(--muted); font-size: 13.5px; white-space: nowrap; }
+.detail td.v { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: 14px; }
+.detail td.v.win { font-weight: 600; color: var(--ink); }
+.detail td.v.win::after { content: " ✓"; color: var(--good); }
+.detail td.d { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.detail td.d small { display: block; font-size: 11.5px; color: var(--good); white-space: normal; max-width: 220px; }
+.detail th.dhead { vertical-align: bottom; }
+/* Gewinner im Vergleich */
+.verdict { margin: 14px 14px 18px; border-radius: 8px; border: 1px solid var(--line); overflow: hidden; text-align: center; background: var(--surface); }
+.verdict .v-head { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; }
+.verdict .v-mem { padding: 14px 16px 16px; border-top: 1px solid var(--line); text-align: left; background: var(--surface); }
+.verdict .v-mem h2 { font-size: 17px; }
+.cmp-extras { display: grid; gap: 10px; }
+.cmp-extras > h2 { margin: 0; }
+.v-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 12px; border-top: 1px solid var(--line); background: var(--bg); text-align: left; }
+.v-card { display: grid; align-content: start; gap: 6px; padding: 10px 12px 12px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); min-width: 0; }
+.v-card header { display: flex; align-items: center; gap: 8px; }
+.v-card .v-ico { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; font: 700 15px/1 var(--f-body); background: var(--bg); }
+.v-card .v-ttl { font: 700 13px var(--f-display); letter-spacing: .05em; text-transform: uppercase; color: var(--ink); }
+.v-card .v-main { justify-self: start; margin-left: 34px; font: 600 10.5px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 99px; padding: 0 6px; }
+.v-card .v-cs { margin-left: auto; font: 700 18px var(--f-mono); color: var(--ink); white-space: nowrap; }
+.v-card .v-sum { margin: 0 0 0 34px; font-size: 13.5px; line-height: 1.45; color: var(--ink); }
+.v-card .v-sum small { display: block; margin-top: 4px; font-size: 11.5px; color: var(--muted); }
+.v-card.hw { border-left: 3px solid var(--accent); }
+.v-card.hw .v-ico { background: var(--accent-soft); }
+.v-card.energy { border-left: 3px solid var(--good); }
+.v-card.energy .v-ico { background: color-mix(in srgb, var(--good) 16%, var(--surface)); }
+.v-card.calc { border: 1px dashed var(--muted); border-left: 3px dashed var(--warn); background: color-mix(in srgb, var(--bg) 55%, var(--surface)); }
+.v-card.energy .v-main { color: var(--good); border-color: var(--good); }
+.v-card.calc .v-main { color: var(--warn); border-color: var(--warn); border-style: dashed; }
+.v-card.calc .v-ico { color: var(--warn); background: color-mix(in srgb, var(--warn) 14%, var(--surface)); }
+@media (max-width: 900px) { .v-cards { grid-template-columns: minmax(0, 1fr); } }
+.verdict .v-side { display: grid; gap: 6px; align-content: center; justify-items: center; padding: 18px 14px; min-width: 0; background: var(--bg); color: var(--muted); }
+.verdict .v-side.won { background: var(--accent); color: var(--surface); }
+.verdict .v-name { font: 700 clamp(18px, 2.4vw, 24px)/1.15 var(--f-display); overflow-wrap: anywhere; }
+.verdict .v-pts { font: 600 13px var(--f-display); letter-spacing: .06em; text-transform: uppercase; opacity: .85; }
+.verdict .v-badge { font: 700 12px var(--f-display); letter-spacing: .12em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; background: var(--surface); color: var(--accent); }
+.verdict .v-mid { display: grid; align-content: center; justify-items: center; gap: 4px; padding: 14px 22px; background: var(--surface); }
+.verdict .v-score { font: 700 clamp(30px, 4vw, 44px)/1 var(--f-mono); color: var(--ink); white-space: nowrap; }
+.verdict .v-why { grid-column: 1 / -1; margin: 0; padding: 12px 16px; font-size: 14px; color: var(--ink); background: var(--surface); border-top: 1px solid var(--line); }
+.verdict .v-why small { display: block; margin-top: 4px; font-size: 12px; color: var(--muted); }
+.verdict .v-basis { font: 600 12px var(--f-display); letter-spacing: .04em; color: var(--muted); max-width: 22ch; }
+.verdict .v-ko { display: grid; gap: 4px; justify-items: center; padding: 14px 16px; text-align: center; background: color-mix(in srgb, var(--bad) 12%, var(--surface)); border-bottom: 1px solid color-mix(in srgb, var(--bad) 40%, transparent); }
+.verdict .v-ko-warn { font: 700 clamp(15px, 1.8vw, 18px)/1.3 var(--f-display); color: var(--bad); }
+.verdict .v-ko-hint { font: 400 12.5px/1.45 var(--f-body); color: var(--muted); margin-top: 2px; }
+.verdict .v-ko-win { font: 600 14px var(--f-body); color: var(--ink); }
+.verdict .v-calc { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 12px; padding: 12px 16px; font-size: 14px; color: var(--ink); border-top: 1px dashed var(--muted); background: color-mix(in srgb, var(--bg) 70%, var(--surface)); }
+.verdict .v-calc-lab { font: 600 12px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.verdict .v-calc-score { font-family: var(--f-mono); font-weight: 600; }
+.verdict .v-calc-lead { color: var(--muted); }
+.v-info { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--muted); font: 700 10px/1 var(--f-body); text-transform: none; cursor: help; }
+.approx { display: inline-block; min-width: 1.1em; margin-right: 4px; color: var(--warn); font-weight: 700; }
+.detail tr.calc td.v { color: color-mix(in srgb, var(--ink) 82%, var(--muted)); }
+/* Teilen */
+.v-share { position: relative; display: grid; justify-items: center; gap: 4px; margin-top: 6px; }
+.share-btn { display: inline-flex; align-items: center; gap: 8px; font: 700 15px var(--f-display); letter-spacing: .05em; text-transform: uppercase; padding: 10px 20px; border-radius: 99px; border: 0; background: var(--accent); color: var(--surface); cursor: pointer; box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 35%, transparent); }
+.share-btn:hover { filter: brightness(1.08); }
+.share-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.verdict.tie .share-btn { background: var(--warn); box-shadow: 0 2px 8px color-mix(in srgb, var(--warn) 35%, transparent); }
+.share-menu { position: fixed; z-index: 30; min-width: 210px; display: grid; padding: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, .18); text-align: left; }
+.share-menu[hidden] { display: none; }
+.share-menu a, .share-menu button { display: block; padding: 8px 10px; border: 0; border-radius: 5px; background: transparent; color: var(--ink); font: 400 14px var(--f-body); text-decoration: none; text-align: left; cursor: pointer; }
+.share-menu a:hover, .share-menu button:hover, .share-menu a:focus-visible, .share-menu button:focus-visible { background: var(--accent-soft); outline: none; }
+.share-status { font-size: 12px; color: var(--muted); min-height: 1em; word-break: break-all; }
+.verdict.tie { border-color: var(--warn); }
+.verdict.tie .v-side, .verdict.tie .v-mid { background: color-mix(in srgb, var(--warn) 16%, var(--surface)); color: var(--ink); }
+.verdict.tie .v-badge { background: var(--warn); color: var(--surface); }
+@media (max-width: 640px) { .verdict .v-head { grid-template-columns: minmax(0, 1fr); } .verdict .v-mid { padding: 10px; } .v-share, .share-btn { width: 100%; } .share-btn { justify-content: center; } }
+.detail tr.grp td { font-family: var(--f-display); font-weight: 700; text-transform: uppercase; letter-spacing: .07em; font-size: 12.5px; color: var(--ink); padding: 14px 14px 8px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 60%, var(--surface)); }
+.detail .grp-h { display: inline-flex; align-items: center; gap: 8px; }
+.detail .grp-ico { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; background: var(--surface); border: 1px solid var(--line); font: 13px/1 var(--f-body); text-transform: none; letter-spacing: 0; }
+.detail tbody tr:not(.grp) td.k { padding-left: 46px; }
+/* Bereiche als Karten mit Symbol-Überschrift */
+.panel { display: grid; gap: 10px; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px 16px; }
+.sec-h { display: flex; align-items: center; gap: 10px; margin: 0; }
+.sec-ico { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 7px; background: var(--bg); border: 1px solid var(--line); font: 16px/1 var(--f-body); }
+.verdict .panel { border: 0; border-radius: 0; padding: 0; background: none; }
+@media (max-width: 520px) { .panel { padding: 12px; } .detail tbody tr:not(.grp) td.k { padding-left: 14px; } }
+.memhead, .memrow { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr) minmax(190px, 250px); gap: 12px; align-items: center; }
+.memchart { display: grid; gap: 7px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; }
+.memhead { font-size: 11.5px; color: var(--muted); font-family: var(--f-mono); }
+.memaxis { position: relative; height: 16px; }
+.memaxis span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.memaxis span.lim { color: var(--ink); font-weight: 600; }
+.memname { display: flex; gap: 8px; align-items: center; min-width: 0; font-size: 13.5px; }
+.memname b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.memtrack { position: relative; height: 18px; }
+.memcap { position: absolute; top: 0; bottom: 0; left: 0; background: var(--bg); border-radius: 4px; }
+.memcapline { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: .75; }
+.membar { position: absolute; top: 2px; bottom: 2px; left: 0; display: flex; gap: 2px; }
+.membar .seg { height: 100%; min-width: 2px; cursor: default; }
+.membar .seg:first-child { border-radius: 4px 0 0 4px; }
+.membar .seg:last-child { border-radius: 0 4px 4px 0; }
+.membar .seg:only-child { border-radius: 4px; }
+.seg.w { background: var(--m-weights); } .seg.kv { background: var(--m-kv); } .seg.ov { background: var(--m-ov); }
+.seg.spill { background: repeating-linear-gradient(135deg, var(--warn) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 1.5px var(--warn); }
+.seg.nofit { background: repeating-linear-gradient(135deg, var(--bad) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 1.5px var(--bad); }
+.memclip { position: absolute; right: -2px; top: -1px; font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.memval { font-size: 12.5px; font-variant-numeric: tabular-nums; line-height: 1.35; }
+.memval .st { font-weight: 600; }
+.memval .st.ok { color: var(--good); } .memval .st.warn { color: var(--warn); } .memval .st.bad { color: var(--bad); }
+.use-model { margin-top: -4px; border-radius: 4px; }
+.use-model b { color: var(--ink); font-weight: 600; }
+.eci-line { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 6px; }
+.eci-line .lab { margin-right: 2px; }
+.eci { display: inline-flex; align-items: center; gap: 8px; cursor: help; font-family: var(--f-mono); font-size: 12.5px; color: var(--ink); white-space: nowrap; }
+.eci-track { width: 220px; max-width: 40vw; height: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
+.eci.small .eci-track { width: 110px; height: 8px; }
+.eci-fill { display: block; height: 100%; background-image: linear-gradient(90deg, var(--bad), var(--warn) 50%, var(--good)); background-repeat: no-repeat; }
+.eci-max { color: var(--muted); }
+.eci-est { font: 600 10.5px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--warn); border: 1px solid var(--warn); border-radius: 3px; padding: 0 4px; }
+.detail .na { color: var(--muted); font-family: var(--f-body); font-size: 13px; }
+.eci.none { color: var(--muted); font-family: var(--f-body); cursor: default; }
+.eci-name { display: block; font-family: var(--f-body); font-size: 13px; margin-bottom: 3px; }
+@media (prefers-reduced-motion: no-preference) { .use-model.flash { animation: useflash 1.2s ease-out; } }
+@keyframes useflash { from { background: var(--accent-soft); } to { background: transparent; } }
+.memval small { display: block; color: var(--muted); font-size: 11.5px; }
+.memlegend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.memlegend span { display: inline-flex; align-items: center; gap: 6px; }
+.memlegend i { display: inline-block; width: 14px; height: 10px; border-radius: 2px; }
+#tip { position: fixed; z-index: 10; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 12.5px; padding: 6px 9px; border-radius: 5px; max-width: 260px; line-height: 1.35; }
+@media (max-width: 760px) { .memhead { display: none; } .memrow { grid-template-columns: 1fr; gap: 4px; padding-block: 4px; border-bottom: 1px solid var(--line); } .memrow:last-child { border-bottom: 0; } }
+.matrix td, .matrix th { text-align: right; font-size: 13px; padding: 7px 10px; }
+.matrix td:first-child, .matrix th:first-child { text-align: left; }
+.matrix .na { color: var(--muted); opacity: .6; }
+.matrix th small { display: block; font-family: var(--f-body); text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 11.5px; }
+.method { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px 28px; }
+.method section { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.method p, .method li { font-size: 14px; color: var(--ink); margin: 0; }
+.method ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.formula { font-family: var(--f-mono); font-size: 12.5px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; overflow-x: auto; white-space: pre; line-height: 1.6; }
+.method a { color: var(--accent); }
+/* Statischer Erklärtext + FAQ unter dem Tool (für Suchmaschinen und Leser ohne JS) */
+.seo { display: grid; gap: 22px; border-top: 1px solid var(--line); padding-top: 22px; }
+.seo section { display: grid; gap: 8px; align-content: start; }
+.seo p { font-size: 14px; margin: 0; }
+.seo h3 { font: 600 15.5px var(--f-body); margin: 8px 0 0; }
+.seo .formula { }
+.noscript-devs { display: grid; gap: 10px; }
+.noscript-devs table { min-width: 0; font-size: 13.5px; }
+footer { font-size: 12.5px; color: var(--muted); }
+.site-footer { display: grid; gap: 12px; padding-top: 18px; border-top: 1px solid var(--line); }
+.site-footer p { margin: 0; }
+.foot-nav { display: flex; flex-wrap: wrap; gap: 8px 10px; }
+.foot-nav a { font: 600 13.5px var(--f-display); letter-spacing: .03em; color: var(--ink); text-decoration: none; padding: 7px 14px; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); }
+.foot-nav a:hover { border-color: var(--accent); color: var(--accent); }
+.foot-nav a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+@media (max-width: 520px) { .foot-nav { gap: 6px; } .foot-nav a { padding: 6px 11px; font-size: 13px; } }
+@media (max-width: 520px) { .wrap { padding-inline: 16px; } .seg button { padding: 7px 9px; font-size: 13px; } }
+@media (prefers-reduced-motion: no-preference) { .fill { transition: width .25s ease; } }
+/* Kaufberater (Ansicht "Berater") */
+body:not(.adv-mode) #advisor { display: none; }
+.adv-mode .controls > .row, .adv-mode .controls > p.hint, .adv-mode #picks, .adv-mode #pick-prompt-f, .adv-mode #cmp-mode-f,
+.adv-mode #rank-panel, .adv-mode #px-panel, .adv-mode #mx-panel, .adv-mode #mem-section, .adv-mode #detail, .adv-mode #cmp-extras, .adv-mode #share-tools { display: none !important; }
+.adv { gap: 16px; }
+.adv-prog { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; list-style: none; margin: 0; padding: 0; }
+.adv-prog li { display: grid; gap: 6px; font: 600 11.5px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); min-width: 0; }
+.adv-prog li::before { content: ""; display: block; height: 6px; border-radius: 99px; background: var(--bg); border: 1px solid var(--line); }
+.adv-prog li.done::before, .adv-prog li.cur::before { background: var(--accent); border-color: var(--accent); }
+.adv-prog li.cur { color: var(--accent); }
+.adv-prog span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.adv-q { font: 700 clamp(20px, 2.6vw, 26px)/1.2 var(--f-display); margin: 4px 0 0; }
+.adv-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.adv-opt { display: grid; gap: 4px; justify-items: start; text-align: left; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.adv-opt:hover { border-color: var(--accent); }
+.adv-opt[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--accent-soft); }
+.adv-opt:focus-visible, .adv-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.adv-opt .ai { font-size: 26px; line-height: 1; }
+.adv-opt b { font: 700 16px var(--f-display); letter-spacing: .02em; }
+.adv-opt small { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.adv-budget { display: grid; gap: 10px; max-width: 560px; }
+.adv-budget output { font: 700 28px var(--f-mono); color: var(--ink); }
+.adv-budget input[type="range"] { width: 100%; }
+.adv-budget .ends { display: flex; justify-content: space-between; font: 12px var(--f-mono); color: var(--muted); }
+.adv-nav { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.adv-btn { display: inline-flex; align-items: center; gap: 6px; font: 700 14px var(--f-display); letter-spacing: .04em; text-transform: uppercase; padding: 9px 18px; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; text-decoration: none; }
+.adv-btn:hover { border-color: var(--accent); color: var(--accent); }
+.adv-btn.pri { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.adv-btn.pri:hover { filter: brightness(1.08); color: var(--surface); }
+.adv-picks { display: flex; flex-wrap: wrap; gap: 6px; }
+.adv-picks span { font-size: 13px; padding: 3px 10px; border-radius: 99px; background: var(--bg); border: 1px solid var(--line); }
+.adv-res { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.adv-card { display: grid; align-content: start; gap: 10px; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: var(--card-shadow); min-width: 0; }
+.adv-card.top { border: 2px solid var(--accent); }
+.adv-card .medal { font: 700 13px var(--f-display); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.adv-card h3 { margin: 0; font: 700 20px/1.2 var(--f-display); overflow-wrap: anywhere; }
+.adv-card h3 small { display: block; font: 400 13px var(--f-body); color: var(--muted); margin-top: 2px; }
+.adv-card dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 0; font-size: 14px; }
+.adv-card dt { color: var(--muted); }
+.adv-card dd { margin: 0; font-family: var(--f-mono); text-align: right; overflow-wrap: anywhere; }
+.adv-card dd.m { font-family: var(--f-body); font-weight: 600; }
+.adv-card .sc { display: flex; align-items: baseline; gap: 8px; }
+.adv-card .sc b { font: 700 34px/1 var(--f-mono); }
+.adv-card .sc span { font-size: 12.5px; color: var(--muted); }
+.adv-card .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.adv-card .acts .adv-btn { padding: 7px 14px; font-size: 13px; }
+.adv-card .why { margin: 0; font-size: 13px; color: var(--muted); }
+@media (max-width: 900px) { .adv-res { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 520px) { .adv-prog li { font-size: 10px; } .adv-opts { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+</style>
+<link rel="stylesheet" href="/assets/design.css">
+<style>
+/* Info-Unterseiten */
+.page-top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.back-btn { display: inline-flex; align-items: center; gap: 6px; font: 700 14px var(--f-display); letter-spacing: .03em; text-decoration: none; color: var(--surface); background: var(--accent); padding: 9px 16px; border-radius: 99px; }
+.back-btn:hover { filter: brightness(1.08); }
+.toc { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.toc .lab { margin-right: 4px; }
+.toc a { font: 600 13px var(--f-body); color: var(--ink); text-decoration: none; padding: 5px 12px; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); }
+.toc a:hover { border-color: var(--accent); color: var(--accent); }
+.page-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; border-top: 0; padding-top: 0; }
+.page-body section.panel { scroll-margin-top: 16px; }
+.page-body .faq { display: grid; gap: 6px; }
+.page-body .faq h3 { margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--line); }
+.page-body .faq h3:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
+/* Blog */
+.post-meta { font-size: 13.5px; color: var(--muted); margin: 0; }
+.blog .panel p, .blog .panel li { font-size: 15px; line-height: 1.6; margin: 0; }
+.blog .panel ul, .blog .panel ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.blog .panel h3 { font: 600 16px var(--f-body); margin: 6px 0 0; }
+.blog .panel a { color: var(--accent); }
+.blog .tablebox table { min-width: 560px; font-size: 14px; }
+.blog .tablebox td.num, .blog .tablebox th.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.blog .lead { font-size: 17px; line-height: 1.55; color: var(--ink); margin: 0; }
+.blog .verdict-box { border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 10px; padding: 12px 16px; }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.cta a { display: inline-flex; align-items: center; gap: 6px; font: 700 14px var(--f-display); letter-spacing: .03em; text-decoration: none; padding: 9px 16px; border-radius: 99px; border: 1px solid var(--accent); color: var(--accent); background: var(--surface); }
+.cta a.pri { background: var(--accent); color: var(--surface); }
+.cta a:hover { filter: brightness(1.08); }
+.post-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.post-card { display: grid; align-content: start; gap: 8px; padding: 18px; border: 1px solid var(--line); border-radius: var(--card-radius, 16px); background: var(--surface); box-shadow: var(--card-shadow); text-decoration: none; color: var(--ink); }
+.post-card:hover { border-color: var(--accent); }
+.post-card h2 { font: 700 20px/1.25 var(--f-display); margin: 0; }
+.post-card p { margin: 0; font-size: 14.5px; color: var(--muted); }
+.post-card .more { font: 700 13px var(--f-display); letter-spacing: .05em; text-transform: uppercase; color: var(--accent); }
+.post-card .ico { font-size: 28px; width: auto; height: auto; border: 0; background: none; place-items: start; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="toprow">
+      <div class="eyebrow">AI Score Metrics</div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode">
+          <span class="theme-label">Dark Mode</span><span class="theme-track" aria-hidden="true"><span class="theme-thumb"></span></span>
+        </button>
+      <div class="seg small" id="lang" role="group" aria-label="Sprache / Language">
+        <a href="/blog/dgx-spark-vs-mac-studio/" data-id="de" hreflang="de" lang="de">DE</a><a href="/en/blog/dgx-spark-vs-mac-studio/" data-id="en" hreflang="en" lang="en" aria-current="page">EN</a>
+      </div>
+      </div>
+    </div>
+    <h1>DGX Spark vs Mac Studio – NVIDIA's New Mini PC Compared</h1>
+    <p class="post-meta"><time datetime="2026-10-28">28 October 2026</time> · 3 min read</p>
+    <div class="page-top"><a class="back-btn" href="/en/blog/">← All articles</a><nav class="toc" aria-label="Contents"><span class="lab">Contents</span><a href="#what-is-the-dgx-spark">What is the DGX Spark?</a><a href="#the-numbers-side-by-side">The numbers side by side</a><a href="#the-spark-is-slow-at-writing">The Spark is slow at writing</a><a href="#where-the-spark-shines">Where the Spark shines</a><a href="#is-the-premium-worth-it">Is the premium worth it?</a><a href="#verdict">Verdict</a></nav></div>
+  </header>
+  <main class="page-body blog">
+<section class="panel">
+      <p class="lead">The <strong>NVIDIA DGX Spark</strong> promises an AI supercomputer for your desk: 128 GB of unified memory, a Blackwell GPU, CUDA – in a box the size of a Mac mini. At around €6,300 it competes directly with the Mac Studio. The question is: what are you paying the premium for?</p>
+    </section>
+
+    <section class="panel" id="what-is-the-dgx-spark"><h2 class="sec-h"><span class="sec-ico" aria-hidden="true">📦</span><span>What is the DGX Spark?</span></h2>
+      <p>The DGX Spark uses the GB10 chip: an ARM CPU and a Blackwell GPU sharing 128 GB of LPDDR5X. About 119 GB of that is available to the model. The principle is similar to the Mac: because CPU and GPU share memory, models fit that won't fit on any consumer graphics card. There's also a 64 GB version for around €5,000 and equivalent machines from other vendors.</p>
+      <p>The catch is the <strong>memory bandwidth of 273 GB/s</strong>. That's less than an RTX 5060 Ti – and bandwidth decides how fast a model writes.</p>
+    </section>
+
+    <section class="panel" id="the-numbers-side-by-side"><h2 class="sec-h"><span class="sec-ico" aria-hidden="true">📊</span><span>The numbers side by side</span></h2>
+      <p>Estimated values with Q4_K_M and 32k context. Prices for Spark and Ryzen are estimates, Mac prices are Apple list prices (Germany).</p>
+      <div class="tablebox"><table>
+        <thead><tr><th></th><th class="num">DGX Spark 128 GB</th><th class="num">Mac Studio M5 Max 128 GB</th><th class="num">Mac Studio M5 Ultra 96 GB</th><th class="num">Ryzen AI Max+ 395</th></tr></thead>
+        <tbody>
+          <tr><td>Price</td><td class="num">≈ €6,300</td><td class="num">€6,189</td><td class="num">€6,599</td><td class="num">≈ €3,400</td></tr>
+          <tr><td>Usable memory</td><td class="num">119 GB</td><td class="num">96 GB*</td><td class="num">72 GB*</td><td class="num">96 GB</td></tr>
+          <tr><td>Bandwidth</td><td class="num">273 GB/s</td><td class="num">614 GB/s</td><td class="num">1,200 GB/s</td><td class="num">256 GB/s</td></tr>
+          <tr><td>gpt-oss-120b – writing</td><td class="num">27 tok/s</td><td class="num">52 tok/s</td><td class="num">82 tok/s</td><td class="num">25 tok/s</td></tr>
+          <tr><td>gpt-oss-120b – prompt</td><td class="num">3,680 tok/s</td><td class="num">4,320 tok/s</td><td class="num">6,920 tok/s</td><td class="num">1,750 tok/s</td></tr>
+          <tr><td>Qwen3.5 122B-A10B</td><td class="num">15 tok/s</td><td class="num">28 tok/s</td><td class="num">only with raised limit*</td><td class="num">14 tok/s</td></tr>
+          <tr><td>Qwen3-Coder 30B-A3B</td><td class="num">30 tok/s</td><td class="num">59 tok/s</td><td class="num">93 tok/s</td><td class="num">28 tok/s</td></tr>
+          <tr><td>Llama 3.3 70B (dense)</td><td class="num">4 tok/s</td><td class="num">8 tok/s</td><td class="num">13 tok/s</td><td class="num">4 tok/s</td></tr>
+          <tr><td>Power draw</td><td class="num">≈ 140 W</td><td class="num">≈ 100 W</td><td class="num">≈ 190 W</td><td class="num">≈ 130 W</td></tr>
+        </tbody>
+      </table></div>
+      <p class="hint">* macOS default limit. With the GPU memory limit raised: M5 Max 122 GB, M5 Ultra 90 GB.</p>
+      <p><a href="/en/#vs=dgx-spark-128,m5max,moe120">DGX Spark vs Mac Studio M5 Max in the calculator →</a></p>
+    </section>
+
+    <section class="panel" id="the-spark-is-slow-at-writing"><h2 class="sec-h"><span class="sec-ico" aria-hidden="true">🐢</span><span>The Spark is slow at writing</span></h2>
+      <p>The Mac Studio with M5 Max costs practically the same but has more than twice the bandwidth – so it writes about twice as fast with every model. The M5 Ultra is even three times as fast. With dense models like Llama 3.3 70B the gap is especially visible: 4 tok/s on the Spark is slower than you read.</p>
+      <p>Compared with the <strong>Ryzen AI Max+ 395</strong>, which has similar bandwidth, the Spark is barely faster at writing – yet costs almost twice as much.</p>
+    </section>
+
+    <section class="panel" id="where-the-spark-shines"><h2 class="sec-h"><span class="sec-ico" aria-hidden="true">💪</span><span>Where the Spark shines</span></h2>
+      <ul>
+        <li><strong>Prompt processing:</strong> thanks to Blackwell tensor cores, the Spark reads long prompts about twice as fast as the Ryzen AI Max+ and nearly as fast as the M5 Max.</li>
+        <li><strong>CUDA:</strong> everything that runs on NVIDIA servers – vLLM, TensorRT-LLM, PyTorch, fine-tuning tools – runs here too. For developers who later deploy to DGX or cloud hardware, that's the real reason to buy.</li>
+        <li><strong>Memory:</strong> 119 GB usable without changing any limit – a bit more than a 128 GB Mac Studio by default.</li>
+        <li><strong>Clustering:</strong> two Sparks can be linked via the built-in high-speed network card to load even larger models.</li>
+      </ul>
+    </section>
+
+    <section class="panel" id="is-the-premium-worth-it"><h2 class="sec-h"><span class="sec-ico" aria-hidden="true">💶</span><span>Is the premium worth it?</span></h2>
+      <p>Compared with the Ryzen AI Max+ 395 you pay about <strong>€2,900 more</strong> – essentially for CUDA and faster prompt processing. Compared with the Mac Studio M5 Max you pay the same but get only half the writing speed.</p>
+    </section>
+
+    <section class="panel" id="verdict"><h2 class="sec-h"><span class="sec-ico" aria-hidden="true">✅</span><span>Verdict</span></h2>
+      <div class="verdict-box"><p><strong>DGX Spark</strong> if you develop AI software, want to fine-tune models or depend on the NVIDIA ecosystem. <strong>Mac Studio</strong> if you simply want to use large models as fast as possible – for the same money it writes twice as fast. <strong>Ryzen AI Max+ 395</strong> if you want 128 GB at the lowest price.</p></div>
+      <p>More on how much memory you need for which model: <a href="/en/blog/how-much-vram-do-i-need/">How much VRAM do I need?</a></p>
+    </section>
+    <section class="panel" id="rechner"><h2 class="sec-h"><span class="sec-ico" aria-hidden="true">🧮</span><span>Run the numbers yourself</span></h2>
+      <p>The numbers in this article are calculator estimates for Q4_K_M. With your model, context and budget the result may differ.</p>
+      <div class="cta"><a class="pri" href="/en/#advisor">🧭 Start the buying advisor</a><a href="/en/">Open the calculator</a></div>
+    </section>
+    <section class="panel"><h2 class="sec-h"><span class="sec-ico" aria-hidden="true">📚</span><span>More articles</span></h2>
+      <ul><li><a href="/en/blog/best-gpu-for-local-llms-2026/">Best GPU for Local LLMs in 2026 – Buying Guide</a></li><li><a href="/en/blog/rtx-5090-vs-mac-studio-m5-ultra/">RTX 5090 vs Mac Studio M5 Ultra – Which Is Worth It for AI?</a></li><li><a href="/en/blog/how-much-vram-do-i-need/">How Much VRAM Do I Need? LLM Models and GPU Memory Explained</a></li></ul>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <nav class="foot-nav" aria-label="Info pages">
+      <a href="/en/">Calculator</a><a href="/en/methodology/">Methodology</a><a href="/en/faq/">FAQ</a><a href="/en/about/">About</a><a href="/en/blog/" aria-current="page">Blog</a><a href="/en/methodology/#data-as-of">Data sources</a>
+    </nav>
+  </footer>
+</div>
+<script>
+// Datum der letzten Preisaktualisierung (Methodik → Datenstand)
+(() => { const el = document.querySelectorAll("[data-updated]"); if (!el.length) return;
+  fetch("/data/prices.json", { cache: "no-cache" }).then((r) => r.json()).then((p) => { if (!p.updatedAt) return;
+    const t = new Date(p.updatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+    el.forEach((e) => { e.textContent = t; }); }).catch(() => {}); })();
+</script>
+</body>
+</html>

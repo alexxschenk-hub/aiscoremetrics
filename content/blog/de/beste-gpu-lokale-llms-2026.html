@@ -1,0 +1,75 @@
+<!-- { "key": "best-gpu", "order": 1, "slug": "beste-gpu-lokale-llms-2026", "icon": "🎮", "date": "2026-10-28",
+  "title": "Beste GPU für lokale LLMs 2026 – Kaufberatung",
+  "desc": "Welche Grafikkarte für lokale KI? GPU-Empfehlungen nach Budget von 570 bis 6.000 €, dazu RTX 4090 vs. RTX 3090 vs. RX 7900 XTX mit Tokens/s, VRAM und Bildzeiten.",
+  "icons": ["🎯", "💶", "⚔️", "🧪", "✅"] } -->
+    <section class="panel">
+      <p class="lead">Für lokale Sprachmodelle zählen bei einer Grafikkarte genau zwei Dinge: <strong>wie viel VRAM</strong> sie hat (passt das Modell überhaupt?) und <strong>wie hoch die Speicherbandbreite</strong> ist (wie schnell schreibt es?). Rechenleistung ist zweitrangig – sie bestimmt vor allem, wie lange du auf das erste Wort wartest. Diese Kaufberatung sortiert die aktuellen Karten nach Budget und vergleicht die drei beliebtesten 24-GB-Karten direkt.</p>
+    </section>
+
+    <section>
+      <h2>Worauf es beim Kauf ankommt</h2>
+      <ul>
+        <li><strong>VRAM entscheidet, welche Modelle laufen.</strong> 16 GB reichen für Modelle bis etwa 14 Milliarden Parameter, 24 GB für 27B-Modelle und die beliebten 30B-MoE-Modelle, 32 GB geben Luft für längeren Kontext. Wie du den Bedarf ausrechnest, steht im Artikel <a href="blog:vram">Wie viel VRAM brauche ich?</a></li>
+        <li><strong>Bandbreite entscheidet das Tempo.</strong> Für jeden erzeugten Token liest die GPU die aktiven Gewichte einmal komplett aus dem Speicher. Doppelte Bandbreite heißt ungefähr doppelte Tokens pro Sekunde.</li>
+        <li><strong>Rechenleistung entscheidet die Wartezeit.</strong> Lange Prompts – etwa ein ganzes Dokument oder ein Code-Repository – werden mit Tensor-Leistung verarbeitet. Hier liegen NVIDIA-Karten klar vorne.</li>
+        <li><strong>Software:</strong> NVIDIA (CUDA) läuft mit jedem Tool sofort. AMD läuft unter ROCm oder Vulkan mit llama.cpp, LM Studio und Ollama gut, bei Bild- und Trainingswerkzeugen gibt es öfter Bastelarbeit.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Empfehlungen nach Budget</h2>
+      <p>Preise: günstigste lieferbare Karte in Deutschland, Stand Ende Oktober 2026 (tagesaktuell im Rechner). Tempo: geschätzte Generierung mit Q4_K_M und 32k Kontext.</p>
+      <div class="tablebox"><table>
+        <thead><tr><th>Budget</th><th>Karte</th><th class="num">VRAM</th><th class="num">Bandbreite</th><th>Größtes sinnvolles Modell</th><th class="num">Tempo</th></tr></thead>
+        <tbody>
+          <tr><td>bis 750 €</td><td>RTX 5060 Ti 16 GB (≈ 570 €)</td><td class="num">16 GB</td><td class="num">448 GB/s</td><td>Gemma 4 12B</td><td class="num">34 tok/s</td></tr>
+          <tr><td>bis 750 €</td><td>RX 9070 XT (≈ 750 €)</td><td class="num">16 GB</td><td class="num">640 GB/s</td><td>Gemma 4 12B</td><td class="num">41 tok/s</td></tr>
+          <tr><td>≈ 1.100 €</td><td>RTX 5070 Ti (≈ 1.080 €)</td><td class="num">16 GB</td><td class="num">896 GB/s</td><td>Gemma 4 12B</td><td class="num">69 tok/s</td></tr>
+          <tr><td>≈ 1.500 €</td><td>RX 7900 XTX (≈ 1.510 €)</td><td class="num">24 GB</td><td class="num">960 GB/s</td><td>Qwen3.6 27B</td><td class="num">28 tok/s</td></tr>
+          <tr><td>gebraucht</td><td>RTX 3090</td><td class="num">24 GB</td><td class="num">936 GB/s</td><td>Qwen3.6 27B</td><td class="num">32 tok/s</td></tr>
+          <tr><td>≈ 5.000 €</td><td>RTX 4090</td><td class="num">24 GB</td><td class="num">1.008 GB/s</td><td>Qwen3.6 27B</td><td class="num">35 tok/s</td></tr>
+          <tr><td>≈ 6.000 €</td><td>RTX 5090</td><td class="num">32 GB</td><td class="num">1.792 GB/s</td><td>Qwen3.6 27B, mehr Kontext</td><td class="num">62 tok/s</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Einstieg bis 750 €</h3>
+      <p>Die <strong>RTX 5060 Ti 16 GB</strong> ist der günstigste sinnvolle Einstieg mit CUDA. Ihr Schwachpunkt ist die geringe Bandbreite von 448 GB/s. Die <strong>RX 9070 XT</strong> kostet etwas mehr, ist beim Schreiben aber gut 20 % schneller. Beide haben 16 GB: gpt-oss-20b passt mit kurzem Kontext gerade so, bei 32k wird es zu eng.</p>
+      <h3>Mittelklasse um 1.100 bis 1.500 €</h3>
+      <p>Die <strong>RTX 5070 Ti</strong> hat dieselben 16 GB, aber doppelt so viel Bandbreite wie die 5060 Ti – kleine Modelle laufen damit doppelt so schnell. Wer größere Modelle will, sollte aber eher zu <strong>24 GB</strong> greifen: Die <strong>RX 7900 XTX</strong> ist aktuell die günstigste neue Karte mit 24 GB.</p>
+      <h3>Oberklasse</h3>
+      <p>Die <strong>RTX 4090</strong> ist inzwischen ein Auslaufmodell: Neu kostet sie mit rund 5.000 € fast so viel wie eine RTX 5090. Die <strong>RTX 5090</strong> ist mit 1.792 GB/s die schnellste Consumer-Karte und hat als einzige 32 GB – allerdings zu einem Preis, bei dem auch ein Mac Studio in Frage kommt. Diesen Vergleich gibt es im Artikel <a href="blog:5090-vs-m5-ultra">RTX 5090 vs. Mac Studio M5 Ultra</a>.</p>
+    </section>
+
+    <section>
+      <h2>RTX 4090 vs. RTX 3090 vs. RX 7900 XTX</h2>
+      <p>Alle drei haben 24 GB VRAM und rund 1 TB/s Bandbreite. Damit passen sie auf dieselben Modelle – die Unterschiede liegen beim Tempo, bei der Wartezeit und beim Preis.</p>
+      <div class="tablebox"><table>
+        <thead><tr><th></th><th class="num">RTX 4090</th><th class="num">RTX 3090</th><th class="num">RX 7900 XTX</th></tr></thead>
+        <tbody>
+          <tr><td>VRAM</td><td class="num">24 GB</td><td class="num">24 GB</td><td class="num">24 GB</td></tr>
+          <tr><td>Bandbreite</td><td class="num">1.008 GB/s</td><td class="num">936 GB/s</td><td class="num">960 GB/s</td></tr>
+          <tr><td>Qwen3.6 27B – Schreiben</td><td class="num">35 tok/s</td><td class="num">32 tok/s</td><td class="num">28 tok/s</td></tr>
+          <tr><td>Qwen3.6 27B – Prompt</td><td class="num">3.060 tok/s</td><td class="num">1.320 tok/s</td><td class="num">800 tok/s</td></tr>
+          <tr><td>Qwen3-Coder 30B-A3B – Schreiben</td><td class="num">93 tok/s</td><td class="num">87 tok/s</td><td class="num">74 tok/s</td></tr>
+          <tr><td>FLUX.1 dev, 1 Bild 1024²</td><td class="num">≈ 14 s</td><td class="num">≈ 33 s</td><td class="num">≈ 32 s</td></tr>
+          <tr><td>Leistungsaufnahme (Karte)</td><td class="num">450 W</td><td class="num">350 W</td><td class="num">355 W</td></tr>
+          <tr><td>Preis</td><td class="num">≈ 4.990 € neu</td><td class="num">nur gebraucht</td><td class="num">≈ 1.510 € neu</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>Beim Schreiben liegen alle drei nah beieinander.</strong> Die 3090 erreicht über 90 % des 4090-Tempos, weil die Bandbreite fast gleich ist. <strong>Bei langen Prompts zieht die 4090 davon:</strong> Ein 16k-Token-Dokument liest sie in rund 5 Sekunden ein, die 3090 braucht etwa 12, die 7900 XTX etwa 20 Sekunden. Bei Bildgenerierung ist die 4090 mehr als doppelt so schnell.</p>
+      <p><a href="vs:4090,rx7900xtx,qwen36_27">RTX 4090 vs. RX 7900 XTX im Rechner vergleichen →</a></p>
+    </section>
+
+    <section>
+      <h2>Für wen welche Karte?</h2>
+      <ul>
+        <li><strong>RTX 3090 (gebraucht):</strong> Das beste Preis-Leistungs-Verhältnis für reine Text-KI, wenn du eine gute Karte findest. Auf Garantie, Lüfter und Speichertemperaturen achten.</li>
+        <li><strong>RX 7900 XTX:</strong> 24 GB neu mit Garantie für rund ein Drittel des 4090-Preises. Ideal für Chat und Coding mit llama.cpp oder LM Studio. Weniger geeignet, wenn du viel mit Bildern, Videos oder Training arbeitest.</li>
+        <li><strong>RTX 4090:</strong> Lohnt sich nur noch, wenn du sie günstig (etwa gebraucht) bekommst. Für Agenten mit langen Prompts und für Bildgenerierung ist sie spürbar besser als die anderen beiden.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Fazit</h2>
+      <div class="verdict-box"><p><strong>Unter 1.000 €:</strong> RX 9070 XT oder RTX 5060 Ti 16 GB. <strong>Bestes Preis-Leistungs-Verhältnis mit 24 GB:</strong> RTX 3090 gebraucht oder RX 7900 XTX neu. <strong>Ohne Kompromisse:</strong> RTX 5090 – oder, wenn Modelle über 30 GB laufen sollen, ein Mac Studio mit viel gemeinsamem Speicher.</p></div>
+      <p>Du bist unsicher, was zu deinem Einsatz passt? Der <a href="advisor:">Kaufberater</a> fragt vier Dinge ab und schlägt drei passende Geräte vor.</p>
+    </section>

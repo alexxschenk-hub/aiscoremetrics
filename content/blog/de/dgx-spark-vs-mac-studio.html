@@ -1,0 +1,61 @@
+<!-- { "key": "dgx-spark", "order": 3, "slug": "dgx-spark-vs-mac-studio", "icon": "📦", "date": "2026-10-28",
+  "title": "DGX Spark vs. Mac Studio – NVIDIAs neuer Mini-PC im Vergleich",
+  "desc": "Lohnt sich der NVIDIA DGX Spark mit 128 GB für lokale LLMs? Vergleich mit Mac Studio M5 Max, M5 Ultra und Ryzen AI Max+ 395 bei Tokens/s, Speicher, Preis und Software.",
+  "icons": ["📦", "📊", "🐢", "💪", "💶", "✅"] } -->
+    <section class="panel">
+      <p class="lead">Der <strong>NVIDIA DGX Spark</strong> verspricht einen KI-Supercomputer für den Schreibtisch: 128 GB gemeinsamer Speicher, Blackwell-GPU, CUDA – in einem Gehäuse so groß wie ein Mac mini. Für rund 6.300 € konkurriert er direkt mit dem Mac Studio. Die Frage ist: Wofür zahlst du den Aufpreis?</p>
+    </section>
+
+    <section>
+      <h2>Was ist der DGX Spark?</h2>
+      <p>Im DGX Spark steckt der GB10-Chip: eine ARM-CPU und eine Blackwell-GPU, die sich 128 GB LPDDR5X teilen. Davon stehen dem Modell rund 119 GB zur Verfügung. Das Prinzip ähnelt dem Mac: Weil CPU und GPU denselben Speicher nutzen, passen Modelle, die auf keine Consumer-Grafikkarte passen. Es gibt außerdem eine Variante mit 64 GB für rund 5.000 € und baugleiche Geräte anderer Hersteller.</p>
+      <p>Der Haken ist die <strong>Speicherbandbreite von 273 GB/s</strong>. Das ist weniger als bei einer RTX 5060 Ti – und die Bandbreite bestimmt, wie schnell ein Modell schreibt.</p>
+    </section>
+
+    <section>
+      <h2>Die Zahlen im Vergleich</h2>
+      <p>Geschätzte Werte mit Q4_K_M und 32k Kontext. Preise für Spark und Ryzen sind Schätzungen, Mac-Preise Apple-Listenpreise.</p>
+      <div class="tablebox"><table>
+        <thead><tr><th></th><th class="num">DGX Spark 128 GB</th><th class="num">Mac Studio M5 Max 128 GB</th><th class="num">Mac Studio M5 Ultra 96 GB</th><th class="num">Ryzen AI Max+ 395</th></tr></thead>
+        <tbody>
+          <tr><td>Preis</td><td class="num">≈ 6.300 €</td><td class="num">6.189 €</td><td class="num">6.599 €</td><td class="num">≈ 3.400 €</td></tr>
+          <tr><td>Nutzbarer Speicher</td><td class="num">119 GB</td><td class="num">96 GB*</td><td class="num">72 GB*</td><td class="num">96 GB</td></tr>
+          <tr><td>Bandbreite</td><td class="num">273 GB/s</td><td class="num">614 GB/s</td><td class="num">1.200 GB/s</td><td class="num">256 GB/s</td></tr>
+          <tr><td>gpt-oss-120b – Schreiben</td><td class="num">27 tok/s</td><td class="num">52 tok/s</td><td class="num">82 tok/s</td><td class="num">25 tok/s</td></tr>
+          <tr><td>gpt-oss-120b – Prompt</td><td class="num">3.680 tok/s</td><td class="num">4.320 tok/s</td><td class="num">6.920 tok/s</td><td class="num">1.750 tok/s</td></tr>
+          <tr><td>Qwen3.5 122B-A10B</td><td class="num">15 tok/s</td><td class="num">28 tok/s</td><td class="num">nur mit Limit*</td><td class="num">14 tok/s</td></tr>
+          <tr><td>Qwen3-Coder 30B-A3B</td><td class="num">30 tok/s</td><td class="num">59 tok/s</td><td class="num">93 tok/s</td><td class="num">28 tok/s</td></tr>
+          <tr><td>Llama 3.3 70B (dicht)</td><td class="num">4 tok/s</td><td class="num">8 tok/s</td><td class="num">13 tok/s</td><td class="num">4 tok/s</td></tr>
+          <tr><td>Leistungsaufnahme</td><td class="num">≈ 140 W</td><td class="num">≈ 100 W</td><td class="num">≈ 190 W</td><td class="num">≈ 130 W</td></tr>
+        </tbody>
+      </table></div>
+      <p class="hint">* macOS-Standardlimit. Mit angehobenem GPU-Speicherlimit: M5 Max 122 GB, M5 Ultra 90 GB.</p>
+      <p><a href="vs:dgx-spark-128,m5max,moe120">DGX Spark vs. Mac Studio M5 Max im Rechner →</a></p>
+    </section>
+
+    <section>
+      <h2>Beim Schreiben ist der Spark langsam</h2>
+      <p>Der Mac Studio mit M5 Max kostet praktisch dasselbe, hat aber mehr als die doppelte Bandbreite – und schreibt deshalb bei jedem Modell etwa doppelt so schnell. Der M5 Ultra ist sogar dreimal so schnell. Bei dichten Modellen wie Llama 3.3 70B wird der Unterschied besonders deutlich: 4 tok/s auf dem Spark sind langsamer, als man mitliest.</p>
+      <p>Gegenüber dem <strong>Ryzen AI Max+ 395</strong>, der ähnlich viel Bandbreite hat, ist der Spark beim Schreiben kaum schneller – kostet aber fast das Doppelte.</p>
+    </section>
+
+    <section>
+      <h2>Wo der Spark punktet</h2>
+      <ul>
+        <li><strong>Prompt-Verarbeitung:</strong> Dank Blackwell-Tensor-Kernen liest der Spark lange Prompts etwa doppelt so schnell ein wie der Ryzen AI Max+ und nahezu so schnell wie der M5 Max.</li>
+        <li><strong>CUDA:</strong> Alles, was auf NVIDIA-Servern läuft – vLLM, TensorRT-LLM, PyTorch, Fine-Tuning-Werkzeuge – läuft auch hier. Für Entwickler, die später auf DGX- oder Cloud-Hardware deployen, ist das der eigentliche Grund für den Kauf.</li>
+        <li><strong>Speicher:</strong> 119 GB nutzbar ohne Umstellen eines Limits – etwas mehr als der Mac Studio mit 128 GB im Standard.</li>
+        <li><strong>Clustering:</strong> Zwei Sparks lassen sich über die eingebaute Hochgeschwindigkeits-Netzwerkkarte koppeln, um noch größere Modelle zu laden.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Lohnt sich der Aufpreis?</h2>
+      <p>Gegenüber dem Ryzen AI Max+ 395 zahlst du rund <strong>2.900 € mehr</strong> – im Wesentlichen für CUDA und die schnellere Prompt-Verarbeitung. Gegenüber dem Mac Studio M5 Max zahlst du gleich viel, bekommst aber nur die Hälfte des Schreibtempos.</p>
+    </section>
+
+    <section>
+      <h2>Fazit</h2>
+      <div class="verdict-box"><p><strong>DGX Spark</strong>, wenn du KI-Software entwickelst, Modelle feintunen willst oder auf das NVIDIA-Ökosystem angewiesen bist. <strong>Mac Studio</strong>, wenn du große Modelle einfach nur möglichst schnell nutzen willst – für das gleiche Geld schreibt er doppelt so schnell. <strong>Ryzen AI Max+ 395</strong>, wenn du 128 GB zum kleinsten Preis suchst.</p></div>
+      <p>Mehr zur Frage, wie viel Speicher du für welches Modell brauchst: <a href="blog:vram">Wie viel VRAM brauche ich?</a></p>
+    </section>

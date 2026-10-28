@@ -7,6 +7,7 @@ on:
       - "public/index.html"
       - "public/data/devices.json"
       - "scripts/build-seo.mjs"
+      - "content/**"
   workflow_dispatch:
 
 permissions:
@@ -27,7 +28,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add public/index.html public/en/index.html public/sitemap.xml
+          git add public/index.html public/en/index.html public/sitemap.xml public/methodik public/faq public/ueber public/en/methodology public/en/faq public/en/about public/blog public/en/blog
           if git diff --cached --quiet; then
             echo "SEO-Seiten sind aktuell."
           else

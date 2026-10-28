@@ -1,0 +1,74 @@
+<!-- { "key": "vram", "order": 4, "slug": "wie-viel-vram-brauche-ich", "icon": "🧮", "date": "2026-10-28",
+  "title": "Wie viel VRAM brauche ich? LLM-Modelle und GPU-Speicher erklärt",
+  "desc": "VRAM-Bedarf für lokale LLMs berechnen: einfache Formel, Tabelle von 9B bis 671B, Einfluss von Quantisierung und Kontext – und warum die Bandbreite das Tempo bestimmt.",
+  "icons": ["🧮", "📋", "🗜️", "📏", "🚀", "🍏", "✅"] } -->
+    <section class="panel">
+      <p class="lead">Die wichtigste Frage vor dem Hardware-Kauf: <strong>Passt mein Modell in den Speicher?</strong> Wenn nicht, läuft es entweder gar nicht oder quälend langsam. Die gute Nachricht: Den Bedarf kannst du mit einer einfachen Formel ziemlich genau abschätzen.</p>
+    </section>
+
+    <section>
+      <h2>Die Formel</h2>
+      <div class="formula">Speicher (GB) ≈ Parameter (Mrd.) × Bits pro Gewicht ÷ 8
+             + KV-Cache (wächst mit dem Kontext)
+             + ca. 1 GB Laufzeit-Overhead</div>
+      <p>Bei der Standard-Quantisierung <strong>Q4_K_M</strong> (rund 4,85 Bit pro Gewicht) heißt das als Faustregel: <strong>0,6 GB pro Milliarde Parameter</strong>, plus Kontext und Overhead.</p>
+      <p><strong>Beispiel Qwen3.6 27B:</strong> Die Modelldatei ist mit Q4_K_M 17,0 GB groß. Bei 32.000 Tokens Kontext kommen 1,9 GB KV-Cache dazu, plus 1 GB Overhead – macht rund <strong>19,9 GB</strong>. Das passt auf eine Grafikkarte mit 24 GB, aber nicht auf eine mit 16 GB.</p>
+    </section>
+
+    <section>
+      <h2>Tabelle: Welches Modell braucht wie viel?</h2>
+      <p>Speicherbedarf mit Q4_K_M und 32k Kontext, dazu die reine Modellgröße mit Q8 (fast verlustfrei).</p>
+      <div class="tablebox"><table>
+        <thead><tr><th>Modell</th><th class="num">Parameter</th><th class="num">Q4 gesamt (32k)</th><th class="num">Q8 Gewichte</th><th>Passende Hardware</th></tr></thead>
+        <tbody>
+          <tr><td>Qwen3.5 9B</td><td class="num">9B</td><td class="num">8,3 GB</td><td class="num">10,5 GB</td><td>12-GB-Karte</td></tr>
+          <tr><td>Gemma 4 12B</td><td class="num">12B</td><td class="num">9,3 GB</td><td class="num">12,9 GB</td><td>12-GB-Karte</td></tr>
+          <tr><td>gpt-oss-20b</td><td class="num">21B (MoE)</td><td class="num">15,3 GB</td><td class="num">nativ MXFP4</td><td>16 GB (knapp) / 24 GB</td></tr>
+          <tr><td>Qwen3.6 27B</td><td class="num">27B</td><td class="num">19,9 GB</td><td class="num">29,8 GB</td><td>24-GB-Karte</td></tr>
+          <tr><td>Qwen3-Coder 30B-A3B</td><td class="num">30B (MoE)</td><td class="num">22,7 GB</td><td class="num">32,6 GB</td><td>24-GB-Karte</td></tr>
+          <tr><td>Llama 3.3 70B</td><td class="num">70B</td><td class="num">53,4 GB</td><td class="num">74,5 GB</td><td>Mac / Mini-PC ab 96 GB</td></tr>
+          <tr><td>gpt-oss-120b</td><td class="num">117B (MoE)</td><td class="num">66,2 GB</td><td class="num">nativ MXFP4</td><td>Mac / Mini-PC ab 96 GB</td></tr>
+          <tr><td>Qwen3.5 122B-A10B</td><td class="num">122B (MoE)</td><td class="num">77,6 GB</td><td class="num">130 GB</td><td>128 GB gemeinsamer Speicher</td></tr>
+          <tr><td>Qwen3 235B-A22B</td><td class="num">235B (MoE)</td><td class="num">149 GB</td><td class="num">249 GB</td><td>Mac Studio 256 GB</td></tr>
+          <tr><td>DeepSeek V3.1</td><td class="num">671B (MoE)</td><td class="num">407 GB</td><td class="num">708 GB</td><td>Mac Studio 512 GB</td></tr>
+        </tbody>
+      </table></div>
+      <p>Alle 29 Modelle des Rechners mit Speicherbalken für jedes Gerät findest du im <a href="calc:">Rechner</a> unter „Speicherauslastung“.</p>
+    </section>
+
+    <section>
+      <h2>Quantisierung: weniger Bits, weniger Speicher</h2>
+      <p>Quantisierung speichert jedes Gewicht mit weniger Bits. Das spart Speicher und macht das Modell schneller, kostet aber etwas Qualität.</p>
+      <ul>
+        <li><strong>FP16</strong> (16 Bit): volle Präzision, 2 GB pro Milliarde Parameter – lokal selten sinnvoll.</li>
+        <li><strong>Q8_0</strong> (8,5 Bit): praktisch verlustfrei, etwa 1,1 GB pro Milliarde.</li>
+        <li><strong>Q4_K_M</strong> (4,85 Bit): der Standard. Kaum spürbarer Qualitätsverlust, rund 0,6 GB pro Milliarde.</li>
+        <li><strong>Q3 / Q2</strong>: nur als Notlösung – die Qualität sinkt spürbar.</li>
+      </ul>
+      <p>Faustregel: Ein größeres Modell mit Q4 ist fast immer besser als ein kleineres mit Q8.</p>
+    </section>
+
+    <section>
+      <h2>Kontext: der unterschätzte Speicherfresser</h2>
+      <p>Jedes Token im Kontext belegt Platz im <strong>KV-Cache</strong>. Wie viel, hängt stark von der Architektur ab: Bei Llama 3.3 70B kosten 32.000 Tokens rund <strong>10 GB</strong> zusätzlich, bei Qwen3.6 27B dank sparsamerer Attention nur 1,9 GB. Wer lange Dokumente oder ganze Code-Repositories verarbeiten will, sollte deshalb ein paar Gigabyte Reserve einplanen. Im Rechner lässt sich der Kontext per Schieberegler von 4k bis 128k einstellen.</p>
+    </section>
+
+    <section>
+      <h2>Bandbreite: warum passen nicht reicht</h2>
+      <p>Speicher entscheidet, <em>ob</em> ein Modell läuft – die <strong>Speicherbandbreite</strong> entscheidet, <em>wie schnell</em>. Für jedes neue Token müssen die aktiven Gewichte einmal komplett gelesen werden:</p>
+      <div class="formula">Tokens/s ≈ Effizienz × Bandbreite (GB/s) ÷ aktive Gewichte (GB)</div>
+      <p><strong>Beispiel:</strong> Eine RTX 4090 hat 1.008 GB/s. Qwen3.6 27B liest pro Token rund 17 GB → etwa 0,6 × 1.008 ÷ 17,4 ≈ <strong>35 tok/s</strong>.</p>
+      <p><strong>MoE-Modelle</strong> (Mixture of Experts) sind der Trick, um große Modelle schnell zu machen: Qwen3.6 35B-A3B braucht Speicher für alle 35 Milliarden Parameter, liest pro Token aber nur rund 2 GB. Deshalb schreibt es auf derselben Karte vielfach schneller als ein dichtes 27B-Modell.</p>
+      <p>Passt ein Modell nicht ganz in den Grafikspeicher, kann ein Teil in den PC-Arbeitsspeicher ausgelagert werden. Normaler DDR5-Speicher schafft aber nur rund 60 bis 90 GB/s – das Tempo bricht dann um ein Vielfaches ein.</p>
+    </section>
+
+    <section>
+      <h2>Sonderfall Mac und Mini-PCs</h2>
+      <p>Macs, der DGX Spark und Mini-PCs mit Ryzen AI Max teilen sich den Arbeitsspeicher zwischen CPU und GPU. Das macht sehr große Modelle möglich, aber nicht der ganze Speicher ist nutzbar: macOS gibt der GPU standardmäßig nur rund 67 % (bis 36 GB) bzw. 75 % frei. Ein Mac mit 96 GB hat also rund 72 GB fürs Modell; mit angehobenem Limit sind es rund 90 GB. Mehr dazu im Vergleich <a href="blog:5090-vs-m5-ultra">RTX 5090 vs. Mac Studio M5 Ultra</a>.</p>
+    </section>
+
+    <section>
+      <h2>Kurz zusammengefasst</h2>
+      <div class="verdict-box"><p><strong>12 GB</strong> für Modelle bis 12B · <strong>16 GB</strong> für bis zu 14B und gpt-oss-20b mit kurzem Kontext · <strong>24 GB</strong> für 27B-Modelle und 30B-MoE · <strong>32 GB</strong> für mehr Kontext · <strong>96–128 GB gemeinsamer Speicher</strong> für 70B und gpt-oss-120b · <strong>256 GB und mehr</strong> für die ganz großen MoE-Modelle.</p></div>
+      <p>Welche Hardware dazu passt, steht in der <a href="blog:best-gpu">GPU-Kaufberatung 2026</a> – oder du lässt dir vom <a href="advisor:">Kaufberater</a> drei Geräte vorschlagen.</p>
+    </section>

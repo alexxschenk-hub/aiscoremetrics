@@ -1,0 +1,70 @@
+<!-- { "key": "5090-vs-m5-ultra", "order": 2, "slug": "rtx-5090-vs-mac-studio-m5-ultra", "icon": "⚔️", "date": "2026-10-28",
+  "title": "RTX 5090 vs. Mac Studio M5 Ultra – was lohnt sich für KI?",
+  "desc": "RTX 5090 oder Mac Studio M5 Ultra für lokale LLMs? Direktvergleich bei Tokens/s, Speicher, Wartezeit, Bildgenerierung, Stromverbrauch und Preis – mit klarer Empfehlung.",
+  "icons": ["📋", "⚡", "🐘", "🎨", "🔌", "✅"] } -->
+    <section class="panel">
+      <p class="lead">Rund 7.000 € – dafür bekommst du entweder einen PC mit <strong>RTX 5090</strong> oder einen <strong>Mac Studio mit M5 Ultra und 96 GB</strong>. Beide sind die schnellsten Geräte ihrer Klasse, aber sie sind für völlig unterschiedliche Modelle gebaut: die 5090 für Tempo, der Mac für Größe.</p>
+    </section>
+
+    <section>
+      <h2>Die Eckdaten</h2>
+      <div class="tablebox"><table>
+        <thead><tr><th></th><th class="num">RTX 5090 (PC)</th><th class="num">Mac Studio M5 Ultra 96 GB</th></tr></thead>
+        <tbody>
+          <tr><td>Speicher fürs Modell</td><td class="num">32 GB VRAM</td><td class="num">72 GB (90 GB mit angehobenem Limit)</td></tr>
+          <tr><td>Speicherbandbreite</td><td class="num">1.792 GB/s</td><td class="num">1.200 GB/s</td></tr>
+          <tr><td>Systempreis</td><td class="num">≈ 7.300 € (6.000 € Karte + PC)</td><td class="num">6.599 € (64 GPU-Kerne) / 8.029 € (80)</td></tr>
+          <tr><td>Leistungsaufnahme unter Last</td><td class="num">≈ 725 W (System)</td><td class="num">≈ 190 W</td></tr>
+          <tr><td>Software</td><td class="num">CUDA, alle Tools</td><td class="num">Metal / MLX, llama.cpp, LM Studio</td></tr>
+        </tbody>
+      </table></div>
+      <p>Beim Mac teilen sich CPU und GPU den Arbeitsspeicher. macOS gibt der GPU standardmäßig rund drei Viertel davon frei; mit einem Terminal-Befehl lässt sich das Limit anheben. Im Rechner gibt es dafür den Schalter „GPU-Speicherlimit angehoben“.</p>
+    </section>
+
+    <section>
+      <h2>Modelle bis 32 GB: Die 5090 ist fast doppelt so schnell</h2>
+      <p>Solange das Modell in die 32 GB der 5090 passt, gewinnt sie klar – dank 50 % mehr Bandbreite und deutlich mehr Rechenleistung. Werte mit Q4_K_M und 32k Kontext:</p>
+      <div class="tablebox"><table>
+        <thead><tr><th>Modell</th><th class="num">RTX 5090</th><th class="num">M5 Ultra (64 GPU)</th></tr></thead>
+        <tbody>
+          <tr><td>Qwen3.6 27B – Schreiben</td><td class="num">62 tok/s</td><td class="num">35 tok/s</td></tr>
+          <tr><td>Qwen3.6 27B – 16k-Prompt einlesen</td><td class="num">≈ 4 s</td><td class="num">≈ 13 s</td></tr>
+          <tr><td>Qwen3-Coder 30B-A3B – Schreiben</td><td class="num">166 tok/s</td><td class="num">93 tok/s</td></tr>
+          <tr><td>gpt-oss-20b – Schreiben</td><td class="num">224 tok/s</td><td class="num">125 tok/s</td></tr>
+        </tbody>
+      </table></div>
+      <p>Für Coding-Agenten, die ständig lange Prompts mit Code-Kontext verschicken, ist vor allem die kurze Wartezeit ein großer Vorteil der 5090.</p>
+      <p><a href="vs:5090,m5u96,qwen36_27">RTX 5090 vs. M5 Ultra mit Qwen3.6 27B im Rechner →</a></p>
+    </section>
+
+    <section>
+      <h2>Große Modelle: Hier gewinnt nur der Mac</h2>
+      <p>Ab etwa 30 GB Speicherbedarf ist die 5090 raus. Das Modell müsste teilweise in den normalen PC-Arbeitsspeicher ausgelagert werden, der mit rund 60 bis 90 GB/s nur einen Bruchteil der Bandbreite hat – das Tempo bricht dann massiv ein.</p>
+      <div class="tablebox"><table>
+        <thead><tr><th>Modell (Speicherbedarf bei 32k)</th><th class="num">RTX 5090</th><th class="num">M5 Ultra 96 GB</th></tr></thead>
+        <tbody>
+          <tr><td>Llama 3.3 70B (53 GB)</td><td class="num">passt nicht</td><td class="num">13 tok/s</td></tr>
+          <tr><td>gpt-oss-120b (66 GB)</td><td class="num">passt nicht</td><td class="num">82 tok/s</td></tr>
+          <tr><td>GLM-4.5-Air (71 GB)</td><td class="num">passt nicht</td><td class="num">32 tok/s</td></tr>
+          <tr><td>Qwen3.5 122B-A10B (78 GB)</td><td class="num">passt nicht</td><td class="num">nur mit angehobenem Limit</td></tr>
+        </tbody>
+      </table></div>
+      <p>Besonders die großen MoE-Modelle wie gpt-oss-120b laufen auf dem Mac erstaunlich schnell, weil pro Token nur wenige Milliarden Parameter aktiv sind. Mit 256 GB (12.429 €) passt sogar Qwen3 235B-A22B mit rund 20 tok/s.</p>
+      <p><a href="vs:5090,m5u96,moe120">Vergleich mit gpt-oss-120b im Rechner →</a></p>
+    </section>
+
+    <section>
+      <h2>Bilder und Videos</h2>
+      <p>Bei Bildgenerierung liegt die 5090 vorne, der Abstand ist aber kleiner als oft angenommen: FLUX.1 dev braucht für ein Bild mit 1024 × 1024 Pixeln geschätzt rund <strong>11 Sekunden</strong> auf der 5090 und rund <strong>16 Sekunden</strong> auf dem M5 Ultra mit 64 GPU-Kernen (13 Sekunden mit 80 Kernen). Die Neural Accelerators des M5 holen hier viel auf. Ein 5-Sekunden-Clip in 720p mit Wan 2.2 A14B dauert laut Rechner rund 2 Minuten auf der 5090 und rund 3 Minuten auf dem M5 Ultra. Für Video-Workflows und Tools wie ComfyUI ist das CUDA-Ökosystem trotzdem reifer.</p>
+    </section>
+
+    <section>
+      <h2>Strom, Lautstärke, Alltag</h2>
+      <p>Ein 5090-PC zieht unter KI-Last rund 725 W, der Mac Studio etwa 190 W. Bei 8 Stunden Last am Tag und 25 Cent pro kWh sind das rund <strong>530 € gegenüber 140 € Stromkosten pro Jahr</strong>. Dazu kommt: Der Mac ist auch unter Volllast leise, die 5090 braucht ein gutes Gehäuse und ein starkes Netzteil.</p>
+    </section>
+
+    <section>
+      <h2>Fazit: Was lohnt sich?</h2>
+      <div class="verdict-box"><p><strong>RTX 5090</strong>, wenn du mit Modellen bis etwa 30B arbeitest, viel Wert auf kurze Wartezeiten legst (Coding-Agenten), Bilder oder Videos generierst oder selbst trainierst. <strong>Mac Studio M5 Ultra</strong>, wenn du die großen offenen Modelle (70B, gpt-oss-120b, GLM-4.5-Air) lokal nutzen willst – das geht mit keiner einzelnen Consumer-Grafikkarte.</p></div>
+      <p>Wer nur gelegentlich große Modelle braucht, sollte sich auch den <a href="blog:dgx-spark">DGX Spark</a> oder einen Mac Studio mit M5 Max ansehen.</p>
+    </section>

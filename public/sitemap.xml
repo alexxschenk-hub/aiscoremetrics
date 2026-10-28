@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://aiscoremetrics.com/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>daily</changefreq>
     <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/"/>
@@ -10,7 +10,7 @@
   </url>
   <url>
     <loc>https://aiscoremetrics.com/en/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>daily</changefreq>
     <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/"/>
@@ -18,7 +18,7 @@
   </url>
   <url>
     <loc>https://aiscoremetrics.com/methodik/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/methodik/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/methodology/"/>
@@ -26,7 +26,7 @@
   </url>
   <url>
     <loc>https://aiscoremetrics.com/en/methodology/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/methodik/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/methodology/"/>
@@ -34,7 +34,7 @@
   </url>
   <url>
     <loc>https://aiscoremetrics.com/faq/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/faq/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/faq/"/>
@@ -42,7 +42,7 @@
   </url>
   <url>
     <loc>https://aiscoremetrics.com/en/faq/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/faq/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/faq/"/>
@@ -50,7 +50,7 @@
   </url>
   <url>
     <loc>https://aiscoremetrics.com/ueber/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/ueber/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/about/"/>
@@ -58,10 +58,90 @@
   </url>
   <url>
     <loc>https://aiscoremetrics.com/en/about/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/ueber/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/about/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/about/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/blog/</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/blog/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/blog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/blog/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/en/blog/</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/blog/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/blog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/blog/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/blog/beste-gpu-lokale-llms-2026/</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/blog/beste-gpu-lokale-llms-2026/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/blog/best-gpu-for-local-llms-2026/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/blog/best-gpu-for-local-llms-2026/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/en/blog/best-gpu-for-local-llms-2026/</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/blog/beste-gpu-lokale-llms-2026/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/blog/best-gpu-for-local-llms-2026/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/blog/best-gpu-for-local-llms-2026/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/blog/rtx-5090-vs-mac-studio-m5-ultra/</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/blog/rtx-5090-vs-mac-studio-m5-ultra/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/blog/rtx-5090-vs-mac-studio-m5-ultra/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/blog/rtx-5090-vs-mac-studio-m5-ultra/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/en/blog/rtx-5090-vs-mac-studio-m5-ultra/</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/blog/rtx-5090-vs-mac-studio-m5-ultra/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/blog/rtx-5090-vs-mac-studio-m5-ultra/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/blog/rtx-5090-vs-mac-studio-m5-ultra/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/blog/dgx-spark-vs-mac-studio/</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/blog/dgx-spark-vs-mac-studio/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/blog/dgx-spark-vs-mac-studio/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/blog/dgx-spark-vs-mac-studio/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/en/blog/dgx-spark-vs-mac-studio/</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/blog/dgx-spark-vs-mac-studio/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/blog/dgx-spark-vs-mac-studio/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/blog/dgx-spark-vs-mac-studio/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/blog/wie-viel-vram-brauche-ich/</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/blog/wie-viel-vram-brauche-ich/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/blog/how-much-vram-do-i-need/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/blog/how-much-vram-do-i-need/"/>
+  </url>
+  <url>
+    <loc>https://aiscoremetrics.com/en/blog/how-much-vram-do-i-need/</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <xhtml:link rel="alternate" hreflang="de" href="https://aiscoremetrics.com/blog/wie-viel-vram-brauche-ich/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aiscoremetrics.com/en/blog/how-much-vram-do-i-need/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aiscoremetrics.com/en/blog/how-much-vram-do-i-need/"/>
   </url>
 </urlset>

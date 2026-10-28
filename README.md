@@ -65,6 +65,8 @@ Die Seite lädt ihre Daten per `fetch`. Direkt als Datei geöffnet (`file://`) f
 ## Pflege
 
 - **Info-Seiten** (/methodik/, /faq/, /ueber/ und /en/…): Texte in `content/de/` bzw. `content/en/` bearbeiten, danach `npm run seo`. Das Script erzeugt die Seiten, das FAQ-JSON-LD und die Sitemap.
+- **Blog** (/blog/ und /en/blog/): ein Artikel = je eine Datei in `content/blog/de/` und `content/blog/en/`. Die erste Zeile ist ein HTML-Kommentar mit JSON-Metadaten (`key` verbindet DE und EN, außerdem `slug`, `title`, `desc`, `date`, optional `icon`, `icons`, `order`). Kurzlinks im Text: `href="calc:"` (Rechner), `href="advisor:"` (Kaufberater), `href="vs:5090,m5u96,moe120"` (fertiger Vergleich, Modell optional), `href="blog:<key>"` (anderer Artikel). Danach `npm run seo`: erzeugt Übersicht, Artikel mit Meta-, OG- und BlogPosting-Daten und trägt alles in die Sitemap ein.
+- **Kaufberater:** Ansicht „Berater“ in `public/index.html` (Funktionen `advResults`/`renderAdvisor`). Direktlink: `/#berater` bzw. `/en/#advisor`.
 
 - **Mac-Preise** stehen von Hand in `public/data/devices.json` (Feld `price`, Schätzungen mit `"est": true`).
 - **Workstation-Karten:** Feld `"ws": true` blendet sie im Filter „Workstation“ ein.

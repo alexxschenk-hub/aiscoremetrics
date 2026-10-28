@@ -393,6 +393,55 @@ footer { font-size: 12.5px; color: var(--muted); }
 @media (max-width: 520px) { .foot-nav { gap: 6px; } .foot-nav a { padding: 6px 11px; font-size: 13px; } }
 @media (max-width: 520px) { .wrap { padding-inline: 16px; } .seg button { padding: 7px 9px; font-size: 13px; } }
 @media (prefers-reduced-motion: no-preference) { .fill { transition: width .25s ease; } }
+/* Kaufberater (Ansicht "Berater") */
+body:not(.adv-mode) #advisor { display: none; }
+.adv-mode .controls > .row, .adv-mode .controls > p.hint, .adv-mode #picks, .adv-mode #pick-prompt-f, .adv-mode #cmp-mode-f,
+.adv-mode #rank-panel, .adv-mode #px-panel, .adv-mode #mx-panel, .adv-mode #mem-section, .adv-mode #detail, .adv-mode #cmp-extras, .adv-mode #share-tools { display: none !important; }
+.adv { gap: 16px; }
+.adv-prog { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; list-style: none; margin: 0; padding: 0; }
+.adv-prog li { display: grid; gap: 6px; font: 600 11.5px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); min-width: 0; }
+.adv-prog li::before { content: ""; display: block; height: 6px; border-radius: 99px; background: var(--bg); border: 1px solid var(--line); }
+.adv-prog li.done::before, .adv-prog li.cur::before { background: var(--accent); border-color: var(--accent); }
+.adv-prog li.cur { color: var(--accent); }
+.adv-prog span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.adv-q { font: 700 clamp(20px, 2.6vw, 26px)/1.2 var(--f-display); margin: 4px 0 0; }
+.adv-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.adv-opt { display: grid; gap: 4px; justify-items: start; text-align: left; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.adv-opt:hover { border-color: var(--accent); }
+.adv-opt[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--accent-soft); }
+.adv-opt:focus-visible, .adv-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.adv-opt .ai { font-size: 26px; line-height: 1; }
+.adv-opt b { font: 700 16px var(--f-display); letter-spacing: .02em; }
+.adv-opt small { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.adv-budget { display: grid; gap: 10px; max-width: 560px; }
+.adv-budget output { font: 700 28px var(--f-mono); color: var(--ink); }
+.adv-budget input[type="range"] { width: 100%; }
+.adv-budget .ends { display: flex; justify-content: space-between; font: 12px var(--f-mono); color: var(--muted); }
+.adv-nav { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.adv-btn { display: inline-flex; align-items: center; gap: 6px; font: 700 14px var(--f-display); letter-spacing: .04em; text-transform: uppercase; padding: 9px 18px; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; text-decoration: none; }
+.adv-btn:hover { border-color: var(--accent); color: var(--accent); }
+.adv-btn.pri { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.adv-btn.pri:hover { filter: brightness(1.08); color: var(--surface); }
+.adv-picks { display: flex; flex-wrap: wrap; gap: 6px; }
+.adv-picks span { font-size: 13px; padding: 3px 10px; border-radius: 99px; background: var(--bg); border: 1px solid var(--line); }
+.adv-res { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.adv-card { display: grid; align-content: start; gap: 10px; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: var(--card-shadow); min-width: 0; }
+.adv-card.top { border: 2px solid var(--accent); }
+.adv-card .medal { font: 700 13px var(--f-display); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.adv-card h3 { margin: 0; font: 700 20px/1.2 var(--f-display); overflow-wrap: anywhere; }
+.adv-card h3 small { display: block; font: 400 13px var(--f-body); color: var(--muted); margin-top: 2px; }
+.adv-card dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 0; font-size: 14px; }
+.adv-card dt { color: var(--muted); }
+.adv-card dd { margin: 0; font-family: var(--f-mono); text-align: right; overflow-wrap: anywhere; }
+.adv-card dd.m { font-family: var(--f-body); font-weight: 600; }
+.adv-card .sc { display: flex; align-items: baseline; gap: 8px; }
+.adv-card .sc b { font: 700 34px/1 var(--f-mono); }
+.adv-card .sc span { font-size: 12.5px; color: var(--muted); }
+.adv-card .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.adv-card .acts .adv-btn { padding: 7px 14px; font-size: 13px; }
+.adv-card .why { margin: 0; font-size: 13px; color: var(--muted); }
+@media (max-width: 900px) { .adv-res { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 520px) { .adv-prog li { font-size: 10px; } .adv-opts { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 </style>
 <link rel="stylesheet" href="/assets/design.css">
 </head>
@@ -474,6 +523,8 @@ footer { font-size: 12.5px; color: var(--muted); }
     <p class="hint"><span data-i="hint"></span> <span id="hint-prices" data-i="hintPrices"></span></p>
   </div>
 
+  <section class="panel adv" id="advisor" aria-live="polite"></section>
+
   <div class="share-tools" id="share-tools" hidden>
     <button class="btn" id="share-compare" type="button" data-i="shareCompare"></button>
     <span class="hint" id="share-status" role="status" aria-live="polite"></span>
@@ -499,7 +550,7 @@ footer { font-size: 12.5px; color: var(--muted); }
     </div>
   </section>
 
-  <section class="panel">
+  <section class="panel" id="px-panel">
     <h2 class="sec-h"><span class="sec-ico" aria-hidden="true">🚀</span><span data-i="pxTitle"></span></h2>
     <p class="hint" data-i="pxHint"></p>
     <div class="row">
@@ -518,7 +569,7 @@ footer { font-size: 12.5px; color: var(--muted); }
   </section>
   <div id="tip" hidden></div>
 
-  <section class="panel">
+  <section class="panel" id="mx-panel">
     <h2 class="sec-h"><span class="sec-ico" aria-hidden="true">📈</span><span data-i="mTitle"></span></h2>
     <p class="hint" data-i="mHint"></p>
     <div class="tablebox"><table class="matrix" id="matrix"><thead></thead><tbody></tbody></table></div>
@@ -667,7 +718,7 @@ footer { font-size: 12.5px; color: var(--muted); }
   <footer class="site-footer">
     <!-- footnav:start (generiert von scripts/build-seo.mjs) -->
     <nav class="foot-nav" aria-label="Info-Seiten">
-      <a href="/methodik/">Methodik</a><a href="/faq/">FAQ</a><a href="/ueber/">Über</a><a href="/methodik/#datenstand">Datenstand</a>
+      <a href="/methodik/">Methodik</a><a href="/faq/">FAQ</a><a href="/ueber/">Über</a><a href="/blog/">Blog</a><a href="/methodik/#datenstand">Datenstand</a>
     </nav>
     <!-- footnav:end -->
     <p data-i="footer"></p>
@@ -869,7 +920,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       pxHint: "Was du beim Arbeiten spürst: Geschwindigkeit beim Schreiben, Wartezeit bis zum ersten Wort, Dauer für 100 Zeilen Code (ca. 1.100 Tokens) und für ein Bild mit 1024 × 1024 Pixeln. Hochgerechnete Schätzwerte, Die Genauigkeit hängt von Backend, Modell und Hardware ab.",
       pxModel: "Textmodell", pxPrompt: "Prompt-Länge", pxImg: "Bildmodell",
       sysram: "PC-RAM", ws: "Workstation", quant: "Quantisierung", pickLlm: "LLM-Modell", pickMedia: "Bild-/Videomodell", mHintMedia: "Obere Zahl: geschätzte Zeit pro Bild bzw. Clip. Untere Zahl: Bilder bzw. Clips pro Stunde. „—“ heißt: passt nicht in den Speicher. Spalten sind sortierbar.",
-      view: "Ansicht", views: { all: "Alle Geräte", one: "Ein Gerät", cmp: "Vergleich" },
+      view: "Ansicht", views: { all: "Alle Geräte", one: "Ein Gerät", cmp: "Vergleich", adv: "Berater" },
       pickDev: "Gerät", pickA: "Gerät A", pickB: "Gerät B", pickVendor: "Alle Hersteller", pickModel: "Gerät wählen …", ssSearch: "Suchen …", ssClear: "Suche leeren", ssNone: "Keine Treffer",
       pickHint: "Wähle zuerst den Hersteller, dann das Modell.",
       cmpModeLab: "Modelle im Vergleich", cmpModes: { same: "Gleiches Modell", best: "Bestes je Gerät", manual: "Selbst wählen" },
@@ -937,6 +988,24 @@ footer { font-size: 12.5px; color: var(--muted); }
       mHint: "Obere Zahl: geschätzte Tokens/s beim Schreiben bei halb gefülltem Kontext. Untere Zahl: Prompt-Verarbeitung in Tokens/s. „—“ heißt: passt nicht in den Speicher. Spalten sind sortierbar.",
       inProfile: "ausgewählt", ttft: (p, t) => `Prompt ${p} tok/s · erster Token nach ${t} s bei vollem Kontext`,
       footer: "Modellrechnung, keine Messung. Abweichungen von ±20 % zu echten Benchmarks sind normal, je nach Backend (CUDA, MLX, llama.cpp), Treiber und Quantisierung.",
+      adv: {
+        title: "Kaufberater", steps: ["Einsatz", "Tempo", "Budget", "Bauform"],
+        q: ["Was willst du machen?", "Wie schnell soll es sein?", "Wie viel willst du ausgeben?", "Desktop oder Laptop?"],
+        goals: { chat: ["Chatbot", "Fragen, Texte, Assistent"], coding: ["Programmieren", "Code-Assistent, Agenten"], image: ["Bilder", "FLUX, Stable Diffusion"],
+          video: ["Videos", "Wan & Co., viel Speicher"], docs: ["Dokumente", "Lange PDFs, 64k Kontext"], max: ["Maximum", "Das klügste Modell, das reinpasst"] },
+        speeds: { wait: ["Kann warten", "Hauptsache, es läuft"], smooth: ["Flüssig", "Schneller als ich lese"], fast: ["So schnell wie möglich", "Keine Wartezeit"] },
+        forms: { desktop: ["Desktop", "PC mit Grafikkarte, Mac Studio, Mini-PC"], laptop: ["Laptop", "Mobil arbeiten"], any: ["Egal", "Hauptsache passend"] },
+        noLimit: "Kein Limit", next: "Weiter", back: "← Zurück", restart: "Neu starten", show: "Empfehlungen zeigen",
+        budgetHint: "Komplettsystem: Grafikkarten inkl. PC-Basis (einstellbar unter „Alle Geräte“ → Preise).",
+        medals: { best: "🥇 Beste Wahl", premium: "🥈 Premium", budget: "🥉 Budget" },
+        why: { best: "Fast so gut wie das Top-Gerät, deutlich günstiger.", top: "Höchster Score und zugleich günstig.", premium: "Das Beste, was dein Budget hergibt.", alt: "Teurere Alternative – die Beste Wahl liegt hier schon vorne.", budget: "Der günstigste Einstieg, der deine Anforderungen erfüllt." },
+        resTitle: "Deine Empfehlungen", price: "Systempreis", model: "Modell", speed: "Tempo", img: "Pro Bild", mem: "Speicher",
+        score: "Score", scoreTip: "Berater-Score 0–100: Modellqualität (Epoch ECI) bzw. Speicherreserve und Tempo, gewichtet nach deiner Tempo-Wahl.",
+        details: "Details ansehen", compare: "Vergleichen", inclPc: "inkl. PC", vid: "Pro Clip",
+        relaxed: "Kein Gerät schafft das gewünschte Tempo im Budget – gezeigt werden die schnellsten passenden Geräte.",
+        none: "In diesem Budget passt kein Gerät. Erhöhe das Budget oder wähle „Egal“ bei der Bauform.",
+        note: "Schätzwerte aus dem Rechner, keine Messung. Preise: Deutschland, tagesaktuell bzw. Listenpreis."
+      },
       sortBy: (c) => `Nach ${c} sortieren`
     },
     en: {
@@ -981,7 +1050,7 @@ footer { font-size: 12.5px; color: var(--muted); }
       pxHint: "What you feel while working: writing speed, wait until the first word, time for 100 lines of code (about 1,100 tokens) and for one 1024 × 1024 image. Extrapolated estimates, Accuracy depends on backend, model and hardware.",
       pxModel: "Text model", pxPrompt: "Prompt length", pxImg: "Image model",
       sysram: "PC RAM", ws: "Workstation", quant: "Quantization", pickLlm: "LLM model", pickMedia: "Image/video model", mHintMedia: "Top number: estimated time per image or clip. Bottom number: images or clips per hour. “—” means it does not fit in memory. Columns are sortable.",
-      view: "View", views: { all: "All devices", one: "One device", cmp: "Compare" },
+      view: "View", views: { all: "All devices", one: "One device", cmp: "Compare", adv: "Advisor" },
       pickDev: "Device", pickA: "Device A", pickB: "Device B", pickVendor: "All vendors", pickModel: "Choose device …", ssSearch: "Search …", ssClear: "Clear search", ssNone: "No matches",
       pickHint: "Choose the vendor first, then the model.",
       cmpModeLab: "Models in comparison", cmpModes: { same: "Same model", best: "Best per device", manual: "Choose" },
@@ -1049,6 +1118,24 @@ footer { font-size: 12.5px; color: var(--muted); }
       mHint: "Top number: estimated tokens/s while writing, with the context half full. Bottom number: prompt processing in tokens/s. “—” means it does not fit in memory. Columns are sortable.",
       inProfile: "selected", ttft: (p, t) => `Prompt ${p} tok/s · first token after ${t} s at full context`,
       footer: "Model estimate, not a measurement. Deviations of ±20% from real benchmarks are normal, depending on backend (CUDA, MLX, llama.cpp), drivers and quantization.",
+      adv: {
+        title: "Buying advisor", steps: ["Use", "Speed", "Budget", "Form"],
+        q: ["What do you want to do?", "How fast should it be?", "How much do you want to spend?", "Desktop or laptop?"],
+        goals: { chat: ["Chatbot", "Questions, writing, assistant"], coding: ["Coding", "Code assistant, agents"], image: ["Images", "FLUX, Stable Diffusion"],
+          video: ["Videos", "Wan & co., lots of memory"], docs: ["Documents", "Long PDFs, 64k context"], max: ["Maximum", "The smartest model that fits"] },
+        speeds: { wait: ["Can wait", "As long as it runs"], smooth: ["Smooth", "Faster than I read"], fast: ["As fast as possible", "No waiting"] },
+        forms: { desktop: ["Desktop", "PC with graphics card, Mac Studio, mini PC"], laptop: ["Laptop", "Work on the go"], any: ["Either", "Whatever fits best"] },
+        noLimit: "No limit", next: "Next", back: "← Back", restart: "Start over", show: "Show recommendations",
+        budgetHint: "Complete system: graphics cards include the base PC (adjustable under “All devices” → prices).",
+        medals: { best: "🥇 Best choice", premium: "🥈 Premium", budget: "🥉 Budget" },
+        why: { best: "Nearly as good as the top device, much cheaper.", top: "Highest score and good value too.", premium: "The best your budget can buy.", alt: "Pricier alternative – the best choice already leads here.", budget: "The cheapest entry that meets your needs." },
+        resTitle: "Your recommendations", price: "System price", model: "Model", speed: "Speed", img: "Per image", mem: "Memory",
+        score: "Score", scoreTip: "Advisor score 0–100: model quality (Epoch ECI) or memory headroom, plus speed, weighted by your speed choice.",
+        details: "View details", compare: "Compare", inclPc: "incl. PC", vid: "Per clip",
+        relaxed: "No device reaches the requested speed within budget – showing the fastest devices that fit.",
+        none: "No device fits this budget. Raise the budget or pick “Either” for the form factor.",
+        note: "Estimates from the calculator, not measurements. Prices: Germany, daily or list price."
+      },
       sortBy: (c) => `Sort by ${c}`
     }
   };
@@ -1066,6 +1153,7 @@ footer { font-size: 12.5px; color: var(--muted); }
   if (!USES.some((u) => u.id === state.use)) state.use = "coding";
   if (!MODELS.some((m) => m.id === state.pxModel && (state.use === "all" || m.use.includes(state.use)))) state.pxModel = (USES.find((u) => u.id === state.use) || USES[0]).def;
   state.sorts = Object.assign({ rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, state.sorts || {});
+  state.adv = Object.assign({ step: 0, goal: "", speed: "", budget: 3000, noLimit: false, form: "" }, state.adv || {});
   function persist() { try { const { lang, ...rest } = state; localStorage.setItem(KEY, JSON.stringify(rest)); } catch (e) {} }
 
   const $ = (s) => document.querySelector(s);
@@ -1077,6 +1165,7 @@ footer { font-size: 12.5px; color: var(--muted); }
     const base = T[state.lang]; return (Lcache[k] = state.currency === "USD" ? Object.assign(swapCur(base), base.usd) : base); };
   const fmt = (n, d = 0) => n.toLocaleString(L().locale, { minimumFractionDigits: d, maximumFractionDigits: d });
   const fmtTok = (n) => n >= 10 ? fmt(n) : fmt(n, 1);
+  const durS = (sec) => sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
   const isUsd = () => state.currency === "USD";
   const eur = (n) => isUsd() ? `$${fmt(n)}` : state.lang === "de" ? `${fmt(n)} €` : `€${fmt(n)}`;   // Geldbetrag in der gewählten Währung
   // Umrechnung: EZB-Referenzkurs; deutsche Preise enthalten 19 % MwSt., US-Listenpreise keine Steuer
@@ -1353,7 +1442,7 @@ footer { font-size: 12.5px; color: var(--muted); }
     document.querySelectorAll("#lang a").forEach((a) => { if (a.dataset.id === state.lang) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
     $("#use").innerHTML = USES.map((u) => `<button type="button" data-id="${u.id}" aria-pressed="${u.id === state.use}">${esc(L().uses[u.id])}</button>`).join("");
     $("#vendor").innerHTML = [["all", L().all, ""], [N, "NVIDIA", ICONS.gpu], [AM, "AMD", ICONS.gpu], [IN, "Intel", ICONS.gpu], [A, "Apple", ICONS.mac], ["ws", L().ws, ICONS.gpu]].map(([id, n, ic]) => `<button type="button" data-id="${id}" aria-pressed="${id === state.vendor}">${ic.replace("<svg ", '<svg class="vi" ')}${n}</button>`).join("");
-    $("#view").innerHTML = ["all", "one", "cmp"].map((id) => `<button type="button" data-id="${id}" aria-pressed="${id === state.view}">${L().views[id]}</button>`).join("");
+    $("#view").innerHTML = ["all", "one", "cmp", "adv"].map((id) => `<button type="button" data-id="${id}" aria-pressed="${id === state.view}">${L().views[id]}</button>`).join("");
     $("#vendor-field").hidden = state.view !== "all";
     // Modell je Gerät im Vergleich: Auswahlliste (selbst wählen) oder Hinweis (bestes je Gerät)
     const pickModel = (slot) => {
@@ -1457,9 +1546,118 @@ footer { font-size: 12.5px; color: var(--muted); }
       + `<span class="eci-track" aria-hidden="true"><span class="eci-fill" style="width:${w.toFixed(1)}%;background-size:${(10000 / w).toFixed(1)}% 100%"></span></span>`
       + `<span class="eci-max">/ ${fmt(e.maxScore, 0)}</span>${e.est ? `<span class="eci-est">${t.eciEstShort}</span>` : ""}</span>`;
   }
+  // Kaufberater: Einsatzzweck → Kandidaten-Modelle (nach ECI), Budget- und Bauform-Filter, Sortierung nach Berater-Score
+  const ADV_ICO = { chat: "💬", coding: "💻", image: "🎨", video: "🎬", docs: "📄", max: "🧠", wait: "🐢", smooth: "🚶", fast: "🚀", desktop: "🖥️", laptop: "💻", any: "🤷" };
+  const ADV_GOAL = {
+    chat:   { ctx: 8192,  models: (m) => m.use.includes("chat"), use: "chat" },
+    coding: { ctx: 32768, models: (m) => m.use.includes("coding"), use: "coding" },
+    docs:   { ctx: 65536, models: (m) => m.use.includes("chat") && (!m.maxCtx || m.maxCtx >= 65536), use: "chat" },
+    max:    { ctx: 16384, models: () => true, use: "all" },
+    image:  { media: "fluxd", memRef: 24 },
+    video:  { media: "wan22_14", memRef: 32 }
+  };
+  // Mindesttempo (tok/s bzw. Sekunden pro Bild/Clip), Referenzwert der Tempo-Kurve und Gewicht der Qualität gegenüber dem Tempo
+  const ADV_SPEED = {
+    wait:   { tg: 5,  tgRef: 15,  img: 120, imgRef: 60, vid: 1200, vidRef: 600, wq: 0.75 },
+    smooth: { tg: 15, tgRef: 40,  img: 40,  imgRef: 20, vid: 400,  vidRef: 200, wq: 0.6 },
+    fast:   { tg: 35, tgRef: 100, img: 15,  imgRef: 8,  vid: 180,  vidRef: 90,  wq: 0.4 }
+  };
+  const ADV_BUDGET = { min: 500, max: 15000, step: 250 };
+  const advForm = (d, f) => {
+    if (d.formFactor === "server" || d.formFactor === "sxm") return false;
+    const lap = d.kind === "mbp" || d.formFactor === "laptop";
+    return f === "any" || (f === "laptop" ? lap : !lap);
+  };
+  const sat = (x) => 1 - Math.exp(-x);   // Tempo-Kurve: steigt immer weiter, flacht aber ab
+  function advResults() {
+    const a = state.adv, g = ADV_GOAL[a.goal], sp = ADV_SPEED[a.speed];
+    const pool = DEVICES.filter((d) => advForm(d, a.form)).map((d) => ({ d, sp: sysPrice(d) }))
+      .filter((r) => r.sp > 0 && (a.noLimit || r.sp <= a.budget));
+    const rate = (strict) => pool.map((r) => {
+      if (g.media) {
+        // Bild/Video: festes Referenzmodell, Zeit pro Bild bzw. Clip; Speicherreserve zählt als Qualität (größere Modelle, höhere Auflösung)
+        const m = MODELS.find((x) => x.id === g.media), c = calc(r.d, m), cap = usable(r.d), vid = m.media === "vid";
+        if (!c.fits || (strict && c.sec > (vid ? sp.vid : sp.img))) return null;
+        const raw = Math.pow(Math.min(1, cap / g.memRef), 0.4) * Math.pow(sat((vid ? sp.vidRef : sp.imgRef) / c.sec), 0.6);
+        return Object.assign({}, r, { m, t: c.sec, cap, raw, score: Math.round(100 * raw) });
+      }
+      // bestes Modell nach ECI, das passt und das Mindesttempo schafft
+      const c = MODELS.filter((m) => !m.media && g.models(m)).map((m) => ({ m, e: eciOf(m) })).filter((x) => x.e).sort((x, y) => y.e.adj - x.e.adj)
+        .map((x) => Object.assign(x, calc(r.d, x.m, g.ctx))).find((x) => x.fits && (!strict || x.tg >= sp.tg));
+      if (!c) return null;
+      const q = Math.max(0, (c.e.adj - 110) / (ECI_TOP.score - 110));
+      const raw = Math.pow(q, sp.wq) * Math.pow(sat(c.tg / sp.tgRef), 1 - sp.wq);
+      return Object.assign({}, r, { m: c.m, tg: c.tg, raw, score: Math.round(100 * raw) });
+    }).filter(Boolean);
+    let list = rate(true), relaxed = false;
+    if (!list.length) { list = rate(false); relaxed = list.length > 0; }
+    const byScore = [...list].sort((x, y) => y.raw - x.raw || x.sp - y.sp);
+    if (!byScore.length) return { picks: [], relaxed };
+    const top = byScore[0].score;
+    const best = byScore.filter((r) => r.score >= top - 6).sort((x, y) => x.sp - y.sp)[0];
+    const premium = byScore.find((r) => r !== best && r.sp > best.sp) || byScore.find((r) => r !== best);
+    const budget = [...list].sort((x, y) => x.sp - y.sp || y.score - x.score).find((r) => r !== best && r !== premium);
+    const why = { best: best === byScore[0] ? "top" : "best", premium: premium && premium.raw < best.raw ? "alt" : "premium", budget: "budget" };
+    return { picks: [["best", best], ["premium", premium], ["budget", budget]].filter((x) => x[1]).map(([k, r]) => [k, r, why[k]]), relaxed };
+  }
+  function renderAdvisor() {
+    const t = L(), at = t.adv, a = state.adv, el = $("#advisor");
+    const step = Math.min(a.step, 4);
+    const prog = `<ol class="adv-prog" aria-label="${esc(at.title)}">${at.steps.map((x, i) => `<li class="${i < step ? "done" : i === step ? "cur" : ""}"${i === step ? ' aria-current="step"' : ""}><span>${i + 1}. ${esc(x)}</span></li>`).join("")}</ol>`;
+    const opts = (key, group) => `<div class="adv-opts" role="group">${Object.entries(group).map(([id, [n, s]]) =>
+      `<button type="button" class="adv-opt" data-adv="${key}" data-id="${id}" aria-pressed="${a[key] === id}"><span class="ai" aria-hidden="true">${ADV_ICO[id]}</span><b>${esc(n)}</b><small>${esc(s)}</small></button>`).join("")}</div>`;
+    const back = step > 0 ? `<button type="button" class="adv-btn" data-adv-nav="back">${esc(at.back)}</button>` : "";
+    const head = `<h2 class="sec-h"><span class="sec-ico" aria-hidden="true">🧭</span><span>${esc(at.title)}</span></h2>${prog}`;
+    if (step < 4) {
+      let body = "";
+      if (step === 0) body = opts("goal", at.goals);
+      if (step === 1) body = opts("speed", at.speeds);
+      if (step === 2) body = `<div class="adv-budget"><output id="adv-bval">${a.noLimit ? esc(at.noLimit) : eur(a.budget)}</output>
+        <input type="range" id="adv-budget" min="${ADV_BUDGET.min}" max="${ADV_BUDGET.max}" step="${ADV_BUDGET.step}" value="${a.budget}" aria-label="${esc(at.q[2])}"${a.noLimit ? " disabled" : ""}>
+        <span class="ends"><span>${eur(ADV_BUDGET.min)}</span><span>${eur(ADV_BUDGET.max)}</span></span>
+        <label class="check"><input type="checkbox" id="adv-nolimit"${a.noLimit ? " checked" : ""}> ${esc(at.noLimit)}</label>
+        <p class="hint">${esc(at.budgetHint)}</p></div>`;
+      if (step === 3) body = opts("form", at.forms);
+      const next = step === 2 ? `<button type="button" class="adv-btn pri" data-adv-nav="next">${esc(at.next)} →</button>` : "";
+      el.innerHTML = `${head}<h3 class="adv-q">${esc(at.q[step])}</h3>${body}<div class="adv-nav">${back}${next}</div>`;
+      return;
+    }
+    const { picks, relaxed } = advResults();
+    const g = ADV_GOAL[a.goal], isMed = !!g.media;
+    const chosen = `<div class="adv-picks">${[at.goals[a.goal][0], at.speeds[a.speed][0], a.noLimit ? at.noLimit : `≤ ${eur(a.budget)}`, at.forms[a.form][0]].map((x) => `<span>${esc(x)}</span>`).join("")}</div>`;
+    const card = ([k, r, why]) => `<article class="adv-card${k === "best" ? " top" : ""}">
+        <span class="medal">${esc(at.medals[k])}</span>
+        <h3>${esc((r.d.v === A ? L().kinds[r.d.kind] + " " : "") + devLabel(r.d))}<small>${esc(VENDOR[r.d.v])} · ${esc(devKind(r.d))}</small></h3>
+        <div class="sc" data-tip="${esc(at.scoreTip)}"><b>${r.score}</b><span>${esc(at.score)} / 100</span></div>
+        <dl><dt>${esc(at.price)}</dt><dd>${eur(r.sp)}${desktopCard(r.d) && state.base ? ` <small>(${esc(at.inclPc)})</small>` : ""}</dd>
+          <dt>${esc(at.model)}</dt><dd class="m">${esc(mName(r.m))}</dd>
+          ${isMed ? `<dt>${esc(r.m.media === "vid" ? at.vid : at.img)}</dt><dd>≈ ${durS(r.t)}</dd><dt>${esc(at.mem)}</dt><dd>${fmt(r.cap, 0)} GB</dd>`
+            : `<dt>${esc(at.speed)}</dt><dd>≈ ${fmtTok(r.tg)} tok/s</dd>`}</dl>
+        <p class="why">${esc(at.why[why])}</p>
+        <div class="acts"><button type="button" class="adv-btn pri" data-adv-go="one" data-id="${r.d.id}">${esc(at.details)}</button><button type="button" class="adv-btn" data-adv-go="cmp" data-id="${r.d.id}">${esc(at.compare)}</button></div>
+      </article>`;
+    el.innerHTML = `${head}<h3 class="adv-q">${esc(at.resTitle)}</h3>${chosen}
+      ${relaxed ? `<p class="hint" style="color:var(--warn)">${esc(at.relaxed)}</p>` : ""}
+      ${picks.length ? `<div class="adv-res">${picks.map(card).join("")}</div>` : `<p class="hint">${esc(at.none)}</p>`}
+      <p class="hint">${isMed ? esc(`${mName(MODELS.find((x) => x.id === g.media))}: ${mEx(MODELS.find((x) => x.id === g.media))}.`) + " " : ""}${esc(at.note)}</p>
+      <div class="adv-nav">${back}<button type="button" class="adv-btn" data-adv-nav="restart">${esc(at.restart)}</button></div>`;
+    el._picks = picks;
+  }
+  // Empfehlung im Rechner öffnen: Einzelansicht oder Vergleich mit der nächstbesten Empfehlung
+  function advOpen(view, id) {
+    const picks = $("#advisor")._picks || [], r = picks.find((x) => x[1].d.id === id)?.[1]; if (!r) return;
+    const g = ADV_GOAL[state.adv.goal], d = r.d;
+    if (g.media) { state.use = "media"; state.pxModel = g.media; }
+    else { state.pxModel = r.m.id; state.use = r.m.use.includes(g.use) ? g.use : "all"; state.ctx = Math.max(0, CTX.indexOf(g.ctx)); }
+    state.view = view; state.pickA = { v: d.v, id: d.id };
+    if (view === "cmp") { const o = picks.map((x) => x[1]).find((x) => x.d.id !== id); state.cmpMode = "same"; state.pickB = o ? { v: o.d.v, id: o.d.id } : { v: "", id: "" }; }
+    persist(); render(); $(".controls").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
   function render() {
     renderControls();
     renderColPick();
+    document.body.classList.toggle("adv-mode", state.view === "adv");
+    if (state.view === "adv") { renderAdvisor(); return; }
     const t = L();
     const { rows, ctx, w } = evaluate();
     const pxM = MODELS.find((m) => m.id === state.pxModel) || MODELS.find((m) => m.id === "moe30");
@@ -1515,7 +1713,6 @@ footer { font-size: 12.5px; color: var(--muted); }
     const single = MODELS.find((m) => m.id === state.pxModel);
     const sumItem = (k, r, s) => `<div class="sum"><span class="k">${k}</span><span class="v">${r ? esc(devLabel(r.d)) : t.none}</span><span class="s">${s}</span></div>`;
     const okBest = best && best.perf > 0;
-    const durS = (sec) => sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
     const speedTxt = (r) => single.media ? `${durS(r.per[single.id].sec)} ${t.perOut[single.media]}` : `${fmtTok(r.per[single.id].tg)} tok/s`;
     const noFit = isMedia() ? t.noneFitsMedia : t.noneFits(ctxLabel(ctx));
     if (state.showPrices) {
@@ -1846,6 +2043,20 @@ footer { font-size: 12.5px; color: var(--muted); }
     if (state.cmpMode === "manual") { if (!state.cmpModelA) state.cmpModelA = state.pxModel; if (!state.cmpModelB) state.cmpModelB = state.pxModel; }
     persist(); render(); });
   $("#view").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.view = b.dataset.id; persist(); render(); });
+  $("#advisor").addEventListener("click", (e) => {
+    const a = state.adv, o = e.target.closest("[data-adv]"), nav = e.target.closest("[data-adv-nav]"), go = e.target.closest("[data-adv-go]");
+    if (o) { a[o.dataset.adv] = o.dataset.id; a.step++; }
+    else if (nav) { const n = nav.dataset.advNav; a.step = n === "restart" ? 0 : Math.max(0, Math.min(4, a.step + (n === "next" ? 1 : -1))); }
+    else if (go) { advOpen(go.dataset.advGo, go.dataset.id); return; }
+    else return;
+    persist(); render(); $("#advisor").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+  $("#advisor").addEventListener("input", (e) => {
+    if (e.target.id === "adv-budget") { state.adv.budget = +e.target.value; $("#adv-bval").textContent = eur(state.adv.budget); persist(); }
+  });
+  $("#advisor").addEventListener("change", (e) => {
+    if (e.target.id === "adv-nolimit") { state.adv.noLimit = e.target.checked; persist(); render(); }
+  });
   document.querySelector(".pickrow").addEventListener("change", (e) => {
     const sel = e.target.closest("select[data-slot]"); if (!sel) return;
     const pk = state[sel.dataset.slot];
@@ -1938,7 +2149,17 @@ footer { font-size: 12.5px; color: var(--muted); }
       catch { $("#share-link-label").hidden = false; $("#share-link").value = link; $("#share-link").focus(); $("#share-link").select(); $("#share-status").textContent = L().shareFallback; }
     } finally { button.disabled = false; }
   });
-  window.addEventListener("hashchange", () => { if (DEVICES.length) { applySharedScenario(location.hash); render(); } });
+  // Direktlinks (z. B. aus dem Blog): /#berater bzw. /en/#advisor öffnet den Kaufberater,
+  // #vs=geraetA,geraetB[,modell] einen Vergleich – ohne Preise mitzuschicken (anders als #compare=)
+  const advHash = () => {
+    if (/^#(berater|advisor)$/.test(location.hash)) { state.view = "adv"; if (state.adv.step >= 4) state.adv.step = 0; return; }
+    const v = location.hash.match(/^#vs=([\w.-]+),([\w.-]+)(?:,([\w.-]+))?$/); if (!v) return;
+    const a = DEVICES.find((d) => d.id === v[1]), b = DEVICES.find((d) => d.id === v[2]), m = MODELS.find((x) => x.id === v[3]);
+    if (!a || !b || a === b) return;
+    state.view = "cmp"; state.cmpMode = "same"; state.pickA = { v: a.v, id: a.id }; state.pickB = { v: b.v, id: b.id };
+    if (m) { state.pxModel = m.id; if (state.use !== "all" && !m.use.includes(state.use)) state.use = "all"; }
+  };
+  window.addEventListener("hashchange", () => { if (DEVICES.length) { advHash(); applySharedScenario(location.hash); render(); } });
   async function load() {
     try {
       const [dv, pr] = await Promise.all([
@@ -1951,7 +2172,7 @@ footer { font-size: 12.5px; color: var(--muted); }
         if (!p) return d;
         return Object.assign({}, d, { price: p.price, est: false, src: p.metric === "median3m" ? ["med"] : p.metric === "manual" ? ["man", `${p.note ? p.note + " " : ""}${ddmm(p.asOf)}`] : ["gp", ddmm(p.asOf)] });
       });
-      applySharedScenario(location.hash);
+      advHash(); applySharedScenario(location.hash);
       // Ansicht "Ein Gerät" ohne Auswahl: mit einem Referenzgerät starten statt leer
       if (state.view === "one" && !state.pickA.id) { const d = DEVICES.find((x) => x.id === DEFAULT_DEVICE); if (d) state.pickA = { v: d.v, id: d.id }; }
       renderStatic(); render();
