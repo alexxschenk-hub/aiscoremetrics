@@ -1,0 +1,18 @@
+# Eigenständiger Worker (Alternative zur Pages Function in functions/api/).
+# Deploy: npx wrangler deploy   (vorher KV anlegen: npx wrangler kv namespace create BENCHMARKS)
+# Admin-Key: npx wrangler secret put ADMIN_KEY
+name = "aiscoremetrics-benchmarks"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+# Gleicher Pfad wie die Pages Function, dann braucht die Seite kein CORS
+routes = [{ pattern = "aiscoremetrics.com/api/benchmarks*", zone_name = "aiscoremetrics.com" }]
+
+[[kv_namespaces]]
+binding = "BENCHMARKS"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+[vars]
+SITE_ORIGIN = "https://aiscoremetrics.com"
+# ALLOWED_ORIGIN = "https://aiscoremetrics.com"
+# NOTIFY_WEBHOOK = "https://ntfy.sh/dein-geheimes-thema"

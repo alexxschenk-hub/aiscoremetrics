@@ -1,0 +1,4 @@
+{
+  "note": "Kuratierte Community-Benchmarks (Fallback/Snapshot, wenn die API nicht erreichbar ist). Wird von scripts/benchmarks-admin.mjs export aus der API geschrieben oder von Hand gepflegt; Format wie GET /api/benchmarks.",
+  "benchmarks": []
+}

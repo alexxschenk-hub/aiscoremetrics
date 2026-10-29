@@ -7,10 +7,15 @@ public/
   index.html            Die Seite (lädt ihre Daten aus data/)
   data/devices.json     Specs + Fallback-Preise aller Geräte (von Hand gepflegt)
   data/prices.json      Aktuelle GPU-Preise (wird automatisch geschrieben)
+  data/benchmarks.json  Community-Benchmarks als Fallback/Snapshot (sonst aus der API)
+  admin/benchmarks/     Moderationsseite für Community-Benchmarks (noindex)
   _headers              Cache-Regeln für Cloudflare Pages
   robots.txt, sitemap.xml   für Suchmaschinen
   og-image.png          Vorschaubild für Social Media (Quelle: scripts/og-image.html)
 scripts/build-seo.mjs       Baut /en/, Meta-Tags, hreflang, FAQ-JSON-LD, <noscript>-Tabelle und Sitemap
+functions/api/[[path]].js   Pages Function für /api/* (nutzt workers/benchmarks-api)
+workers/benchmarks-api/     Community-Benchmarks-API (Cloudflare KV), auch als eigener Worker deploybar
+scripts/benchmarks-admin.mjs  Benchmarks per Kommandozeile moderieren und exportieren
 scripts/update-prices.mjs   Holt Preise von gpuprix.com (Node 20, keine Abhängigkeiten)
 data/history.csv        Preisverlauf, eine Zeile pro Gerät und Tag (für spätere Charts)
 .github/workflows/update-prices.yml   Täglicher Lauf um 04:17 UTC
@@ -53,11 +58,27 @@ Pages-Projekt → **Custom domains → Set up a custom domain**.
 - **Subdomain** (z. B. `www.aiscoremetrics.com`): beim bisherigen DNS-Anbieter einen CNAME auf `aiscoremetrics.pages.dev` setzen.
 - **Hauptdomain** (`aiscoremetrics.com`): Dafür muss das DNS der Domain bei Cloudflare liegen. Die Nameserver werden umgestellt, die Domain bleibt bei deinem Registrar.
 
+### 5. Community-Benchmarks (Cloudflare KV)
+
+Die API läuft als Pages Function (`functions/api/[[path]].js`) und wird mit jedem Push automatisch mitdeployt. Sie braucht einmalig einen KV-Speicher und einen Admin-Key:
+
+1. Cloudflare-Dashboard → **Storage & Databases → KV → Create namespace**, Name z. B. `aiscoremetrics-benchmarks`.
+2. Pages-Projekt → **Settings → Bindings → Add → KV namespace**: Variable `BENCHMARKS`, den Namespace von eben auswählen (für Production, optional auch Preview).
+3. Pages-Projekt → **Settings → Variables and Secrets → Add**: Typ *Secret*, Name `ADMIN_KEY`, ein langes Zufallspasswort (z. B. `openssl rand -base64 32`).
+4. Optional `NOTIFY_WEBHOOK` als Variable: URL, an die bei jeder neuen Einreichung ein POST geht (Discord-/Slack-Webhook oder ntfy.sh-Thema → Push aufs Handy oder per E-Mail weiterleiten).
+5. Neu deployen (Deployments → Retry), damit die Bindings greifen.
+
+Bis das eingerichtet ist, antwortet `/api/benchmarks` mit 503. Die Seite zeigt dann nur die Messungen aus `public/data/benchmarks.json`, und das Formular bietet stattdessen an, die Messung als GitHub-Issue zu schicken.
+
+Alternativ lässt sich dieselbe API als eigener Worker betreiben: `workers/benchmarks-api/wrangler.toml` (KV-ID eintragen, `npx wrangler deploy`, `npx wrangler secret put ADMIN_KEY`).
+
 ## Lokal arbeiten
 
 ```bash
 npm run prices   # Preise jetzt holen
 npm run dev      # Seite unter http://localhost:3000 ansehen
+npm run dev:api  # Seite + Benchmarks-API mit lokalem KV unter http://localhost:8788
+                 # (Admin-Key lokal: Datei .dev.vars mit ADMIN_KEY=…, ist in .gitignore)
 ```
 
 Die Seite lädt ihre Daten per `fetch`. Direkt als Datei geöffnet (`file://`) funktioniert sie deshalb nicht.
@@ -66,6 +87,9 @@ Die Seite lädt ihre Daten per `fetch`. Direkt als Datei geöffnet (`file://`) f
 
 - **Info-Seiten** (/methodik/, /faq/, /ueber/ und /en/…): Texte in `content/de/` bzw. `content/en/` bearbeiten, danach `npm run seo`. Das Script erzeugt die Seiten, das FAQ-JSON-LD und die Sitemap.
 - **Blog** (/blog/ und /en/blog/): ein Artikel = je eine Datei in `content/blog/de/` und `content/blog/en/`. Die erste Zeile ist ein HTML-Kommentar mit JSON-Metadaten (`key` verbindet DE und EN, außerdem `slug`, `title`, `desc`, `date`, optional `icon`, `icons`, `order`). Kurzlinks im Text: `href="calc:"` (Rechner), `href="advisor:"` (Kaufberater), `href="vs:5090,m5u96,moe120"` (fertiger Vergleich, Modell optional), `href="blog:<key>"` (anderer Artikel). Danach `npm run seo`: erzeugt Übersicht, Artikel mit Meta-, OG- und BlogPosting-Daten und trägt alles in die Sitemap ein.
+- **Community-Benchmarks moderieren:** `/admin/benchmarks/` öffnen, Admin-Key eingeben, Einreichungen bestätigen, ablehnen oder freigegebene löschen. Mit ⚠️ markiert sind Werte, die mehr als das Dreifache vom berechneten Wert abweichen. Per Kommandozeile: `BENCH_ADMIN_KEY=… npm run bench -- pending` bzw. `approve|reject|delete <id>`. `npm run bench -- export` schreibt alle freigegebenen Messungen als Sicherung nach `public/data/benchmarks.json`.
+  - API: `GET /api/benchmarks[?device=…&model=…]`, `POST /api/benchmarks` (Einreichen), `GET /api/benchmarks/pending` und `POST /api/benchmarks/moderate {id, action}` (beide mit `Authorization: Bearer <ADMIN_KEY>`).
+  - Spam-Schutz: höchstens 5 Einreichungen pro IP und Tag (gespeichert wird nur ein Hash aus IP und Datum, 48 h), Honeypot-Feld, Mindest-Ausfüllzeit 3 s, Wertebereich 0,1–500 tok/s, Geräte-ID wird gegen `devices.json` geprüft.
 - **Kaufberater:** Ansicht „Berater“ in `public/index.html` (Funktionen `advResults`/`renderAdvisor`). Direktlink: `/#berater` bzw. `/en/#advisor`.
 
 - **Mac-Preise** stehen von Hand in `public/data/devices.json` (Feld `price`, Schätzungen mit `"est": true`).

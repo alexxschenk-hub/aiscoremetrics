@@ -215,7 +215,7 @@ a.ext:hover { text-decoration: underline; }
 .ss-btn .ss-val.ph { color: var(--muted); }
 .ss-btn .ss-caret { flex: none; color: var(--muted); font-size: 11px; }
 #rank td.xc, #rank th.num { white-space: nowrap; }
-.colpick { position: relative; display: flex; justify-content: flex-end; margin: 0 0 8px; }
+.colpick { position: relative; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; margin: 0 0 8px; }
 .colpick-btn { font: 600 13px var(--f-display); padding: 6px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); cursor: pointer; }
 .colpick-btn[aria-expanded="true"] { border-color: var(--accent); }
 .colpick-menu { position: absolute; z-index: 20; top: calc(100% + 4px); right: 0; width: min(560px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px rgba(0, 0, 0, .18); padding: 12px 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px 18px; }
@@ -442,6 +442,46 @@ body:not(.adv-mode) #advisor { display: none; }
 .adv-card .why { margin: 0; font-size: 13px; color: var(--muted); }
 @media (max-width: 900px) { .adv-res { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 520px) { .adv-prog li { font-size: 10px; } .adv-opts { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+/* Community-Benchmarks */
+.cb-open { display: inline-flex; align-items: center; gap: 6px; font: 600 13px var(--f-display); letter-spacing: .03em; padding: 6px 12px; border-radius: 99px; border: 1px solid var(--accent); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+.cb-open:hover { background: var(--accent); color: var(--surface); }
+.cb-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rank-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
+.cb { padding: 14px; border-top: 1px solid var(--line); display: grid; gap: 12px; }
+.cb h3 { margin: 0; display: flex; align-items: center; gap: 8px; font: 700 17px var(--f-display); }
+.cb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 12px; }
+.cb-dev { display: grid; align-content: start; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); min-width: 0; }
+.cb-dev > b { font: 700 15px var(--f-display); overflow-wrap: anywhere; }
+.cb-grp { display: grid; gap: 4px; }
+.cb-grp .h { font-weight: 600; font-size: 14px; }
+.cb-grp .vs { font: 13px var(--f-mono); color: var(--muted); }
+.cb-grp .vs b { color: var(--ink); }
+.cb-grp ul { margin: 0; padding: 0 0 0 16px; font-size: 13px; color: var(--muted); }
+.cb-grp li b { font-family: var(--f-mono); color: var(--ink); }
+.cb-dev .none { margin: 0; font-size: 13px; color: var(--muted); }
+.cb-dev .cb-open { justify-self: start; }
+.dev-pos { color: var(--accent); } .dev-neg { color: #B4691F; }
+dialog.cb-dlg { width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
+.cb-dlg form { display: grid; gap: 12px; padding: 18px 20px 20px; }
+.cb-dlg h2 { margin: 0; font: 700 21px var(--f-display); }
+.cb-dlg .x { position: absolute; top: 10px; right: 12px; border: 0; background: transparent; color: var(--muted); font-size: 22px; line-height: 1; cursor: pointer; padding: 4px 8px; }
+.cb-f { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; }
+.cb-f label { display: grid; gap: 4px; min-width: 0; }
+.cb-f label.w { grid-column: 1 / -1; }
+.cb-f .lab small { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.cb-f select, .cb-f input, .cb-f textarea { width: 100%; box-sizing: border-box; font: 400 14px var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 7px 8px; }
+.cb-f textarea { resize: vertical; min-height: 54px; }
+.cb-f [aria-invalid="true"] { border-color: #C0392B; }
+.cb-est { margin: 0; font-size: 13px; color: var(--muted); }
+.cb-warn { margin: 0; padding: 8px 10px; border-radius: 6px; background: #FFF4E0; color: #6B4200; font-size: 13px; }
+.cb-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.cb-msg { margin: 0; font-size: 14px; }
+.cb-msg.err { color: #C0392B; }
+.cb-acts { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .cb-warn { background: #3A2A10; color: #F3D9A6; } }
+:root[data-theme="dark"] .cb-warn { background: #3A2A10; color: #F3D9A6; }
+@media (max-width: 520px) { .cb-f { grid-template-columns: minmax(0, 1fr); } }
 </style>
 <link rel="stylesheet" href="/assets/design.css">
 </head>
@@ -541,7 +581,7 @@ body:not(.adv-mode) #advisor { display: none; }
   <section class="panel" id="rank-panel">
     <h2 class="sec-h"><span class="sec-ico" aria-hidden="true">🏆</span><span data-i="rankTitle"></span></h2>
     <div class="summary" id="summary" aria-live="polite"></div>
-    <div class="colpick" id="colpick"><button type="button" class="colpick-btn" id="cols-btn" aria-haspopup="true" aria-expanded="false" aria-controls="cols-menu"></button><div class="colpick-menu" id="cols-menu" hidden></div></div>
+    <div class="colpick" id="colpick"><button type="button" class="cb-open" data-cb-open data-i="cbSubmit"></button><button type="button" class="colpick-btn" id="cols-btn" aria-haspopup="true" aria-expanded="false" aria-controls="cols-menu"></button><div class="colpick-menu" id="cols-menu" hidden></div></div>
     <div class="tablebox">
       <table id="rank">
         <thead><tr id="rank-head"></tr></thead>
@@ -568,6 +608,7 @@ body:not(.adv-mode) #advisor { display: none; }
     <div class="memchart" id="memchart" role="img"></div>
   </section>
   <div id="tip" hidden></div>
+  <dialog class="cb-dlg" id="cb-dlg" aria-labelledby="cb-title"></dialog>
 
   <section class="panel" id="mx-panel">
     <h2 class="sec-h"><span class="sec-ico" aria-hidden="true">📈</span><span data-i="mTitle"></span></h2>
@@ -846,9 +887,9 @@ body:not(.adv-mode) #advisor { display: none; }
     { id: "f16", name: "FP16", bpw: 16, de: "volle Präzision", en: "full precision" }
   ];
   const QBASE = 4.85;   // Basis der Modellgrößen in MODELS (Q4_K_M), gpt-oss-120b: natives MXFP4
-  function qm(m) {
+  function qm(m, qid = state.quant) {
     if (m.media) return m;   // Bild/Video: feste Präzision je Modell
-    const q = QUANTS.find((x) => x.id === state.quant) || QUANTS[2];
+    const q = QUANTS.find((x) => x.id === qid) || QUANTS[2];
     const f = q.id === "q4_0" && m.qatGb ? m.qatGb / m.gb : m.bpw && q.id === "q4" ? 1 : q.bpw / (m.bpw || QBASE);   // gpt-oss: bei Q4 das native MXFP4
     return f === 1 ? m : Object.assign({}, m, { gb: m.gb * f, agb: m.agb * f });
   }
@@ -936,7 +977,7 @@ body:not(.adv-mode) #advisor { display: none; }
       costTip: (h, p) => `Stromkosten pro Jahr bei ${h} h/Tag und ${p} €/kWh`,
       dGroups: { overview: "Übersicht", hw: "Speicher & Bandbreite", intel: "Modell-Intelligenz", score: "Bewertung im Profil", px: "Geschätzte Leistung", energy: "Energie & Effizienz", mem: "Speicherbelegung" },
       rankTitle: "Ranking", noteTitle: "Hinweis",
-      dRows: { eciOne: "Modell", vtype: "Hersteller · Typ", backend: "Backend", runs: "Modell lauffähig", power: "Leistungsaufnahme", cost8: "Stromkosten/Jahr (8 h/Tag)", cost24: "Stromkosten/Jahr (24/7)", eff: "Effizienz", tco: "Gesamtkosten 3 Jahre", eciSame: "Modell (beide gleich)", eciDev: "Modell je Gerät", sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", out: "Zeit pro Bild/Clip", perh: "Pro Stunde", memuse: "Belegung" },
+      dRows: { eciOne: "Modell", vtype: "Hersteller · Typ", backend: "Backend", runs: "Modell lauffähig", power: "Leistungsaufnahme", cost8: "Stromkosten/Jahr (8 h/Tag)", cost24: "Stromkosten/Jahr (24/7)", eff: "Effizienz", tco: "Gesamtkosten 3 Jahre", eciSame: "Modell (beide gleich)", eciDev: "Modell je Gerät", sys: "Systempreis", mem: "Speicher", bw: "Bandbreite", score: "Score (Preis-Leistung)", rank: "Platz", perf: "Leistung", fits: "Modelle passen", tg: "Tokens/s", ttft: "Erster Token", code: "100 Zeilen Code", img: "1 Bild", out: "Zeit pro Bild/Clip", perh: "Pro Stunde", memuse: "Belegung", meas: "Gemessen (Community)" },
       rankOf: (a, b) => `${a} von ${b}`,
       faster: (x) => `${x}× besser`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} Modelle zur Auswahl. Gerechnet wird mit <b>${m}</b> (${ex}): braucht ≈ <b>${need} GB</b> Speicher bei ${c} Kontext und ${q} und passt auf <b>${k} von ${total}</b> Geräten. Ein anderer Einsatzzweck oder ein anderes Modell ändert Speicherbedarf und Ranking.`,
@@ -1006,6 +1047,33 @@ body:not(.adv-mode) #advisor { display: none; }
         none: "In diesem Budget passt kein Gerät. Erhöhe das Budget oder wähle „Egal“ bei der Bauform.",
         note: "Schätzwerte aus dem Rechner, keine Messung. Preise: Deutschland, tagesaktuell bzw. Listenpreis."
       },
+      cbSubmit: "📊 Eigenen Benchmark einreichen",
+      cb: {
+        title: "Community-Benchmarks", mean: "Ø",
+        hint: "Echte Messwerte aus der Community, vor der Veröffentlichung geprüft. Daneben steht der berechnete Wert für dieselbe Quantisierung und denselben Kontext.",
+        none: "Noch keine Messungen für dieses Gerät – reich die erste ein!",
+        avg: (v, n) => `Ø ${v} tok/s (${n} Messungen)`,
+        calcVs: (c, m) => `Berechnet: <b>${c}</b> tok/s · Gemessen: <b>${m}</b> tok/s`,
+        by: "von", anon: "Anonym", n: (n) => n === 1 ? "1 Messung" : `${n} Messungen`,
+        calcShort: (c) => `berechnet ${c}`,
+        otherQ: (n) => `${n === 1 ? "1 Messung" : `${n} Messungen`} mit anderer Quantisierung`,
+        noMeas: "noch keine Messung",
+        fTitle: "Eigenen Benchmark einreichen",
+        fIntro: "Miss die Generierungsgeschwindigkeit mit deiner Software (z. B. llama-bench „tg128“, Ollama „eval rate“ mit --verbose, LM Studio „tok/sec“) und trag den Wert ein.",
+        device: "Gerät", model: "Modell", quant: "Quantisierung", ctx: "Kontext (Tokens)", tps: "Tokens/s (Generierung)", ttft: "Erster Token (ms)",
+        software: "Software + Version", os: "Betriebssystem", notes: "Notizen", name: "Dein Name", optional: "optional", other: "Andere",
+        ph: { software: "z. B. llama.cpp b4567, Ollama 0.5", os: "z. B. Linux 6.8, macOS 26, Windows 11", notes: "z. B. undervolted, 64 GB RAM, Flash Attention an", name: "Anonym" },
+        est: (v) => `Berechnet für diese Kombination: ${v} tok/s`, estNone: "Für diese Quantisierung gibt es keine Schätzung.",
+        warn: (f) => `Dein Wert weicht stark von der Schätzung ab (${f}). Bitte prüf ihn noch einmal – auffällige Werte schauen wir uns besonders genau an.`,
+        sure: "Der Wert stimmt, ich habe ihn so gemessen.",
+        privacy: "Gespeichert werden nur die Angaben aus dem Formular; nach der Prüfung erscheinen sie öffentlich. Deine IP-Adresse wird nicht gespeichert, nur ein anonymer Tages-Hash gegen Spam (höchstens 5 Einreichungen pro Tag).",
+        send: "Absenden", cancel: "Abbrechen", close: "Schließen", sending: "Wird gesendet …",
+        thanks: "Danke! Dein Benchmark wird geprüft und erscheint nach Freigabe.",
+        errRate: "Du hast heute schon 5 Benchmarks eingereicht. Bitte versuch es morgen wieder.",
+        errField: "Bitte prüf das markierte Feld.",
+        errOffline: "Einreichen ist gerade nicht möglich. Du kannst die Messung stattdessen als GitHub-Issue schicken.",
+        issue: "Als GitHub-Issue senden ↗"
+      },
       sortBy: (c) => `Nach ${c} sortieren`
     },
     en: {
@@ -1066,7 +1134,7 @@ body:not(.adv-mode) #advisor { display: none; }
       costTip: (h, p) => `Electricity cost per year at ${h} h/day and €${p}/kWh`,
       dGroups: { overview: "Overview", hw: "Memory & bandwidth", intel: "Model intelligence", score: "Rating in this use case", px: "Estimated performance", energy: "Energy & efficiency", mem: "Memory usage" },
       rankTitle: "Ranking", noteTitle: "Note",
-      dRows: { eciOne: "Model", vtype: "Vendor · type", backend: "Backend", runs: "Model runs", power: "Power draw", cost8: "Electricity/year (8 h/day)", cost24: "Electricity/year (24/7)", eff: "Efficiency", tco: "Total cost, 3 years", eciSame: "Model (same for both)", eciDev: "Model per device", sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", out: "Time per image/clip", perh: "Per hour", memuse: "Usage" },
+      dRows: { eciOne: "Model", vtype: "Vendor · type", backend: "Backend", runs: "Model runs", power: "Power draw", cost8: "Electricity/year (8 h/day)", cost24: "Electricity/year (24/7)", eff: "Efficiency", tco: "Total cost, 3 years", eciSame: "Model (same for both)", eciDev: "Model per device", sys: "System price", mem: "Memory", bw: "Bandwidth", score: "Score (value)", rank: "Rank", perf: "Performance", fits: "Models that fit", tg: "Tokens/s", ttft: "First token", code: "100 lines of code", img: "1 image", out: "Time per image/clip", perh: "Per hour", memuse: "Usage", meas: "Measured (community)" },
       rankOf: (a, b) => `${a} of ${b}`,
       faster: (x) => `${x}× better`,
       useModel: (u, n, m, ex, need, c, q, k, total) => `${u} → ${n} models to choose from. Calculated with <b>${m}</b> (${ex}): needs ≈ <b>${need} GB</b> of memory at ${c} context and ${q}, and fits on <b>${k} of ${total}</b> devices. A different use case or model changes the memory need and the ranking.`,
@@ -1135,6 +1203,33 @@ body:not(.adv-mode) #advisor { display: none; }
         relaxed: "No device reaches the requested speed within budget – showing the fastest devices that fit.",
         none: "No device fits this budget. Raise the budget or pick “Either” for the form factor.",
         note: "Estimates from the calculator, not measurements. Prices: Germany, daily or list price."
+      },
+      cbSubmit: "📊 Submit your own benchmark",
+      cb: {
+        title: "Community benchmarks", mean: "Avg",
+        hint: "Real measurements from the community, reviewed before they are published. Next to them is the calculated value for the same quantization and context.",
+        none: "No measurements for this device yet – submit the first one!",
+        avg: (v, n) => `Avg ${v} tok/s (${n} measurements)`,
+        calcVs: (c, m) => `Calculated: <b>${c}</b> tok/s · Measured: <b>${m}</b> tok/s`,
+        by: "by", anon: "Anonymous", n: (n) => n === 1 ? "1 measurement" : `${n} measurements`,
+        calcShort: (c) => `calculated ${c}`,
+        otherQ: (n) => `${n === 1 ? "1 measurement" : `${n} measurements`} with a different quantization`,
+        noMeas: "no measurement yet",
+        fTitle: "Submit your own benchmark",
+        fIntro: "Measure generation speed with your software (e.g. llama-bench “tg128”, Ollama “eval rate” with --verbose, LM Studio “tok/sec”) and enter the value.",
+        device: "Device", model: "Model", quant: "Quantization", ctx: "Context (tokens)", tps: "Tokens/s (generation)", ttft: "First token (ms)",
+        software: "Software + version", os: "Operating system", notes: "Notes", name: "Your name", optional: "optional", other: "Other",
+        ph: { software: "e.g. llama.cpp b4567, Ollama 0.5", os: "e.g. Linux 6.8, macOS 26, Windows 11", notes: "e.g. undervolted, 64 GB RAM, flash attention on", name: "Anonymous" },
+        est: (v) => `Calculated for this combination: ${v} tok/s`, estNone: "No estimate for this quantization.",
+        warn: (f) => `Your value differs a lot from the estimate (${f}). Please double-check it – unusual values get a closer review.`,
+        sure: "The value is correct, I measured it like this.",
+        privacy: "Only the details in this form are stored; after review they are shown publicly. Your IP address is not stored, only an anonymous daily hash against spam (at most 5 submissions per day).",
+        send: "Submit", cancel: "Cancel", close: "Close", sending: "Sending …",
+        thanks: "Thanks! Your benchmark will be reviewed and appears once approved.",
+        errRate: "You have already submitted 5 benchmarks today. Please try again tomorrow.",
+        errField: "Please check the highlighted field.",
+        errOffline: "Submitting is not possible right now. You can send the measurement as a GitHub issue instead.",
+        issue: "Send as GitHub issue ↗"
       },
       sortBy: (c) => `Sort by ${c}`
     }
@@ -1231,12 +1326,12 @@ body:not(.adv-mode) #advisor { display: none; }
     return info;
   }
 
-  function calc(d, m, ctx) {
+  function calc(d, m, ctx, qid) {
     if (m.media) {   // Bild/Video: Leistung = Bilder bzw. Clips pro Stunde
       const sec = mediaSec(d, m), fits = m.gb <= usable(d) && d.imageSupported !== false;
       return { fits, need: m.gb, tg: 3600 / sec, pp: 3600 / sec, ttft: 0, sec };
     }
-    m = qm(m);
+    m = qm(m, qid);
     const kvGB = kvCache(m, ctx);
     const need = m.gb + kvGB + 1.0;
     const fits = need <= usable(d);
@@ -1327,6 +1422,8 @@ body:not(.adv-mode) #advisor { display: none; }
     { k: "x:code",   g: "run", llm: true, de: "100 Zeilen Code", en: "100 lines of code", v: (r) => r.px.code, f: (v) => durFmt(v), dir: 1 },
     { k: "x:img",    g: "run", llm: true, de: "1 Bild", en: "1 image", v: (r) => r.px.img, f: (v) => durFmt(v), dir: 1 },
     { k: "x:out",    g: "run", media: true, de: "Zeit pro Bild/Clip", en: "Time per image/clip", v: (r) => r.px.out, f: (v) => durFmt(v), dir: 1 },
+    { k: "c:meas",   g: "run", llm: true, de: "Gemessen", en: "Measured", v: (r) => cbAvg(r.d, modelFor(r.d)), f: (v, r) => `${fmtTok(v)} <small class="na">(${cbMatch(r.d, modelFor(r.d)).filter((b) => CB_Q[b.quantization] === state.quant).length})</small>`, dir: -1,
+      tip: { de: "Durchschnitt der freigegebenen Community-Messungen (Tokens/s) für das gewählte Modell und die gewählte Quantisierung; in Klammern die Anzahl", en: "Average of approved community measurements (tokens/s) for the selected model and quantization; count in brackets" } },
     { k: "x:perh",   g: "run", media: true, de: "Pro Stunde", en: "Per hour", v: (r) => r.px.tg, f: (v) => `${fmt(v, v < 10 ? 1 : 0)} ${L().perH[mainModel().media] || ""}`, dir: -1 }
   ];
   const durFmt = (sec) => sec < 1 ? `${fmt(sec, 1)} s` : sec < 60 ? `${fmt(sec, sec < 10 ? 1 : 0)} s` : `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")} min`;
@@ -1653,6 +1750,151 @@ body:not(.adv-mode) #advisor { display: none; }
     if (view === "cmp") { const o = picks.map((x) => x[1]).find((x) => x.d.id !== id); state.cmpMode = "same"; state.pickB = o ? { v: o.d.v, id: o.d.id } : { v: "", id: "" }; }
     persist(); render(); $(".controls").scrollIntoView({ behavior: "smooth", block: "start" });
   }
+  // Community-Benchmarks: echte Messwerte aus /api/benchmarks (Cloudflare KV, moderiert, siehe workers/benchmarks-api).
+  // Fallback und kuratierter Bestand: /data/benchmarks.json. Ohne Daten bleibt alles leer, die Seite funktioniert weiter.
+  const CB_API = "/api/benchmarks";
+  const CB_ISSUES = "https://github.com/alexxschenk-hub/aiscoremetrics/issues/new";
+  // Quantisierung der Messung → Rechner-Quantisierung für den Vergleichswert (null = keine Schätzung)
+  const CB_Q = { Q2_K: "q2", Q3_K_M: "q3", Q4_0: "q4_0", Q4_K_M: "q4", Q5_K_M: "q5", Q6_K: "q6", Q8_0: "q8", FP16: "f16", BF16: "f16", FP8: "q8",
+    MXFP4: "q4", NVFP4: "q4", "AWQ 4-bit": "q4", "GPTQ 4-bit": "q4", "MLX 4-bit": "q4", "MLX 8-bit": "q8", "EXL2/EXL3": null, other: null };
+  const CB_LIM = { tpsMin: 0.1, tpsMax: 500, plausible: 3 };
+  const CB_SOFTWARE = ["llama.cpp", "Ollama", "LM Studio", "MLX-LM", "vLLM", "SGLang", "ExLlamaV2", "KoboldCpp", "TensorRT-LLM", "Jan"];
+  let BENCH = [];
+  const cbQName = (qid = state.quant) => (QUANTS.find((q) => q.id === qid) || QUANTS[2]).name;
+  const cbEst = (d, m, quant, ctx) => d && m && !m.media && CB_Q[quant] ? calc(d, m, ctx, CB_Q[quant]).tg : null;
+  const cbMean = (list) => list.reduce((s, b) => s + b.tokensPerSecond, 0) / list.length;
+  // Messungen für Gerät + Modell mit der eingestellten Quantisierung
+  const cbMatch = (d, m) => BENCH.filter((b) => b.device === d.id && b.model === m.id);
+  function cbAvg(d, m) { const l = cbMatch(d, m).filter((b) => CB_Q[b.quantization] === state.quant); return l.length ? cbMean(l) : null; }
+  const cbDevName = (b) => { const d = DEVICES.find((x) => x.id === b.device); return d ? devLabel(d) : b.deviceName; };
+  const cbModelName = (b) => { const m = MODELS.find((x) => x.id === b.model); return m ? mName(m) : b.modelName; };
+  const cbPct = (meas, est) => { const p = Math.round((meas / est - 1) * 100); return `<span class="${p >= 0 ? "dev-pos" : "dev-neg"}">${p >= 0 ? "+" : "−"}${Math.abs(p)} %</span>`; };
+
+  async function cbLoad() {
+    const get = (url) => fetch(url, { cache: "no-cache" }).then((r) => r.ok ? r.json() : null).then((j) => j && Array.isArray(j.benchmarks) ? j.benchmarks : []).catch(() => []);
+    const [api, file] = await Promise.all([get(CB_API), get("/data/benchmarks.json")]);
+    const seen = new Set();
+    BENCH = [...api, ...file].filter((b) => b && b.id && !seen.has(b.id) && seen.add(b.id) && b.tokensPerSecond > 0);
+    if (BENCH.length) render();
+  }
+
+  // Zeile "Gemessen" in Einzelansicht und Vergleich (zählt nicht in die Wertung)
+  function cbCell(r) {
+    const t = L().cb, m = modelFor(r.d);
+    if (m.media) return `<span class="na">—</span>`;
+    const all = cbMatch(r.d, m), same = all.filter((b) => CB_Q[b.quantization] === state.quant);
+    if (!same.length) return `<span class="na">—</span><small class="sub">${all.length ? t.otherQ(all.length) : t.noMeas}</small>`;
+    const avg = cbMean(same);
+    return `${t.mean} ${fmtTok(avg)} tok/s<small class="sub">${t.n(same.length)}${r.px.tg != null ? ` · ${t.calcShort(fmtTok(r.px.tg))} · ${cbPct(avg, r.px.tg)}` : ""}</small>`;
+  }
+
+  // Bereich "Community-Benchmarks" unter der Gerätetabelle: Messungen je Modell + Quantisierung mit Durchschnitt und Rechenwert
+  function cbSection(cols) {
+    const t = L().cb;
+    const dev = (r) => {
+      const groups = new Map();
+      BENCH.filter((b) => b.device === r.d.id).forEach((b) => { const k = `${b.model}|${b.quantization}`; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(b); });
+      const html = [...groups.values()].sort((a, b) => b.length - a.length).map((l) => {
+        const b0 = l[0], m = MODELS.find((x) => x.id === b0.model), avg = cbMean(l);
+        const ctxs = [...new Set(l.map((b) => b.contextLength))], est = cbEst(r.d, m, b0.quantization, Math.max(...ctxs));
+        const items = l.map((b) => `<li><b>${fmtTok(b.tokensPerSecond)} tok/s</b>${b.firstTokenMs != null ? ` · ${fmt(b.firstTokenMs)} ms TTFT` : ""} · ${ctxLabel(b.contextLength)} — ${t.by} ${esc(b.submittedBy || t.anon)}, ${esc(b.software)}${b.os ? ` · ${esc(b.os)}` : ""}${b.notes ? `<br><small>${esc(b.notes)}</small>` : ""}</li>`).join("");
+        return `<div class="cb-grp"><span class="h">${esc(cbModelName(b0))} · ${esc(b0.quantization)}${l.length > 1 ? ` — ${t.avg(fmtTok(avg), l.length)}` : ""}</span>`
+          + (est ? `<span class="vs">${t.calcVs(fmtTok(est), fmtTok(avg))} · ${cbPct(avg, est)}</span>` : "") + `<ul>${items}</ul></div>`;
+      }).join("");
+      return `<div class="cb-dev"><b>${esc(devLabel(r.d))}</b>${html || `<p class="none">${t.none}</p>`}<button type="button" class="cb-open" data-cb-open data-device="${r.d.id}">${L().cbSubmit}</button></div>`;
+    };
+    return `<section class="cb"><h3><span aria-hidden="true">📊</span>${t.title}</h3><p class="hint">${t.hint}</p><div class="cb-grid">${cols.map(dev).join("")}</div></section>`;
+  }
+
+  // Einreichen-Dialog
+  let cbOpenedAt = 0;
+  function cbOpen(deviceId) {
+    const t = L().cb, dlg = $("#cb-dlg");
+    const d = DEVICES.find((x) => x.id === deviceId) || DEVICES.find((x) => x.id === state.pickA.id) || DEVICES.find((x) => x.id === DEFAULT_DEVICE) || DEVICES[0];
+    const pm = MODELS.find((m) => m.id === state.pxModel), m = pm && !pm.media ? pm : MODELS.find((x) => x.id === USES[0].def) || MODELS[0];
+    const opt = (v, n, sel) => `<option value="${esc(v)}"${sel ? " selected" : ""}>${esc(n)}</option>`;
+    const devOpts = Object.entries(VENDOR).map(([v, vn]) => `<optgroup label="${vn}">${DEVICES.filter((x) => x.v === v).map((x) => opt(x.id, devLabel(x), x === d)).join("")}</optgroup>`).join("");
+    const modelOpts = MODELS.filter((x) => !x.media).map((x) => opt(x.id, `${mName(x)} (${mEx(x)})`, x === m)).join("");
+    const quantOpts = Object.keys(CB_Q).map((q) => opt(q, q === "other" ? t.other : q, q === cbQName())).join("");
+    const optL = ` <small>(${t.optional})</small>`;
+    dlg.innerHTML = `<form method="dialog" novalidate>
+      <button type="button" class="x" data-cb-close aria-label="${esc(t.close)}">×</button>
+      <h2 id="cb-title">${esc(t.fTitle)}</h2>
+      <p class="hint">${esc(t.fIntro)}</p>
+      <div class="cb-f">
+        <label class="w"><span class="lab">${t.device}</span><select name="device" required>${devOpts}</select></label>
+        <label class="w"><span class="lab">${t.model}</span><select name="model" required>${modelOpts}</select></label>
+        <label><span class="lab">${t.quant}</span><select name="quantization" required>${quantOpts}</select></label>
+        <label><span class="lab">${t.ctx}</span><input name="contextLength" type="number" required min="256" max="2097152" step="1" value="${CTX[state.ctx]}"></label>
+        <label><span class="lab">${t.tps}</span><input name="tokensPerSecond" type="number" required min="${CB_LIM.tpsMin}" max="${CB_LIM.tpsMax}" step="0.01" inputmode="decimal"></label>
+        <label><span class="lab">${t.ttft}${optL}</span><input name="firstTokenMs" type="number" min="0" max="600000" step="1"></label>
+        <label><span class="lab">${t.software}</span><input name="software" required minlength="2" maxlength="60" list="cb-sw" placeholder="${esc(t.ph.software)}"></label>
+        <label><span class="lab">${t.os}${optL}</span><input name="os" maxlength="60" placeholder="${esc(t.ph.os)}"></label>
+        <label class="w"><span class="lab">${t.notes}${optL}</span><textarea name="notes" maxlength="300" rows="2" placeholder="${esc(t.ph.notes)}"></textarea></label>
+        <label class="w"><span class="lab">${t.name}${optL}</span><input name="submittedBy" maxlength="40" autocomplete="nickname" placeholder="${esc(t.ph.name)}"></label>
+        <label class="cb-hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+      </div>
+      <datalist id="cb-sw">${CB_SOFTWARE.map((s) => `<option value="${s}">`).join("")}</datalist>
+      <p class="cb-est" id="cb-est" aria-live="polite"></p>
+      <p class="cb-warn" id="cb-warn" hidden></p>
+      <label class="check" id="cb-sure-l" hidden><input type="checkbox" name="sure"> ${esc(t.sure)}</label>
+      <p class="hint">${esc(t.privacy)}</p>
+      <p class="cb-msg" id="cb-msg" role="status" aria-live="polite"></p>
+      <div class="cb-acts"><button type="button" class="adv-btn" data-cb-close>${esc(t.cancel)}</button><button type="submit" class="adv-btn pri">${esc(t.send)}</button></div>
+    </form>`;
+    cbOpenedAt = Date.now();
+    cbCheck();
+    dlg.showModal();
+    dlg.querySelector('[name="tokensPerSecond"]').focus();
+  }
+  const cbForm = () => $("#cb-dlg form");
+  const cbData = () => Object.fromEntries(new FormData(cbForm()).entries());
+  // Live-Schätzung und Plausibilität (±200 % = Faktor 3 zum berechneten Wert)
+  function cbCheck() {
+    const t = L().cb, f = cbData(), d = DEVICES.find((x) => x.id === f.device), m = MODELS.find((x) => x.id === f.model);
+    const est = cbEst(d, m, f.quantization, Math.max(256, +f.contextLength || 4096)), tps = parseFloat(String(f.tokensPerSecond).replace(",", "."));
+    $("#cb-est").textContent = est ? t.est(fmtTok(est)) : t.estNone;
+    const off = est && tps > 0 && (tps > est * CB_LIM.plausible || tps < est / CB_LIM.plausible);
+    $("#cb-warn").hidden = !off; $("#cb-sure-l").hidden = !off;
+    if (off) $("#cb-warn").textContent = t.warn(tps > est ? `×${fmt(tps / est, 1)}` : `÷${fmt(est / tps, 1)}`);
+    return { d, m, est, off };
+  }
+  function cbIssueUrl(payload) {
+    const title = `Benchmark: ${payload.deviceName} · ${payload.modelName} ${payload.quantization} · ${payload.tokensPerSecond} tok/s`;
+    return `${CB_ISSUES}?title=${encodeURIComponent(title)}&body=${encodeURIComponent("```json\n" + JSON.stringify(payload, null, 2) + "\n```")}`;
+  }
+  async function cbSubmit() {
+    const t = L().cb, form = cbForm(), msg = $("#cb-msg"), f = cbData(), chk = cbCheck();
+    form.querySelectorAll("[aria-invalid]").forEach((el) => el.removeAttribute("aria-invalid"));
+    msg.className = "cb-msg"; msg.textContent = "";
+    const bad = [...form.querySelectorAll("input, select, textarea")].find((el) => el.name !== "website" && !el.checkValidity())
+      || (chk.off && !f.sure ? form.querySelector('[name="sure"]') : null);
+    if (bad) { bad.setAttribute("aria-invalid", "true"); bad.focus(); msg.className = "cb-msg err"; msg.textContent = t.errField; return; }
+    const payload = { device: f.device, deviceName: chk.d ? devLabel(chk.d) : f.device, model: f.model, modelName: chk.m ? mName(chk.m) : f.model,
+      quantization: f.quantization, contextLength: +f.contextLength, tokensPerSecond: +String(f.tokensPerSecond).replace(",", "."),
+      firstTokenMs: f.firstTokenMs === "" ? null : +f.firstTokenMs, software: f.software.trim(), os: f.os.trim(), notes: f.notes.trim(),
+      submittedBy: f.submittedBy.trim(), estimate: chk.est ? Math.round(chk.est * 10) / 10 : null, website: f.website, fillMs: Date.now() - cbOpenedAt };
+    const btn = form.querySelector('[type="submit"]'); btn.disabled = true; btn.textContent = t.sending;
+    let res = null, data = null;
+    try { res = await fetch(CB_API, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) }); data = await res.json().catch(() => null); } catch (e) {}
+    btn.disabled = false; btn.textContent = t.send;
+    if (res && res.status === 202) {
+      form.querySelector(".cb-f").hidden = true; form.querySelectorAll(".cb-est, .cb-warn, #cb-sure-l, .hint").forEach((el) => { el.hidden = true; });
+      msg.textContent = t.thanks; btn.hidden = true; form.querySelector(".cb-acts [data-cb-close]").textContent = t.close; return;
+    }
+    msg.className = "cb-msg err";
+    if (res && res.status === 429) { msg.textContent = t.errRate; return; }
+    if (res && res.status === 400 && data && data.field) { const el = form.querySelector(`[name="${data.field}"]`); if (el) { el.setAttribute("aria-invalid", "true"); el.focus(); } msg.textContent = t.errField; return; }
+    // API nicht erreichbar (noch nicht eingerichtet, offline): Einreichen per GitHub-Issue anbieten
+    const { website, fillMs, ...pub } = payload;
+    msg.innerHTML = `${esc(t.errOffline)} <a class="ext" href="${esc(cbIssueUrl(pub))}" target="_blank" rel="noopener">${esc(t.issue)}</a>`;
+  }
+  document.addEventListener("click", (e) => { const b = e.target.closest("[data-cb-open]"); if (b && DEVICES.length) cbOpen(b.dataset.device); });
+  $("#cb-dlg").addEventListener("click", (e) => { if (e.target.closest("[data-cb-close]") || e.target === e.currentTarget) $("#cb-dlg").close(); });
+  $("#cb-dlg").addEventListener("input", () => cbCheck());
+  $("#cb-dlg").addEventListener("change", () => cbCheck());
+  $("#cb-dlg").addEventListener("submit", (e) => { e.preventDefault(); cbSubmit(); });
+
   function render() {
     renderControls();
     renderColPick();
@@ -1782,6 +2024,7 @@ body:not(.adv-mode) #advisor { display: none; }
           ["perh", (r) => r.px.tg, (v) => `${fmt(v, v < 10 ? 1 : 0)} ${t.perH[pxM.media] || ""}`, 1]
         ] : [
           ["tg", (r) => r.px.tg, (v) => `${fmtTok(v)} tok/s`, 1],
+          ["meas", (r) => cbAvg(r.d, modelFor(r.d)), null, 0, cbCell],
           ["ttft", (r) => r.px.ttft, durTxt, -1],
           ["code", (r) => r.px.code, durTxt, -1],
           ["img", (r) => r.px.img, durTxt, -1]]),
@@ -1831,7 +2074,7 @@ body:not(.adv-mode) #advisor { display: none; }
           return `<td class="v ${i === win ? "win" : ""}">${txt}</td>`;
         }).join("");
         const deltaCell = key === "mem" && memRule ? `<span class="mem-why${memRule.win < 0 ? " same" : ""}">${esc(memRule.text)}</span>${memRule.win >= 0 && !memRule.named ? `<small>${esc(t.deltaFor(devLabel(cols[memRule.win].d)))}</small>` : ""}` : key === "eciSame" && cols.length === 2 ? `<span class="same">${t.eciSame}</span>` : delta ? `${delta}<small>${esc(t.deltaFor(devLabel(cols[win].d)))}</small>` : "";
-        const calcRow = !FACT_KEYS.includes(key) && !["eciSame", "vtype", "backend"].includes(key);
+        const calcRow = !FACT_KEYS.includes(key) && !["eciSame", "vtype", "backend", "meas"].includes(key);
         const mark = ENERGY_KEYS.includes(key) ? ["⚡", t.energyMark] : ["≈", t.calcMark];
         return `<tr data-k="${key}"${calcRow ? ' class="calc"' : ""}><td class="k">${calcRow ? `<span class="approx" title="${esc(mark[1])}" aria-label="${esc(mark[1])}">${mark[0]}</span>` : ""}${key === "eciSame" && cols.length === 1 ? t.dRows.eciOne : t.dRows[key]}</td>${cells}${cols.length === 2 ? `<td class="d">${deltaCell}</td>` : ""}</tr>`;
       }).join("");
@@ -1913,7 +2156,7 @@ body:not(.adv-mode) #advisor { display: none; }
           + cards + `</div>`;
       }
       // Ergebnis zuerst, dann die Details
-      $("#detail").innerHTML = `${verdict}<table><thead>${head}</thead><tbody>${body}</tbody></table><p class="hint" style="padding:0 14px 12px">${cmpPer ? esc(t.dHintPer(ctxLabel(pxP))) : esc(pxM.media ? t.dHintMedia(`${mName(pxM)} (${mEx(pxM)})`) : t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>`;
+      $("#detail").innerHTML = `${verdict}<table><thead>${head}</thead><tbody>${body}</tbody></table><p class="hint" style="padding:0 14px 12px">${cmpPer ? esc(t.dHintPer(ctxLabel(pxP))) : esc(pxM.media ? t.dHintMedia(`${mName(pxM)} (${mEx(pxM)})`) : t.dHint(`${mName(pxM)} (${mEx(pxM)})`, ctxLabel(pxP)))}</p>${cbSection(cols)}`;
       { const vbox = $("#detail .verdict");   // Speicherauslastung als letzter Bereich der Ergebnis-Box
         if (vbox) { const w = document.createElement("div"); w.className = "v-mem"; vbox.appendChild(w); w.appendChild($("#mem-section")); } }
     }
@@ -1938,7 +2181,7 @@ body:not(.adv-mode) #advisor { display: none; }
         ${state.showPrices ? `<td class="num"><div class="price">${edited ? `<span class="edited" title="${t.edited}"></span>` : ""}<input type="number" id="p-${d.id}" data-id="${d.id}" value="${priceOf(d) ?? ""}" placeholder="—" min="0" step="10" aria-label="${esc(t.priceAria(d.name))}"></div><span class="src ${(d.est || (isUsd() && d.priceUsd == null)) && !edited ? "est" : ""}">${edited ? t.src.own : frozenUnknown ? t.src.unknown : srcText(d)}</span></td>` : ""}
         <td><div class="dots" aria-label="${esc(t.fitsAria(r.fitCount, usedModels.length))}">${dots}</div></td>
         <td><div class="barcell"><div class="track"><div class="fill ${state.showPrices ? "p" : ""}" style="width:${r.perfN.toFixed(1)}%"></div></div><span class="mono">${fmt(r.perfN)}</span></div></td>
-        ${xcolsOn().map((c) => { const v = c.v(r); return `<td class="num mono xc${v == null ? " na" : ""}">${v == null ? "—" : c.f(v)}</td>`; }).join("")}
+        ${xcolsOn().map((c) => { const v = c.v(r); return `<td class="num mono xc${v == null ? " na" : ""}">${v == null ? "—" : c.f(v, r)}</td>`; }).join("")}
         ${state.showPower ? `<td class="num mono pw" title="${esc(t.wattTip(fmt(d.tdp), fmt(sysWatts(d))))}">~${fmt(sysWatts(d))} W</td><td class="num mono pw" title="${esc(t.costTip(8, fmt(elPrice(), 2)))}">~${eur(yearCost(d, 8))}</td>` : ""}
         ${state.showPrices ? `<td><div class="barcell"><div class="track"><div class="fill" style="width:${r.score.toFixed(1)}%"></div></div><span class="mono">${r.sp > 0 ? fmt(r.score) : "—"}</span></div></td>
         <td><a class="ext" href="https://geizhals.at/?fs=${encodeURIComponent(d.q)}" target="_blank" rel="noopener">${t.prices}</a></td>` : ""}
@@ -2176,7 +2419,7 @@ body:not(.adv-mode) #advisor { display: none; }
       // Ansicht "Ein Gerät" ohne Auswahl: mit einem Referenzgerät starten statt leer
       if (state.view === "one" && !state.pickA.id) { const d = DEVICES.find((x) => x.id === DEFAULT_DEVICE); if (d) state.pickA = { v: d.v, id: d.id }; }
       renderStatic(); render();
-
+      cbLoad();
     } catch (e) {
       $("#summary").innerHTML = `<div class="sum"><span class="k">Fehler / Error</span><span class="v">Daten nicht geladen</span><span class="s">data/devices.json fehlt oder die Seite wurde direkt als Datei geöffnet. Lokal mit „npm run dev“ starten.</span></div>`;
     }

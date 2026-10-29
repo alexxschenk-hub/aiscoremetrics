@@ -9,6 +9,8 @@
     "prices": "node scripts/update-prices.mjs",
     "dev": "npx --yes serve public",
     "seo": "node scripts/build-seo.mjs",
-    "test": "node scripts/test-models.mjs && node scripts/test-hardware.mjs && node scripts/test-scenarios.mjs"
+    "test": "node scripts/test-benchmarks-api.mjs && node scripts/test-models.mjs && node scripts/test-hardware.mjs && node scripts/test-scenarios.mjs",
+    "bench": "node scripts/benchmarks-admin.mjs",
+    "dev:api": "npx --yes wrangler@4 pages dev public --kv BENCHMARKS"
   }
 }

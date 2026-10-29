@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Benchmarks moderieren</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+:root { --bg: #F4F6F7; --surface: #FFFFFF; --ink: #1B2328; --muted: #5A6670; --line: #D6DCE0; --accent: #0A6B75; --accent-soft: #D4EAEC; --warn: #B4691F; --bad: #C0392B; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A; --accent: #52C3CD; --accent-soft: #123338; --warn: #E3A15A; --bad: #E57368; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0E1215; --surface: #151B1F; --ink: #E4EAED; --muted: #93A0A9; --line: #29323A; --accent: #52C3CD; --accent-soft: #123338; --warn: #E3A15A; --bad: #E57368; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; display: grid; gap: 18px; }
+h1 { margin: 0; font-size: 24px; } h2 { margin: 0 0 10px; font-size: 18px; }
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+form.login { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+input { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 7px 9px; min-width: 0; }
+button { font: 600 13px system-ui, sans-serif; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 99px; padding: 6px 14px; cursor: pointer; }
+button.ok { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+button.no { color: var(--bad); border-color: var(--bad); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hint { color: var(--muted); font-size: 13px; margin: 0; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+td.num { font-family: ui-monospace, Menlo, monospace; white-space: nowrap; }
+td small { display: block; color: var(--muted); }
+.flag { color: var(--warn); font-weight: 600; }
+.acts { display: flex; gap: 6px; flex-wrap: wrap; }
+#status { min-height: 1.5em; }
+#status.err { color: var(--bad); }
+</style>
+</head>
+<body>
+<main>
+  <h1>📊 Community-Benchmarks moderieren</h1>
+  <section>
+    <form class="login" id="login">
+      <label for="key">Admin-Key</label>
+      <input id="key" type="password" autocomplete="current-password" required size="32">
+      <button type="submit" class="ok">Laden</button>
+      <button type="button" id="logout">Abmelden</button>
+    </form>
+    <p class="hint">Der Key wird nur für diesen Tab (sessionStorage) gemerkt und als Bearer-Token an /api/benchmarks geschickt.</p>
+    <p id="status" role="status" aria-live="polite"></p>
+  </section>
+  <section>
+    <h2>Warteschlange <span id="n-pending"></span></h2>
+    <div class="tbl"><table><thead><tr><th>Eingereicht</th><th>Gerät · Modell</th><th>Tok/s</th><th>Details</th><th></th></tr></thead><tbody id="pending"></tbody></table></div>
+  </section>
+  <section>
+    <h2>Freigegeben <span id="n-approved"></span></h2>
+    <div class="tbl"><table><thead><tr><th>Eingereicht</th><th>Gerät · Modell</th><th>Tok/s</th><th>Details</th><th></th></tr></thead><tbody id="approved"></tbody></table></div>
+  </section>
+</main>
+<script>
+(() => {
+  const API = "/api/benchmarks", $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const store = { get: () => { try { return sessionStorage.getItem("bm-admin") || ""; } catch { return ""; } },
+    set: (v) => { try { v ? sessionStorage.setItem("bm-admin", v) : sessionStorage.removeItem("bm-admin"); } catch {} } };
+  const status = (msg, err) => { $("#status").textContent = msg; $("#status").className = err ? "err" : ""; };
+  const req = async (path, opts = {}) => {
+    const res = await fetch(API + path, { ...opts, headers: { "content-type": "application/json", authorization: `Bearer ${store.get()}` } });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(res.status === 401 ? "Falscher Admin-Key." : res.status === 503 ? "KV-Speicher ist nicht eingerichtet." : data.error || `HTTP ${res.status}`);
+    return data;
+  };
+  const row = (b, pending) => {
+    const ratio = b.estimate ? b.tokensPerSecond / b.estimate : null;
+    return `<tr>
+      <td>${esc(new Date(b.submittedAt).toLocaleString("de-AT"))}<small>${esc(b.submittedBy || "Anonym")}</small></td>
+      <td>${esc(b.deviceName)}<small>${esc(b.modelName)} · ${esc(b.quantization)} · ${esc(b.contextLength)} Tokens</small></td>
+      <td class="num">${esc(b.tokensPerSecond)}${b.firstTokenMs != null ? `<small>${esc(b.firstTokenMs)} ms TTFT</small>` : ""}${ratio ? `<small class="${b.flagged ? "flag" : ""}">${b.flagged ? "⚠️ " : ""}berechnet ${esc(b.estimate)} (×${ratio.toFixed(2)})</small>` : ""}</td>
+      <td>${esc(b.software)}${b.os ? ` · ${esc(b.os)}` : ""}${b.notes ? `<small>${esc(b.notes)}</small>` : ""}<small>${esc(b.device)} / ${esc(b.model)} · ${esc(b.id)}</small></td>
+      <td><div class="acts">${pending
+        ? `<button type="button" class="ok" data-act="approve" data-id="${esc(b.id)}">Bestätigen</button><button type="button" class="no" data-act="reject" data-id="${esc(b.id)}">Ablehnen</button>`
+        : `<button type="button" class="no" data-act="delete" data-id="${esc(b.id)}">Löschen</button>`}</div></td>
+    </tr>`;
+  };
+  const empty = (n) => `<tr><td colspan="5" class="hint">${n}</td></tr>`;
+  async function load() {
+    if (!store.get()) { status("Bitte Admin-Key eingeben."); return; }
+    status("Lade …");
+    try {
+      const { pending, approved } = await req("/pending");
+      $("#pending").innerHTML = pending.length ? pending.map((b) => row(b, true)).join("") : empty("Keine offenen Einreichungen.");
+      $("#approved").innerHTML = approved.length ? approved.map((b) => row(b, false)).join("") : empty("Noch nichts freigegeben.");
+      $("#n-pending").textContent = `(${pending.length})`; $("#n-approved").textContent = `(${approved.length})`;
+      status(`Stand ${new Date().toLocaleTimeString("de-AT")}`);
+    } catch (e) { status(e.message, true); }
+  }
+  $("#login").addEventListener("submit", (e) => { e.preventDefault(); store.set($("#key").value.trim()); $("#key").value = ""; load(); });
+  $("#logout").addEventListener("click", () => { store.set(""); $("#pending").innerHTML = $("#approved").innerHTML = ""; status("Abgemeldet."); });
+  document.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-act]"); if (!b) return;
+    if (b.dataset.act === "delete" && !confirm("Freigegebenen Benchmark endgültig löschen?")) return;
+    b.disabled = true;
+    try { await req("/moderate", { method: "POST", body: JSON.stringify({ id: b.dataset.id, action: b.dataset.act }) }); await load(); }
+    catch (err) { status(err.message, true); b.disabled = false; }
+  });
+  load();
+})();
+</script>
+</body>
+</html>
