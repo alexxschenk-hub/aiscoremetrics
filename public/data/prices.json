@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-28T10:40:07.765Z",
+  "updatedAt": "2026-10-29T10:57:19.434Z",
   "region": "germany",
   "prices": {
     "4090": {
@@ -169,7 +169,7 @@
       "url": "https://gpuprix.com/germany/gpus/radeon-pro-w7800"
     },
     "w7800x48": {
-      "price": 3910,
+      "price": 2931,
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
