@@ -1,0 +1,36 @@
+/* Druckansicht (per <link media="print"> geladen, blockiert das Rendern nicht).
+   Ziel: sauberes Vergleichsergebnis auf Papier – weißer Hintergrund, keine Bedienelemente, Gewinner-Box prominent. */
+@page { margin: 14mm 12mm; }
+:root, :root[data-theme="dark"], :root:not([data-theme="light"]) {
+  --bg: #fff; --surface: #fff; --ink: #000; --muted: #444; --line: #bbb; --accent: #0A6B75; --accent-soft: #fff; --card-shadow: none; color-scheme: light;
+}
+html, body { background: #fff !important; color: #000 !important; }
+body { font-size: 11pt; }
+* { box-shadow: none !important; text-shadow: none !important; }
+.wrap { padding: 0 !important; gap: 12px !important; max-width: none !important; }
+/* Bedienelemente und alles Interaktive weg */
+.header-actions, .controls, #share-tools, .colpick, .cb-open, .cb-dlg, .v-share, .share-menu, #tip, .foot-nav, .theme-toggle, #lang,
+.adv-nav, .adv-opts, .adv-prog, .adv-budget, .adv-card .acts, button, input, select, .ss, .px-ctl, .px-devs, .back-btn, .toc, .cta, .lede .ext { display: none !important; }
+/* Einzelgerät/Vergleich: nur Ergebnis, Detailtabelle, Community-Werte und Praxiswerte */
+.view-detail #rank-panel, .view-detail #px-panel, .view-detail #mx-panel, .view-detail #summary { display: none !important; }
+#mx-panel, #mem-section .memlegend { display: none !important; }
+.panel, .detail, .tablebox, .controls, .sum, .v-card, .cb-dev, .adv-card, .post-card { background: #fff !important; border: 1px solid #bbb !important; border-radius: 4px !important; }
+.tablebox, .detail { overflow: visible !important; }
+table { font-size: 9.5pt; } th, td { padding: 4px 6px !important; }
+tr, .v-card, .cb-dev, .adv-card, .panel h2 { break-inside: avoid; page-break-inside: avoid; }
+h1 { font-size: 20pt; } h2 { break-after: avoid; }
+a { color: #000 !important; text-decoration: none !important; }
+/* Gewinner-Box */
+.verdict { border: 2.5px solid #000 !important; margin: 0 0 12px !important; break-inside: avoid; }
+.verdict .v-side, .verdict .v-mid, .v-cards, .verdict .v-mem, .verdict .v-ko { background: #fff !important; color: #000 !important; }
+.verdict .v-side.won { border: 3px solid var(--accent) !important; color: #000 !important; }
+.verdict .v-side.won .v-name { font-size: 22pt; }
+.verdict .v-badge { border: 1.5px solid #000; background: #fff !important; color: #000 !important; }
+.verdict .v-score { font-size: 30pt; }
+.v-cards { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+.detail td.v.win { font-weight: 700; text-decoration: underline; }
+.memchart .seg, .fill, .dot.on, .memcap { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+.chartbox canvas { max-width: 100% !important; }
+.site-footer { border-top: 1px solid #bbb; padding-top: 6px; font-size: 9pt; color: #444; }
+.site-footer::after { content: "aiscoremetrics.com – Schätzwerte aus dem Rechner, keine Messung."; display: block; margin-top: 4px; }
+:root[lang="en"] .site-footer::after, html[lang="en"] .site-footer::after { content: "aiscoremetrics.com – calculator estimates, not measurements."; }

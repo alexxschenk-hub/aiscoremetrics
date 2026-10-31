@@ -28,7 +28,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add public/index.html public/en/index.html public/sitemap.xml public/methodik public/faq public/ueber public/en/methodology public/en/faq public/en/about public/blog public/en/blog
+          git add public/index.html public/en/index.html public/sitemap.xml public/methodik public/faq public/ueber public/en/methodology public/en/faq public/en/about public/blog public/en/blog public/glossar public/en/glossary public/preise public/en/prices public/404.html public/data/history.json
           if git diff --cached --quiet; then
             echo "SEO-Seiten sind aktuell."
           else

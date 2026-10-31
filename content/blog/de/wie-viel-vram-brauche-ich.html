@@ -13,6 +13,7 @@
              + ca. 1 GB Laufzeit-Overhead</div>
       <p>Bei der Standard-Quantisierung <strong>Q4_K_M</strong> (rund 4,85 Bit pro Gewicht) heißt das als Faustregel: <strong>0,6 GB pro Milliarde Parameter</strong>, plus Kontext und Overhead.</p>
       <p><strong>Beispiel Qwen3.6 27B:</strong> Die Modelldatei ist mit Q4_K_M 17,0 GB groß. Bei 32.000 Tokens Kontext kommen 1,9 GB KV-Cache dazu, plus 1 GB Overhead – macht rund <strong>19,9 GB</strong>. Das passt auf eine Grafikkarte mit 24 GB, aber nicht auf eine mit 16 GB.</p>
+      <p>Alle Begriffe aus der Formel – <a href="glossary:quantization">Quantisierung</a>, <a href="glossary:kv-cache">KV-Cache</a>, <a href="glossary:context">Kontext</a> – kurz erklärt im <a href="glossary:">Glossar</a>.</p>
     </section>
 
     <section>
@@ -65,6 +66,7 @@
     <section>
       <h2>Sonderfall Mac und Mini-PCs</h2>
       <p>Macs, der DGX Spark und Mini-PCs mit Ryzen AI Max teilen sich den Arbeitsspeicher zwischen CPU und GPU. Das macht sehr große Modelle möglich, aber nicht der ganze Speicher ist nutzbar: macOS gibt der GPU standardmäßig nur rund 67 % (bis 36 GB) bzw. 75 % frei. Ein Mac mit 96 GB hat also rund 72 GB fürs Modell; mit angehobenem Limit sind es rund 90 GB. Mehr dazu im Vergleich <a href="blog:5090-vs-m5-ultra">RTX 5090 vs. Mac Studio M5 Ultra</a>.</p>
+      <p>Wie sich der DGX Spark und der Mac Studio in der Praxis schlagen, steht in <a href="blog:dgx-spark">DGX Spark vs. Mac Studio</a>.</p>
     </section>
 
     <section>

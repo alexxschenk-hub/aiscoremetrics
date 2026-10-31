@@ -10,6 +10,8 @@ public/
   data/benchmarks.json  Community-Benchmarks als Fallback/Snapshot (sonst aus der API)
   admin/benchmarks/     Moderationsseite für Community-Benchmarks (noindex)
   _headers              Cache-Regeln für Cloudflare Pages
+  404.html              Fehlerseite (generiert, Cloudflare Pages liefert sie automatisch aus)
+  assets/late.css       nicht kritische Styles (nach dem ersten Paint geladen), assets/print.css Druckansicht
   robots.txt, sitemap.xml   für Suchmaschinen
   og-image.png          Vorschaubild für Social Media (Quelle: scripts/og-image.html)
 scripts/build-seo.mjs       Baut /en/, Meta-Tags, hreflang, FAQ-JSON-LD, <noscript>-Tabelle und Sitemap
@@ -17,7 +19,8 @@ functions/api/[[path]].js   Pages Function für /api/* (nutzt workers/benchmarks
 workers/benchmarks-api/     Community-Benchmarks-API (Cloudflare KV), auch als eigener Worker deploybar
 scripts/benchmarks-admin.mjs  Benchmarks per Kommandozeile moderieren und exportieren
 scripts/update-prices.mjs   Holt Preise von gpuprix.com (Node 20, keine Abhängigkeiten)
-data/history.csv        Preisverlauf, eine Zeile pro Gerät und Tag (für spätere Charts)
+data/history.csv        Preisverlauf, eine Zeile pro Gerät und Tag
+scripts/build-history.mjs   history.csv → public/data/history.json (für /preise/, läuft nach jedem Preis-Update)
 .github/workflows/update-prices.yml   Täglicher Lauf um 04:17 UTC
 ```
 
@@ -85,6 +88,8 @@ Die Seite lädt ihre Daten per `fetch`. Direkt als Datei geöffnet (`file://`) f
 
 ## Pflege
 
+- **Glossar** (/glossar/, /en/glossary/): `content/de/glossar.html` bzw. `content/en/glossary.html`, ein Begriff = `<section data-id="…">` mit `<h2>`. Die `data-id` ist in beiden Sprachen gleich; im Blog und auf Info-Seiten verlinkt `href="glossary:<id>"` direkt auf den Begriff (`href="glossary:"` aufs Glossar). Erzeugt DefinedTermSet-JSON-LD.
+- **Preisverlauf** (/preise/, /en/prices/): Liniendiagramm mit Chart.js, das erst geladen wird, wenn das Diagramm in den Sichtbereich scrollt. Daten aus `public/data/history.json`, das `update-prices.mjs` täglich neu schreibt. Gezeigt werden nur GPUs mit laufender Erfassung (Geräte mit manuellem Preis wie die RTX 5090 fehlen).
 - **Info-Seiten** (/methodik/, /faq/, /ueber/ und /en/…): Texte in `content/de/` bzw. `content/en/` bearbeiten, danach `npm run seo`. Das Script erzeugt die Seiten, das FAQ-JSON-LD und die Sitemap.
 - **Blog** (/blog/ und /en/blog/): ein Artikel = je eine Datei in `content/blog/de/` und `content/blog/en/`. Die erste Zeile ist ein HTML-Kommentar mit JSON-Metadaten (`key` verbindet DE und EN, außerdem `slug`, `title`, `desc`, `date`, optional `icon`, `icons`, `order`). Kurzlinks im Text: `href="calc:"` (Rechner), `href="advisor:"` (Kaufberater), `href="vs:5090,m5u96,moe120"` (fertiger Vergleich, Modell optional), `href="blog:<key>"` (anderer Artikel). Danach `npm run seo`: erzeugt Übersicht, Artikel mit Meta-, OG- und BlogPosting-Daten und trägt alles in die Sitemap ein.
 - **Community-Benchmarks moderieren:** `/admin/benchmarks/` öffnen, Admin-Key eingeben, Einreichungen bestätigen, ablehnen oder freigegebene löschen. Mit ⚠️ markiert sind Werte, die mehr als das Dreifache vom berechneten Wert abweichen. Per Kommandozeile: `BENCH_ADMIN_KEY=… npm run bench -- pending` bzw. `approve|reject|delete <id>`. `npm run bench -- export` schreibt alle freigegebenen Messungen als Sicherung nach `public/data/benchmarks.json`.

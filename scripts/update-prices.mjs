@@ -4,6 +4,7 @@
 // Keine Abhängigkeiten, Node >= 20 (globales fetch).
 
 import { readFile, writeFile, appendFile, access } from "node:fs/promises";
+import { buildHistory } from "./build-history.mjs";
 
 const REGION = process.env.PRICE_REGION || "germany";          // gpuprix-Region (Österreich gibt es dort nicht)
 const SITE = process.env.SITE_URL || "https://aiscoremetrics.com";      // deine Domain, wird im User-Agent mitgeschickt
@@ -89,6 +90,7 @@ async function main() {
   await writeFile(PRICES_FILE, JSON.stringify({ updatedAt: new Date().toISOString(), region: REGION, prices }, null, 2) + "\n");
   try { await access(HISTORY_FILE); } catch { await writeFile(HISTORY_FILE, "date,device,price_eur,metric\n"); }
   if (history.length) await appendFile(HISTORY_FILE, history.join("\n") + "\n");
+  buildHistory();   // public/data/history.json für /preise/
 
   console.log(`\n${ok} aktualisiert, ${kept} wegen Preissprung behalten, ${failed} fehlgeschlagen.`);
   if (targets.length && ok === 0 && kept === 0) process.exit(1); // alles kaputt: Action soll rot werden

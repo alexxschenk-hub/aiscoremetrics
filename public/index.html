@@ -56,7 +56,9 @@
 <!-- meta:end -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<!-- Schriften blockieren den ersten Paint nicht (media=print → all nach dem Laden), display=swap zeigt sofort die Ersatzschrift -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap"></noscript>
 <style>
 /* Layout: spec-sheet tool. Control strip on top, summary line, ranked table, model matrix, method notes. */
 :root {
@@ -440,50 +442,57 @@ body:not(.adv-mode) #advisor { display: none; }
 .adv-card .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
 .adv-card .acts .adv-btn { padding: 7px 14px; font-size: 13px; }
 .adv-card .why { margin: 0; font-size: 13px; color: var(--muted); }
+.adv-blog { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.adv-blog a { color: var(--accent); font-weight: 600; font-size: 14px; text-decoration: none; }
+.adv-blog a:hover { text-decoration: underline; }
+.adv-keys { font-size: 12px; }
+@media (hover: none) { .adv-keys { display: none; } }
+.foot-upd { font-size: 13px; color: var(--muted); }
 @media (max-width: 900px) { .adv-res { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 520px) { .adv-prog li { font-size: 10px; } .adv-opts { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
-/* Community-Benchmarks */
-.cb-open { display: inline-flex; align-items: center; gap: 6px; font: 600 13px var(--f-display); letter-spacing: .03em; padding: 6px 12px; border-radius: 99px; border: 1px solid var(--accent); background: var(--accent-soft); color: var(--ink); cursor: pointer; }
-.cb-open:hover { background: var(--accent); color: var(--surface); }
-.cb-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.rank-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
-.cb { padding: 14px; border-top: 1px solid var(--line); display: grid; gap: 12px; }
-.cb h3 { margin: 0; display: flex; align-items: center; gap: 8px; font: 700 17px var(--f-display); }
-.cb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 12px; }
-.cb-dev { display: grid; align-content: start; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); min-width: 0; }
-.cb-dev > b { font: 700 15px var(--f-display); overflow-wrap: anywhere; }
-.cb-grp { display: grid; gap: 4px; }
-.cb-grp .h { font-weight: 600; font-size: 14px; }
-.cb-grp .vs { font: 13px var(--f-mono); color: var(--muted); }
-.cb-grp .vs b { color: var(--ink); }
-.cb-grp ul { margin: 0; padding: 0 0 0 16px; font-size: 13px; color: var(--muted); }
-.cb-grp li b { font-family: var(--f-mono); color: var(--ink); }
-.cb-dev .none { margin: 0; font-size: 13px; color: var(--muted); }
-.cb-dev .cb-open { justify-self: start; }
-.dev-pos { color: var(--accent); } .dev-neg { color: #B4691F; }
-dialog.cb-dlg { width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); box-shadow: 0 20px 60px rgba(0,0,0,.35); }
-dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
-.cb-dlg form { display: grid; gap: 12px; padding: 18px 20px 20px; }
-.cb-dlg h2 { margin: 0; font: 700 21px var(--f-display); }
-.cb-dlg .x { position: absolute; top: 10px; right: 12px; border: 0; background: transparent; color: var(--muted); font-size: 22px; line-height: 1; cursor: pointer; padding: 4px 8px; }
-.cb-f { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; }
-.cb-f label { display: grid; gap: 4px; min-width: 0; }
-.cb-f label.w { grid-column: 1 / -1; }
-.cb-f .lab small { text-transform: none; letter-spacing: 0; font-weight: 400; }
-.cb-f select, .cb-f input, .cb-f textarea { width: 100%; box-sizing: border-box; font: 400 14px var(--f-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 7px 8px; }
-.cb-f textarea { resize: vertical; min-height: 54px; }
-.cb-f [aria-invalid="true"] { border-color: #C0392B; }
-.cb-est { margin: 0; font-size: 13px; color: var(--muted); }
-.cb-warn { margin: 0; padding: 8px 10px; border-radius: 6px; background: #FFF4E0; color: #6B4200; font-size: 13px; }
-.cb-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-.cb-msg { margin: 0; font-size: 14px; }
-.cb-msg.err { color: #C0392B; }
-.cb-acts { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .cb-warn { background: #3A2A10; color: #F3D9A6; } }
-:root[data-theme="dark"] .cb-warn { background: #3A2A10; color: #F3D9A6; }
-@media (max-width: 520px) { .cb-f { grid-template-columns: minmax(0, 1fr); } }
+/* Feinschliff des Designs (früher /assets/design.css, jetzt inline: blockiert den ersten Paint nicht mehr) */
+:root { color-scheme: light; --card-radius: 20px; --card-shadow: 0 6px 24px rgb(19 24 28 / 4%); }
+:root[data-theme="dark"] { color-scheme: dark; --card-shadow: 0 6px 24px rgb(0 0 0 / 16%); }
+.wrap { gap: 28px; padding-block-start: 36px; }
+.wrap > * { min-width: 0; }
+.field { max-width: 100%; }
+select { max-width: 100%; min-width: 0; }
+header { gap: 12px; padding-block: 4px 12px; }
+.header-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.controls, .tablebox, .detail, .memchart { border-radius: var(--card-radius); box-shadow: var(--card-shadow); }
+.controls { padding: 22px; gap: 20px; }
+.sum { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; gap: 5px; box-shadow: var(--card-shadow); }
+.sum .k { color: var(--accent); }
+.sum .v { font-size: 24px; }
+.memchart { padding: 20px; gap: 12px; }
+select, input[type="number"], .btn { border-radius: 10px; }
+select, input[type="number"] { padding: 8px 10px; }
+.ico { border-radius: 10px; }
+.tag { border-radius: 6px; }
+.track, .fill { border-radius: 999px; }
+.formula { border-radius: 12px; }
+.seg:not(.membar .seg):not(.memlegend .seg) { border-radius: 10px; height: auto; }
+tbody tr:hover { background: var(--accent-soft); }
+.method section { padding: 20px; border: 1px solid var(--line); border-radius: var(--card-radius); background: var(--surface); }
+.theme-toggle { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 4px 0; border: 0; background: transparent; color: var(--ink); cursor: pointer; font: 600 13px var(--f-body); }
+.theme-track { display: inline-flex; align-items: center; width: 44px; height: 26px; padding: 3px; border-radius: 999px; background: var(--bar-2); box-shadow: inset 0 0 0 1px var(--line); }
+.theme-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 4px rgb(0 0 0 / 20%); }
+.theme-toggle[aria-checked="true"] .theme-track { background: var(--accent); }
+.theme-toggle[aria-checked="true"] .theme-thumb { transform: translateX(18px); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+@media (prefers-reduced-motion: no-preference) { .theme-thumb { transition: transform .2s ease; } .theme-track { transition: background-color .2s ease; } }
+@media (max-width: 520px) { .wrap { gap: 22px; padding-block-start: 22px; } .controls, .memchart { padding: 16px; } .header-actions { gap: 12px; } .method { grid-template-columns: minmax(0, 1fr); } }
+
+.share-tools { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+.share-tools[hidden], #compare-gains[hidden] { display:none; }
+#share-link-label { width:100%; }
+#share-link { display:block; width:100%; padding:10px; border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--ink); }
+.gain-value { font-size:18px !important; overflow-wrap:anywhere; }
+.evidence-badge { display:inline-block; color:var(--muted); font-size:11px; font-weight:400; line-height:1.5; margin-top:6px; }
 </style>
-<link rel="stylesheet" href="/assets/design.css">
+<link rel="preload" href="/assets/late.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="/assets/late.css"></noscript>
+<link rel="stylesheet" href="/assets/print.css" media="print">
 </head>
 <body>
 
@@ -759,8 +768,9 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
   <footer class="site-footer">
     <!-- footnav:start (generiert von scripts/build-seo.mjs) -->
     <nav class="foot-nav" aria-label="Info-Seiten">
-      <a href="/methodik/">Methodik</a><a href="/faq/">FAQ</a><a href="/ueber/">Über</a><a href="/blog/">Blog</a><a href="/methodik/#datenstand">Datenstand</a>
+      <a href="/methodik/">Methodik</a><a href="/faq/">FAQ</a><a href="/ueber/">Über</a><a href="/glossar/">Glossar</a><a href="/blog/">Blog</a><a href="/preise/">Preise</a><a href="/methodik/#datenstand">Datenstand</a>
     </nav>
+    <p class="foot-upd">Preise aktualisiert: <time data-updated>31. Oktober 2026</time></p>
     <!-- footnav:end -->
     <p data-i="footer"></p>
   </footer>
@@ -962,7 +972,7 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
       pxModel: "Textmodell", pxPrompt: "Prompt-Länge", pxImg: "Bildmodell",
       sysram: "PC-RAM", ws: "Workstation", quant: "Quantisierung", pickLlm: "LLM-Modell", pickMedia: "Bild-/Videomodell", mHintMedia: "Obere Zahl: geschätzte Zeit pro Bild bzw. Clip. Untere Zahl: Bilder bzw. Clips pro Stunde. „—“ heißt: passt nicht in den Speicher. Spalten sind sortierbar.",
       view: "Ansicht", views: { all: "Alle Geräte", one: "Ein Gerät", cmp: "Vergleich", adv: "Berater" },
-      pickDev: "Gerät", pickA: "Gerät A", pickB: "Gerät B", pickVendor: "Alle Hersteller", pickModel: "Gerät wählen …", ssSearch: "Suchen …", ssClear: "Suche leeren", ssNone: "Keine Treffer",
+      pickDev: "Gerät", pickA: "Gerät A", pickB: "Gerät B", recent: "Zuletzt angesehen", pickVendor: "Alle Hersteller", pickModel: "Gerät wählen …", ssSearch: "Suchen …", ssClear: "Suche leeren", ssNone: "Keine Treffer",
       pickHint: "Wähle zuerst den Hersteller, dann das Modell.",
       cmpModeLab: "Modelle im Vergleich", cmpModes: { same: "Gleiches Modell", best: "Bestes je Gerät", manual: "Selbst wählen" },
       cmpModelLab: "Modell", cmpBestLab: "Bestes passendes Modell", cmpModelOf: (m) => `Modell: ${m}`, eciSame: "gleiches Modell, kein Punkt",
@@ -1045,7 +1055,8 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
         details: "Details ansehen", compare: "Vergleichen", inclPc: "inkl. PC", vid: "Pro Clip",
         relaxed: "Kein Gerät schafft das gewünschte Tempo im Budget – gezeigt werden die schnellsten passenden Geräte.",
         none: "In diesem Budget passt kein Gerät. Erhöhe das Budget oder wähle „Egal“ bei der Bauform.",
-        note: "Schätzwerte aus dem Rechner, keine Messung. Preise: Deutschland, tagesaktuell bzw. Listenpreis."
+        note: "Schätzwerte aus dem Rechner, keine Messung. Preise: Deutschland, tagesaktuell bzw. Listenpreis.",
+        blog: "Passend dazu im Blog", keys: "Tastatur: Pfeiltasten wählen, Enter bestätigt, Esc geht zurück."
       },
       cbSubmit: "📊 Eigenen Benchmark einreichen",
       cb: {
@@ -1119,7 +1130,7 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
       pxModel: "Text model", pxPrompt: "Prompt length", pxImg: "Image model",
       sysram: "PC RAM", ws: "Workstation", quant: "Quantization", pickLlm: "LLM model", pickMedia: "Image/video model", mHintMedia: "Top number: estimated time per image or clip. Bottom number: images or clips per hour. “—” means it does not fit in memory. Columns are sortable.",
       view: "View", views: { all: "All devices", one: "One device", cmp: "Compare", adv: "Advisor" },
-      pickDev: "Device", pickA: "Device A", pickB: "Device B", pickVendor: "All vendors", pickModel: "Choose device …", ssSearch: "Search …", ssClear: "Clear search", ssNone: "No matches",
+      pickDev: "Device", pickA: "Device A", pickB: "Device B", recent: "Recently viewed", pickVendor: "All vendors", pickModel: "Choose device …", ssSearch: "Search …", ssClear: "Clear search", ssNone: "No matches",
       pickHint: "Choose the vendor first, then the model.",
       cmpModeLab: "Models in comparison", cmpModes: { same: "Same model", best: "Best per device", manual: "Choose" },
       cmpModelLab: "Model", cmpBestLab: "Best model that fits", cmpModelOf: (m) => `Model: ${m}`, eciSame: "same model, no point",
@@ -1202,7 +1213,8 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
         details: "View details", compare: "Compare", inclPc: "incl. PC", vid: "Per clip",
         relaxed: "No device reaches the requested speed within budget – showing the fastest devices that fit.",
         none: "No device fits this budget. Raise the budget or pick “Either” for the form factor.",
-        note: "Estimates from the calculator, not measurements. Prices: Germany, daily or list price."
+        note: "Estimates from the calculator, not measurements. Prices: Germany, daily or list price.",
+        blog: "Related reading", keys: "Keyboard: arrow keys to move, Enter to choose, Esc to go back."
       },
       cbSubmit: "📊 Submit your own benchmark",
       cb: {
@@ -1248,6 +1260,7 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
   if (!USES.some((u) => u.id === state.use)) state.use = "coding";
   if (!MODELS.some((m) => m.id === state.pxModel && (state.use === "all" || m.use.includes(state.use)))) state.pxModel = (USES.find((u) => u.id === state.use) || USES[0]).def;
   state.sorts = Object.assign({ rank: { k: "perf", d: -1 }, px: { k: "x:code", d: 1 }, mx: { k: "name", d: 1 } }, state.sorts || {});
+  state.recent = Array.isArray(state.recent) ? state.recent.filter((x) => typeof x === "string").slice(0, 5) : [];
   state.adv = Object.assign({ step: 0, goal: "", speed: "", budget: 3000, noLimit: false, form: "" }, state.adv || {});
   function persist() { try { const { lang, ...rest } = state; localStorage.setItem(KEY, JSON.stringify(rest)); } catch (e) {} }
 
@@ -1497,13 +1510,13 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
     const draw = () => {
       const q = ssNorm(input.value.trim()), terms = q.split(/\s+/).filter(Boolean);
       // Ohne Suchtext gilt der gewählte Hersteller als Filter, beim Tippen wird über alle Hersteller gesucht
-      shown = all.filter((x) => terms.length ? terms.every((tm) => x.hay.includes(tm)) : !sel.dataset.vendor || x.o.dataset.v === sel.dataset.vendor);
-      act = shown.findIndex((x) => x.o.selected); if (act < 0 && terms.length) act = 0;
+      shown = all.filter((x) => terms.length ? !x.o.dataset.recent && terms.every((tm) => x.hay.includes(tm)) : x.o.dataset.recent || !sel.dataset.vendor || x.o.dataset.v === sel.dataset.vendor);
+      act = shown.findIndex((x) => x.o.value === sel.value && !x.o.dataset.recent); if (act < 0) act = shown.findIndex((x) => x.o.selected); if (act < 0 && terms.length) act = 0;
       let last = null, html = "";
       shown.forEach((x, i) => {
         if (x.group && x.group !== last) { html += `<li class="grp" role="presentation">${esc(x.group)}</li>`; last = x.group; }
         const k = x.o.dataset.k && !x.group ? `<small>${esc(x.o.dataset.k)}</small>` : "";
-        html += `<li role="option" id="${listId}-${i}" data-i="${i}" aria-selected="${x.o.selected}" class="${i === act ? "act" : ""}">${esc(x.o.textContent)}${k}</li>`;
+        html += `<li role="option" id="${listId}-${i}" data-i="${i}" aria-selected="${x.o.value === sel.value}" class="${i === act ? "act" : ""}">${esc(x.o.textContent)}${k}</li>`;
       });
       list.innerHTML = html || `<li class="empty" role="presentation">${t.ssNone}</li>`;
       clear.hidden = !input.value;
@@ -1552,13 +1565,19 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
       const b = d && bestModelFor(d);
       return `<div class="pick-model"><span class="lab">${L().cmpBestLab}</span><div class="pick-best">${d ? (b ? `<b>${esc(mName(b.m))}</b>${eciBar(b.m, true)}` : `<span class="na">${L().eciNoFit}</span>`) : "–"}</div></div>`;
     };
+    if (state.view === "one" || state.view === "cmp") {   // zuletzt angesehene Geräte (neueste zuerst)
+      const ids = (state.view === "cmp" ? [state.pickB.id, state.pickA.id] : [state.pickA.id]).filter(Boolean);
+      const next = [...new Set([...ids.slice().reverse(), ...state.recent])].slice(0, 5);
+      if (next.join() !== state.recent.join()) { state.recent = next; persist(); }
+    }
+    const recentDevs = state.recent.map((id) => DEVICES.find((d) => d.id === id)).filter(Boolean);
     const picker = (slot, label) => {
       const pk = state[slot];
       const byName = (a, b) => a.name.localeCompare(b.name, L().locale, { numeric: true });
       const devOpt = (d) => `<option value="${d.id}" data-v="${d.v}" data-k="${esc(VENDOR[d.v] + " " + L().kinds[d.kind])}" ${d.id === pk.id ? "selected" : ""}>${esc(devLabel(d))}${d.kind !== "gpu" ? " (" + L().kinds[d.kind] + ")" : ""}</option>`;
       return `<span class="lab">${label}</span><div class="pair">
         <select data-slot="${slot}" data-part="v" aria-label="${label}: ${L().vendor}"><option value="">${L().pickVendor}</option>${[N, AM, IN, A].map((v) => `<option value="${v}" ${v === pk.v ? "selected" : ""}>${VENDOR[v]}</option>`).join("")}</select>
-        <select data-slot="${slot}" data-part="id" data-ss="device" data-vendor="${pk.v}" aria-label="${label}: ${L().pickDev}"><option value="">${L().pickModel}</option>${[N, AM, IN, A].map((v) => `<optgroup label="${VENDOR[v]}">${DEVICES.filter((d) => d.v === v).sort(byName).map(devOpt).join("")}</optgroup>`).join("")}</select>
+        <select data-slot="${slot}" data-part="id" data-ss="device" data-vendor="${pk.v}" aria-label="${label}: ${L().pickDev}"><option value="">${L().pickModel}</option>${recentDevs.length ? `<optgroup label="${esc(L().recent)}">${recentDevs.map((d) => devOpt(d).replace("<option ", '<option data-recent="1" ').replace(" selected>", ">")).join("")}</optgroup>` : ""}${[N, AM, IN, A].map((v) => `<optgroup label="${VENDOR[v]}">${DEVICES.filter((d) => d.v === v).sort(byName).map(devOpt).join("")}</optgroup>`).join("")}</select>
       </div>${pickModel(slot)}`;
     };
     $("#cmp-mode-f").hidden = state.view !== "cmp";
@@ -1701,7 +1720,7 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
     const t = L(), at = t.adv, a = state.adv, el = $("#advisor");
     const step = Math.min(a.step, 4);
     const prog = `<ol class="adv-prog" aria-label="${esc(at.title)}">${at.steps.map((x, i) => `<li class="${i < step ? "done" : i === step ? "cur" : ""}"${i === step ? ' aria-current="step"' : ""}><span>${i + 1}. ${esc(x)}</span></li>`).join("")}</ol>`;
-    const opts = (key, group) => `<div class="adv-opts" role="group">${Object.entries(group).map(([id, [n, s]]) =>
+    const opts = (key, group) => `<div class="adv-opts" role="group" aria-label="${esc(at.q[step])}">${Object.entries(group).map(([id, [n, s]]) =>
       `<button type="button" class="adv-opt" data-adv="${key}" data-id="${id}" aria-pressed="${a[key] === id}"><span class="ai" aria-hidden="true">${ADV_ICO[id]}</span><b>${esc(n)}</b><small>${esc(s)}</small></button>`).join("")}</div>`;
     const back = step > 0 ? `<button type="button" class="adv-btn" data-adv-nav="back">${esc(at.back)}</button>` : "";
     const head = `<h2 class="sec-h"><span class="sec-ico" aria-hidden="true">🧭</span><span>${esc(at.title)}</span></h2>${prog}`;
@@ -1716,7 +1735,7 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
         <p class="hint">${esc(at.budgetHint)}</p></div>`;
       if (step === 3) body = opts("form", at.forms);
       const next = step === 2 ? `<button type="button" class="adv-btn pri" data-adv-nav="next">${esc(at.next)} →</button>` : "";
-      el.innerHTML = `${head}<h3 class="adv-q">${esc(at.q[step])}</h3>${body}<div class="adv-nav">${back}${next}</div>`;
+      el.innerHTML = `${head}<h3 class="adv-q">${esc(at.q[step])}</h3>${body}<div class="adv-nav">${back}${next}</div>${step !== 2 ? `<p class="hint adv-keys">${esc(at.keys)}</p>` : ""}`;
       return;
     }
     const { picks, relaxed } = advResults();
@@ -1736,9 +1755,30 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
     el.innerHTML = `${head}<h3 class="adv-q">${esc(at.resTitle)}</h3>${chosen}
       ${relaxed ? `<p class="hint" style="color:var(--warn)">${esc(at.relaxed)}</p>` : ""}
       ${picks.length ? `<div class="adv-res">${picks.map(card).join("")}</div>` : `<p class="hint">${esc(at.none)}</p>`}
+      ${picks.length ? advBlog(picks) : ""}
       <p class="hint">${isMed ? esc(`${mName(MODELS.find((x) => x.id === g.media))}: ${mEx(MODELS.find((x) => x.id === g.media))}.`) + " " : ""}${esc(at.note)}</p>
       <div class="adv-nav">${back}<button type="button" class="adv-btn" data-adv-nav="restart">${esc(at.restart)}</button></div>`;
     el._picks = picks;
+  }
+  // Passende Blogartikel zum Ergebnis (Pfade werden von scripts/build-seo.mjs gegen content/blog geprüft)
+  const ADV_BLOG = {
+    de: { "best-gpu": ["/blog/beste-gpu-lokale-llms-2026/", "Beste GPU für lokale LLMs 2026"], vram: ["/blog/wie-viel-vram-brauche-ich/", "Wie viel VRAM brauche ich?"],
+      mac: ["/blog/rtx-5090-vs-mac-studio-m5-ultra/", "RTX 5090 vs. Mac Studio M5 Ultra"], dgx: ["/blog/dgx-spark-vs-mac-studio/", "DGX Spark vs. Mac Studio"] },
+    en: { "best-gpu": ["/en/blog/best-gpu-for-local-llms-2026/", "Best GPU for local LLMs 2026"], vram: ["/en/blog/how-much-vram-do-i-need/", "How much VRAM do I need?"],
+      mac: ["/en/blog/rtx-5090-vs-mac-studio-m5-ultra/", "RTX 5090 vs Mac Studio M5 Ultra"], dgx: ["/en/blog/dgx-spark-vs-mac-studio/", "DGX Spark vs Mac Studio"] }
+  };
+  function advBlog(picks) {
+    const ds = picks.map((p) => p[1].d), keys = [state.adv.goal === "docs" ? "vram" : "best-gpu"];
+    if (ds.some((d) => d.id.startsWith("dgx"))) keys.push("dgx");
+    if (ds.some((d) => d.v === A) || state.adv.goal === "max") keys.push("mac");
+    keys.push(keys[0] === "vram" ? "best-gpu" : "vram");
+    const b = ADV_BLOG[state.lang];
+    return `<nav class="adv-blog" aria-label="${esc(L().adv.blog)}"><span class="lab">📝 ${esc(L().adv.blog)}</span>${[...new Set(keys)].slice(0, 3).map((k) => `<a href="${b[k][0]}">${esc(b[k][1])} →</a>`).join("")}</nav>`;
+  }
+  // Fokus nach jedem Schritt: gewählte bzw. erste Karte, sonst Regler bzw. erste Ergebnis-Schaltfläche
+  function advFocus() {
+    const el = $("#advisor");
+    (el.querySelector('.adv-opt[aria-pressed="true"]') || el.querySelector(".adv-opt") || el.querySelector("#adv-budget:not([disabled])") || el.querySelector("#adv-nolimit") || el.querySelector(".adv-card .adv-btn"))?.focus({ preventScroll: true });
   }
   // Empfehlung im Rechner öffnen: Einzelansicht oder Vergleich mit der nächstbesten Empfehlung
   function advOpen(view, id) {
@@ -1895,11 +1935,26 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
   $("#cb-dlg").addEventListener("change", () => cbCheck());
   $("#cb-dlg").addEventListener("submit", (e) => { e.preventDefault(); cbSubmit(); });
 
+  // Schema.org Product + Offer für die gerade gezeigten Geräte (Einzelansicht/Vergleich); Listenpreis, nicht eigene Preise
+  function productLd(rows) {
+    let el = document.getElementById("ld-product");
+    const items = rows.filter((r) => listPrice(r.d) > 0).map((r) => {
+      const d = r.d, used = d.src && d.src[0] === "used";
+      const avail = ["instock", "manual"].includes(d.metric) || d.v === A ? "InStock" : d.metric ? "LimitedAvailability" : used ? "LimitedAvailability" : "InStock";
+      return { "@type": "Product", name: (d.v === A ? L().kinds[d.kind] + " " : "") + devLabel(d), brand: { "@type": "Brand", name: VENDOR[d.v] }, category: devKind(d),
+        description: `${d.mem} GB, ${fmt(d.bw)} GB/s`, offers: { "@type": "Offer", price: listPrice(d), priceCurrency: isUsd() ? "USD" : "EUR",
+          availability: `https://schema.org/${avail}`, itemCondition: `https://schema.org/${used ? "UsedCondition" : "NewCondition"}`, url: location.origin + location.pathname,
+          ...(UPDATED && !d.est ? { priceValidUntil: new Date(Date.parse(UPDATED) + 7 * 864e5).toISOString().slice(0, 10) } : {}) } };
+    });
+    if (!items.length) { if (el) el.remove(); return; }
+    if (!el) { el = document.createElement("script"); el.type = "application/ld+json"; el.id = "ld-product"; document.head.appendChild(el); }
+    el.textContent = JSON.stringify(items.length === 1 ? { "@context": "https://schema.org", ...items[0] } : { "@context": "https://schema.org", "@graph": items });
+  }
   function render() {
     renderControls();
     renderColPick();
     document.body.classList.toggle("adv-mode", state.view === "adv");
-    if (state.view === "adv") { renderAdvisor(); return; }
+    if (state.view === "adv") { productLd([]); renderAdvisor(); return; }
     const t = L();
     const { rows, ctx, w } = evaluate();
     const pxM = MODELS.find((m) => m.id === state.pxModel) || MODELS.find((m) => m.id === "moe30");
@@ -1979,6 +2034,8 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
     { const sec = $("#mem-section"), target = showDetail ? $("#mem-top") : $("#mem-anchor");
       if (sec.previousElementSibling !== target) target.after(sec); }
     $("#summary").hidden = showDetail; $("#detail").hidden = !showDetail;
+    document.body.classList.toggle("view-detail", showDetail);
+    productLd(showDetail ? vis : []);
     // Praxisszenarien (Erster Token, 100 Zeilen Code, Systemkosten, Hinweis) unter der Tabelle; Überschrift nur im Vergleich
     $("#cmp-extras").hidden = !showDetail;
     $("#cmp-extras-title").textContent = compareReady ? t.cmpExtrasTitle : t.noteTitle; $("#cmp-extras-ico").textContent = compareReady ? "🧪" : "ℹ️";
@@ -2292,7 +2349,20 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
     else if (nav) { const n = nav.dataset.advNav; a.step = n === "restart" ? 0 : Math.max(0, Math.min(4, a.step + (n === "next" ? 1 : -1))); }
     else if (go) { advOpen(go.dataset.advGo, go.dataset.id); return; }
     else return;
-    persist(); render(); $("#advisor").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    persist(); render(); advFocus(); $("#advisor").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+  $("#advisor").addEventListener("keydown", (e) => {
+    const a = state.adv;
+    if (e.key === "Escape" && a.step > 0) {
+      if (e.target.closest(".ss, dialog")) return;
+      e.preventDefault(); a.step = Math.min(a.step, 4) - 1; persist(); render(); advFocus(); return;
+    }
+    const opt = e.target.closest(".adv-opt"); if (!opt || !["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) return;
+    const all = [...opt.parentElement.querySelectorAll(".adv-opt")], i = all.indexOf(opt);
+    // Zeilen-Sprung: so viele Karten, wie in der ersten Rasterzeile nebeneinander stehen
+    const cols = all.filter((x) => x.offsetTop === all[0].offsetTop).length || 1;
+    const n = { ArrowRight: i + 1, ArrowLeft: i - 1, ArrowDown: i + cols, ArrowUp: i - cols, Home: 0, End: all.length - 1 }[e.key];
+    if (n >= 0 && n < all.length) { e.preventDefault(); all[n].focus(); }
   });
   $("#advisor").addEventListener("input", (e) => {
     if (e.target.id === "adv-budget") { state.adv.budget = +e.target.value; $("#adv-bval").textContent = eur(state.adv.budget); persist(); }
@@ -2410,10 +2480,11 @@ dialog.cb-dlg::backdrop { background: rgba(10, 14, 17, .55); }
         fetch("/data/prices.json", { cache: "no-cache" }).then((r) => r.ok ? r.json() : { prices: {} }).catch(() => ({ prices: {} }))
       ]);
       UPDATED = pr.updatedAt || null;
+      if (UPDATED) document.querySelectorAll("[data-updated]").forEach((e) => { e.textContent = new Date(UPDATED).toLocaleDateString(state.lang === "de" ? "de-AT" : "en-GB", { day: "numeric", month: "long", year: "numeric" }); e.dateTime = UPDATED.slice(0, 10); });
       DEVICES = dv.devices.map((d) => {
         const p = pr.prices && pr.prices[d.id];
         if (!p) return d;
-        return Object.assign({}, d, { price: p.price, est: false, src: p.metric === "median3m" ? ["med"] : p.metric === "manual" ? ["man", `${p.note ? p.note + " " : ""}${ddmm(p.asOf)}`] : ["gp", ddmm(p.asOf)] });
+        return Object.assign({}, d, { price: p.price, est: false, metric: p.metric, src: p.metric === "median3m" ? ["med"] : p.metric === "manual" ? ["man", `${p.note ? p.note + " " : ""}${ddmm(p.asOf)}`] : ["gp", ddmm(p.asOf)] });
       });
       advHash(); applySharedScenario(location.hash);
       // Ansicht "Ein Gerät" ohne Auswahl: mit einem Referenzgerät starten statt leer

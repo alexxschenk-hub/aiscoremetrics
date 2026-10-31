@@ -1,0 +1,55 @@
+    <section data-id="vram">
+      <h2>VRAM (graphics memory)</h2>
+      <p><strong>The memory on the graphics card itself.</strong> A language model only runs fast if its weights, the <a href="#kv-cache">KV cache</a> and some runtime overhead fit entirely. If they don't, part of it has to be offloaded to slower system RAM, and speed collapses.</p>
+      <p>Rule of thumb for Q4: billions of parameters × 0.6 GB, plus 1–4 GB for context. A 27B model therefore needs about 18–20 GB and fits on a 24 GB card. More in <a href="blog:vram">How much VRAM do I need?</a></p>
+    </section>
+    <section data-id="unified-memory">
+      <h2>Unified memory</h2>
+      <p><strong>CPU and GPU share one pool of memory.</strong> That's the case on Macs with M-series chips, the NVIDIA DGX Spark and mini PCs with Ryzen AI Max. It makes 64, 128 GB or more available for models that fit on no consumer graphics card. Not all of it is usable: by default macOS releases about 67–75% to the GPU; the rest stays with the system.</p>
+    </section>
+    <section data-id="bandwidth">
+      <h2>Bandwidth (memory bandwidth)</h2>
+      <p><strong>How many gigabytes per second the chip can read from its memory (GB/s).</strong> When writing an answer, the active model weights have to be read once for every token. That's why bandwidth almost alone determines generation speed: an RTX 5090 with 1,792 GB/s writes about 1.8 times as fast as an RTX 4090 with 1,008 GB/s, as long as the model fits on both.</p>
+      <p>Roughly: tokens/s ≈ effective bandwidth ÷ size of the active weights.</p>
+    </section>
+    <section data-id="tokens-per-second">
+      <h2>tok/s (tokens per second)</h2>
+      <p><strong>The speed at which a model produces text.</strong> A token is a piece of a word, about 0.75 words in English. From around 10 tok/s an answer reads smoothly, from 30 tok/s you barely wait; for coding agents that generate a lot of text, 50+ tok/s feels comfortable.</p>
+      <p>Separate from this is <strong>prompt processing</strong>: reading your input runs in parallel and reaches hundreds to thousands of tok/s; it depends on compute, not bandwidth.</p>
+    </section>
+    <section data-id="ttft">
+      <h2>First token (TTFT)</h2>
+      <p><strong>The wait before the answer starts</strong> (time to first token). During this time the model reads the entire prompt. For short chat questions that's a fraction of a second; for a long document or a large codebase with 30,000 tokens of context it can take over a minute on weaker hardware. Graphics cards with lots of compute (TFLOPS) shine here.</p>
+    </section>
+    <section data-id="quantization">
+      <h2>Quantization (Q4, Q8, FP16)</h2>
+      <p><strong>A model's weights are stored with fewer bits.</strong> In the original (FP16/BF16) each weight takes 16 bits, i.e. 2 bytes per parameter. Quantized versions save memory and run faster, but lose some quality:</p>
+      <ul>
+        <li><strong>FP16 / BF16:</strong> full precision, about 2 GB per billion parameters.</li>
+        <li><strong>Q8_0:</strong> about 8.5 bits, practically lossless, half the size of FP16.</li>
+        <li><strong>Q4_K_M:</strong> about 4.85 bits, the usual trade-off – roughly a quarter of FP16 with barely noticeable quality loss. The calculator's default.</li>
+        <li><strong>Q2/Q3:</strong> even smaller, but noticeably worse answers.</li>
+      </ul>
+      <p>The names come from llama.cpp's GGUF format; MLX, AWQ or GPTQ use their own variants with similar bit counts.</p>
+    </section>
+    <section data-id="moe">
+      <h2>MoE (mixture of experts)</h2>
+      <p><strong>A model made of many sub-networks (“experts”), only a few of which compute for each token.</strong> A model like Qwen3 30B-A3B has 30 billion parameters but activates only about 3 billion per token. It needs memory for all 30B, but only the active weights are read and computed – which is why MoE models are much faster than “dense” models of the same size.</p>
+      <p>For hardware this means: lots of memory matters, bandwidth is less critical. A good match for unified memory.</p>
+    </section>
+    <section data-id="kv-cache">
+      <h2>KV cache</h2>
+      <p><strong>The model's short-term memory.</strong> For every token in the <a href="#context">context</a> the model stores intermediate results (keys and values) so it doesn't have to recompute them. The KV cache grows linearly with context length and at 128k tokens can take more memory than the model itself. Models with sliding-window or hybrid attention (e.g. Gemma 4) need much less.</p>
+    </section>
+    <section data-id="context">
+      <h2>Context (context window)</h2>
+      <p><strong>How much text the model has “in view” at once</strong> – input, chat history and answer together, measured in tokens. 8k is enough for chat, coding agents work with 32k or more, whole documents need 64k–128k. More context costs memory (via the <a href="#kv-cache">KV cache</a>) and lengthens the wait for the <a href="#ttft">first token</a>. In the calculator you set the context with the slider.</p>
+    </section>
+    <section data-id="eci">
+      <h2>ECI (Epoch Capabilities Index)</h2>
+      <p><strong>An intelligence index for AI models by Epoch AI.</strong> It combines the results of many benchmarks (maths, coding, knowledge, reasoning) into one number so models from different vendors can be compared. Higher is better. The calculator shows the ECI where Epoch has published a value, and the buying advisor uses it to pick the smartest model that fits a device. Heavy quantization (Q2/Q3) lowers quality; the calculator then shows an estimated discount.</p>
+    </section>
+    <section data-id="tdp">
+      <h2>TDP (thermal design power)</h2>
+      <p><strong>The power draw or heat output stated by the manufacturer, in watts.</strong> For graphics cards this usually means total board power: an RTX 5090 is rated at 575 W, while a Mac Studio M5 Ultra is rated at 385 W and averages only about 190 W while generating. When writing text, GPUs rarely reach their TDP because they are waiting on memory. The calculator uses it to estimate yearly electricity cost (setting “Watts & electricity”).</p>
+    </section>

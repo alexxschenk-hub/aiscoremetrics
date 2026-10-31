@@ -1,0 +1,55 @@
+    <section data-id="vram">
+      <h2>VRAM (Grafikspeicher)</h2>
+      <p><strong>Der Speicher direkt auf der Grafikkarte.</strong> Ein Sprachmodell läuft nur dann schnell, wenn seine Gewichte, der <a href="#kv-cache">KV-Cache</a> und etwas Laufzeit-Overhead komplett hineinpassen. Passt es nicht, muss ein Teil in den langsameren PC-Arbeitsspeicher ausgelagert werden, und das Tempo bricht ein.</p>
+      <p>Faustregel für Q4: Milliarden Parameter × 0,6 GB, plus 1–4 GB für Kontext. Ein 27B-Modell braucht also rund 18–20 GB, passt auf eine 24-GB-Karte. Ausführlich im Artikel <a href="blog:vram">Wie viel VRAM brauche ich?</a></p>
+    </section>
+    <section data-id="unified-memory">
+      <h2>Gemeinsamer Speicher (Unified Memory)</h2>
+      <p><strong>CPU und GPU teilen sich einen Speicher.</strong> So ist es bei Macs mit M-Chips, beim NVIDIA DGX Spark und bei Mini-PCs mit Ryzen AI Max. Dadurch sind 64, 128 oder mehr GB für Modelle möglich, die auf keine Consumer-Grafikkarte passen. Nicht alles davon ist nutzbar: macOS gibt der GPU standardmäßig rund 67–75 % frei; der Rest bleibt für das System.</p>
+    </section>
+    <section data-id="bandwidth">
+      <h2>Bandbreite (Speicherbandbreite)</h2>
+      <p><strong>Wie viele Gigabyte pro Sekunde der Chip aus seinem Speicher lesen kann (GB/s).</strong> Beim Schreiben einer Antwort müssen für jeden Token die aktiven Modellgewichte einmal gelesen werden. Deshalb bestimmt die Bandbreite fast allein das Generierungstempo: Eine RTX 5090 mit 1.792 GB/s schreibt rund 1,8-mal so schnell wie eine RTX 4090 mit 1.008 GB/s, wenn das Modell auf beide passt.</p>
+      <p>Grob: Tokens/s ≈ effektive Bandbreite ÷ Größe der aktiven Gewichte.</p>
+    </section>
+    <section data-id="tokens-per-second">
+      <h2>tok/s (Tokens pro Sekunde)</h2>
+      <p><strong>Das Tempo, mit dem ein Modell Text erzeugt.</strong> Ein Token ist ein Wortstück, im Deutschen etwa 0,6 Wörter, im Englischen 0,75. Ab rund 10 tok/s liest sich eine Antwort flüssig mit, ab 30 tok/s wartet man kaum noch; für Coding-Agenten, die viel Text erzeugen, sind 50+ tok/s angenehm.</p>
+      <p>Davon zu unterscheiden ist die <strong>Prompt-Verarbeitung</strong>: Das Einlesen deiner Eingabe läuft parallel und erreicht hunderte bis tausende tok/s; sie hängt von der Rechenleistung ab, nicht von der Bandbreite.</p>
+    </section>
+    <section data-id="ttft">
+      <h2>Erster Token (TTFT)</h2>
+      <p><strong>Die Wartezeit, bis die Antwort beginnt</strong> (Time to First Token). In dieser Zeit liest das Modell den gesamten Prompt ein. Bei kurzen Chat-Fragen sind das Sekundenbruchteile, bei einem langen Dokument oder einer großen Codebasis mit 30.000 Tokens Kontext kann es auf schwächerer Hardware über eine Minute dauern. Hier punkten Grafikkarten mit viel Rechenleistung (TFLOPS).</p>
+    </section>
+    <section data-id="quantization">
+      <h2>Quantisierung (Q4, Q8, FP16)</h2>
+      <p><strong>Die Gewichte eines Modells werden mit weniger Bits gespeichert.</strong> Im Original (FP16/BF16) braucht jedes Gewicht 16 Bit, also 2 Byte pro Parameter. Quantisierte Varianten sparen Speicher und werden schneller, verlieren aber etwas Qualität:</p>
+      <ul>
+        <li><strong>FP16 / BF16:</strong> volle Präzision, rund 2 GB pro Milliarde Parameter.</li>
+        <li><strong>Q8_0:</strong> etwa 8,5 Bit, praktisch verlustfrei, halb so groß wie FP16.</li>
+        <li><strong>Q4_K_M:</strong> etwa 4,85 Bit, der übliche Kompromiss – rund ein Viertel von FP16 bei kaum spürbarem Qualitätsverlust. Standard im Rechner.</li>
+        <li><strong>Q2/Q3:</strong> noch kleiner, aber spürbar schlechtere Antworten.</li>
+      </ul>
+      <p>Die Bezeichnungen stammen aus dem GGUF-Format von llama.cpp; MLX, AWQ oder GPTQ nutzen eigene Varianten mit ähnlichen Bitzahlen.</p>
+    </section>
+    <section data-id="moe">
+      <h2>MoE (Mixture of Experts)</h2>
+      <p><strong>Ein Modell aus vielen Teilnetzen („Experten“), von denen pro Token nur wenige rechnen.</strong> Ein Modell wie Qwen3 30B-A3B hat 30 Milliarden Parameter, aktiviert pro Token aber nur rund 3 Milliarden. Speicher braucht es für alle 30B, gerechnet und gelesen werden aber nur die aktiven Gewichte – deshalb sind MoE-Modelle deutlich schneller als gleich große „dichte“ (dense) Modelle.</p>
+      <p>Für die Hardware heißt das: viel Speicher wichtig, Bandbreite weniger kritisch. Gute Kombination mit gemeinsamem Speicher.</p>
+    </section>
+    <section data-id="kv-cache">
+      <h2>KV-Cache</h2>
+      <p><strong>Das Kurzzeitgedächtnis des Modells.</strong> Für jeden Token im <a href="#context">Kontext</a> speichert das Modell Zwischenergebnisse (Keys und Values), damit es sie nicht ständig neu berechnen muss. Der KV-Cache wächst linear mit der Kontextlänge und kann bei 128k Tokens mehr Speicher belegen als das Modell selbst. Modelle mit Sliding-Window- oder Hybrid-Attention (z. B. Gemma 4) brauchen deutlich weniger.</p>
+    </section>
+    <section data-id="context">
+      <h2>Kontext (Kontextfenster)</h2>
+      <p><strong>Wie viel Text das Modell gleichzeitig „im Blick“ hat</strong> – Eingabe, bisheriger Chat und Antwort zusammen, gemessen in Tokens. 8k reichen für Chats, Coding-Agenten arbeiten mit 32k oder mehr, ganze Dokumente brauchen 64k–128k. Mehr Kontext kostet Speicher (über den <a href="#kv-cache">KV-Cache</a>) und verlängert die Wartezeit bis zum <a href="#ttft">ersten Token</a>. Im Rechner stellst du den Kontext mit dem Schieberegler ein.</p>
+    </section>
+    <section data-id="eci">
+      <h2>ECI (Epoch Capabilities Index)</h2>
+      <p><strong>Ein Intelligenz-Index für KI-Modelle von Epoch AI.</strong> Er fasst die Ergebnisse vieler Benchmarks (Mathematik, Coding, Wissen, Logik) zu einer Zahl zusammen, sodass sich Modelle unterschiedlicher Hersteller vergleichen lassen. Höher ist besser. Der Rechner zeigt den ECI, wo Epoch einen Wert veröffentlicht hat, und der Kaufberater wählt damit das klügste Modell, das auf ein Gerät passt. Starke Quantisierung (Q2/Q3) senkt die Qualität; dann zeigt der Rechner einen geschätzten Abschlag.</p>
+    </section>
+    <section data-id="tdp">
+      <h2>TDP (Thermal Design Power)</h2>
+      <p><strong>Die vom Hersteller angegebene Leistungsaufnahme bzw. Wärmeabgabe in Watt.</strong> Bei Grafikkarten meint man meist die Total Board Power: Eine RTX 5090 hat 575 W, ein Mac Studio M5 Ultra ist mit 385 W angegeben und zieht beim Schreiben im Schnitt nur rund 190 W. Beim Schreiben von Text erreichen GPUs ihre TDP selten, weil sie auf den Speicher warten. Der Rechner schätzt daraus Stromkosten pro Jahr (Einstellung „Watt & Stromkosten“).</p>
+    </section>
