@@ -2100,9 +2100,11 @@
       "eta": 0.6,
       "etaC": 0.5,
       "pf": 1,
-      "price": null,
+      "price": 1150,
+      "est": true,
+      "priceNote": "Gebrauchtpreis-Schätzung 31.10.2026: eBay-Gebrauchtangebote ca. 970–1.040 €, Kleinanzeigen-Inserate 1.000–1.500 € (Gesuche um 1.000–1.100 €)",
       "src": [
-        "unknown"
+        "used"
       ],
       "q": "NVIDIA GeForce RTX 3090",
       "formFactor": "desktop",

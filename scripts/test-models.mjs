@@ -14,11 +14,31 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
   vm.runInNewContext(script.replace('  load();', '  globalThis.modelTest = { MODELS, QUANTS, state, qm, kvCache, calc, memInfo, shownModels, mEx, eciOf, ECI_TOP };'), sandbox);
   const { MODELS, QUANTS, state, qm, kvCache, calc, memInfo, shownModels, mEx, eciOf, ECI_TOP } = sandbox.modelTest;
   const gemma = MODELS.filter(m => m.id.startsWith('gemma4_'));
+  const gpuRef = { kind: 'gpu', v: 'nvidia', mem: 24, eta: .6, bw: 1008, etaC: .5, tf: 330, pf: 1, imageSupported: true };
   assert.equal(gemma.length, 5);
-  assert.equal(MODELS.length, 29);
-  // Plausibilität aller Modelle: Pflichtfelder, gültige Einsatzzwecke, MoE-Logik
+  // 29 Sprachmodelle + 17 Bild-/Videomodelle (Einsatzzweck „Bild & Video“)
+  const LLMS = MODELS.filter(m => !m.media), MEDIA = MODELS.filter(m => m.media);
+  assert.equal(LLMS.length, 29);
+  assert.equal(MEDIA.length, 17);
+  assert.equal(MODELS.length, 46);
+  assert.equal(MEDIA.filter(m => m.media === 'img').length + MEDIA.filter(m => m.media === 'vid').length, MEDIA.length);
+  // Bild/Video: feste Präzision, Speicherbedarf = Gewichte, Zeit pro Bild/Clip > 0, Quantisierung ändert nichts
+  for (const m of MEDIA) {
+    assert.ok(m.gb > 0 && m.tp > 0 && m.prec && m.out, `${m.id}: Pflichtfelder`);
+    assert.deepEqual([...m.use], ['media'], `${m.id}.use`);
+    for (const q of ['q2', 'q8']) { state.quant = q; assert.equal(qm(m), m); }
+    const r = calc(gpuRef, m, 32768);
+    assert.ok(Number.isFinite(r.sec) && r.sec > 0, `${m.id}.sec`); close(r.tg, 3600 / r.sec); close(r.need, m.gb);
+    assert.equal(r.fits, m.gb <= 24 - 0.8, `${m.id}.fits`);
+    assert.equal(kvCache(m, 131072), 0);
+  }
+  state.quant = 'q4'; state.use = 'media';
+  assert.deepEqual(shownModels().map(m => m.id), MEDIA.map(m => m.id));
+  state.use = 'all';
+  assert.ok(shownModels().every(m => !m.media), '„Alle Modelle“ zeigt nur Sprachmodelle');
+  // Plausibilität aller Sprachmodelle: Pflichtfelder, gültige Einsatzzwecke, MoE-Logik
   const USE_IDS = ['coding', 'chat', 'large'];
-  for (const m of MODELS) {
+  for (const m of LLMS) {
     for (const k of ['tp', 'ap', 'gb', 'agb']) assert.ok(Number.isFinite(m[k]) && m[k] > 0, `${m.id}.${k}`);
     assert.ok(m.cache || (Number.isFinite(m.kv) && m.kv > 0), `${m.id}.kv`);
     assert.ok(m.ap <= m.tp && m.agb <= m.gb, `${m.id}: aktiv <= gesamt`);
@@ -63,7 +83,7 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
   close(kvCache(old, 32768), .098 * 32);
   state.quant = 'q4';
   close(qm(MODELS.find(m => m.id === 'gptoss20')).gb, 13);
-  assert.ok(html.includes(`${MODELS.length} LLMs`));
+  assert.ok(html.includes(`${LLMS.length} LLMs`));
   // ECI (Epoch AI): nur echte Epoch-Werte, innerhalb des eigenen Intervalls und unter dem Bestwert
   const withEci = MODELS.filter(m => m.benchmark);
   assert.equal(withEci.length, 19);
@@ -78,4 +98,4 @@ for (const file of ['public/index.html', 'public/en/index.html']) {
   state.quant = 'q2'; close(eciOf(k3).adj, k3.benchmark.score * 0.92); assert.equal(eciOf(k3).est, true);
   state.quant = 'q4';
 }
-console.log('Gemma models, filters, quantization, KV cache and fit boundaries passed for DE/EN.');
+console.log('29 LLMs + 17 media models, Gemma models, filters, quantization, KV cache and fit boundaries passed for DE/EN.');
