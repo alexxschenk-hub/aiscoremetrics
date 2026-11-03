@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-02T12:37:37.051Z",
+  "updatedAt": "2026-11-03T12:02:03.974Z",
   "region": "germany",
   "prices": {
     "4090": {
@@ -89,7 +89,7 @@
       "url": "https://gpuprix.com/germany/gpus/radeon-rx-9060-xt-16gb"
     },
     "rx9070": {
-      "price": 618,
+      "price": 662,
       "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
@@ -173,7 +173,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-31T07:01:21.045Z",
+      "asOf": "2026-11-01T17:25:10.147Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-pro-w7800-48gb"
     },
     "w7900": {
@@ -181,7 +181,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-10-31T13:26:52.130Z",
+      "asOf": "2026-11-02T03:26:19.998Z",
       "url": "https://gpuprix.com/germany/gpus/radeon-pro-w7900"
     }
   }
