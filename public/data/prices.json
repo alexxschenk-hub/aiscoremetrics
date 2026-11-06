@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-05T12:29:52.964Z",
+  "updatedAt": "2026-11-06T12:13:34.686Z",
   "region": "germany",
   "prices": {
     "4090": {
@@ -137,7 +137,7 @@
       "url": "https://gpuprix.com/germany/gpus/rtx-pro-5000-blackwell-72gb"
     },
     "a4000ada": {
-      "price": 3280,
+      "price": 3414,
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
