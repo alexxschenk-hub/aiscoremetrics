@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T12:53:30.145Z",
+  "updatedAt": "2026-11-13T12:27:50.347Z",
   "region": "germany",
   "prices": {
     "4090": {
@@ -149,7 +149,7 @@
       "metric": "low",
       "source": "gpuprix",
       "region": "germany",
-      "asOf": "2026-11-11T17:14:11.691Z",
+      "asOf": "2026-11-13T03:23:23.855Z",
       "url": "https://gpuprix.com/germany/gpus/rtx-5000-ada-generation"
     },
     "a6000ada": {
