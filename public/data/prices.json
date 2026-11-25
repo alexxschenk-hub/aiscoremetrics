@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-11-24T14:58:16.686Z",
+  "updatedAt": "2026-11-25T14:33:17.192Z",
   "region": "germany",
   "prices": {
     "4090": {
-      "price": 4790,
+      "price": 6616,
       "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
@@ -97,7 +97,7 @@
       "url": "https://gpuprix.com/germany/gpus/radeon-rx-9070"
     },
     "rx9070xt": {
-      "price": 805,
+      "price": 807,
       "metric": "instock",
       "source": "gpuprix",
       "region": "germany",
